@@ -2,10 +2,9 @@
 require("entity")
 
 function order_fcn(a, b)
-  return a["speed"] < b["speed"]
+  return a:getSpeed() < b:getSpeed()
 end
 
-
 function sort_entities()
-  table.sort(Entity, order_fcn)
+  table.sort(Entities, order_fcn)
 end
