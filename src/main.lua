@@ -5,7 +5,7 @@ require("character")
 require("turn_queue")
 
 states = {
-  main_menu              = require 'gamestates.main_menu',
+  main_menu         = require 'gamestates.main_menu',
   character_select  = require 'gamestates.character_select',
   bakery            = require 'gamestates.bakery',
   game              = require 'gamestates.game',

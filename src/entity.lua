@@ -79,3 +79,7 @@ end;
 function Entity:isAlive() --> bool
   return self.current_stats['hp'] > 0
 end;
+
+function Entity:draw() --> void
+end;
+  
