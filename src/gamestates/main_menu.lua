@@ -18,6 +18,8 @@ local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
 
 function main_menu:init()
   -- self.background = love.graphics.newImage('path/to/menu_background')
+  
+  -- buttons and cursor
   newGameButton = love.graphics.newImage(NEW_GAME_BUTTON_PATH)
   continueButton = love.graphics.newImage(CONTINUE_BUTTON_PATH)
   bakeryButton = love.graphics.newImage(BAKERY_BUTTON_PATH)
@@ -87,7 +89,7 @@ function main_menu:validate_selection()
     Gamestate.switch(states['character_select'])
   elseif index == 2 and main_menu:saveExists() == true then
     -- load data
-    love.event.quit()
+    love.event.quit() -- remove later
   elseif index == 3 then
     Gamestate.switch(states['bakery'])
   elseif index == 4 then

@@ -29,12 +29,6 @@ local LIST_WIDTH = 100
 local LIST_HEIGHT = 200
 local LIST_ITEM_SPACING = 5
 local LIST_ITEM_PADDING = 5
- 
--- panel, not really sure what this is for yet 
-local PANEL_X = 5
-local PANEL_Y = 310
-local PANEL_W = 490
-local PANEL_H = 115
 
 function combat:init()
   -- self.background = love.graphics.newImage('path/to/combat_background')
