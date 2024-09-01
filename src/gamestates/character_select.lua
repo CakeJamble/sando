@@ -140,10 +140,13 @@ end;
 function character_select:index_to_character()
   for i=0, TEAM_CAP do
     if selectedTeamIndices[i] == 0 then
+      
       bake = Character(get_bake_stats(), get_bake_skills())
       team:addMember(bake)
     elseif selectedTeamIndices[i] == 1 then
-      marco = Character(get_marco_stats(), get_marco_skills())
+      stats = get_marco_stats()
+      skills = get_marco_skills()
+      marco = Character(stats, skills)
       team:addMember(marco)
     elseif selectedTeamIndices[i] == 2 then
       maria = Character(get_maria_stats(), get_maria_skills())

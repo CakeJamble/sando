@@ -1,7 +1,7 @@
 --! file: skill_sheet
 
 local marco_skills = {
-  basic_attack = {
+  {
     name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',
@@ -9,7 +9,7 @@ local marco_skills = {
     effects = nil,
     proc = nil,
     participants = 'marco',
-    sprite_path = "../asset/characters/marco/basic_attack",
+    sprite_path = "asset/sprites/entities/character/marco/marco_basic.png",
     duration = 120,
     qte_window = 20,
     qte_type = "BUTTON_PRESS",
@@ -17,7 +17,7 @@ local marco_skills = {
     unlock = nil
   },
   
-  score = {
+  {
     name = 'Score',
     damage = 5,
     damage_type = 'physical',
@@ -25,7 +25,7 @@ local marco_skills = {
     effects = 'crit',
     proc = 0.6,
     participants = 'marco',
-    sprite_path = "../asset/characters/marco/score",
+    sprite_path = "asset/sprites/entities/character/marco/marco_basic.png",    --FIXME LATER
     duration = 300,
     qte_window = 240,
     qte_type = 'STICK_MOVE',
@@ -35,7 +35,7 @@ local marco_skills = {
 }
 
 local bake_skills = {
-  basic_attack = {
+  {
     name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',
@@ -51,7 +51,7 @@ local bake_skills = {
     unlock = nil
   },
   
-  pan_punch = {
+  {
     name = 'Pan Punch',
     damage = 2,
     damage_type = 'physical',
@@ -70,7 +70,7 @@ local bake_skills = {
 }
 
 local maria_skills = {
-  basic_attack = {
+  {
     name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',
@@ -88,7 +88,7 @@ local maria_skills = {
 }  
 
 local key_skills = {
-  basic_attack = {
+  {
     name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',

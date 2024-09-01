@@ -62,3 +62,11 @@ end;
 function Character:getCurrentSkills() --> table
   return self.current_skills
 end;
+
+function Character:update(dt)
+  Entity:update(dt)
+end;
+
+function Character:draw()
+  Entity:draw()
+end;

@@ -15,17 +15,12 @@ function combat:enter(previous, seed)
 end;
 
 function combat:update(dt)
+  team:update(dt)
 end;
 
 function combat:draw()
-  ui:draw()
+  --ui:draw()
+  team:draw()
 end;
   
 return combat
-
---  for _, entity in ipairs(Entities) do
---    local spriteNum = math.floor(entity.animations[0].currentTime / entity.animations[0].duration * #entity.animations[0].quads) + 1
---    if(entity.getState() == 'idle') then
---      love.graphics.draw(entity.animations[0].spriteSheet, entity.animations[0].quads[spriteNum], 0, 0, 0, 4)  -- idle
---    end
---  end

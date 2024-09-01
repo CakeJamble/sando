@@ -13,8 +13,7 @@ end;
 
   -- Adds a member to the instance variable self.members list
 function Team:addMember(character) --> void
-  -- table.insert(self.members, character)
-  self.members = {next = self.members, data = character}
+  table.insert(self.members, character)
   self.numMembers = self.numMembers + 1
 end;
 
@@ -22,11 +21,12 @@ end;
     -- preconditions: none
     -- postcondition: returns true if team wiped, false otherwise
 function Team:isWipedOut() --> bool
-  local t = self.members
-  while t do
-    if t.data:isAlive() then
+  local i,v = next(self.members, nil)
+  while i do
+    if v:isAlive() then
       return false
     end
+    i,v = next(t,i)
   end
   return true
 end;
@@ -39,28 +39,23 @@ function Team:getNumMembers() --> int
   return self.numMembers
 end;
 
-  -- Sets the focused member to the front of the members linked list
-function Team:setFocusedMember() --> void
-  self.focusedMember = self.members
-end;
-
-  -- Set the focused member to the next member of the members linked list
-function Team:nextFocusedMember() --> void
-  self.focusedMember = self.focusedMember.next
+  -- Sets the focused member to the character
+function Team:setFocusedMember(character) --> void
+  self.focusedMember = self.members[character]
 end;
 
 function Team:getFocusedMember() --> Character
   return self.focusedMember.data
 end;
 
-  -- Creates and returns a table of Character objects
-function Team:teamLLToTable() --> table
-  local t = self.members
-  local teamTable = {}
-  while t do
-    table.insert(teamTable, t.data)
-    t = t.next
+function Team:update(dt)
+  for _,member in pairs(self.members) do
+    member:update(dt)
   end
-  
-  return teamTable
+end;
+
+function Team:draw()
+  for _,member in pairs(self.members) do
+    member:draw()
+  end
 end;

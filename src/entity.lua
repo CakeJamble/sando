@@ -1,5 +1,6 @@
 --! file: entity.lua
 require("stat_sheet")
+require('skill')
 -- global table where all entities are stored
 Entities = {} 
 
@@ -10,44 +11,20 @@ Entity = class('Entity')
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
 function Entity:initialize(stats, skills)
-  self.stats = stats
-  self.current_stats = stats
-  self.skills = skills
-  self.animations = Entity:addAnimations(self.skills)
-end;
-
-  -- Create and return a list of animations
-    -- preconditions: a dictionary (table) of skills corresponding to the Entity
-    -- postconditions: returns a list (table) of animations
-function Entity:addAnimations(skill_dict)
-  local animations = {}
-  for i, skill in ipairs(skill_dict) do
-    sprite_path = skill["sprite_path"]
-    animation = newAnimation(sprite_path, sprite_path:getWidth(), sprite_path:getHeight(), duration)
-    animations[i] = animation
-    i = i + 1
-  end
-  return animations
-end; 
-
-  -- Create and return a new animation
-    -- preconditions: A love.graphics.newImage object, the width, height, and duration (number of frames)
-    -- postconditions: Returns an animation using a table of quads from a spritesheet
-function Entity:newAnimation(image, width, height, duration)
-  local animation = {}
-  animation.spriteSheet = image
-  animation.quads = {}
+  entityStats = stats
+  current_stats = stats
+  current_skills = {}
   
-  for y = 0, image:getHeight() - height, height do
-    for x = 0, image:getWidth() - width, width do
-      table.insert(animation.quads, love.graphics.newQuad(x, y, width, height, image:getDimensions()))
-    end
-  end
   
-  animation.duration = duration or 1
-  animation.currentTime = 0
-    
-  return animation 
+  local i,v = next(skills, nil)     -- i is an index of t, v = t[i]
+  while i do
+    skill = Skill(v)
+    table.insert(current_skills, skill)
+    i,v = next(skills,i)
+  end
+  frames = {}
+  idle = Entity:setIdle(stats['name'])
+  currentFrame = 1
 end;
 
 function Entity:getPos()  --> table(x, y)
@@ -80,6 +57,32 @@ function Entity:isAlive() --> bool
   return self.current_stats['hp'] > 0
 end;
 
+function Entity:setIdle(name)
+  image = love.graphics.newImage("asset/sprites/entities/character/marco/marco_idle.png")
+  local width = image:getWidth()
+  local height = image:getHeight()
+  local frameWidth = 96
+  local frameHeight = 96
+  local numFrames = 5
+  
+  for i=0,numFrames do
+    table.insert(frames, love.graphics.newQuad(i * frameWidth, 0, frameWidth, frameHeight, width, height))
+  end
+  
+  currentFrame = 1
+  
+  return image
+end;
+
+function Entity:update(dt) --> void
+  currentFrame = currentFrame + 10 * dt
+  if currentFrame >= 6 then
+    currentFrame = 1
+  end
+end;
+
+
 function Entity:draw() --> void
+  love.graphics.draw(idle, frames[math.floor(currentFrame)], 100, 100)
 end;
   
