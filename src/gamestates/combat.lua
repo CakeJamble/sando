@@ -1,7 +1,6 @@
 --! file: gamestates/combat
 require("entity")
 require("character")
-require("combat_ui")
 local combat = {}
 
 function combat:init()
