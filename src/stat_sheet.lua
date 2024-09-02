@@ -2,8 +2,6 @@
 
 starting_stats = {
   name="",            -- name of character
-  pos = { x=0,y=0 },  -- current x, y position of character
-  dx=0,dy=0,          -- velocity of character
   width=0,height=0,   -- size of character
   hp=0,
   fp=0,
@@ -15,8 +13,6 @@ starting_stats = {
  
 local bake_stats = {
    name = "Bake",
-   pos = { x=0, y=0},
-   dx=0,dy=0,
    width=80,height=80,
    hp=10,
    fp=10,
@@ -28,8 +24,6 @@ local bake_stats = {
  
  local maria_stats = {
    name = "Maria",
-   pos = { x=0, y=0},
-   dx=0,dy=0,
    width=80,height=80,
    hp=10,
    fp=10,
@@ -41,9 +35,7 @@ local bake_stats = {
  
 local marco_stats = {
    name = "Marco",
-   pos = { x=0, y=0},
-   dx=0,dy=0,
-   width=80,height=80,
+   width=96,height=96,
    hp=10,
    fp=10,
    attack=10,
@@ -54,8 +46,6 @@ local marco_stats = {
  
  local key_stats = {
    name = "Key",
-   pos = { x=0, y=0},
-   dx=0,dy=0,
    width=80,height=80,
    hp=10,
    fp=10,
