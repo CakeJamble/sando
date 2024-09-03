@@ -48,6 +48,13 @@ function Team:getFocusedMember() --> Character
   return self.focusedMember.data
 end;
 
+  -- Distributes exp of equal amount to each living player
+function Team:distributeExperience(amount)
+  for _,member in pairs(self.members) do
+    if member:isAlive() then  member:gainExp(amount) end
+  end
+end;
+
 function Team:update(dt)
   for _,member in pairs(self.members) do
     member:update(dt)

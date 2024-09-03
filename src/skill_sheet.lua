@@ -2,13 +2,15 @@
 
 local marco_skills = {
   {
-    name = 'Basic Attack',
+    skill_name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',
     target_type = 'single',
     effects = nil,
     proc = nil,
-    participants = 'marco',
+    cost = 0,
+    attack_type = 'solo',
+    partners = nil,
     sprite_path = "asset/sprites/entities/character/marco/basic.png",
     duration = 120,
     qte_window = 20,
@@ -18,13 +20,15 @@ local marco_skills = {
   },
   
   {
-    name = 'Score',
+    skill_name = 'Score',
     damage = 5,
     damage_type = 'physical',
     target_type = 'single',
     effects = 'crit',
     proc = 0.6,
-    participants = 'marco',
+    cost = 3,
+    attack_type = 'solo',
+    partners = nil,
     sprite_path = "asset/sprites/entities/character/marco/basic.png",    --FIXME LATER
     duration = 300,
     qte_window = 240,
@@ -36,13 +40,15 @@ local marco_skills = {
 
 local bake_skills = {
   {
-    name = 'Basic Attack',
+    skill_name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',
+    attack_type = 'solo',
     target_type = 'single',
     effects = nil,
     proc = nil,
-    participants = 'bake',
+    cost = 0,
+    partners = nil,
     sprite_path = '../asset/sprites/entities/character/bake/basic.png',
     duration = 60,
     qte_window = 25,
@@ -52,13 +58,15 @@ local bake_skills = {
   },
   
   {
-    name = 'Pan Punch',
+    skill_name = 'Pan Punch',
     damage = 2,
     damage_type = 'physical',
+    attack_type = 'solo',
     target_type = 'single',
     effects = nil,
     proc = nil,
-    participants = 'bake',
+    cost = 3,
+    partners = nil,
     sprite_path = '../asset/characters/bake/pan_punch',
     duration = 240,
     qte_window = 200,
@@ -71,13 +79,15 @@ local bake_skills = {
 
 local maria_skills = {
   {
-    name = 'Basic Attack',
+    skill_name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',
+    attack_type = 'solo',
     target_type = 'single',
     effects = nil,
     proc = nil,
-    participants = 'maria',
+    cost = 0,
+    partners = nil,
     sprite_path = '../asset/characters/maria/basic_attack',
     duration = 60,
     qte_window = 25,
@@ -89,13 +99,15 @@ local maria_skills = {
 
 local key_skills = {
   {
-    name = 'Basic Attack',
+    skill_name = 'Basic Attack',
     damage = 0,
     damage_type = 'physical',
+    attack_type = 'solo',
     target_type = 'multi',
     effects = nil,
     proc = nil,
-    participants = 'bake',
+    cost = 0,
+    partners = nil,
     sprite_path = '../asset/characters/key/basic_attack',
     duration = 60,
     qte_window = 25,

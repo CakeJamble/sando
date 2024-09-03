@@ -12,7 +12,7 @@ starting_stats = {
  }
  
 local bake_stats = {
-   name = "Bake",
+   entity_name = "Bake",
    width=80,height=80,
    hp=10,
    fp=10,
@@ -23,7 +23,7 @@ local bake_stats = {
  }
  
  local maria_stats = {
-   name = "Maria",
+   entity_name = "Maria",
    width=80,height=80,
    hp=10,
    fp=10,
@@ -34,7 +34,7 @@ local bake_stats = {
  }
  
 local marco_stats = {
-   name = "Marco",
+   entity_name = "Marco",
    width=96,height=96,
    hp=10,
    fp=10,
@@ -45,7 +45,7 @@ local marco_stats = {
  }
  
  local key_stats = {
-   name = "Key",
+   entity_name = "Key",
    width=80,height=80,
    hp=10,
    fp=10,

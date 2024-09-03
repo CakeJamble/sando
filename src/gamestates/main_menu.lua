@@ -64,8 +64,6 @@ function main_menu:set_down()
   
 end;
 
-
-
 function main_menu:draw()
   -- love.graphics.draw(self.background, 0, 0)
   love.graphics.draw(newGameButton, BUTTONS_START_X, BUTTONS_START_Y)
