@@ -138,7 +138,17 @@ end;
 function Entity:draw() --> void
   if self.state == 'idle' then
     love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], 100, 100)
-  elseif self.state == 'attacking' then
-    
+  elseif self.state == 'moveX' then
+    print("Moving left and right")
+  elseif self.state == 'moveY' then
+    print("Moving up and down")
+  elseif self.state == 'moveXY' then
+    print("Moving diagonally")
+  elseif self.state == 'flinch' then
+    print("Flinching... ouch!") 
+  elseif self.state == 'ko' then
+    print("Fainting... eughhh")
+  else
+    print("There's some undefined state we've entered here, Captain. Red Alert!")
   end
 end;
