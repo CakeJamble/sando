@@ -17,15 +17,6 @@ local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 team = Team()
 
 function character_select:init()
-  index = 0
-  spriteRow = 0
-  spriteCol = 0
-  spriteXOffset = 0
-  spriteYOffset = 0
-  numPlayableCharacters = 4
-  teamCount = 0
-  selectedTeamIndices = {}
-  
   cursor = love.graphics.newImage(CURSOR_PATH)  
   bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
   marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
@@ -34,7 +25,17 @@ function character_select:init()
 end;
 
 function character_select:enter()
+  index = 0
+  spriteRow = 0
+  spriteCol = 0
+  spriteXOffset = 0
+  spriteYOffset = 0
+  numPlayableCharacters = 4
+  teamCount = 0
+  selectedTeamIndices = {}
   for k, _ in pairs(Entities) do Entities[k] = nil end
+  statPreview = nil
+  character_select:setStatPreview()
 end;
 
 function character_select:keypressed(key)
@@ -49,19 +50,10 @@ function character_select:keypressed(key)
   elseif key == 'z' then
     character_select:validate_selection()
   end
+  character_select:setStatPreview()
 end;
   
-function character_select:update(dt)
-end;
 
-function character_select:draw()
-  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10, OFFSET * (GRID_LENGTH + 1) + 10)
-  love.graphics.draw(bakePortrait, SELECT_START, SELECT_START)
-  love.graphics.draw(marcoPortrait, SELECT_START + OFFSET, SELECT_START)
-  love.graphics.draw(mariaPortrait, SELECT_START, SELECT_START + OFFSET)
-  love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
-  love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
-end;
 
 function character_select:set_right()
   if spriteCol < GRID_LENGTH then
@@ -148,6 +140,7 @@ function character_select:index_to_character()
       skills = get_marco_skills()
       marco = Character(stats, skills)
       team:addMember(marco)
+      team:setFocusedMember(marco)
     elseif selectedTeamIndices[i] == 2 then
       maria = Character(get_maria_stats(), get_maria_skills())
       team:addMember(maria)
@@ -156,6 +149,35 @@ function character_select:index_to_character()
       team:addMember(key)
     end
   end
+end;
+
+function character_select:setStatPreview()
+  if spriteRow == 0 and spriteCol == 0 then
+    statPreview = character_select:statsToString(get_bake_stats())
+  elseif spriteRow == 0 and spriteCol == 1 then
+    statPreview = character_select:statsToString(get_marco_stats())
+  elseif spriteRow == 1 and spriteCol == 0 then
+    statPreview = character_select:statsToString(get_maria_stats())
+  else
+    statPreview = character_select:statsToString(get_key_stats())
+  end
+end;
+
+function character_select:statsToString(stats)
+  return 'Name: ' .. stats['entity_name'] .. '\n' .. 'HP: ' .. stats['hp'] .. '\n' .. 'FP: ' .. stats['fp'] .. '\n' .. 'Attack: ' .. stats['attack'] .. '\n' .. 'Defense: ' .. stats['defense'] .. '\n' .. 'Speed: ' .. stats['speed'] .. '\n' .. 'Luck: ' .. stats['luck']
+end;
+
+function character_select:update(dt)
+end;
+
+function character_select:draw()
+  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10, OFFSET * (GRID_LENGTH + 1) + 10)
+  love.graphics.draw(bakePortrait, SELECT_START, SELECT_START)
+  love.graphics.draw(marcoPortrait, SELECT_START + OFFSET, SELECT_START)
+  love.graphics.draw(mariaPortrait, SELECT_START, SELECT_START + OFFSET)
+  love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
+  love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
+  love.graphics.print(statPreview, 300, 100)
 end;
 
 return character_select

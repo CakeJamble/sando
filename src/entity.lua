@@ -10,13 +10,14 @@ Entity = class('Entity')
   -- Entity constructor
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
-function Entity:initialize(stats, skills)
+function Entity:initialize(stats, skills, x, y)
   current_stats = stats
   skillList = {}
   self.entityName = stats['entity_name']
-  pos = { x=0,y=0 }                     -- current x, y position of character
+  self.x=x
+  self.y=y
   self.dX=0
-  self.dY=0                             -- velocity of character
+  self.dY=0
   self.frameWidth = stats['width']      -- width of sprite (or width for a single frame of animation for this character)
   self.frameHeight = stats['height']    -- height of sprite (or height for a single frame of animation for this character)
   
@@ -41,24 +42,29 @@ function Entity:initialize(stats, skills)
   koFrames = {}
   
   self.currentFrame = 1
+  self.state = 'idle'
 end;
 
 -- ACCESSORS
 
 function Entity:getEntityName() --> string
-  return entityName
+  return self.entityName
 end;
 
-function Entity:getPos()  --> table(x, y)
-  return current_stats['pos']
+function Entity:getX()  --> int
+  return self.x
+end;
+
+function Entity:getY()  --> int
+  return self.y
 end;
 
 function Entity:getFWidth()
-  return frameWidth
+  return self.frameWidth
 end;
   
 function Entity:getFHeight()
-  return frameHeight
+  return self.frameHeight
 end;
 
 function Entity:getSpeed() --> int
@@ -84,13 +90,17 @@ end;
 -- MUTATORS
 
 function Entity:setPos(x, y) --> void
-  pos['x'] = x
-  pos['y'] = y
+  self.x = x
+  self.y = y
 end;
 
 function Entity:setDXDY(dx, dy) --> void
   dX = dx
   dY = dy
+end;
+
+function Entity:setState(state) --> void
+  self.state = state
 end;
 
 function Entity:heal(amount) --> void
@@ -101,13 +111,14 @@ function Entity:takeDamage() --> void
   current_stats["hp"] = math.max(0, current_stats["hp"] - amount)
 end;
 
+
+  -- Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
+  -- Shared animations are called by the child classes since the location of the subdir depends on the type of class
 function Entity:setAnimations(subdir)
   -- Images
   local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
   self.idleImage = love.graphics.newImage(path .. 'idle.png')
 --  self.moveXImage = love.graphics.newImage(path .. 'move_x.png')
---  self.moveYImage = love.graphics.newImage(path .. 'move_y.png')
---  self.moveXYImage = love.graphics.newImage(path .. 'move_xy.png')
 --  self.flinchImage = love.graphics.newImage(path .. 'flinch.png')
 --  self.koImage = love.graphics.newImage(path .. 'ko.png')
 
@@ -115,8 +126,6 @@ function Entity:setAnimations(subdir)
   local durations = get_state_animations(self.entityName)
   Entity:populateFrames(durations['idle_frames'], self.idleImage, idleFrames)
 --  Entity:populateFrames(durations['move_x_frames'], self.moveXImage, moveXFrames)
---  Entity:populateFrames(durations['move_y_frames'], self.moveYImage, moveYFrames)
---  Entity:populateFrames(durations['move_xy_frames'], self.moveXYImage, moveXYFrames)
 --  Entity:populateFrames(durations['flinch_frames'], self.flinchImage, flinchFrames)
 --  Entity:populateFrames(durations['ko_frames'], self.koImage, koFrames)
 end;
@@ -128,6 +137,8 @@ function Entity:populateFrames(numFrames, image, frames)
   end
 end;
 
+-- IDEA : kepressed callback should interpret the current state and then call the appropriate state's keypressed callback
+
 function Entity:update(dt) --> void
   self.currentFrame = self.currentFrame + 10 * dt
   if self.currentFrame >= 6 then
@@ -137,7 +148,7 @@ end;
 
 function Entity:draw() --> void
   if self.state == 'idle' then
-    love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], 100, 100)
+    love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
   elseif self.state == 'moveX' then
     print("Moving left and right")
   elseif self.state == 'moveY' then

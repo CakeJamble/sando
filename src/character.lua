@@ -2,22 +2,27 @@
 require("skill_sheet")
 require("stat_sheet")
 require("entity")
-require("action_ui")
+require("offense_state")
 
 
 local class = require 'libs/middleclass'
 Character = class('Character', Entity)
 
+
+
 -- Integers used for calculating required exp to level up. Changes at soft cap
 Character.static.EXP_POW_SCALE = 1.8
 Character.static.EXP_MULT_SCALE = 4
 Character.static.EXP_BASE_ADD = 10
+Character.static.yPos = 100
+Character.static.xPos = 100
 
   -- Character constructor
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
 function Character:initialize(stats, skills)
-  Entity:initialize(stats, skills)
+  Entity:initialize(stats, skills, Character.static.xPos, Character.static.xPos)
+  self.fp = stats['fp']
   self.basic = {}
   current_skills = {}
   Character:setBaseSkills()
@@ -26,8 +31,8 @@ function Character:initialize(stats, skills)
   self.experience = 0
   self.experienceRequired = 15
   Entity:setAnimations('character/')
-  ui = ActionUI(Entity:getEntityName())
-  self.state = 'idle'
+  Character.static.yPos = Character.static.yPos + 150
+  
 end;
 
   -- Sets the basic attack and the starting skill for a character
@@ -86,6 +91,14 @@ function Character:getCurrentSkills() --> table
   return self.current_skills
 end;
 
+function Character:getUIState()
+  return self.ui:getUIState()
+end;
+
 function Character:update(dt)
   Entity:update(dt)
+end;
+
+function Character:draw()
+  Entity:draw()
 end;

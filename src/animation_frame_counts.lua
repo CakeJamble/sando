@@ -37,6 +37,9 @@ local key_animations = {
   ko_frames = 8
 }
 
+local butter_animations = {
+  idle_frames = 1
+  }
 
 function get_state_animations(entityName)
   if entityName == 'Bake' then
@@ -47,6 +50,8 @@ function get_state_animations(entityName)
     return marco_animations
   elseif entityName == 'Key' then
     return key_animations
+  elseif entityName == 'Butter' then
+    return butter_animations
   end
 end;
 

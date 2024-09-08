@@ -55,6 +55,21 @@ local marco_stats = {
    luck=10,
  }
  
+ local butter_stats = {
+   entity_name = "Butter",
+   width = 96, height = 96,
+   hp = 5,
+   attack=5,
+   defense=0,
+   speed=4,
+   luck=0
+ }
+ 
+ function get_butter_stats()
+   return butter_stats
+ end;
+ 
+ 
 function get_bake_stats()
   return bake_stats
 end

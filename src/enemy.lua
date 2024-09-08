@@ -1,7 +1,10 @@
 --! filename: Enemy
-require ("enemy_state_sprite_sheet")
+require ("stat_sheet")
+require("skill_sheet")
+require("entity")
 
-local class = require 'middleclass'
+local class = require 'libs/middleclass'
+
 Enemy = class('Enemy', Entity)
 
 function Enemy:initialize(stats, skills)
@@ -9,7 +12,7 @@ function Enemy:initialize(stats, skills)
   self.expReward = stats['experience_reward']
 end;
 
-function Enemey:getExpReward()
+function Enemy:getExpReward()
   return self.expReward
 end;
 

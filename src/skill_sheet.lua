@@ -15,6 +15,8 @@ local marco_skills = {
     duration = 120,
     qte_window = 20,
     qte_type = "BUTTON_PRESS",
+    qte_bonus_type = 'damage',
+    qte_bonus = 1,
     description = 'Deals physical damage to a single target twice',
     unlock = nil
   },
@@ -33,6 +35,7 @@ local marco_skills = {
     duration = 300,
     qte_window = 240,
     qte_type = 'STICK_MOVE',
+    qte_bonus = 1,
     description = 'Phase behind enemy, dealing physical damage. Higher chance for crititical strike.',
     unlock = nil
     }
@@ -117,7 +120,23 @@ local key_skills = {
   }
 }
 
+local butter_skills = {
+  skill_name = 'Basic Attack',
+  damage = 0,
+  damage_type = 'physical',
+  attack_type = 'solo',
+  target_type = 'single',
+  effects = nil,
+  proc = nil,
+  partners = nil,
+  sprite_path = nil
+}
 
+function get_butter_skills()
+  return butter_skills
+end;
+
+  
 function get_marco_skills() 
   return marco_skills
 end

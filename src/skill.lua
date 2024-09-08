@@ -1,33 +1,21 @@
 --! filename: skill
-
 local class = require 'libs/middleclass'
 Skill = class('Skill')
 
   -- Skill Constructor
     -- preconditions: A table of a single Character skill
     -- postconditions: A Skill with an animation appended to the skill dict
-function Skill:initialize(t)
+function Skill:initialize(t, width, height)
   self.skill = t
-  self.animation = Skill:newAnimation(self.skill['sprite_path'], 96, 96, 9)
+  self.animation = Skill:newAnimation(self.skill['sprite_path'], width, height, self.skill['duration'])
+  
+  self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
 end;
 
 
-function Skill:getName()
-  return self.skill['name']
+function Skill:getSkillTable()
+  return self.skill
 end;
-
-function Skill:getDamageInfo()
-  return {self.skill['damage'], self.skill['damage_type'], self.skill['target_type']}
-end;
-
-function Skill:getEffectInfo()
-  return {self.skill['effects'], self.skill['proc']}
-end;
-
-function Skill:getAnimation()
-  return self.animation
-end;
-
 
   -- Create and return a new animation
     -- preconditions: A love.graphics.newImage object, the width, height, and duration (number of frames)
