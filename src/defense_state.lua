@@ -54,7 +54,7 @@ end;
 
 
 function DefenseState:update(dt)
-  if love.keyboard.isDown('l', 'r') then
+  if love.keyboard.isDown('l') or love.keyboard.isDown('r') then
     self.stance = 'block'
   end
   
