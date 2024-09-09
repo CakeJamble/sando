@@ -25,9 +25,8 @@ function OffenseState:initialize(skill, target, actionButton)
   self.actionButtonPressed = false
   self.badInputPenalty = 0
   
-
-  
   self.bonusApplied = false
+  
 end;
 
 function getDamage()

@@ -95,6 +95,8 @@ function Character:getUIState()
   return self.ui:getUIState()
 end;
 
+function Character:keypressed(key)
+
 function Character:update(dt)
   Entity:update(dt)
 end;

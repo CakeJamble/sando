@@ -10,6 +10,7 @@ function DefenseState:initialize(baseDefense, blockBonus, blockWindow, dodgeWind
   self.defense = baseDefense
   self.blockBonus = blockBonus
   self.stance = 'block'
+  
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
   self.frameCount = 0
@@ -17,7 +18,7 @@ function DefenseState:initialize(baseDefense, blockBonus, blockWindow, dodgeWind
   self.isWindowActive = false
   self.actionButtonPressed = false
   self.badInputPenalty = 0
-  
+
 end;
 
 function DefenseState:setActionButton(newButton)
@@ -41,7 +42,7 @@ end;
 function DefenseState:applyBonus()
   if self.state == 'block' then
     self.defense = self.defense + blockBonus
-  else
+  end
 end;
 
 function DefenseState:keypressed(key)
