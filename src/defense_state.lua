@@ -9,7 +9,6 @@ DefenseState = class('DefenseState')
 function DefenseState:initialize(baseDefense, blockBonus, blockWindow, dodgeWindow)
   self.defense = baseDefense
   self.blockBonus = blockBonus
-  self.stance = 'block'
   
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
@@ -40,22 +39,25 @@ function DefenseState:updateBadInputPenalty(applyPenalty)
 end;
 
 function DefenseState:applyBonus()
-  if self.state == 'block' then
+  if self.stance == 'block' then
     self.defense = self.defense + blockBonus
   end
 end;
 
 function DefenseState:keypressed(key)
-  if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
+  if key == self.actionButton and self.stance == 'block' and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
     DefenseState:applyBonus()
-  end
-  elseif key == self.actionButton and not self.isWindowActive then
+  elseif key == self.actionButton and not self.isWindowActive then    -- cannot dodge or block when you flub an input, penalty must expire before action (but you can switch states)
     DefenseState:updateBadInputPenalty(true)
   end
 end;
 
 
 function DefenseState:update(dt)
+  if love.keyboard.isDown('l', 'r') then
+    self.stance = 'block'
+  end
+  
   if self.isWindowActive then
     self.frameCount = self.frameCount + 1
     

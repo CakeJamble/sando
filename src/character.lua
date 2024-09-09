@@ -20,8 +20,10 @@ Character.static.xPos = 100
   -- Character constructor
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
-function Character:initialize(stats, skills)
+function Character:initialize(stats, skills, actionButton)
   Entity:initialize(stats, skills, Character.static.xPos, Character.static.xPos)
+  self.actionButton = actionButton
+  self.state = 'waiting'
   self.fp = stats['fp']
   self.basic = {}
   current_skills = {}
@@ -32,7 +34,8 @@ function Character:initialize(stats, skills)
   self.experienceRequired = 15
   Entity:setAnimations('character/')
   Character.static.yPos = Character.static.yPos + 150
-  
+  self.offenseState = nil
+  self.defenseState = nil
 end;
 
   -- Sets the basic attack and the starting skill for a character
@@ -96,9 +99,26 @@ function Character:getUIState()
 end;
 
 function Character:keypressed(key)
+  if key == self.actionButton then
 
+    if self.state == 'defense' then
+      self.defenseState:keypressed(key)
+    elseif self.state == 'offense' then
+      self.offenseState:keypressed(key)
+    else  -- self.state == 'waiting' then
+      print('strike a pose')
+    end
+    
+  end
+end;
+    
 function Character:update(dt)
   Entity:update(dt)
+  if self.state == 'offense' then
+    self.offenseState:update(dt)
+  elseif self.state == 'defense' then
+    self.defenseState:update(dt)
+  end
 end;
 
 function Character:draw()
