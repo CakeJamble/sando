@@ -10,6 +10,7 @@ Enemy = class('Enemy', Entity)
 function Enemy:initialize(stats, skills)
   Entity:initialize(stats, skills)
   self.expReward = stats['experience_reward']
+  self.moneyReward = stats['money_reward']
 end;
 
 function Enemy:getExpReward()
@@ -18,6 +19,14 @@ end;
 
 function Enemy:setExpReward(amount)
   self.expReward = amount
+end;
+
+function Enemy:getMoneyReward()
+  return self.moneyReward
+end;
+
+function Enemy:setMoneyReward(moneyReward)
+  self.moneyReward = moneyReward
 end;
 
 function Enemy:selectAttack()

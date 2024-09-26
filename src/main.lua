@@ -9,7 +9,7 @@ states = {
   character_select  = require 'gamestates.character_select',
   bakery            = require 'gamestates.bakery',
   game              = require 'gamestates.game',
-  map               = require 'gamestates.map',
+  reward            = require 'gamestates.reward',
   combat            = require 'gamestates.combat',
   pause             = require 'gamestates.pause'
 }

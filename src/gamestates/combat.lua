@@ -13,12 +13,14 @@ local TARGET_SPRITE = 'asset/sprites/combat/target_cursor.png'
 
 
 function combat:init()
-
-  
   targetCursor = love.graphics.newImage(TARGET_SPRITE)
   cursorX = 0
   cursorY = 0
-  
+  rewardExp = 0
+  rewardMoney = 0
+  Enemies = {}
+  enemyCount = 0
+  enemiesIndex = 1
 end;
 
 function combat:enter(previous, seed)
@@ -27,32 +29,32 @@ function combat:enter(previous, seed)
     print('added ' .. v:getEntityName() .. ' to the combat')
   end
 
-  Enemies = {}
-  enemyCount = 0
-  enemiesIndex = 1
-  
   -- replace me with a fcn that will generate all enemies for an encounter
   butter = Enemy(get_butter_stats(), get_butter_skills())
-  
+
   table.insert(Enemies, butter)
   enemyCount = enemyCount + 1
   --------------------- end replacement area here
-  
-  
-  for i,v in pairs(Enemies) do
-    table.insert(Entities, v)
-    print('added ' .. v:getEntityName() .. ' to the combat')
-  end  
-  
-  
+
   if previous ~= pause then
+    -- reset rewards, combatants in fight, and turn order
+    rewardExp = 0
+    rewardMoney = 0
+    
+    for i,v in pairs(Enemies) do
+      table.insert(Entities, v)
+      enemyCount = enemyCount + 1
+      print('added ' .. v:getEntityName() .. ' to the combat')
+    end
+    
     sort_entities()
+    
   end
 
   if type(Entities[1]) == 'Character' then
     team:setFocusedMember(Entities[1])
   end
-  
+
 end;
 
 function combat:generateEnemies()
@@ -88,6 +90,18 @@ end;
 
 function combat:update(dt)
   team:update(dt)
+  
+  -- Remove an enemy from the Entities table upon defeat
+  for _,entity in pairs(Entities) do
+    if not entity:isAlive() then
+      if type(entity) == Enemy then -- add their rewards to the combat rewards
+        rewardExp = rewardExp + entity:getExpReward()
+        rewardMoney = rewardMoney + entity:getMoneyReward()
+        Entities:pop(entity)
+      end
+    end
+  end
+      
 end;
 
 function combat:draw()
