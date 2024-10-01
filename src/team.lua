@@ -13,8 +13,6 @@ function Team:initialize()
   self.focusedMember = nil
   self.actionUI = ActionUI(0, 0)
   self.money = 0
-  
-
 end;
 
   -- Called whenever entering the character select gamestate
@@ -38,13 +36,16 @@ function Team:isWipedOut() --> bool
   return true
 end;
 
+
 function Team:getMembers() --> table (list)
   return self.members
 end;
 
+
 function Team:getNumMembers() --> int
   return self.numMembers
 end;
+
 
   -- Sets the focused member to the character
 function Team:setFocusedMember(character) --> void
@@ -52,9 +53,11 @@ function Team:setFocusedMember(character) --> void
   self.actionUI:setPos(self.focusedMember:getX() + 25, self.focusedMember:getY() - 50)
 end;
 
+
 function Team:getFocusedMember() --> Character
   return self.focusedMember
 end;
+
 
   -- Distributes exp of equal amount to each living player
 function Team:distributeExperience(amount)
@@ -62,6 +65,7 @@ function Team:distributeExperience(amount)
     if member:isAlive() then  member:gainExp(amount) end
   end
 end;
+
 
 function Team:keypressed(key)
   self.actionUI:keypressed(key)
@@ -87,6 +91,7 @@ function Team:update(dt)
   end
   
 end;
+
 
 function Team:draw()
   for _,member in pairs(self.members) do

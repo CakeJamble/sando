@@ -4,8 +4,7 @@ require('character')
 
 local reward = {}
 
-
-
+-- Initialize the reward state once when entered for the first time when the game is started
 function reward:initialize()
   rareToolChance = 0.2
   rareEquipChance = 0.2
