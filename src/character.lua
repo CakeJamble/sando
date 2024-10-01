@@ -60,6 +60,8 @@ function Character:gainExp(amount)
     print(Entity:getEntityName() .. ' reached level ' .. self.level .. '!')
     self.experienceRequired = Character:getRequiredExperience(self.level)
     Character:updateSkills(self.level)
+    
+    -- push a new state onto the stack that will allow the player to select a stat to boost
   end
 end;
 
