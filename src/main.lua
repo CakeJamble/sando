@@ -18,4 +18,4 @@ function love.load()
   loveframes.update(dt)
   Gamestate.registerEvents()
   Gamestate.switch(states['main_menu'])
-end
+end;

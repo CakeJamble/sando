@@ -43,8 +43,9 @@ function Entity:initialize(stats, skills, x, y)
   koFrames = {}
   
   self.currentFrame = 1
-  self.state = 'idle'
+  self.movement_state = 'idle'
 end;
+
 
 -- ACCESSORS
 
@@ -108,8 +109,8 @@ function Entity:setDXDY(dx, dy) --> void
   dY = dy
 end;
 
-function Entity:setState(state) --> void
-  self.state = state
+function Entity:setMovementState(state) --> void
+  self.movement_state = state
 end;
 
 function Entity:heal(amount) --> void
@@ -122,7 +123,11 @@ end;
 
 -- ONLY run this after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void
-  battle_stats = current_stats
+  for stat,val in pairs(current_stats) do
+    if stat ~= 'hp' or stat ~= 'fp' then
+      battle_stats[stat] = current_stats[stat]
+    end
+  end
 end;
 
   -- Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
@@ -150,27 +155,25 @@ function Entity:populateFrames(numFrames, image, frames)
   end
 end;
 
--- IDEA : kepressed callback should interpret the current state and then call the appropriate state's keypressed callback
-
 function Entity:update(dt) --> void
   self.currentFrame = self.currentFrame + 10 * dt
-  if self.currentFrame >= 6 then
+  if self.currentFrame >= 6 then -- hardcoded for testing initial animation :(
     self.currentFrame = 1
   end
 end;
 
 function Entity:draw() --> void
-  if self.state == 'idle' then
+  if self.movement_state == 'idle' then
     love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
-  elseif self.state == 'moveX' then
+  elseif self.movement_state == 'moveX' then
     print("Moving left and right")
-  elseif self.state == 'moveY' then
+  elseif self.movement_state == 'moveY' then
     print("Moving up and down")
-  elseif self.state == 'moveXY' then
+  elseif self.movement_state == 'moveXY' then
     print("Moving diagonally")
-  elseif self.state == 'flinch' then
+  elseif self.movement_state == 'flinch' then
     print("Flinching... ouch!") 
-  elseif self.state == 'ko' then
+  elseif self.movement_state == 'ko' then
     print("Fainting... eughhh")
   else
     print("There's some undefined state we've entered here, Captain. Red Alert!")
