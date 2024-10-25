@@ -12,6 +12,7 @@ Entity = class('Entity')
     -- postconditions: Valid Entity object and added to global table of Entities
 function Entity:initialize(stats, skills, x, y)
   current_stats = stats
+  battle_stats = stats
   skillList = {}
   self.entityName = stats['entity_name']
   self.x=x
@@ -68,10 +69,14 @@ function Entity:getFHeight()
 end;
 
 function Entity:getSpeed() --> int
-  return current_stats['speed']
+  return battle_stats['speed']
 end;
 
 function Entity:getHealth() --> int
+  return battle_stats['hp']
+end;
+
+function Entity:getMaxHealth() --> int
   return current_stats['hp']
 end;
 
@@ -84,10 +89,14 @@ function Entity:getSkills() --> table
 end;
 
 function Entity:isAlive() --> bool
-  return current_stats['hp'] > 0
+  return battle_stats['hp'] > 0
 end;
 
 -- MUTATORS
+
+function Entity:raiseBattleStat(stat_name) --> void
+  battle_stats[stat_name] = math.ceil(battle_stats[stat_name] * 1.25)
+end;
 
 function Entity:setPos(x, y) --> void
   self.x = x
@@ -104,13 +113,17 @@ function Entity:setState(state) --> void
 end;
 
 function Entity:heal(amount) --> void
-  current_stats["hp"] = math.min(current_stats["hp"], current_stats["hp"] + amount)
+  battle_stats["hp"] = math.min(battle_stats["hp"], battle_stats["hp"] + amount)
 end;
 
 function Entity:takeDamage() --> void
-  current_stats["hp"] = math.max(0, current_stats["hp"] - amount)
+  battle_stats["hp"] = math.max(0, battle_stats["hp"] - amount)
 end;
 
+-- ONLY run this after setting current_stats HP to reflect damage taken during battle
+function Entity:resetStatModifiers() --> void
+  battle_stats = current_stats
+end;
 
   -- Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
   -- Shared animations are called by the child classes since the location of the subdir depends on the type of class
