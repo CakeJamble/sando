@@ -14,7 +14,7 @@ function Entity:initialize(stats, skills, x, y)
   current_stats = stats
   battle_stats = stats
   skillList = {}
-  self.entityName = stats['entity_name']
+  self.entityName = stats['entityName']
   self.x=x
   self.y=y
   self.dX=0
