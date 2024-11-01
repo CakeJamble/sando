@@ -2,6 +2,7 @@
 require('enemy_list')
 require('team')
 
+-- Need to port over map generation techniques for weighted random creation of encounters!!!
 function generateEncounter(floorNum)
   team = Team()
   encounteredPools = {}
@@ -24,9 +25,13 @@ function generateEncounter(floorNum)
     table.insert(encounteredPools, encounter)
   elseif floorNum == 20 then
     -- Randomly grab from Boss Pool 2
-  
+-- PLEASE BEGIN HERE comment from 10/31/2024
+  end
   return team
 end;
 
+-- Grabs team from pools listed below
 function populateTeam(encounter, team)
-  
+end;
+
+-- Create tables for encounter pools
