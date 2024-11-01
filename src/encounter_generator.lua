@@ -1,13 +1,32 @@
 --! file: encounter_generator
+require('enemy_list')
+require('team')
 
-
--- TODO: needs enemy pools (new file needed)
-
--- TODO: needs encounter types (in file)
-
--- TODO: needs challenge ratings for encounters & XP thresholds to define encounter rewards
-  -- check DnD balance system for design philosophy
+function generateEncounter(floorNum)
+  team = Team()
+  encounteredPools = {}
+  if floorNum < 10 then
+    -- Weighted Randomly grab from Enemy Pool 1
+    -- TODO : Make this actually weighted rand
+    local encounter = math.random(1, 10)
+    populateTeam(encounter, team)
+    table.insert(encounteredPools, encounter)
+  elseif floorNum == 10 then
+    -- Randomly grab from Boss Pool 1
+    local encounter = math.random(1, 4)
+    populateTeam(encounter, team)
+    table.insert(encounteredPools, encounter)
+  elseif floorNum < 20 then
+    -- Weighted Randomly grab from Enemy Pool 2
+    -- TODO : Make this actually weighted rand
+    local encounter = math.random(11, 20)
+    populateTeam(encounter, team)
+    table.insert(encounteredPools, encounter)
+  elseif floorNum == 20 then
+    -- Randomly grab from Boss Pool 2
   
-  -- should be managed in spreadsheets
+  return team
+end;
 
--- 
+function populateTeam(encounter, team)
+  

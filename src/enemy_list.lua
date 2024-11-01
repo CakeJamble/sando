@@ -1,8 +1,8 @@
 --! filename: enemy list
 
-local numEnemies = 
+-- WARNING : STATS ARE PLACE HOLDERS BESIDES NAME AND ENTITY TYPE
 
--- trying with nested tables
+-- trying with nested tables because we want to do random encounters
 local enemyTable = {  
   {
     entityName="Boba",
@@ -405,20 +405,20 @@ local bossTable = {
   },
 }
 
-function getAllEnemies() 
+function getAllEnemies() --> Table of Tables
   return enemyTable
 end;
 
-function getAllElites()
+function getAllElites() --> Table of Tables
   return eliteTable
 end;
 
-function getAllBosses()
+function getAllBosses() --> Table of Tables
   return bossTable
 end;
 
 -- Returns enemy/elite/boss through array-like access
-function getAt(enemyType, index)
+function getAt(index, enemyType) --> Table
   if(enemyType == 'Enemy') then
     return enemyTable[index]
   elseif(enemyType == 'Elite') then
@@ -429,8 +429,7 @@ function getAt(enemyType, index)
 end;
 
 -- Returns enemy/elite/boss through linear search with associated name
-function getEnemyCalled(enemyType, enemyName) --> Table
-  
+function getByName(enemyName, enemyType) --> Table
   if(enemyType == 'Enemy') then
     -- go through enemy table and find match
     for i,v in ipairs(enemyTable) do
