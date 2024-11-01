@@ -1,6 +1,7 @@
 --! file: encounter_generator
 require('enemy_list')
 require('team')
+require('gamestates/game')
 
 -- Need to port over map generation techniques for weighted random creation of encounters!!!
 function generateEncounter(floorNum)
