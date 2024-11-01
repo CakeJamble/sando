@@ -34,6 +34,7 @@ function Character:initialize(stats, skills, actionButton)
   self.experienceRequired = 15
   Entity:setAnimations('character/')
   Character.static.yPos = Character.static.yPos + 150
+  -- self.movementState = MovementState(Entity:getX(), Entity:getY(),
   self.offenseState = nil
   self.defenseState = nil
 end;

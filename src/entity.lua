@@ -21,29 +21,13 @@ function Entity:initialize(stats, skills, x, y)
   self.dY=0
   self.frameWidth = stats['width']      -- width of sprite (or width for a single frame of animation for this character)
   self.frameHeight = stats['height']    -- height of sprite (or height for a single frame of animation for this character)
-  
-  -- State Animations (set by child constructor since the sprite paths depend on the entity type (character, enemy, boss, etc.))
-  self.idleImage = nil
-  self.moveXImage = nil
-  self.moveYImage = nil
-  self.moveXYImage = nil
-  self.flinchImage = nil
-  self.koImage = nil
 
   -- Set Skills
   for k,v in ipairs(skills) do
     table.insert(skillList, v)
   end
-
-  idleFrames = {}
-  moveXFrames = {}
-  moveYFrames = {}
-  moveXYFrames = {}
-  flinchFrames = {}
-  koFrames = {}
   
   self.currentFrame = 1
-  self.movement_state = 'idle'
 end;
 
 
