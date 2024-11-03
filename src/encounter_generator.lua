@@ -1,5 +1,7 @@
 --! file: encounter_generator
 require('enemy_list')
+require('entity')
+require('enemy')
 require('team')
 require('gamestates/game')
 
@@ -36,3 +38,6 @@ function populateTeam(encounter, team)
 end;
 
 -- Create tables for encounter pools
+enemyPool1 = {
+  
+  

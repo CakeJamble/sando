@@ -120,22 +120,6 @@ local key_skills = {
   }
 }
 
-local butter_skills = {
-  skill_name = 'Basic Attack',
-  damage = 0,
-  damage_type = 'physical',
-  attack_type = 'solo',
-  target_type = 'single',
-  effects = nil,
-  proc = nil,
-  partners = nil,
-  sprite_path = nil
-}
-
-function get_butter_skills()
-  return butter_skills
-end;
-
   
 function get_marco_skills() 
   return marco_skills
