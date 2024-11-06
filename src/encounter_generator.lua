@@ -79,4 +79,50 @@ enemyPool1 = {
   }
 }
 
+elitePool1 = {
+  {
+    'Mama',
+    'Papa',
+  },
+  
+  {
+    'Buttler',
+    'Crusty',
+    'Crusty',
+  },
+  
+  {
+    'Mischi',
+    'Boba',
+    'Boba',
+    'Boba',
+  }
+}
+
+bossPool1 = {
+  {
+    'Hae',
+  },
+  
+  {
+    'Veji',
+    'Reji',
+  },
+  
+  {
+    'Buglun',
+  }
+  
+}
+
+bossPool2 = {
+  {
+    'Daikoku',
+  },
+  
+  {
+    'Spira',
+  }
+}
+
   
