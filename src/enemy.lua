@@ -7,12 +7,17 @@ local class = require 'libs/middleclass'
 
 Enemy = class('Enemy', Entity)
 
-function Enemy:initialize(stats, skills)
-  Entity:initialize(stats, skills)
+function Enemy:initialize(enemyName, enemyType)
+  stats = enemyLookup(enemyName)
+  Entity:initialize(stats, stats['skills'])
   self.expReward = stats['experience_reward']
   self.moneyReward = stats['money_reward']
 end;
 
+function enemyLookup(enemyName)
+  return getStatsByName(enemyName, enemyType)
+end;
+  
 function Enemy:getExpReward()
   return self.expReward
 end;

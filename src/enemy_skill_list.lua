@@ -171,6 +171,36 @@ local croissantSkills = {
 }
   
 
+-- Deprecated, enemy_list dictionaries call the direct enemy skill list getter instead of this linear lookup
+-- result of change : O(n^2) -> O(n). Solved because we know the assoc. skill list when we instantiate an enemy.
+function getSkillsByName(enemyName, enemyType) --> Table
+  if(enemyType == 'Enemy') then
+    -- go through enemy table and find match
+    for i,v in ipairs(enemyTable) do
+      if(v['enemyName'] == enemyName) then
+        return v
+      end
+    end
+  elseif(enemyType == 'Elite') then
+    -- go through elite table and find match
+    for i,v in ipairs(eliteTable) do
+      if(v['enemyName'] == enemyName) then
+        return v
+      end
+    end
+  else
+    -- go through boss table and find match
+    for i,v in ipairs(bossTable) do
+      if(v['enemyName'] == enemyName) then
+        return v
+      end
+    end
+  end
+  
+  return nil    -- critical error
+end;
+
+
 function getButtlerSkills()
   return buttlerSkills
 end;

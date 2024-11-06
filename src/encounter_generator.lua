@@ -29,18 +29,37 @@ function generateEncounter(floorNum)
   elseif floorNum == 20 then
     local encounter = math.random(1, #bossPool2)
     populateTeam(encounter, enemyTeam)
-    
--- PLEASE BEGIN HERE comment from 10/31/2024
+    table.insert(encounteredPools, encounter)
   end
   return enemyTeam
 end;
 
 -- Grabs team from pools listed below
 -- NOTE: completely random, needs refacor. Just for testing loading of enemies for now
-function populateTeam(encounter, newTeam)
+function populateTeam(encounter, encounterType, newTeam)
   for i=1,encounter do
-    -- need a way to dynamically generate an enemy from just a name??
-    -- local enemy = Enemy
+    if encounterType == "Enemy" then
+      -- select random enemy encounter
+      encounterNames = enemyPool1[encounter]
+      for enemyName in encounterNames do
+        enemy = Enemy(enemyName, "Enemy")
+        table.insert(enemyTeam, enemy)
+      end
+    elseif encounterType == "Elite" then
+      -- select random elite pool
+      encounterNames = elitePool1[encounter]
+      for enemyName in encounterNames do
+        enemy = Enemy(enemyName, "Elite")
+        table.insert(enemyTeam, enemy)
+      end
+    else -- encounterType == "Boss"
+      encounterNames = bossPool1[encounter]
+      for enemyName in encounterNames do
+        enemy = Enemy(enemyName, "Boss")
+        table.insert(enemyTeam, enemy)
+      end
+    end
+    
 end;
 
 -- Create tables for encounter pools

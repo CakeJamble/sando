@@ -13,7 +13,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
 
   {
@@ -25,7 +26,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -37,7 +39,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -49,7 +52,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -61,7 +65,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -73,7 +78,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -85,7 +91,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -97,7 +104,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -109,7 +117,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -121,7 +130,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -133,7 +143,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -145,7 +156,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -157,7 +169,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -169,7 +182,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -181,7 +195,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -193,7 +208,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -205,7 +221,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -217,7 +234,8 @@ local enemyTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
     
 local eliteTable = {
@@ -230,7 +248,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = getButtlerSkills()
   },
   
   {
@@ -242,7 +261,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -254,7 +274,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -266,7 +287,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -278,7 +300,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -290,7 +313,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -302,7 +326,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -314,7 +339,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -326,7 +352,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -338,7 +365,8 @@ local eliteTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
 
 }
@@ -353,7 +381,8 @@ local bossTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
   {
@@ -365,7 +394,8 @@ local bossTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
    {
@@ -377,7 +407,8 @@ local bossTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
    {
@@ -389,7 +420,8 @@ local bossTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
   
    {
@@ -401,7 +433,8 @@ local bossTable = {
     attack=10,
     defense=10,
     speed=10,
-    luck=10
+    luck=10,
+    skills = nil
   },
 }
 
@@ -429,7 +462,7 @@ function getAt(index, enemyType) --> Table
 end;
 
 -- Returns enemy/elite/boss through linear search with associated name
-function getByName(enemyName, enemyType) --> Table
+function getStatsByName(enemyName, enemyType) --> Table
   if(enemyType == 'Enemy') then
     -- go through enemy table and find match
     for i,v in ipairs(enemyTable) do
