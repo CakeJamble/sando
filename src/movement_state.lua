@@ -23,7 +23,7 @@ end
 function MovementState:setPosition(x, y)
     self.x = x
     self.y = y
-end
+end;
 
 function MovementState:moveTowards(tX, tY)
   self.state = 'move'
@@ -52,7 +52,10 @@ function MovementState:update(dt)
     
     self.x = self.x + directionX * MovementState.static.MOVE_SPEED * dt
     self.y = self.y + directionY * MovementState.static.MOVE_SPEED * dt
+  elseif self.state == 'jump' then
+    -- need to implement gravity for entity class (make static if gravity is the same for all characters)
   end
+  
 end;
 
 function MovementState:draw()

@@ -34,7 +34,7 @@ function generateEncounter(floorNum)
   return enemyTeam
 end;
 
--- Grabs team from pools listed below
+-- Create enemies and add them to the enemyTeam table. Enemies are generated from pools pseudorandomly.
 -- NOTE: completely random, needs refacor. Just for testing loading of enemies for now
 function populateTeam(encounter, encounterType, newTeam)
   for i=1,encounter do
