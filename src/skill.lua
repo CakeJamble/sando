@@ -56,7 +56,6 @@ function Skill:update(dt)
     
   end
 end;
-    
 
 function Skill:draw()
   love.graphics.draw(animation.spriteSheet, animation.frames[math.floor(animation.currentFrame)], 100, 100)

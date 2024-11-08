@@ -96,5 +96,5 @@ function MovementState:draw()
   else
     print("There's some undefined state we've entered here, Captain. Red Alert!")
   end
-end
+end;
 

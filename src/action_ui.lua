@@ -15,6 +15,7 @@ ActionUI.static.ICON_BASE_DX = 150
     -- preconditions: name of the character
     -- postconditions: initializes action ui icons for the character
 -- NOTE: Only one set of UI for development rn, customization comes later
+-- character only has own x and y, not sure if they need offset
 function ActionUI:initialize(x, y)
   self.uiState = 'actionSelect'
   self.soloButton = love.graphics.newImage(ActionUI.static.SOLO_BUTTON_PATH)

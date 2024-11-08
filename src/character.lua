@@ -23,7 +23,6 @@ Character.static.xPos = 100
 function Character:initialize(stats, skills, actionButton)
   Entity:initialize(stats, skills, Character.static.xPos, Character.static.xPos)
   self.actionButton = actionButton
-  self.state = 'waiting'
   self.fp = stats['fp']
   self.basic = {}
   current_skills = {}
@@ -34,9 +33,10 @@ function Character:initialize(stats, skills, actionButton)
   self.experienceRequired = 15
   Entity:setAnimations('character/')
   Character.static.yPos = Character.static.yPos + 150
-  -- self.movementState = MovementState(Entity:getX(), Entity:getY(),
   self.offenseState = nil
   self.defenseState = nil
+  self.selectedSkill = nil
+  self.actionUI = ActionUI(Entity:getX(), Entity:getY())
 end;
 
   -- Sets the basic attack and the starting skill for a character
@@ -128,6 +128,8 @@ function Character:draw()
   if not Character:attacking() then
     Entity:draw()
   else
-    -- draw the right animation for the attack
+    if self.selectedSkill not nil then
+      self.selectedSkill:draw()
+    end
   end
 end;

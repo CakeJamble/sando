@@ -12,12 +12,13 @@ function Enemy:initialize(enemyName, enemyType)
   Entity:initialize(stats, stats['skills'])
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']
+  self.selectedSkill = nil
 end;
 
 function enemyLookup(enemyName)
   return getStatsByName(enemyName, enemyType)
 end;
-  
+
 function Enemy:getExpReward()
   return self.expReward
 end;
@@ -42,7 +43,9 @@ function Enemy:draw()
   if not Enemy:attacking() then
     Entity:draw()
   else
-    -- draw the right animation for the attack
+    if self.selectedSkill not nil then
+      self.selectedSkill:draw()
+    end
   end
   
 end;
