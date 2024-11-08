@@ -10,8 +10,8 @@ Enemy = class('Enemy', Entity)
 function Enemy:initialize(enemyName, enemyType)
   stats = enemyLookup(enemyName)
   Entity:initialize(stats, stats['skills'])
-  self.expReward = stats['experience_reward']
-  self.moneyReward = stats['money_reward']
+  self.expReward = stats['experienceReward']
+  self.moneyReward = stats['moneyReward']
 end;
 
 function enemyLookup(enemyName)

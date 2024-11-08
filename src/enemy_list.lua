@@ -14,6 +14,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
 
@@ -27,6 +29,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -40,6 +44,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -53,6 +59,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -66,6 +74,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -79,6 +89,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -92,6 +104,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -105,6 +119,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -118,6 +134,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -131,6 +149,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -144,6 +164,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -157,6 +179,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -170,6 +194,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -183,6 +209,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -196,6 +224,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -209,6 +239,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -222,6 +254,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -235,6 +269,8 @@ local enemyTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
     
@@ -249,6 +285,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = getButtlerSkills()
   },
   
@@ -262,6 +300,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -275,6 +315,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -288,6 +330,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -301,6 +345,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -314,6 +360,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -327,6 +375,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -340,6 +390,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -353,6 +405,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -366,6 +420,8 @@ local eliteTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
 
@@ -382,6 +438,8 @@ local bossTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -395,6 +453,8 @@ local bossTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -408,6 +468,8 @@ local bossTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -421,6 +483,8 @@ local bossTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
   
@@ -434,6 +498,8 @@ local bossTable = {
     defense=10,
     speed=10,
     luck=10,
+    experienceReward = 10,
+    moneyReward = 8,
     skills = nil
   },
 }
