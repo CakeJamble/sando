@@ -146,6 +146,7 @@ function Entity:update(dt) --> void
   end
 end;
 
+-- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void
   if self.movement_state == 'idle' then
     love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
