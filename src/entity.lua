@@ -28,6 +28,7 @@ function Entity:initialize(stats, skills, x, y)
   end
   
   self.currentFrame = 1
+  self.movement_state = MovementState(self.x, self.y, self.frameHeight)
 end;
 
 

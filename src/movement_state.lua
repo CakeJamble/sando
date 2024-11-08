@@ -5,16 +5,22 @@ local class = require 'libs/middleclass'
 MovementState = class('MovementState')
 
 MovementState.static.MOVE_SPEED = 20
+MovementState.static.GRAVITY = 30
+MovementState.static.JUMP_SPEED = 24
 
-function MovementState:initialize(x, y, tX, tY)
+function MovementState:initialize(x, y, frameHeight)
     -- Initialize position, defaulting to (0, 0) if not provided
     self.x = x or 0
     self.y = y or 0
+    self.dx = 0
+    self.dy = 0
+    self.frameHeight = frameHeight
+    self.groundLevel = y + frameHeight
     
-    self.targetX = tX or 0
-    self.targetY = tY or 0
+    self.targetX = 0
+    self.targetY = 0
     self.state = 'wait'
-end
+end;
 
 function MovementState:getPosition()
     return self.x, self.y
@@ -35,10 +41,22 @@ function MovementState:setState(state)
   self.state = state
 end;
 
+function MovementState:isGrounded()
+  return self.groundLevel < self.y + self.frameHeight
+end;
+
+function MovementState:applyGravity(dt)
+  self.dy += (MovementState.static.GRAVITY * dt)
+end;
+
 function MovementState:update(dt)
+  if MovementState:isGrounded() then
+    MovementState:applyGravity(dt)
+  end
+  
   if self.state == 'move' then
-    local dx = self.targetX - self.x
-    local dy = self.targetY - self.y
+    self.dx = self.targetX - self.x
+    self.dy = self.targetY - self.y
     local distance = math.sqrt(dx * dx + dy * dy)
     
     if distance < 1 then
@@ -47,19 +65,20 @@ function MovementState:update(dt)
       return
     end
     
-    local directionX = dx / distance
-    local directionY = dy / distance
+    local directionX = self.dx / distance
+    local directionY = self.dy / distance
     
     self.x = self.x + directionX * MovementState.static.MOVE_SPEED * dt
     self.y = self.y + directionY * MovementState.static.MOVE_SPEED * dt
   elseif self.state == 'jump' then
-    -- need to implement gravity for entity class (make static if gravity is the same for all characters)
+    -- need to work out the trig math for this to align with targetX,targetY
   end
   
 end;
 
 function MovementState:draw()
     -- Placeholder for drawing the state or any visual representation
+    -- walk, jump, idle
 end
 
 return MovementState
