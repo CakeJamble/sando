@@ -1,4 +1,5 @@
 --! filename: movement state
+require('entity')
 
 local class = require 'libs/middleclass'
 
