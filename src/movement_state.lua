@@ -21,6 +21,7 @@ function MovementState:initialize(x, y, frameHeight)
     self.targetX = 0
     self.targetY = 0
     self.state = 'wait'
+    self.
 end;
 
 function MovementState:getPosition()
@@ -47,7 +48,7 @@ function MovementState:isGrounded()
 end;
 
 function MovementState:applyGravity(dt)
-  self.dy += (MovementState.static.GRAVITY * dt)
+  self.dy -= (MovementState.static.GRAVITY * dt)
 end;
 
 function MovementState:update(dt)
@@ -72,7 +73,7 @@ function MovementState:update(dt)
     self.x = self.x + directionX * MovementState.static.MOVE_SPEED * dt
     self.y = self.y + directionY * MovementState.static.MOVE_SPEED * dt
   elseif self.state == 'jump' then
-    -- need to work out the trig math for this to align with targetX,targetY
+    self.y += (MovementState.static.JUMP_SPEED * dt)
   end
   
 end;
@@ -80,6 +81,20 @@ end;
 function MovementState:draw()
     -- Placeholder for drawing the state or any visual representation
     -- walk, jump, idle
+  if self.state == 'idle' then
+    love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
+  elseif self.state == 'moveX' then
+    print("Moving left and right")
+  elseif self.state == 'moveY' then
+    print("Moving up and down")
+  elseif self.state == 'moveXY' then
+    print("Moving diagonally")
+  elseif self.state == 'flinch' then
+    print("Flinching... ouch!") 
+  elseif self.state == 'ko' then
+    print("Fainting... eughhh")
+  else
+    print("There's some undefined state we've entered here, Captain. Red Alert!")
+  end
 end
 
-return MovementState

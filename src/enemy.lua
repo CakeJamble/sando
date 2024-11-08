@@ -37,3 +37,12 @@ end;
 function Enemy:selectAttack()
   -- select a random attack and random target(s)
 end;
+
+function Enemy:draw()
+  if not Enemy:attacking() then
+    Entity:draw()
+  else
+    -- draw the right animation for the attack
+  end
+  
+end;

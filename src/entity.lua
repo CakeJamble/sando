@@ -148,18 +148,20 @@ function Entity:update(dt) --> void
 end;
 
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
-function Entity:draw() --> void
-  if self.movement_state == 'idle' then
+function Entity:draw() --> void    
+  local state = self.movement_state:getState()
+    
+  if self.state == 'idle' then
     love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
-  elseif self.movement_state == 'moveX' then
+  elseif self.state == 'moveX' then
     print("Moving left and right")
-  elseif self.movement_state == 'moveY' then
+  elseif self.state == 'moveY' then
     print("Moving up and down")
-  elseif self.movement_state == 'moveXY' then
+  elseif self.state == 'moveXY' then
     print("Moving diagonally")
-  elseif self.movement_state == 'flinch' then
+  elseif self.state == 'flinch' then
     print("Flinching... ouch!") 
-  elseif self.movement_state == 'ko' then
+  elseif self.state == 'ko' then
     print("Fainting... eughhh")
   else
     print("There's some undefined state we've entered here, Captain. Red Alert!")

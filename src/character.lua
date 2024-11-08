@@ -125,5 +125,9 @@ function Character:update(dt)
 end;
 
 function Character:draw()
-  Entity:draw()
+  if not Character:attacking() then
+    Entity:draw()
+  else
+    -- draw the right animation for the attack
+  end
 end;
