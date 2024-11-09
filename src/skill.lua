@@ -59,11 +59,11 @@ end;
 
 function Skill:draw()
   love.graphics.draw(animation.spriteSheet, animation.frames[math.floor(animation.currentFrame)], 100, 100)
-  
-  if self.hitType == 'projectile' then 
+
+  if self.hitType == 'projectile' then
     for i, projectile in pairs(projectiles) do
       projectile:draw()
     end
   end
-  
+
 end;

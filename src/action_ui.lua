@@ -16,7 +16,7 @@ ActionUI.static.ICON_BASE_DX = 150
     -- postconditions: initializes action ui icons for the character
 -- NOTE: Only one set of UI for development rn, customization comes later
 -- character only has own x and y, not sure if they need offset
-function ActionUI:initialize(x, y)
+function ActionUI:initialize(x, y, skillList)
   self.uiState = 'actionSelect'
   self.soloButton = love.graphics.newImage(ActionUI.static.SOLO_BUTTON_PATH)
   self.flourButton = love.graphics.newImage(ActionUI.static.FLOUR_BUTTON_PATH)
@@ -36,6 +36,9 @@ function ActionUI:initialize(x, y)
   self.soloDX = 1
   self.flourDX = 1
   self.duoDX = 2
+  
+  -- skill list needs to be printed on another display interface
+  self.skillList = skillList or nil
   -- TODO: to set the position of the cursor, we need a list of enemies that we can ping for their position(s)
     -- enemy class & enemy team class required for this
 end;
@@ -153,7 +156,6 @@ end;
 function ActionUI:targetEnemy(x, y)
   self.drawCursor = true
 end;
-
 
 function ActionUI:update(dt)
   if self.uiState == 'rotating' then
