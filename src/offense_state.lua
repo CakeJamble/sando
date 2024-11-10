@@ -7,34 +7,37 @@ local class = require 'libs/middleclass'
 OffenseState = class('OffenseState')
 
 
-function OffenseState:initialize(skill, target, actionButton)
-  self.skill = skill
-  self.skill_table = skill:getSkillTable()
-  self.damage = self.skill_table['damage']
-  self.proc = self.skill_table['proc']
-  
-  -- Target refers to entity/entities targeted by a skill
-  self.targetX = target:getX()
-  self.targetY = target:getY()
+function OffenseState:initialize(actionButton, battleStats)
+  self.skill = nil
+  stats = battleStats    -- may be better to pare down and only include necessary stats
+  self.damage = 0
+  self.bonus = nil
   
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
   self.frameCount = 0
-  self.frameWindow = self.skill_table['qte_window']
+  self.frameWindow = 0
   self.isWindowActive = false
   self.actionButtonPressed = false
   self.badInputPenalty = 0
-  
   self.bonusApplied = false
-  
 end;
 
-function getDamage()
-  return self.damage
+function OffenseState:setSkill(skillObj)
+  self.skill = skillObj
 end;
 
-function resolveProc()
-  return self.proc >= love.math.random(1, 100)
+function OffenseState:setTargetXY(x, y)
+  self.targetX = x
+  self.targetY = y
+end;
+
+function resolveProc(proc)
+  local skillDict = self.skill:getSkillDict()
+  if skillDict['qte_bonus_type'] == 'proc' then
+    return proc + bonus >= love.math.random(1, 100)
+  else
+    return proc >= love.math.random(1,100)
 end;
 
 function OffenseState:setActionButton(newButton)
@@ -55,16 +58,25 @@ function OffenseState:updateBadInputPenalty(applyPenalty)
   end
 end;
 
-function OffenseState:applyBonus()
-  local qte_bonus = self.skill_table['qte_bonus']
-  if self.skill_table['qte_bonus_type'] == 'damage' then
-    self.damage = self.damage + qte_bonus
-    self.bonusApplied = true
-  elseif self.skill_table['qte_bonus_type'] == 'proc' then
-    self.proc = self.proc + qte_bonus
-    self.bonusApplied = true
-  end
+function OffenseState:calcDamage()
+  local skillDict = self.skill:getSkillDict()
+  
+  -- NOTE: damage calc design isn't finalized, just adding the two together right now. Need to research and see how other games calc damage
+  self.damage = skillDict['damage'] + stats['attack']
 end;
+
+
+function OffenseState:applyBonus()
+  local skillDict = self.skill:getSkillDict()
+  self.bonus += skillDict['qte_bonus']
+  self.bonusApplied = true
+end;
+
+function OffenseState:clearSkillModifiers()
+  local skillDict = self.skill:getSkillDict()
+  self.bonus = nil
+end;
+
 
 function OffenseState:keypressed(key)
   if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
@@ -85,6 +97,7 @@ function OffenseState:update(dt)
   OffenseState:updateBadInputPenalty(false)
 end;
 
+-- should the OffenseState draw the qte?
 function OffenseState:draw()
   self.skill:draw()
 end;

@@ -132,16 +132,23 @@ function ActionUI:keypressed(key)
 
       self.uiState = 'rotating'
       
-    elseif key == 'z' then                              -- FIXME: Need to change to check each character!
+     -- stand ins for confirm/cancel button input 
+    elseif key == 'z' then
       if self.activeAction == 'solo' then
         self.uiState = 'targeting'
       elseif self.activeAction == 'flour' then
-        ActionUI:displaySkillList()
+        self.displaySkillList = true
       else
-        ActionUI:displayDuoList()
+        self.displayDuoList = true
       end
-    else                                                -- FIXME: Need a cancel that will pop the user back to the activeSelection rotating wheel thing
-      print("whoops")
+    elseif key == 'x' then                                                -- FIXME: Need a cancel that will pop the user back to the activeSelection rotating wheel thing
+      if self.activeAction == 'solo' then
+        self.uiState = 'targeting'
+      elseif self.activeAction == 'flour' then
+        self.displaySkillList = false
+      else
+        self.displayDuoList = false
+      end
     end
   end
   

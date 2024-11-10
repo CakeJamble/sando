@@ -14,6 +14,8 @@ Character = class('Character', Entity)
 Character.static.EXP_POW_SCALE = 1.8
 Character.static.EXP_MULT_SCALE = 4
 Character.static.EXP_BASE_ADD = 10
+
+-- why are these static?
 Character.static.yPos = 100
 Character.static.xPos = 100
 
@@ -21,7 +23,7 @@ Character.static.xPos = 100
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
 function Character:initialize(stats, skills, actionButton)
-  Entity:initialize(stats, skills, Character.static.xPos, Character.static.xPos)
+  Entity:initialize(stats, Character.static.xPos, Character.static.xPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
   self.basic = {}
@@ -33,10 +35,12 @@ function Character:initialize(stats, skills, actionButton)
   self.experienceRequired = 15
   Entity:setAnimations('character/')
   Character.static.yPos = Character.static.yPos + 150
-  self.offenseState = nil
+  
+  self.offenseState = OffenseState(actionButton, Entity:getBattleStats())
   self.defenseState = nil
+  
   self.selectedSkill = nil
-  self.actionUI = ActionUI(Entity:getX(), Entity:getY())
+  self.actionUI = ActionUI(Entity:getX(), Entity:getY(), current_skills)
 end;
 
   -- Sets the basic attack and the starting skill for a character

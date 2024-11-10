@@ -1,4 +1,5 @@
 --! file: stat_sheet
+require('skill_sheet')
 
 starting_stats = {
   name="",            -- name of character
@@ -9,6 +10,7 @@ starting_stats = {
   defense=0,
   speed=0,
   luck=0,
+  skillList = nil
  }
  
 local bake_stats = {
@@ -20,6 +22,7 @@ local bake_stats = {
    defense=10,
    speed=10,
    luck=10,
+   skillList = get_bake_skills()
  }
  
  local maria_stats = {
@@ -31,6 +34,7 @@ local bake_stats = {
    defense=10,
    speed=10,
    luck=10,
+   skillList = get_maria_skills()
  }
  
 local marco_stats = {
@@ -42,6 +46,7 @@ local marco_stats = {
    defense=10,
    speed=10,
    luck=10,
+   skillList = get_marco_skills()
  }
  
  local key_stats = {
@@ -53,22 +58,8 @@ local marco_stats = {
    defense=10,
    speed=10,
    luck=10,
+   skillList = get_key_skills()
  }
- 
- local butter_stats = {
-   entity_name = "Butter",
-   width = 96, height = 96,
-   hp = 5,
-   attack=5,
-   defense=0,
-   speed=4,
-   luck=0
- }
- 
- function get_butter_stats()
-   return butter_stats
- end;
- 
  
 function get_bake_stats()
   return bake_stats

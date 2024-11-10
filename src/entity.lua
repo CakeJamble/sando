@@ -11,8 +11,8 @@ Entity = class('Entity')
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
 function Entity:initialize(stats, skills, x, y)
-  current_stats = stats
-  battle_stats = stats
+  baseStats = stats
+  battleStats = stats
   skillList = {}
   self.entityName = stats['entityName']
   self.x=x
@@ -28,7 +28,7 @@ function Entity:initialize(stats, skills, x, y)
   end
   
   self.currentFrame = 1
-  self.movement_state = MovementState(self.x, self.y, self.frameHeight)
+  self.movementState = MovementState(self.x, self.y, self.frameHeight)
 end;
 
 
@@ -55,33 +55,36 @@ function Entity:getFHeight()
 end;
 
 function Entity:getSpeed() --> int
-  return battle_stats['speed']
+  return battleStats['speed']
 end;
 
 function Entity:getHealth() --> int
-  return battle_stats['hp']
+  return battleStats['hp']
 end;
 
 function Entity:getMaxHealth() --> int
-  return current_stats['hp']
+  return baseStats['hp']
 end;
 
 function Entity:getStats() --> table
-  return current_stats
+  return baseStats
 end;
+
+function Entity:getBattleStats() --> table
+  return battleStats
 
 function Entity:getSkills() --> table
   return skillList
 end;
 
 function Entity:isAlive() --> bool
-  return battle_stats['hp'] > 0
+  return battleStats['hp'] > 0
 end;
 
 -- MUTATORS
 
 function Entity:raiseBattleStat(stat_name) --> void
-  battle_stats[stat_name] = math.ceil(battle_stats[stat_name] * 1.25)
+  battleStats[stat_name] = math.ceil(battleStats[stat_name] * 1.25)
 end;
 
 function Entity:setPos(x, y) --> void
@@ -95,22 +98,22 @@ function Entity:setDXDY(dx, dy) --> void
 end;
 
 function Entity:setMovementState(state) --> void
-  self.movement_state = state
+  self.movementState = state
 end;
 
 function Entity:heal(amount) --> void
-  battle_stats["hp"] = math.min(battle_stats["hp"], battle_stats["hp"] + amount)
+  battleStats["hp"] = math.min(battleStats["hp"], battleStats["hp"] + amount)
 end;
 
 function Entity:takeDamage() --> void
-  battle_stats["hp"] = math.max(0, battle_stats["hp"] - amount)
+  battleStats["hp"] = math.max(0, battleStats["hp"] - amount)
 end;
 
 -- ONLY run this after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void
-  for stat,val in pairs(current_stats) do
+  for stat,val in pairs(baseStats) do
     if stat ~= 'hp' or stat ~= 'fp' then
-      battle_stats[stat] = current_stats[stat]
+      battleStats[stat] = baseStats[stat]
     end
   end
 end;

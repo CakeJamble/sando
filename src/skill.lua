@@ -7,20 +7,20 @@ Skill = class('Skill')
   -- Skill Constructor
     -- preconditions: A table of a single Character skill
     -- postconditions: A Skill with an animation appended to the skill dict
-function Skill:initialize(t, width, height)
-  self.skill = t
-  self.hitType = t['hit_type']
+function Skill:initialize(skillDict, width, height)
+  self.skill = skillDict
+  self.hitType = skillDict['hit_type']
   self.animation = Skill:newAnimation(self.skill['sprite_path'], width, height, self.skill['duration'])
   projectiles = {}
   self.frameCount = 0
   self.projectileCount = 0
-  self.projectileRate = t['projectile_rate']
-  self.projectileCountLimit = t['projectile_count']
+  self.projectileRate = skillDict['projectile_rate']
+  self.projectileCountLimit = skillDict['projectile_count']
   self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
 end;
 
 
-function Skill:getSkillTable()
+function Skill:getSkillDict()
   return self.skill
 end;
 
