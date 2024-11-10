@@ -1,4 +1,5 @@
 --! filename: combat_ui
+require('flour_button')
 local class = require 'libs/middleclass'
 ActionUI = class('ActionUI')
 

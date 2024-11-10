@@ -19,7 +19,6 @@ function Skill:initialize(skillDict, width, height)
   self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
 end;
 
-
 function Skill:getSkillDict()
   return self.skill
 end;

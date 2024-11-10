@@ -97,7 +97,7 @@ function OffenseState:update(dt)
   OffenseState:updateBadInputPenalty(false)
 end;
 
--- should the OffenseState draw the qte?
+
 function OffenseState:draw()
   self.skill:draw()
 end;

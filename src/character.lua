@@ -105,6 +105,9 @@ function Character:getUIState()
   return self.ui:getUIState()
 end;
 
+function Character:setSelectedSkill()
+  self.selectedSkill = self.offenseState:get
+
 function Character:keypressed(key)
   if key == self.actionButton then
 
