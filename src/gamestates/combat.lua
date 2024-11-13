@@ -2,9 +2,10 @@
 require("entity")
 require("character")
 require("enemy")
-require("turn_queue")
 require("action_ui")
 require("encounter_generator")
+require('gamestates/character_select')
+
 local combat = {}
 local FIRST_MEMBER_X = 100
 local FIRST_MEMBER_Y = 100
@@ -19,42 +20,21 @@ function combat:init()
   cursorY = 0
   rewardExp = 0
   rewardMoney = 0
-  Enemies = {}
   enemyCount = 0
   enemiesIndex = 1
   floorNumber = 1
 end;
 
-function combat:enter(previous, seed)
+function combat:enter(previous, team)
   -- Create enemy team
   enemyTeam = generateEncounter(floorNumber)
-  enemyCount = #enemyTeam  
-  -- place the members into the encounter
-  for i, v in pairs(team:getMembers()) do
-    table.insert(Entities, v)
-    print('added ' .. v:getEntityName() .. ' to the combat')
-  end
-  
-  for i, v in ipairs(enemyTeam) do
-    table.insert(Entities, v)
-    print('added ' .. v:getEntityName() .. ' to the combat')
-  end
+  combat:addToEncounter(team)
+  combat:addToEncounter(enemyTeam)
 
+  rewardExp = 0
+  rewardMoney = 0
 
-  if previous ~= pause then
-    -- reset rewards, combatants in fight, and turn order
-    rewardExp = 0
-    rewardMoney = 0
-    
-    for i,v in pairs(Enemies) do
-      table.insert(Entities, v)
-      enemyCount = enemyCount + 1
-      print('added ' .. v:getEntityName() .. ' to the combat')
-    end
-    
-    sort_entities()
-    
-  end
+  combat:sortEntities(Entities)
 
   if type(Entities[1]) == 'Character' then
     team:setFocusedMember(Entities[1])
@@ -62,9 +42,20 @@ function combat:enter(previous, seed)
 
 end;
 
-function combat:generateEnemies()
-  return Enemy(get_butter_stats(), get_butter_skills())
+function combat:addToEncounter(team)
+  for i, v in ipairs(enemyTeam) do
+    table.insert(Entities, v)
+    print('added ' .. v:getEntityName() .. ' to the combat')
+  end
 end;
+
+function combat:orderFcn(a, b)
+  return a:getSpeed() < b:getSpeed()
+end
+
+function combat:sortEntities()
+  table.sort(Entities, orderFcn)
+end
 
   -- Increments the enemiesIndex counter by the number of times passed, then sets the position of the cursorX & cursorY variables to the position of the targeted enemy
 function combat:setTargetPos(incr) --> void
@@ -111,6 +102,9 @@ end;
 
 function combat:draw()
   team:draw()
+  for _,enemy in ipairs(enemyTeam) do
+    enemy:draw()
+  end
   
   if team.actionUI:getUIState() == 'targeting' then
     love.graphics.draw(targetCursor, cursorX, cursorY)

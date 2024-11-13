@@ -16,6 +16,7 @@ function Entity:initialize(stats, x, y)
   battleStats = stats
   skillList = {}
   idleFrames = {}
+  self.subdir = ''
   self.entityName = stats['entityName']
   self.x=x
   self.y=y
@@ -100,6 +101,10 @@ function Entity:setDXDY(dx, dy) --> void
   dY = dy
 end;
 
+function Entity:setSubdir(subdir)
+  self.subdir = subdir
+end;
+
 function Entity:setMovementState(state) --> void
   self.movementState = state
 end;
@@ -158,7 +163,7 @@ end;
 function Entity:draw() --> void    
     -- Placeholder for drawing the state or any visual representation
     -- walk, jump, idle
-  local state = self.movementState.getState()
+  local state = self.movementState:getState()
   if state == 'idle' then
     love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveX' then

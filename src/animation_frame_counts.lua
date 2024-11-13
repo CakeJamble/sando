@@ -39,7 +39,17 @@ local key_animations = {
 
 local butter_animations = {
   idle_frames = 1
-  }
+}
+
+local line_animations = {
+  idle_frames = 10,
+  move_x_frames = 10,
+  move_y_frames = 10,
+  move_xy_frames = 10,
+  flinch_frames = 7,
+  ko_frames = 7
+}
+
 
 function get_state_animations(entityName)
   if entityName == 'Bake' then
@@ -52,6 +62,8 @@ function get_state_animations(entityName)
     return key_animations
   elseif entityName == 'Butter' then
     return butter_animations
+  elseif entityName == 'Line' then
+    return line_animations
   end
 end;
 

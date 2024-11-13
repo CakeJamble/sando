@@ -8,7 +8,7 @@ Team = class('Team')
 
   -- Team constructor
 function Team:initialize()
-  self.members = {}
+  members = {}
   self.numMembers = 0
   self.focusedMember = nil
   self.actionUI = ActionUI(0, 0)
@@ -22,7 +22,7 @@ end;
 
   -- Adds a member to the instance variable self.members list
 function Team:addMember(character) --> void
-  table.insert(self.members, character)
+  table.insert(members, character)
   self.numMembers = self.numMembers + 1
 end;
 
@@ -38,7 +38,7 @@ end;
 
 
 function Team:getMembers() --> table (list)
-  return self.members
+  return members
 end;
 
 
@@ -61,7 +61,7 @@ end;
 
   -- Distributes exp of equal amount to each living player
 function Team:distributeExperience(amount)
-  for _,member in pairs(self.members) do
+  for _,member in pairs(members) do
     if member:isAlive() then  member:gainExp(amount) end
   end
 end;
@@ -82,7 +82,7 @@ end;
 
 
 function Team:update(dt)
-  for _,member in pairs(self.members) do
+  for _,member in pairs(members) do
     member:update(dt)
   end
   
@@ -94,7 +94,7 @@ end;
 
 
 function Team:draw()
-  for _,member in pairs(self.members) do
+  for _,member in pairs(members) do
     member:draw()
   end
   

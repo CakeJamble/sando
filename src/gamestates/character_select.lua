@@ -120,7 +120,7 @@ end;
 function character_select:validate_selection()
   if teamCount == TEAM_CAP then
     character_select:index_to_character()
-    Gamestate.switch(states['combat'])
+    Gamestate.switch(states['combat'], team)
   else
     table.insert(selectedTeamIndices, index)
     teamCount = teamCount + 1
@@ -132,7 +132,6 @@ end;
 function character_select:index_to_character()
   for i=0, TEAM_CAP do
     if selectedTeamIndices[i] == 0 then
-      
       bake = Character(get_bake_stats(), 'b')
       team:addMember(bake)
     elseif selectedTeamIndices[i] == 1 then

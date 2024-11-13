@@ -11,11 +11,12 @@ Enemy = class('Enemy', Entity)
 
 -- why are these static? for testing :D
 Enemy.static.yPos = 100
-Enemy.static.xPos = 100
+Enemy.static.xPos = 300
 
 function Enemy:initialize(enemyName, enemyType)
   stats = getStatsByName(enemyName, enemyType)
   Entity:initialize(stats, Enemy.static.xPos, Enemy.static.yPos)
+  Entity:setAnimations(enemyType .. '/')
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']
   self.selectedSkill = nil
@@ -46,12 +47,10 @@ function Enemy:selectAttack()
 end;
 
 function Enemy:draw()
-  if not Enemy:attacking() then
-    Entity:draw()
+  if not(self.selectedSkill == nil) then
+    self.selectedSkill:draw()
   else
-    if not(self.selectedSkill == nil) then
-      self.selectedSkill:draw()
-    end
+    Entity:draw()
   end
   
 end;

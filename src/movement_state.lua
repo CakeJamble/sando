@@ -18,7 +18,7 @@ function MovementState:initialize(x, y, frameHeight)
     
     self.targetX = 0
     self.targetY = 0
-    self.state = 'wait'
+    self.state = 'idle'
 end;
 
 function MovementState:getPosition()
@@ -77,9 +77,5 @@ function MovementState:update(dt)
     self.y = self.y + (MovementState.static.JUMP_SPEED * dt)
   end
   
-end;
-
-function MovementState:draw()
-
 end;
 
