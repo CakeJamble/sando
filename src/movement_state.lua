@@ -9,9 +9,8 @@ MovementState.static.GRAVITY = 30
 MovementState.static.JUMP_SPEED = 24
 
 function MovementState:initialize(x, y, frameHeight)
-    -- Initialize position, defaulting to (0, 0) if not provided
-    self.x = x or 0
-    self.y = y or 0
+    self.x = x
+    self.y = y
     self.dx = 0
     self.dy = 0
     self.frameHeight = frameHeight
@@ -37,12 +36,16 @@ function MovementState:moveTowards(tX, tY)
   self.targetY = tY
 end;
 
+function MovementState:getState()
+  return self.state
+end;
+
 function MovementState:setState(state)
   self.state = state
 end;
 
-function MovementState:isGrounded()
-  return self.groundLevel < self.y + self.frameHeight
+function MovementState:isGrounded(groundLevel, y, frameHeight)
+  return groundLevel < y + frameHeight
 end;
 
 function MovementState:applyGravity(dt)
@@ -50,7 +53,7 @@ function MovementState:applyGravity(dt)
 end;
 
 function MovementState:update(dt)
-  if MovementState:isGrounded() then
+  if MovementState:isGrounded(self.groundLevel, self.y, self.frameHeight) then
     MovementState:applyGravity(dt)
   end
   
@@ -77,22 +80,6 @@ function MovementState:update(dt)
 end;
 
 function MovementState:draw()
-    -- Placeholder for drawing the state or any visual representation
-    -- walk, jump, idle
-  if self.state == 'idle' then
-    love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
-  elseif self.state == 'moveX' then
-    print("Moving left and right")
-  elseif self.state == 'moveY' then
-    print("Moving up and down")
-  elseif self.state == 'moveXY' then
-    print("Moving diagonally")
-  elseif self.state == 'flinch' then
-    print("Flinching... ouch!") 
-  elseif self.state == 'ko' then
-    print("Fainting... eughhh")
-  else
-    print("There's some undefined state we've entered here, Captain. Red Alert!")
-  end
+
 end;
 

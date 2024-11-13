@@ -41,8 +41,8 @@ function populateTeam(encounter, encounterType, newTeam)
   if encounterType == "Enemy" then
     -- select random enemy encounter
     -- encounterNames = enemyPool1[encounter]
-    encounterNames = testPool[encounter]
-    for enemyName in encounterNames do
+    encounterNames = testPool[1]
+    for _,enemyName in ipairs(encounterNames) do
       enemy = Enemy(enemyName, "Enemy")
       table.insert(enemyTeam, enemy)
     end
@@ -63,7 +63,10 @@ function populateTeam(encounter, encounterType, newTeam)
     
 end;
 
-testPool = { {'Line'} }
+testPool = { 
+  {'Line', 'Line'}, 
+  {'Line'}
+}
 
 -- Create tables for encounter pools
 enemyPool1 = {

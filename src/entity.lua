@@ -15,6 +15,7 @@ function Entity:initialize(stats, x, y)
   baseStats = stats
   battleStats = stats
   skillList = {}
+  idleFrames = {}
   self.entityName = stats['entityName']
   self.x=x
   self.y=y
@@ -22,6 +23,7 @@ function Entity:initialize(stats, x, y)
   self.dY=0
   self.frameWidth = stats['width']      -- width of sprite (or width for a single frame of animation for this character)
   self.frameHeight = stats['height']    -- height of sprite (or height for a single frame of animation for this character)
+  self.movementState = MovementState(self.x, self.y, self.frameHeight)
 
   -- Set Skills
   for k,v in ipairs(stats['skillList']) do
@@ -29,7 +31,6 @@ function Entity:initialize(stats, x, y)
   end
   
   self.currentFrame = 1
-  self.movementState = MovementState(self.x, self.y, self.frameHeight)
 end;
 
 
@@ -132,16 +133,16 @@ function Entity:setAnimations(subdir)
 
   -- Quads
   local durations = get_state_animations(self.entityName)
-  Entity:populateFrames(durations['idle_frames'], self.idleImage, idleFrames)
+  Entity:populateFrames(durations['idle_frames'], self.idleImage)
 --  Entity:populateFrames(durations['move_x_frames'], self.moveXImage, moveXFrames)
 --  Entity:populateFrames(durations['flinch_frames'], self.flinchImage, flinchFrames)
 --  Entity:populateFrames(durations['ko_frames'], self.koImage, koFrames)
 end;
 
-function Entity:populateFrames(numFrames, image, frames)
+function Entity:populateFrames(numFrames, image)
     -- Idle
   for i=0,numFrames do
-    table.insert(frames, love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, image:getWidth(), image:getHeight()))
+    table.insert(idleFrames, love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, image:getWidth(), image:getHeight()))
   end
 end;
 
@@ -150,23 +151,25 @@ function Entity:update(dt) --> void
   if self.currentFrame >= 6 then -- hardcoded for testing initial animation :(
     self.currentFrame = 1
   end
+  self.movementState:update(dt)
 end;
 
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void    
-  local state = self.movement_state:getState()
-    
-  if self.state == 'idle' then
+    -- Placeholder for drawing the state or any visual representation
+    -- walk, jump, idle
+  local state = self.movementState.getState()
+  if state == 'idle' then
     love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
-  elseif self.state == 'moveX' then
+  elseif state == 'moveX' then
     print("Moving left and right")
-  elseif self.state == 'moveY' then
+  elseif state == 'moveY' then
     print("Moving up and down")
-  elseif self.state == 'moveXY' then
+  elseif state == 'moveXY' then
     print("Moving diagonally")
-  elseif self.state == 'flinch' then
+  elseif state == 'flinch' then
     print("Flinching... ouch!") 
-  elseif self.state == 'ko' then
+  elseif state == 'ko' then
     print("Fainting... eughhh")
   else
     print("There's some undefined state we've entered here, Captain. Red Alert!")

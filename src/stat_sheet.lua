@@ -2,7 +2,7 @@
 require('skill_sheet')
 
 starting_stats = {
-  name="",            -- name of character
+  entityName="",            -- name of character
   width=0,height=0,   -- size of character
   hp=0,
   fp=0,
@@ -14,7 +14,7 @@ starting_stats = {
  }
  
 local bake_stats = {
-   entity_name = "Bake",
+   entityName = "Bake",
    width=80,height=80,
    hp=10,
    fp=10,
@@ -26,7 +26,7 @@ local bake_stats = {
  }
  
  local maria_stats = {
-   entity_name = "Maria",
+   entityName = "Maria",
    width=80,height=80,
    hp=10,
    fp=10,
@@ -38,7 +38,7 @@ local bake_stats = {
  }
  
 local marco_stats = {
-   entity_name = "Marco",
+   entityName = "Marco",
    width=96,height=96,
    hp=10,
    fp=10,
@@ -50,7 +50,7 @@ local marco_stats = {
  }
  
  local key_stats = {
-   entity_name = "Key",
+   entityName = "Key",
    width=80,height=80,
    hp=10,
    fp=10,

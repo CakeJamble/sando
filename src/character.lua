@@ -133,11 +133,9 @@ function Character:update(dt)
 end;
 
 function Character:draw()
-  if not Character:attacking() then
+  if not self.state == 'offense' then
     Entity:draw()
-  else
-    if not (self.selectedSkill == nil) then
+  elseif not (self.selectedSkill == nil) then
       self.selectedSkill:draw()
-    end
   end
 end;

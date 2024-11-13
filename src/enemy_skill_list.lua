@@ -160,7 +160,7 @@ local croissantSkills = {
     damage_type = 'summon',
     attack_type = 'solo',
     target_type = 'self',
-    effects = 'proc *= 0.5'
+    effects = 'proc *= 0.5',
     proc = 1,
     partners = nil,
     sprite_path = nil,
@@ -168,6 +168,23 @@ local croissantSkills = {
     is_projectile = false
   },
   
+}
+
+local lineSkills = {
+  {
+    skill_name = 'Basic Attack',
+    damage = 0,
+    damage_type = 'physical',
+    attack_type = 'solo',
+    target_type = 'single',
+    effects = nil,
+    proc = nil,
+    partners = nil,
+    sprite_path = nil,
+    is_dodgeable = true,
+    is_projectile = false
+  },
+
 }
   
 
@@ -216,3 +233,8 @@ end;
 function getBriocheSkills()
   return briocheSkills
 end;
+
+function getLineSkills()
+  return lineSkills
+end;
+

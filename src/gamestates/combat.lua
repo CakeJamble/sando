@@ -4,6 +4,7 @@ require("character")
 require("enemy")
 require("turn_queue")
 require("action_ui")
+require("encounter_generator")
 local combat = {}
 local FIRST_MEMBER_X = 100
 local FIRST_MEMBER_Y = 100
@@ -21,20 +22,24 @@ function combat:init()
   Enemies = {}
   enemyCount = 0
   enemiesIndex = 1
+  floorNumber = 1
 end;
 
 function combat:enter(previous, seed)
+  -- Create enemy team
+  enemyTeam = generateEncounter(floorNumber)
+  enemyCount = #enemyTeam  
+  -- place the members into the encounter
   for i, v in pairs(team:getMembers()) do
     table.insert(Entities, v)
     print('added ' .. v:getEntityName() .. ' to the combat')
   end
+  
+  for i, v in ipairs(enemyTeam) do
+    table.insert(Entities, v)
+    print('added ' .. v:getEntityName() .. ' to the combat')
+  end
 
-  -- replace me with a fcn that will generate all enemies for an encounter
-  butter = Enemy(get_butter_stats(), get_butter_skills())
-
-  table.insert(Enemies, butter)
-  enemyCount = enemyCount + 1
-  --------------------- end replacement area here
 
   if previous ~= pause then
     -- reset rewards, combatants in fight, and turn order

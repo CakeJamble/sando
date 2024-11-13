@@ -16,7 +16,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
 
   {
@@ -31,7 +31,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -46,7 +46,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -61,7 +61,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -76,7 +76,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -91,7 +91,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = getLineSkills()
   },
   
   {
@@ -106,7 +106,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -121,7 +121,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -136,7 +136,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -151,7 +151,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -166,7 +166,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -181,7 +181,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -196,7 +196,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -211,7 +211,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -226,7 +226,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -241,7 +241,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -256,7 +256,7 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -271,8 +271,10 @@ local enemyTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
-  },
+    skillList = nil
+  }
+}
+
     
 local eliteTable = {
   {
@@ -287,7 +289,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = getButtlerSkills()
+    skillList = getButtlerSkills()
   },
   
   {
@@ -302,7 +304,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -317,7 +319,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -332,7 +334,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -347,7 +349,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -362,7 +364,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -377,7 +379,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -392,7 +394,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -407,7 +409,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -422,7 +424,7 @@ local eliteTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
 
 }
@@ -440,7 +442,7 @@ local bossTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
   {
@@ -455,7 +457,7 @@ local bossTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
    {
@@ -470,7 +472,7 @@ local bossTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
    {
@@ -485,7 +487,7 @@ local bossTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
   
    {
@@ -500,7 +502,7 @@ local bossTable = {
     luck=10,
     experienceReward = 10,
     moneyReward = 8,
-    skills = nil
+    skillList = nil
   },
 }
 
@@ -532,21 +534,21 @@ function getStatsByName(enemyName, enemyType) --> Table
   if(enemyType == 'Enemy') then
     -- go through enemy table and find match
     for i,v in ipairs(enemyTable) do
-      if(v['enemyName'] == enemyName) then
+      if(v['entityName'] == enemyName) then
         return v
       end
     end
   elseif(enemyType == 'Elite') then
     -- go through elite table and find match
     for i,v in ipairs(eliteTable) do
-      if(v['enemyName'] == enemyName) then
+      if(v['entityName'] == enemyName) then
         return v
       end
     end
   else
     -- go through boss table and find match
     for i,v in ipairs(bossTable) do
-      if(v['enemyName'] == enemyName) then
+      if(v['entityName'] == enemyName) then
         return v
       end
     end

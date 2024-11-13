@@ -2,20 +2,26 @@
 require ("stat_sheet")
 require("skill_sheet")
 require("entity")
+require("enemy_list")
+require("enemy_skill_list")
 
 local class = require 'libs/middleclass'
 
 Enemy = class('Enemy', Entity)
 
+-- why are these static? for testing :D
+Enemy.static.yPos = 100
+Enemy.static.xPos = 100
+
 function Enemy:initialize(enemyName, enemyType)
-  stats = enemyLookup(enemyName)
-  Entity:initialize(stats, stats['skills'])
+  stats = getStatsByName(enemyName, enemyType)
+  Entity:initialize(stats, Enemy.static.xPos, Enemy.static.yPos)
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']
   self.selectedSkill = nil
 end;
 
-function enemyLookup(enemyName)
+function Enemy:enemyLookup(enemyName, enemyType)
   return getStatsByName(enemyName, enemyType)
 end;
 
