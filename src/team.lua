@@ -11,7 +11,7 @@ function Team:initialize()
   members = {}
   self.numMembers = 0
   self.focusedMember = nil
-  self.actionUI = ActionUI(0, 0)
+  self.actionUI = ActionUI(0, 0) -- how should this work?
   self.money = 0
 end;
 
@@ -66,18 +66,16 @@ function Team:distributeExperience(amount)
   end
 end;
 
-
-function Team:keypressed(key)
-  self.actionUI:keypressed(key)
-end;
-
 function Team:getMoney()
   return self.money
 end;
 
-
 function Team:increaseMoney(amount)
   self.money = self.money + amount
+end;
+
+function Team:keypressed(key)
+  self.actionUI:keypressed(key)
 end;
 
 

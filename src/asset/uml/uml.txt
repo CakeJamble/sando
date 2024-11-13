@@ -1,0 +1,162 @@
+@startuml
+
+abstract class Team {
+    +initialize()
+    +clear()
+    +addMember(character: Character) : void
+    +isWipedOut() : boolean
+    +getMembers() : table<Character>
+    +getNumMembers() : number
+    +getFocusedMember() : Character
+    +distributeExperience(amount)
+    +getMoney() : number
+    +increaseMoney(amount: number) : void
+    +keypressed(key) : void
+    +update(dt: number) : void
+    +draw() : void
+    -members : table<Character>
+    -numMembers : number
+    -focusedMember : Character
+}
+
+class CharacterTeam {
+    +update(dt: number)
+    -actionUI : ActionUI
+}
+
+class EnemyTeam {
+    +update(dt: number)
+}
+
+class Entity {
+    +initialize(stats: table, x: number, y: number)
+    +getEntityName(): string
+    +getX(): number
+    +getY(): number
+    +getFWidth(): number
+    +getFHeight(): number
+    +getSpeed(): number
+    +getHealth(): number
+    +getMaxHealth(): number
+    +getStats(): table
+    +getBattleStats(): table
+    +getSkills(): table
+    +isAlive(): boolean
+    +raiseBattleStat(stat_name: string): void
+    +setPos(x: number, y: number): void
+    +setDXDY(dx: number, dy: number): void
+    +setSubdir(subdir: string): void
+    +setMovementState(state: MovementState): void
+    +heal(amount: number): void
+    +takeDamage(amount: number): void
+    +resetStatModifiers(): void
+    +setAnimations(subdir: string): void
+    +populateFrames(frames: table, numFrames: number, image: Image): void
+    +update(dt: number): void
+    +draw(): void
+
+    -baseStats: table
+    -battleStats: table
+    -skillList: table
+    -idleFrames: table
+    -subdir: string
+    -entityName: string
+    -x: number
+    -y: number
+    -dX: number
+    -dY: number
+    -frameWidth: number
+    -frameHeight: number
+    -movementState: MovementState
+    -currentFrame: number
+    -idleImage: Image
+    -moveXImage: Image
+    -flinchImage: Image
+    -koImage: Image
+}
+
+class Skill {
+    +initialize(skillDict: table, width: number, height: number)
+    +getSkillDict() : table
+    +newAnimation(path: string, width: number, height: number, duration: number) : table
+    +update(dt) : void
+    +draw() : void
+    -skill: table
+    -hitType: string
+    -animation: table<
+    -projectiles: table<Projectile>
+    -frameCount: number
+    -projectileCount: number
+    -projectileRate: number
+    -projectileCountLimit: number
+    -projectileAnimation: table
+}
+
+class MovementState {
+    +initialize(x: number, y: number, frameHeight: number)
+    +getPosition() : table<number>
+    +setPosition(x: number, y: number) : void
+    +moveTowards(tX: number, tY: number) : void
+    +getState() : string
+    +setState(state: string) : void
+    +isGrounded(groundLevel: number, y: number, frameHeight: number) : boolean
+    +applyGravity(dt: number) : void
+    +update(dt: number): void
+}
+
+
+class Character {
+    +initialize(stats: table, actionButton: string)
+    +setBaseSkills(): void
+    +gainExp(amount: number): void
+    +getRequiredExperience(lvl: number): number
+    +updateSkills(lvl: number): void
+    +getCurrentSkills(): table
+    +getUIState(): UIState
+    +setSelectedSkill(): void
+    +keypressed(key: string): void
+    +update(dt: number): void
+    +draw(): void
+
+    -actionButton: string
+    -fp: number
+    -basic: Skill
+    -current_skills: table
+    -level: number
+    -totalExp: number
+    -experience: number
+    -experienceRequired: number
+    -offenseState: OffenseState
+    -defenseState: DefenseState
+    -selectedSkill: Skill
+
+    {static} -EXP_POW_SCALE: number = 1.8
+    {static} -EXP_MULT_SCALE: number = 4
+    {static} -EXP_BASE_ADD: number = 10
+    {static} -yPos: number = 100
+    {static} -xPos: number = 100
+}
+
+class Enemy {
+    +initialize(enemyName: string, enemyType: string)
+    +getExpReward() : number
+    +setExpReward(amount: number) : void
+    +getMoneyReward() : number
+    +setMoneyReward(moneyReward: number)
+    +selectAttack() : Skill
+    +draw()
+    -stats : table
+    -expReward: number
+    -moneyReward: number
+    -selectedSkill: Skill
+}
+
+Entity o-- Skill : uses
+Entity o-- MovementState : has
+Entity <|-- Character
+Entity <|-- Enemy
+Team <|-- CharacterTeam
+Team <|-- EnemyTeam
+Team "1" o-- "0..*" Character : composed
+
+@enduml

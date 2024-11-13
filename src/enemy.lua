@@ -22,10 +22,6 @@ function Enemy:initialize(enemyName, enemyType)
   self.selectedSkill = nil
 end;
 
-function Enemy:enemyLookup(enemyName, enemyType)
-  return getStatsByName(enemyName, enemyType)
-end;
-
 function Enemy:getExpReward()
   return self.expReward
 end;
@@ -42,7 +38,7 @@ function Enemy:setMoneyReward(moneyReward)
   self.moneyReward = moneyReward
 end;
 
-function Enemy:selectAttack()
+function Enemy:selectAttack() --> Skill (?)
   -- select a random attack and random target(s)
 end;
 
