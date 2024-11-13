@@ -23,6 +23,10 @@ function OffenseState:initialize(actionButton, battleStats)
   self.bonusApplied = false
 end;
 
+function OffenseState:getSkill()
+  return self.skill
+end;
+
 function OffenseState:setSkill(skillObj)
   self.skill = skillObj
 end;
@@ -38,6 +42,7 @@ function resolveProc(proc)
     return proc + bonus >= love.math.random(1, 100)
   else
     return proc >= love.math.random(1,100)
+  end
 end;
 
 function OffenseState:setActionButton(newButton)
@@ -68,7 +73,7 @@ end;
 
 function OffenseState:applyBonus()
   local skillDict = self.skill:getSkillDict()
-  self.bonus += skillDict['qte_bonus']
+  self.bonus = self.bonus + skillDict['qte_bonus']
   self.bonusApplied = true
 end;
 
@@ -101,4 +106,3 @@ end;
 function OffenseState:draw()
   self.skill:draw()
 end;
-

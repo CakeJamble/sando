@@ -1,3 +1,3 @@
 --! filename: game
 
-SEED = math.randomseed(math.rand(1, math.maxinteger))
+SEED = math.randomseed(math.random(1, math.huge))

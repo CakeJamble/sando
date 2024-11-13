@@ -43,7 +43,7 @@ function Enemy:draw()
   if not Enemy:attacking() then
     Entity:draw()
   else
-    if self.selectedSkill not nil then
+    if not(self.selectedSkill == nil) then
       self.selectedSkill:draw()
     end
   end

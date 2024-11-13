@@ -22,7 +22,7 @@ Character.static.xPos = 100
   -- Character constructor
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
-function Character:initialize(stats, skills, actionButton)
+function Character:initialize(stats, actionButton)
   Entity:initialize(stats, Character.static.xPos, Character.static.xPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
@@ -106,7 +106,8 @@ function Character:getUIState()
 end;
 
 function Character:setSelectedSkill()
-  self.selectedSkill = self.offenseState:get
+  self.selectedSkill = self.offenseState:getSkill()
+end;
 
 function Character:keypressed(key)
   if key == self.actionButton then
@@ -135,7 +136,7 @@ function Character:draw()
   if not Character:attacking() then
     Entity:draw()
   else
-    if self.selectedSkill not nil then
+    if not (self.selectedSkill == nil) then
       self.selectedSkill:draw()
     end
   end

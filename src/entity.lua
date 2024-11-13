@@ -1,6 +1,7 @@
 --! file: entity.lua
 require('skill')
 require('animation_frame_counts')
+require('movement_state')
 -- global table where all entities are stored
 Entities = {} 
 
@@ -10,7 +11,7 @@ Entity = class('Entity')
   -- Entity constructor
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
-function Entity:initialize(stats, skills, x, y)
+function Entity:initialize(stats, x, y)
   baseStats = stats
   battleStats = stats
   skillList = {}
@@ -23,7 +24,7 @@ function Entity:initialize(stats, skills, x, y)
   self.frameHeight = stats['height']    -- height of sprite (or height for a single frame of animation for this character)
 
   -- Set Skills
-  for k,v in ipairs(skills) do
+  for k,v in ipairs(stats['skillList']) do
     table.insert(skillList, v)
   end
   
@@ -72,6 +73,7 @@ end;
 
 function Entity:getBattleStats() --> table
   return battleStats
+end;
 
 function Entity:getSkills() --> table
   return skillList

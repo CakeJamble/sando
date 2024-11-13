@@ -1,5 +1,4 @@
 --! filename: movement state
-require('entity')
 
 local class = require 'libs/middleclass'
 
@@ -21,7 +20,6 @@ function MovementState:initialize(x, y, frameHeight)
     self.targetX = 0
     self.targetY = 0
     self.state = 'wait'
-    self.
 end;
 
 function MovementState:getPosition()
@@ -48,7 +46,7 @@ function MovementState:isGrounded()
 end;
 
 function MovementState:applyGravity(dt)
-  self.dy -= (MovementState.static.GRAVITY * dt)
+  self.dy = self.dy - (MovementState.static.GRAVITY * dt)
 end;
 
 function MovementState:update(dt)
@@ -73,7 +71,7 @@ function MovementState:update(dt)
     self.x = self.x + directionX * MovementState.static.MOVE_SPEED * dt
     self.y = self.y + directionY * MovementState.static.MOVE_SPEED * dt
   elseif self.state == 'jump' then
-    self.y += (MovementState.static.JUMP_SPEED * dt)
+    self.y = self.y + (MovementState.static.JUMP_SPEED * dt)
   end
   
 end;

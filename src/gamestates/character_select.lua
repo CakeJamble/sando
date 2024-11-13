@@ -133,19 +133,18 @@ function character_select:index_to_character()
   for i=0, TEAM_CAP do
     if selectedTeamIndices[i] == 0 then
       
-      bake = Character(get_bake_stats(), get_bake_skills())
+      bake = Character(get_bake_stats(), 'b')
       team:addMember(bake)
     elseif selectedTeamIndices[i] == 1 then
       stats = get_marco_stats()
-      skills = get_marco_skills()
-      marco = Character(stats, skills)
+      marco = Character(stats, 'm')
       team:addMember(marco)
       team:setFocusedMember(marco)
     elseif selectedTeamIndices[i] == 2 then
-      maria = Character(get_maria_stats(), get_maria_skills())
+      maria = Character(get_maria_stats(), 'a')
       team:addMember(maria)
     elseif selectedTeamIndices[i] == 3 then
-      key = Character(get_key_stats(), get_key_skills())
+      key = Character(get_key_stats(), 'k')
       team:addMember(key)
     end
   end

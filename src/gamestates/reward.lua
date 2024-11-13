@@ -49,6 +49,7 @@ function reward:enter(previous, combatType, rewardExp, rewardMoney)
     if combatType == 'elite' then
       -- gives a tool as a bonus reward
       rewardItems = reward:generateEliteRewards()
+    end
   end
 end;
 
@@ -78,7 +79,7 @@ function reward:getToolReward(chance) --> Tool
     rareToolChance = 0.2
     local toolIndex = love.math.random(rareToolPoolSize)
     toolReward = toolPool['rare'][toolIndex]
-    rareToolPoolSize -= 1
+    rareToolPoolSize = rareToolPoolSize - 1
     table.remove(toolPool, toolReward)
     return toolReward
   elseif uncommonToolChance >= chance then
@@ -86,7 +87,7 @@ function reward:getToolReward(chance) --> Tool
     uncommonToolChance = uncommonChanceDelta
     local toolIndex = love.math.random(uncommonToolPoolSize)
     toolReward = toolPool['uncommon'][toolIndex]
-    uncommonToolPoolSize -= 1
+    uncommonToolPoolSize = uncommonToolPoolSize - 1
     table.remove(toolPool, toolReward)
     return toolReward
   else
@@ -94,7 +95,7 @@ function reward:getToolReward(chance) --> Tool
     uncommonToolChance = math.min(uncommonToolChance + uncommonChanceDelta, 1.0)
     local toolIndex = love.math.random(commonToolPoolSize)
     toolReward = toolPool['common'][toolIndex]
-    commonToolPoolSize -= 1
+    commonToolPoolSize = commonToolPoolSize - 1
     table.remove(toolPool, toolReward)
     return toolReward
   end
