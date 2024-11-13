@@ -138,16 +138,15 @@ function Entity:setAnimations(subdir)
 
   -- Quads
   local durations = get_state_animations(self.entityName)
-  Entity:populateFrames(durations['idle_frames'], self.idleImage)
---  Entity:populateFrames(durations['move_x_frames'], self.moveXImage, moveXFrames)
---  Entity:populateFrames(durations['flinch_frames'], self.flinchImage, flinchFrames)
---  Entity:populateFrames(durations['ko_frames'], self.koImage, koFrames)
+  Entity:populateFrames(idleFrames, durations['idle_frames'], self.idleImage)
+--  Entity:populateFrames(xMoveFrames, durations['move_x_frames'], self.moveXImage, moveXFrames)
+--  Entity:populateFrames(flinchFrames, durations['flinch_frames'], self.flinchImage, flinchFrames)
+--  Entity:populateFrames(koFrames, durations['ko_frames'], self.koImage, koFrames)
 end;
 
-function Entity:populateFrames(numFrames, image)
-    -- Idle
+function Entity:populateFrames(frames, numFrames, image)
   for i=0,numFrames do
-    table.insert(idleFrames, love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, image:getWidth(), image:getHeight()))
+    table.insert(frames, love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, image:getWidth(), image:getHeight()))
   end
 end;
 

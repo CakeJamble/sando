@@ -28,13 +28,15 @@ end;
 function combat:enter(previous, team)
   -- Create enemy team
   enemyTeam = generateEncounter(floorNumber)
-  combat:addToEncounter(team)
+  characterTeam = team
+  combat:addToEncounter(characterTeam)
   combat:addToEncounter(enemyTeam)
 
   rewardExp = 0
   rewardMoney = 0
 
-  combat:sortEntities(Entities)
+-- TODO needs to be fixed
+--  combat:sortEntities(Entities)
 
   if type(Entities[1]) == 'Character' then
     team:setFocusedMember(Entities[1])
@@ -85,7 +87,7 @@ function combat:keypressed(key)
 end;
 
 function combat:update(dt)
-  team:update(dt)
+  characterTeam:update(dt)
   
   -- Remove an enemy from the Entities table upon defeat
   for _,entity in pairs(Entities) do
@@ -101,7 +103,7 @@ function combat:update(dt)
 end;
 
 function combat:draw()
-  team:draw()
+  characterTeam:draw()
   for _,enemy in ipairs(enemyTeam) do
     enemy:draw()
   end

@@ -2,7 +2,6 @@ Gamestate = require "libs.hump.gamestate"
 loveframes = require "libs.loveframes"
 require("entity")
 require("character")
-require("turn_queue")
 
 states = {
   main_menu         = require 'gamestates.main_menu',
