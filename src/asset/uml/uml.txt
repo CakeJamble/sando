@@ -92,19 +92,6 @@ class Skill {
     -projectileAnimation: table
 }
 
-class MovementState {
-    +initialize(x: number, y: number, frameHeight: number)
-    +getPosition() : table<number>
-    +setPosition(x: number, y: number) : void
-    +moveTowards(tX: number, tY: number) : void
-    +getState() : string
-    +setState(state: string) : void
-    +isGrounded(groundLevel: number, y: number, frameHeight: number) : boolean
-    +applyGravity(dt: number) : void
-    +update(dt: number): void
-}
-
-
 class Character {
     +initialize(stats: table, actionButton: string)
     +setBaseSkills(): void
@@ -151,6 +138,18 @@ class Enemy {
     -selectedSkill: Skill
 }
 
+class MovementState {
+    +initialize(x: number, y: number, frameHeight: number)
+    +getPosition() : table<number>
+    +setPosition(x: number, y: number) : void
+    +moveTowards(tX: number, tY: number) : void
+    +getState() : string
+    +setState(state: string) : void
+    +isGrounded(groundLevel: number, y: number, frameHeight: number) : boolean
+    +applyGravity(dt: number) : void
+    +update(dt: number): void
+}
+
 class OffenseState {
     +initialize(actionButton: string, battleStats: table)
     +getSkill() : Skill
@@ -194,6 +193,47 @@ class DefenseState {
     -isWindowActive: boolean
     -actionButtonPressed: boolean 
     -badInputPenalty: number
+}
+
+class ActionUI {
+    +initialize(x: number, y: number, skillList: table<Skill>)
+    +getPos() : table
+    +setPos(x: number, y: number) : void
+    +setActiveAction(action: string) : void
+    +getUIState() : string
+    +keypressed(key) : void
+    +targetEnemy(x: number, y:number) : void
+    +update(dt: number) : void
+    +draw() : void
+    -uiState: string
+    -soloButton:Image
+    -flourButton:Image
+    -duoButton:Image
+    -activeAction:string
+    -centerX: number
+    -soloX: number
+    -flourX: number
+    -duoX: number
+    -y: number
+    -soloDest: number
+    -flourDest: number
+    -duoDest: number
+    -soloScale: number
+    -flourScale: number
+    -duoScale: number
+    -soloDX: number
+    -flourDX: number
+    -duoDX: number
+    -skillList: table<Skill>
+    {static} -SOLO_BUTTON_PATH: string
+    {static} -FLOUR_BUTTON_PATH: string
+    {static} -DUO_BUTTON_PATH: string
+    {static} -ICON_SPACER: number
+    {static} -ICON_SCALE: number
+    {static} -SCALE_FACTOR: number
+    {static} -ICON_ROTATION: number
+    {static} -ICON_BASE_DX: number 
+
 }
 
 Entity o-- Skill : uses
