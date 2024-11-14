@@ -151,12 +151,59 @@ class Enemy {
     -selectedSkill: Skill
 }
 
+class OffenseState {
+    +initialize(actionButton: string, battleStats: table)
+    +getSkill() : Skill
+    +setSkill(skillObj : Skill)
+    +setTargetXY(x: number, y: number)
+    +resolveProc(proc: number) : boolean
+    +setActionButton(newButton : string) : void
+    +startFrameWindow() : void
+    +updateBadInputPenalty(applyPenalty: boolean) : void
+    +calcDamage() : void
+    +applyBonus() : void
+    +clearSkillModifiers() : void
+    +keypressed(key) : void
+    +update(dt: number) : void
+    +draw() : void
+    -stats : table
+    -damage : number
+    -bonus: number
+    -actionButton: string
+    -frameCount: number
+    -frameWIndow: number
+    -isWindowActive: boolean
+    -actionButtonPressed: boolean
+    -badInputPenalty: number
+    -bonusApplied: boolean
+}
+
+class DefenseState {
+    +initialize(baseDefense: number, blockBonus: number, blockWindw: number, dodgeWindow: number)
+    +setActionButton(newButton: string) : void
+    +startFrameWindow() : void
+    +updateBadInputPenalty(applyPenalty: boolean) : void
+    +applyBonus() : void
+    +keypressed(key) : void
+    +update(dt: number) : void
+    -defense: number
+    -blockBonus: number
+    -actionButton: string
+    -frameCount: number
+    -frameWindow: number
+    -isWindowActive: boolean
+    -actionButtonPressed: boolean 
+    -badInputPenalty: number
+}
+
 Entity o-- Skill : uses
 Entity o-- MovementState : has
 Entity <|-- Character
 Entity <|-- Enemy
+Character o-- OffenseState : has
+Character o-- DefenseState : has
 Team <|-- CharacterTeam
 Team <|-- EnemyTeam
-Team "1" o-- "0..*" Character : composed
+Team "1" o-- "0..*" Character : composes
 
 @enduml

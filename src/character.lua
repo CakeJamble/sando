@@ -133,8 +133,10 @@ function Character:update(dt)
 end;
 
 function Character:draw()
-  if not (self.selectedSkill == nil) then
-      self.selectedSkill:draw()
+  -- if not (self.selectedSkill == nil) then
+      -- self.selectedSkill:draw()
+  if not self.offenseState.getSkill() == nil then
+    offenseState:draw() 
   else
     Entity:draw()
   end
