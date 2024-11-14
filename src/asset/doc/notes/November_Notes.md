@@ -20,3 +20,5 @@
             - Ton of variables, static variables, and variables that depend on other variables (within the class, low cohesion)
             - Action Buttons (Solo, Flour, Duo) should be their own objects that inehrit from a Button base class
             - The ActionUI should be composed of these buttons, so that I can remove a lot of the complex logic, and focus on the functionality.
+        - How does a Character know that it is its turn, so that it knows to draw the ActionUI in Character:draw()?
+            - Proposal: have the Character Team pass an additional parameter to Character class that says the name of the focused character or nil

@@ -74,20 +74,11 @@ function Team:increaseMoney(amount)
   self.money = self.money + amount
 end;
 
-function Team:keypressed(key)
-  self.actionUI:keypressed(key)
-end;
-
 
 function Team:update(dt)
   for _,member in pairs(members) do
     member:update(dt)
   end
-  
-  if self.focusedMember then
-    self.actionUI:update(dt)
-  end
-  
 end;
 
 
@@ -95,9 +86,4 @@ function Team:draw()
   for _,member in pairs(members) do
     member:draw()
   end
-  
-  if self.focusedMember then
-    self.actionUI:draw()
-  end
-  
 end;

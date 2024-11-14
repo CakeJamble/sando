@@ -105,6 +105,10 @@ function Character:getUIState()
   return self.ui:getUIState()
 end;
 
+function Character:getActionUI()
+  return self.actionUI
+end;
+
 function Character:setSelectedSkill()
   self.selectedSkill = self.offenseState:getSkill()
 end;
