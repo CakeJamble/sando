@@ -8,10 +8,8 @@ abstract class Team {
     +getMembers() : table<Character>
     +getNumMembers() : number
     +getFocusedMember() : Character
-    +distributeExperience(amount)
     +getMoney() : number
     +increaseMoney(amount: number) : void
-    +keypressed(key) : void
     +update(dt: number) : void
     +draw() : void
     -members : table<Character>
@@ -20,7 +18,11 @@ abstract class Team {
 }
 
 class CharacterTeam {
+    +initialize()
+    +distributeExperience()
+    +keypressed(key) : void
     +update(dt: number)
+    +draw() : void
     -actionUI : ActionUI
 }
 
@@ -242,6 +244,8 @@ Entity <|-- Character
 Entity <|-- Enemy
 Character o-- OffenseState : has
 Character o-- DefenseState : has
+Character o-- ActionUI : has
+Team o-- ActionUI : has
 Team <|-- CharacterTeam
 Team <|-- EnemyTeam
 Team "1" o-- "0..*" Character : composes
