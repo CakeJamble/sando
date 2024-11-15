@@ -23,6 +23,7 @@ class CharacterTeam {
     +keypressed(key) : void
     +update(dt: number)
     +draw() : void
+    -inventory
 }
 
 class EnemyTeam {
@@ -119,6 +120,7 @@ class Character {
     -offenseState: OffenseState
     -defenseState: DefenseState
     -selectedSkill: Skill
+    -equipment: table
 
     {static} -EXP_POW_SCALE: number = 1.8
     {static} -EXP_MULT_SCALE: number = 4
@@ -239,7 +241,7 @@ class ActionUI {
 
 }
 
-class Button {
+abstract class Button {
     +initialize(x: number, y: number)
     +getButton() : Image
     +getPos() : table
@@ -298,9 +300,14 @@ Character o-- DefenseState : has
 Character o-- ActionUI : has
 Team <|-- CharacterTeam
 Team <|-- EnemyTeam
-Team "1" o-- "0..*" Character : composes
+CharacterTeam "1" o-- "1..*" Character : composes
+EnemyTeam "1" o-- "1..*" Enemy : composes
 SoloButton <|-- Button
 FlourButton <|-- Button
 DuoButton <|-- Button
-ActionUI "1" -- "3" Button : composes 
+ActionUI "1" o-- "1" SoloButton : has
+ActionUI "1" o-- "1" FlourButton : has
+ActionUI "1" o-- "1" DuoButton : has
+
+
 @enduml
