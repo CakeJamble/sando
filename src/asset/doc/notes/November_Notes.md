@@ -26,3 +26,5 @@
     - hump.gamestate decouples gamestates from each other, so *global* variables declared in a gamestate are not truly global. They are accessible globally while in that gamestate, and are deallocated once leaving the gamestate.
         - **If you need a variable to truly be global, then you should not declare it in a gamestate file**
             - ex: The `CharacterTeam` object is created in the `character_select.lua` gamestate, and so it has to be passed to the `combat.lua` gamestate via a parameter in the hump.gamestate function `switch(to, ...)`. 
+
+    - Need to think about how a Skill passes up the targeting type to the... Character? ActionUI? OffenseState?

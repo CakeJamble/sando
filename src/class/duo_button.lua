@@ -1,32 +1,32 @@
---! filename: flour button
+--! filename: dup button
 require('class.button')
 local class = require('libs/middleclass')
-FlourButton = class('FlourButton', Button)
+DuoButton = class('DuoButton', Button)
 
-function FlourButton:initialize(x, y, currentFP, skillList)
-    Button:initialize(x, y, 'asset/sprites/combat/flour.png')
+function DuoButton:initialize(x, y, currentDP, skillList)
+    Button:initialize(x, y, 'asset/sprites/combat/duo_lame.png')
     self.skillList = skillList
-    self.currentFP = currentFP
+    self.currentDP = currentDP
     -- self.skillListHolder = love.graphics.newImage(path/to/image)
     -- self.skillListCursor = love.graphics.newImage(path/to/image)
     self.selectedSkill = nil
 end;
 
-function FlourButton:formatSkillList() --> string
+function DuoButton:formatSkillList() --> string
     result = ''
     -- TODO
     return result
 end;
 
-function FlourButton:keypressed(key)
+function DuoButton:keypressed(key)
     -- TODO
 end;
 
-function FlourButton:update(dt)
+function DuoButton:update(dt)
     Button:update(dt)
 end;
 
-function FlourButton:draw()
+function DuoButton:draw()
     Button:draw()
     -- TODO : draw the skill list & cursor
 end;
