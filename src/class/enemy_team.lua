@@ -1,5 +1,5 @@
 --! filename: enemy team
-require('team')
+require('class.team')
 local class = require 'libs/middleclass'
 
 EnemyTeam = class('EnemyTeam', Team)

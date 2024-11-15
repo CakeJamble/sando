@@ -22,3 +22,7 @@
             - The ActionUI should be composed of these buttons, so that I can remove a lot of the complex logic, and focus on the functionality.
         - How does a Character know that it is its turn, so that it knows to draw the ActionUI in Character:draw()?
             - Proposal: have the Character Team pass an additional parameter to Character class that says the name of the focused character or nil
+    
+    - hump.gamestate decouples gamestates from each other, so *global* variables declared in a gamestate are not truly global. They are accessible globally while in that gamestate, and are deallocated once leaving the gamestate.
+        - **If you need a variable to truly be global, then you should not declare it in a gamestate file**
+            - ex: The `CharacterTeam` object is created in the `character_select.lua` gamestate, and so it has to be passed to the `combat.lua` gamestate via a parameter in the hump.gamestate function `switch(to, ...)`. 

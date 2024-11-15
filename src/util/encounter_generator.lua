@@ -1,13 +1,14 @@
 --! file: encounter_generator
-require('enemy_list')
-require('entity')
-require('enemy')
-require('team')
+require('util.enemy_list')
+require('class.entity')
+require('class.enemy')
+require('class.character_team')
+require('class.enemy_team')
 require('gamestates/game')
 
 -- Need to port over map generation techniques for weighted random creation of encounters!!!
 function generateEncounter(floorNum)
-  enemyTeam = Team()
+  enemyTeam = EnemyTeam()
   encounteredPools = {}
   if floorNum < 10 then
     -- Weighted Randomly grab from Enemy Pool 1

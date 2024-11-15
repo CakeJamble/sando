@@ -1,5 +1,5 @@
 --! filename: skill
-require('projectile')
+require('class.projectile')
 
 local class = require 'libs/middleclass'
 Skill = class('Skill')

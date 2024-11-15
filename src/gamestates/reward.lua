@@ -1,6 +1,6 @@
 --! filename: reward
-require('team')
-require('character')
+require('class.team')
+require('class.character')
 
 local reward = {}
 

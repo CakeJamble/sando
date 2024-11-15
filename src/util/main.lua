@@ -1,7 +1,7 @@
 Gamestate = require "libs.hump.gamestate"
 loveframes = require "libs.loveframes"
-require("entity")
-require("character")
+require("class.entity")
+require("class.character")
 
 states = {
   main_menu         = require 'gamestates.main_menu',

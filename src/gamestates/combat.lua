@@ -1,9 +1,9 @@
 --! file: gamestates/combat
-require("entity")
-require("character")
-require("enemy")
-require("action_ui")
-require("encounter_generator")
+require("class.entity")
+require("class.character")
+require("class.enemy")
+require("class.action_ui")
+require("util.encounter_generator")
 require('gamestates/character_select')
 
 local combat = {}

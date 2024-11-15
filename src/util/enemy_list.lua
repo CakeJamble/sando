@@ -1,5 +1,5 @@
 --! filename: enemy list
-require('enemy_skill_list')
+require('util.enemy_skill_list')
 -- WARNING : STATS ARE PLACE HOLDERS BESIDES NAME AND ENTITY TYPE
 
 -- trying with nested tables because we want to do random encounters

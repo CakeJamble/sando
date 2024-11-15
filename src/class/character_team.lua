@@ -1,5 +1,5 @@
 --! filename: character team
-require('team')
+require('class.team')
 
 local class = require 'libs/middleclass'
 

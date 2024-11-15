@@ -1,9 +1,9 @@
 --! filename: Enemy
-require ("stat_sheet")
-require("skill_sheet")
-require("entity")
-require("enemy_list")
-require("enemy_skill_list")
+require ("util.stat_sheet")
+require("util.skill_sheet")
+require("class.entity")
+require("util.enemy_list")
+require("util.enemy_skill_list")
 
 local class = require 'libs/middleclass'
 

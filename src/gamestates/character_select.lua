@@ -1,5 +1,5 @@
 --! file: gamestates/character_select
-require("team")
+require("class.character_team")
 local character_select = {}
 
 local TEAM_CAP = 1
@@ -14,7 +14,7 @@ local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
 local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
-team = Team()
+team = CharacterTeam()
 
 function character_select:init()
   cursor = love.graphics.newImage(CURSOR_PATH)  

@@ -1,7 +1,7 @@
 --! file: entity.lua
-require('skill')
-require('animation_frame_counts')
-require('movement_state')
+require('class.skill')
+require('util.animation_frame_counts')
+require('class.movement_state')
 -- global table where all entities are stored
 Entities = {} 
 

@@ -1,6 +1,6 @@
 --! filename: team
-require("character")
-require('action_ui')
+require("class.character")
+require('class.action_ui')
 
 local class = require 'libs/middleclass'
 Team = class('Team')

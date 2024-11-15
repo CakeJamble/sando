@@ -1,8 +1,8 @@
 --! file: Character
-require("skill_sheet")
-require("stat_sheet")
-require("entity")
-require("offense_state")
+require("util.skill_sheet")
+require("util.stat_sheet")
+require("class.entity")
+require("class.offense_state")
 
 
 local class = require 'libs/middleclass'
