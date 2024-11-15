@@ -36,10 +36,10 @@ function OffenseState:setTargetXY(x, y)
   self.targetY = y
 end;
 
-function resolveProc(proc)
+function OffenseState:resolveProc(proc)
   local skillDict = self.skill:getSkillDict()
   if skillDict['qte_bonus_type'] == 'proc' then
-    return proc + bonus >= love.math.random(1, 100)
+    return proc + self.bonus >= love.math.random(1, 100)
   else
     return proc >= love.math.random(1,100)
   end
@@ -58,7 +58,7 @@ end;
 function OffenseState:updateBadInputPenalty(applyPenalty)
   if applyPenalty then
     self.badInputPenalty = self.badInputPenalty + 20
-  elseif badInputPenalty > 0 then
+  elseif self.badInputPenalty > 0 then
     self.badInputPenalty = self.badInputPenalty - 1
   end
 end;

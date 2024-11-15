@@ -1,14 +1,12 @@
 --! filename: combat_ui
+require('class.soloButton')
 require('class.flour_button')
+require('class.duo_button')
 local class = require 'libs/middleclass'
 ActionUI = class('ActionUI')
 
-ActionUI.static.SOLO_BUTTON_PATH = 'asset/sprites/combat/solo_lame.png'
-ActionUI.static.FLOUR_BUTTON_PATH = 'asset/sprites/combat/flour.png'
-ActionUI.static.DUO_BUTTON_PATH = 'asset/sprites/combat/duo_lame.png'
 ActionUI.static.ICON_SPACER = 50
 ActionUI.static.ICON_SCALE = 0.6
-ActionUI.static.SCALE_FACTOR = 1
 ActionUI.static.ICON_ROTATION = 0
 ActionUI.static.ICON_BASE_DX = 150
 
@@ -17,13 +15,16 @@ ActionUI.static.ICON_BASE_DX = 150
     -- postconditions: initializes action ui icons for the character
 -- NOTE: Only one set of UI for development rn, customization comes later
 -- character only has own x and y, not sure if they need offset
-function ActionUI:initialize(x, y, skillList)
+function ActionUI:initialize(x, y, skillList, currentFP, currentDP)
   self.uiState = 'actionSelect'
-  self.soloButton = love.graphics.newImage(ActionUI.static.SOLO_BUTTON_PATH)
-  self.flourButton = love.graphics.newImage(ActionUI.static.FLOUR_BUTTON_PATH)
-  self.duoButton = love.graphics.newImage(ActionUI.static.DUO_BUTTON_PATH)
+  self.iconSpacer = 50
+  self.soloButton = SoloButton(x, y)
+  self.flourButton = FlourButton(x - self.iconSpacer, y, currentFP, skillList)
+  self.duoButton = DuoButton(x + self.icon, y, currentDP, skillList)
   self.activeAction = 'solo'
   self.centerX = x
+
+-- TODO lot of refactoring to consider here before just deleting it. Write it out in the Button classes first
   self.soloX = x
   self.flourX = x - ActionUI.static.ICON_SPACER
   self.duoX = x + ActionUI.static.ICON_SPACER

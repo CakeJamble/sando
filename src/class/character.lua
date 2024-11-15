@@ -8,14 +8,12 @@ require("class.offense_state")
 local class = require 'libs/middleclass'
 Character = class('Character', Entity)
 
-
-
 -- Integers used for calculating required exp to level up. Changes at soft cap
 Character.static.EXP_POW_SCALE = 1.8
 Character.static.EXP_MULT_SCALE = 4
 Character.static.EXP_BASE_ADD = 10
 
--- why are these static?
+-- why are these static? For testing!!!
 Character.static.yPos = 100
 Character.static.xPos = 100
 
@@ -65,8 +63,7 @@ function Character:gainExp(amount)
     print(Entity:getEntityName() .. ' reached level ' .. self.level .. '!')
     self.experienceRequired = Character:getRequiredExperience(self.level)
     Character:updateSkills(self.level)
-    
-    -- push a new state onto the stack that will allow the player to select a stat to boost
+    -- TODO: need to signal to current gamestate to push new level up reward state
   end
 end;
 

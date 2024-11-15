@@ -18,7 +18,7 @@ function Projectile:initialize(spritePath, userX, userY, userWidth, userHeight, 
   self.targetX = targetX
   self.targetY = targetY
   self.damage = damage
-  self.angle = math.atan2(targetX - userX, targetY - userY)
+  self.angle = math.atan(targetX - userX, targetY - userY)
   self.vectorX = math.cos(self.angle)
   self.vectorY = math.sin(self.angle)
   self.dx = self.speed * math.cos(self.angle)   -- x velocity
