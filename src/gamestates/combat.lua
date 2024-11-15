@@ -51,13 +51,13 @@ function combat:addToEncounter(team)
   end
 end;
 
-function combat:orderFcn(a, b)
-  return a:getSpeed() < b:getSpeed()
-end
+-- function combat:orderFcn(a, b)
+--   return a:getSpeed() < b:getSpeed()
+-- end
 
-function combat:sortEntities()
-  table.sort(Entities, orderFcn)
-end
+-- function combat:sortEntities()
+--   table.sort(Entities, orderFcn)
+-- end
 
   -- Increments the enemiesIndex counter by the number of times passed, then sets the position of the cursorX & cursorY variables to the position of the targeted enemy
 function combat:setTargetPos(incr) --> void

@@ -158,8 +158,9 @@ class MovementState {
 class OffenseState {
     +initialize(actionButton: string, battleStats: table)
     +getSkill() : Skill
-    +setSkill(skillObj : Skill)
-    +setTargetXY(x: number, y: number)
+    +setSkill(skillObj : Skill) : void
+    +setTargetXY(x: number, y: number) : void
+    +setBattleStats(battleStats: table) : void
     +resolveProc(proc: number) : boolean
     +setActionButton(newButton : string) : void
     +startFrameWindow() : void
@@ -185,6 +186,8 @@ class OffenseState {
 class DefenseState {
     +initialize(baseDefense: number, blockBonus: number, blockWindw: number, dodgeWindow: number)
     +setActionButton(newButton: string) : void
+    +setDefense(defense: number) : void
+    +setIncomingSkill(skill: Skill) : void
     +startFrameWindow() : void
     +updateBadInputPenalty(applyPenalty: boolean) : void
     +applyBonus() : void
@@ -192,6 +195,8 @@ class DefenseState {
     +update(dt: number) : void
     -defense: number
     -blockBonus: number
+    -blockWindow: number
+    -incomingSkill: Skill
     -actionButton: string
     -frameCount: number
     -frameWindow: number

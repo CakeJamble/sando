@@ -6,9 +6,11 @@ local class = require 'libs/middleclass'
 
 DefenseState = class('DefenseState')
 
-function DefenseState:initialize(baseDefense, blockBonus, blockWindow, dodgeWindow)
+function DefenseState:initialize(actionButton, baseDefense)
   self.defense = baseDefense
-  self.blockBonus = blockBonus
+  self.blockBonus = nil
+  self.blockWindow = nil
+  self.incomingSkill = nil
   
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
@@ -24,6 +26,14 @@ function DefenseState:setActionButton(newButton)
   self.actionButton = newButton
 end;
 
+function DefenseState:setDefense(defense)
+  self.defense = defense
+end
+
+function DefenseState:setIncomingSkill(skill)
+  self.incomingSkill = skill
+end;
+
 function DefenseState:startFrameWindow()
   self.isWindowActive = true
   self.frameCounter = 0
@@ -33,14 +43,14 @@ end;
 function DefenseState:updateBadInputPenalty(applyPenalty)
   if applyPenalty then
     self.badInputPenalty = self.badInputPenalty + 20
-  elseif badInputPenalty > 0 then
+  elseif self.badInputPenalty > 0 then
     self.badInputPenalty = self.badInputPenalty - 1
   end
 end;
 
 function DefenseState:applyBonus()
   if self.stance == 'block' then
-    self.defense = self.defense + blockBonus
+    self.defense = self.defense + self.blockBonus
   end
 end;
 

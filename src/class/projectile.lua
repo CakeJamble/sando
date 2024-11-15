@@ -47,12 +47,12 @@ function Projectile:update(dt)
   if not self.hasCollided then
       
     -- Check if projectile hit the speed limit
-    if speed > Projectile.static.SPEED_LIMIT then
+    if self.speed > Projectile.static.SPEED_LIMIT then
       Projectile:accelerate(dt)
     end
     
-    -- Update current speed
-    self.speed = math.sqrt(self.dx^2, self.dy^2)
+    -- Update current speed (magnitude of 2D vector formula)
+    self.speed = math.sqrt(self.dx^2 + self.dy^2)
     
     -- Update position
     self.x = self.x + self.dx * dt

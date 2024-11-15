@@ -113,7 +113,7 @@ function Entity:heal(amount) --> void
   battleStats["hp"] = math.min(battleStats["hp"], battleStats["hp"] + amount)
 end;
 
-function Entity:takeDamage() --> void
+function Entity:takeDamage(amount) --> void
   battleStats["hp"] = math.max(0, battleStats["hp"] - amount)
 end;
 

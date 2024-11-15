@@ -7,7 +7,7 @@ local class = require 'libs/middleclass'
 OffenseState = class('OffenseState')
 
 
-function OffenseState:initialize(actionButton, battleStats)
+function OffenseState:initialize(actionButton, battleStats) --include luck for lucky miss?
   self.skill = nil
   stats = battleStats    -- may be better to pare down and only include necessary stats
   self.damage = 0
@@ -70,6 +70,9 @@ function OffenseState:calcDamage()
   self.damage = skillDict['damage'] + stats['attack']
 end;
 
+function OffenseState:setBattleStats(battleStats)
+  self.battleStats = battleStats
+end;
 
 function OffenseState:applyBonus()
   local skillDict = self.skill:getSkillDict()

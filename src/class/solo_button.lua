@@ -13,7 +13,7 @@ function SoloButton:keypressed(key)
 end;
 
 function SoloButton:update(dt)
-    Button:draw(dt)
+    Button:update(dt)
 end;
 
 function SoloButton:draw()

@@ -60,7 +60,7 @@ function MovementState:update(dt)
   if self.state == 'move' then
     self.dx = self.targetX - self.x
     self.dy = self.targetY - self.y
-    local distance = math.sqrt(dx * dx + dy * dy)
+    local distance = math.sqrt(self.dx * self.dx + self.dy * self.dy)
     
     if distance < 1 then
       self.x = self.targetX

@@ -35,7 +35,7 @@ function Character:initialize(stats, actionButton)
   Character.static.yPos = Character.static.yPos + 150
   
   self.offenseState = OffenseState(actionButton, Entity:getBattleStats())
-  self.defenseState = nil
+  self.defenseState = DefenseState(actionButton, Entity:getBattleStats()['defense'])
   
   self.selectedSkill = nil
   self.actionUI = ActionUI(Entity:getX(), Entity:getY(), current_skills)
@@ -137,7 +137,7 @@ function Character:draw()
   -- if not (self.selectedSkill == nil) then
       -- self.selectedSkill:draw()
   if not self.offenseState.getSkill() == nil then
-    offenseState:draw() 
+    self.offenseState:draw() 
   else
     Entity:draw()
   end

@@ -45,7 +45,7 @@ function Skill:update(dt)
     self.frameCount = self.frameCount + 1
     
     if self.frameCount >= self.projectileRate and self.projectileCount < self.projectileCountLimit then
-      table.insert(projectiles, Projectile(self.projectileAnimation, userX, userY, userWidth, userHeight, targetX, targetY, dx, dy, a, r, tR, damage))
+      table.insert(projectiles, Projectile(self.projectileAnimation, self.userX, self.userY, self.userWidth, self.userHeight, self.targetX, self.targetY, self.dx, self.dy, self.a, self.r, self.tR, self.damage))
       self.projectileCount = self.projectileCount + 1
     end
     
@@ -57,7 +57,7 @@ function Skill:update(dt)
 end;
 
 function Skill:draw()
-  love.graphics.draw(animation.spriteSheet, animation.frames[math.floor(animation.currentFrame)], 100, 100)
+  love.graphics.draw(self.animation.spriteSheet, self.animation.frames[math.floor(self.animation.currentFrame)], 100, 100)
 
   if self.hitType == 'projectile' then
     for i, projectile in pairs(projectiles) do
