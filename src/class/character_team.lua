@@ -1,5 +1,6 @@
 --! filename: character team
 require('class.team')
+require('class.inventory')
 
 local class = require 'libs/middleclass'
 
@@ -7,9 +8,14 @@ CharacterTeam = class('CharacterTeam', Team)
 
 function CharacterTeam:initialize()
     Team:initialize()
+    self.inventory = Inventory(Team:getMembers())
 end;
 
 function CharacterTeam:distributeExperience()
+end;
+
+function CharacterTeam:getInventory()
+    return self.inventory
 end;
 
 function CharacterTeam:keypressed(key)

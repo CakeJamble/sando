@@ -1,8 +1,17 @@
 --! file: Character
+--[[
+  Character class
+  Used to create a character object, which consists of 
+  a character's stats, skills, states, and gear.
+]]
+
 require("util.skill_sheet")
 require("util.stat_sheet")
 require("class.entity")
 require("class.offense_state")
+require("class.defense_state")
+require("class.action_ui")
+require("class.gear")
 
 
 local class = require 'libs/middleclass'
@@ -39,6 +48,7 @@ function Character:initialize(stats, actionButton)
   
   self.selectedSkill = nil
   self.actionUI = ActionUI(Entity:getX(), Entity:getY(), current_skills)
+  self.gear = Gear()
 end;
 
   -- Sets the basic attack and the starting skill for a character
@@ -108,6 +118,25 @@ end;
 
 function Character:setSelectedSkill()
   self.selectedSkill = self.offenseState:getSkill()
+end;
+
+function Character:getGear()
+  return self.gear
+end
+
+function Character:equip(equip)
+  self.gear:equip(equip)
+end;
+
+function Character:unequip(equip)
+  self.gear:unequip(equip)
+end;
+
+function Character:applyGear()
+  for i, equip in pairs(self.gear:getEquips()) do
+    statMod = equip:getStatModifiers()
+    Entity:modifyBattleStat(statMod['stat'], statMod['amount'])
+  end
 end;
 
 function Character:keypressed(key)

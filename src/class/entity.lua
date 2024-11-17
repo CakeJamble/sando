@@ -87,8 +87,8 @@ end;
 
 -- MUTATORS
 
-function Entity:raiseBattleStat(stat_name) --> void
-  battleStats[stat_name] = math.ceil(battleStats[stat_name] * 1.25)
+function Entity:modifyBattleStat(stat_name, amount) --> void
+  battleStats[stat_name] = math.ceil(battleStats[stat_name] * (amount * 1.25))
 end;
 
 function Entity:setPos(x, y) --> void

@@ -20,6 +20,7 @@ abstract class Team {
 class CharacterTeam {
     +initialize()
     +distributeExperience()
+    +getInventory() : Inventory
     +keypressed(key) : void
     +update(dt: number)
     +draw() : void
@@ -87,7 +88,7 @@ class Skill {
     +draw() : void
     -skill: table
     -hitType: string
-    -animation: table<
+    -animation: table
     -projectiles: table<Projectile>
     -frameCount: number
     -projectileCount: number
@@ -105,6 +106,10 @@ class Character {
     +getCurrentSkills(): table
     +getUIState(): UIState
     +setSelectedSkill(): void
+    +equip(equip: Equip) : void
+    +unequip(equip: Equip) : void
+    +getGear(): Gear
+    +applyGear(): void
     +keypressed(key: string): void
     +update(dt: number): void
     +draw(): void
@@ -120,7 +125,7 @@ class Character {
     -offenseState: OffenseState
     -defenseState: DefenseState
     -selectedSkill: Skill
-    -equipment: table
+    -gear: Gear
 
     {static} -EXP_POW_SCALE: number = 1.8
     {static} -EXP_MULT_SCALE: number = 4
@@ -296,6 +301,72 @@ class DuoButton {
     -currentDP: number
 }
 
+class Inventory {
+    +compareGear(otherEquip: Equip) : table<Equip, number>
+    +equip(equip: Equip) : number
+    +unequip(equip: Equip) : number
+    +swapEquips()
+    +draw() : void
+    -inventories : table<Character, Gear>
+    -cookware: table<Cookware>
+}
+
+'not implemented yet
+class Cookware {
+
+}
+
+class Gear {
+    +initialize()
+    +equip(equip: Equip) : void
+    +unequip(equip: Equip) : void
+    +getEquip(equipName: string) : Equip
+    +getGears() : table<Gear>
+    +draw() : void
+    -equips : table<Gear>
+}
+
+class Equip {
+    +initialize(equipDict: table, x: number, y: number)
+    +getStatModifiers(): table
+    +setPosition(x: number, y: number): void
+    +draw(): void
+    -value: number
+    -equip: table
+    -self.sprite: Image
+    -self.x: number
+    -self.y: number
+}
+
+class PauseMenu {
+    -sprite: Image
+    -tabs: table{Inventory, TeamTab, SettingsTab, QuitTab}
+    -tabIndex: number
+    -cursor: Cursor
+    +keypressed(key): void
+    +draw(): void
+}
+
+'not implemented yet
+class Cursor {
+
+}
+
+'not implemented yet
+class TeamTab {
+
+}
+
+'not implemented yet
+class SettingsTab {
+
+}
+
+'not implemented yet
+class QuitTab {
+
+}
+
 Entity o-- Skill : uses
 Entity o-- MovementState : has
 Entity <|-- Character
@@ -303,6 +374,7 @@ Entity <|-- Enemy
 Character o-- OffenseState : has
 Character o-- DefenseState : has
 Character o-- ActionUI : has
+Character "1" o-- "1..2" Gear : has
 Team <|-- CharacterTeam
 Team <|-- EnemyTeam
 CharacterTeam "1" o-- "1..*" Character : composes
