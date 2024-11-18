@@ -4,7 +4,6 @@
   Used to create a character object, which consists of 
   a character's stats, skills, states, and gear.
 ]]
-
 require("util.skill_sheet")
 require("util.stat_sheet")
 require("class.entity")
@@ -14,23 +13,19 @@ require("class.action_ui")
 require("class.gear")
 
 
-Class = require "hump.class"
-Character = Class{__includes = Entity}
-
--- Integers used for calculating required exp to level up. Changes at soft cap
-Character.static.EXP_POW_SCALE = 1.8
-Character.static.EXP_MULT_SCALE = 4
-Character.static.EXP_BASE_ADD = 10
-
--- why are these static? For testing!!!
-Character.static.yPos = 100
-Character.static.xPos = 100
+Class = require "libs.hump.class"
+Character = Class{__includes = Entity, 
+  EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
+  -- For testing
+  yPos = 100,
+  xPos = 100
+}
 
   -- Character constructor
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
 function Character:init(stats, actionButton)
-  Entity:init(stats, Character.static.xPos, Character.static.yPos)
+  Entity:init(stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
   self.basic = {}
@@ -40,7 +35,7 @@ function Character:init(stats, actionButton)
   self.experience = 0
   self.experienceRequired = 15
   Entity:setAnimations('character/')
-  Character.static.yPos = Character.static.yPos + 150
+  Character.yPos = Character.yPos + 150
   
   self.offenseState = OffenseState(actionButton, Entity:getBattleStats())
   self.defenseState = DefenseState(actionButton, Entity:getBattleStats()['defense'])
@@ -81,9 +76,9 @@ end;
 function Character:getRequiredExperience(lvl) --> int
   result = 0
   if lvl < 3 then
-    result = lvl^Character.static.EXP_POW_SCALE + lvl * Character.static.EXP_MULT_SCALE + Character.static.EXP_BASE_ADD
+    result = lvl^Character.EXP_POW_SCALE + lvl * Character.EXP_MULT_SCALE + Character.EXP_BASE_ADD
   else
-    result = lvl^Character.static.EXP_POW_SCALE + lvl * Character.static.EXP_MULT_SCALE
+    result = lvl^Character.EXP_POW_SCALE + lvl * Character.EXP_MULT_SCALE
   end
     
   return result

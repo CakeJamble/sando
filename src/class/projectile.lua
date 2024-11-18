@@ -1,10 +1,7 @@
 --! filename: projectile
 
 Class = require 'libs.hump.class'
-Projectile = Class{}
-
-Projectile.static.SPEED_LIMIT = 300
-Projectile.static.GRAVITY = 300     -- TODO allow for projectiles to travel in an arc. Current implementation only moves in a straight line
+Projectile = Class{SPEED_LIMIT = 300, GRAVITY = 300}
 
 function Projectile:init(spritePath, userX, userY, userWidth, userHeight, targetX, targetY, dx, dy, a, r, tR, damage)
   self.image = love.graphics.newImage(spritePath)
@@ -46,7 +43,7 @@ function Projectile:update(dt)
   if not self.hasCollided then
       
     -- Check if projectile hit the speed limit
-    if self.speed > Projectile.static.SPEED_LIMIT then
+    if self.speed > Projectile.SPEED_LIMIT then
       Projectile:accelerate(dt)
     end
     

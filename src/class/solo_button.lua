@@ -6,7 +6,7 @@ Class = require 'libs.hump.class'
 SoloButton = Class{__includes = Button}
 
 function SoloButton:init(x, y)
-    Button:init(x, y, 'asset/sprites/combat/solo_lame.png')
+    Button:init(x, y, Button.BUTTON_PATH .. 'solo_lame.png')
 end;
 
 function SoloButton:keypressed(key)

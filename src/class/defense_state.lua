@@ -3,7 +3,7 @@
 Class = require 'libs.hump.class'
 -- Defending State of a Character is responsible for maintaining their blocking animation, dodging animation, and timed inputs for defense
 
-DefenseState = class('DefenseState')
+DefenseState = Class{}
 
 function DefenseState:init(actionButton, baseDefense)
   self.defense = baseDefense

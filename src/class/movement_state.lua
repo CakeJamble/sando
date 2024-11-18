@@ -1,11 +1,7 @@
 --! filename: movement state
 
 Class = require 'libs.hump.class'
-MovementState = Class{}
-
-MovementState.static.MOVE_SPEED = 20
-MovementState.static.GRAVITY = 30
-MovementState.static.JUMP_SPEED = 24
+MovementState = Class{MOVE_SPEED = 20, GRAVITY = 30, JUMP_SPEED = 24}
 
 function MovementState:init(x, y, frameHeight)
   self.x = x
@@ -48,7 +44,7 @@ function MovementState:isGrounded(groundLevel, y, frameHeight)
 end;
 
 function MovementState:applyGravity(dt)
-  self.dy = self.dy - (MovementState.static.GRAVITY * dt)
+  self.dy = self.dy - (MovementState.GRAVITY * dt)
 end;
 
 function MovementState:update(dt)
@@ -70,10 +66,10 @@ function MovementState:update(dt)
     local directionX = self.dx / distance
     local directionY = self.dy / distance
     
-    self.x = self.x + directionX * MovementState.static.MOVE_SPEED * dt
-    self.y = self.y + directionY * MovementState.static.MOVE_SPEED * dt
+    self.x = self.x + directionX * MovementState.MOVE_SPEED * dt
+    self.y = self.y + directionY * MovementState.MOVE_SPEED * dt
   elseif self.state == 'jump' then
-    self.y = self.y + (MovementState.static.JUMP_SPEED * dt)
+    self.y = self.y + (MovementState.JUMP_SPEED * dt)
   end
   
 end;

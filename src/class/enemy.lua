@@ -6,15 +6,13 @@ require("util.enemy_list")
 require("util.enemy_skill_list")
 
 Class = require "libs.hump.class"
-Enemy = Class{__includes = Entity}
-
--- why are these static? for testing :D
-Enemy.static.yPos = 100
-Enemy.static.xPos = 300
+Enemy = Class{__includes = Entity, 
+  -- for testing
+  xPos = 100, yPos = 100}
 
 function Enemy:init(enemyName, enemyType)
   stats = getStatsByName(enemyName, enemyType)
-  Entity:init(stats, Enemy.static.xPos, Enemy.static.yPos)
+  Entity:init(stats, Enemy.xPos, Enemy.yPos)
   Entity:setAnimations(enemyType .. '/')
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']

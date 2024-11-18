@@ -4,7 +4,7 @@ require('class.inventory')
 require('class.character')
 
 Class = require 'libs.hump.class'
-CharacterTeam = class('CharacterTeam', Team)
+CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters, numMembers)
     Team:init(characters, numMembers)

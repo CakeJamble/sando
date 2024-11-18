@@ -1,15 +1,13 @@
 --! filename: button
 Class = require 'libs.hump.class'
-Button = Class{}
-
-Button.static.BASE_DX = 150
+Button = Class{BASE_DX = 150, BUTTON_PATH = 'asset/sprites/combat/'}
 
 function Button:initialize(x, y, path)
     self.x = x
     self.y = y
     self.button = love.graphics.newImage(path)
     self.tX = nil
-    self.dX = Button.static.BASE_DX
+    self.dX = Button.BASE_DX
     self.scaleFactor = 1
 end;
 
