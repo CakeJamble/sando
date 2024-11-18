@@ -5,17 +5,16 @@ require("class.entity")
 require("util.enemy_list")
 require("util.enemy_skill_list")
 
-local class = require 'libs/middleclass'
-
-Enemy = class('Enemy', Entity)
+Class = require "libs.hump.class"
+Enemy = Class{__includes = Entity}
 
 -- why are these static? for testing :D
 Enemy.static.yPos = 100
 Enemy.static.xPos = 300
 
-function Enemy:initialize(enemyName, enemyType)
+function Enemy:init(enemyName, enemyType)
   stats = getStatsByName(enemyName, enemyType)
-  Entity:initialize(stats, Enemy.static.xPos, Enemy.static.yPos)
+  Entity:init(stats, Enemy.static.xPos, Enemy.static.yPos)
   Entity:setAnimations(enemyType .. '/')
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']

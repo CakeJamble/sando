@@ -1,14 +1,13 @@
 --! filename: movement state
 
-local class = require 'libs/middleclass'
-
-MovementState = class('MovementState')
+Class = require 'libs.hump.class'
+MovementState = Class{}
 
 MovementState.static.MOVE_SPEED = 20
 MovementState.static.GRAVITY = 30
 MovementState.static.JUMP_SPEED = 24
 
-function MovementState:initialize(x, y, frameHeight)
+function MovementState:init(x, y, frameHeight)
   self.x = x
   self.y = y
   self.dx = 0

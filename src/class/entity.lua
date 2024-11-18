@@ -5,13 +5,13 @@ require('class.movement_state')
 -- global table where all entities are stored
 Entities = {} 
 
-local class = require 'libs/middleclass'
-Entity = class('Entity')
+Class = require "libs.hump.class"
+Entity = Class{}
 
   -- Entity constructor
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
-function Entity:initialize(stats, x, y)
+function Entity:init(stats, x, y)
   self.baseStats = stats
   self.battleStats = stats
   self.skillList = stats['skillList']

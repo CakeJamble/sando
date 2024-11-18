@@ -1,12 +1,11 @@
 --! filename: defending_state
 
-local class = require 'libs/middleclass'
-
+Class = require 'libs.hump.class'
 -- Defending State of a Character is responsible for maintaining their blocking animation, dodging animation, and timed inputs for defense
 
 DefenseState = class('DefenseState')
 
-function DefenseState:initialize(actionButton, baseDefense)
+function DefenseState:init(actionButton, baseDefense)
   self.defense = baseDefense
   self.blockBonus = nil
   self.blockWindow = nil

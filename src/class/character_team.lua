@@ -3,12 +3,11 @@ require('class.team')
 require('class.inventory')
 require('class.character')
 
-local class = require 'libs/middleclass'
-
+Class = require 'libs.hump.class'
 CharacterTeam = class('CharacterTeam', Team)
 
-function CharacterTeam:initialize(characters, numMembers)
-    Team:initialize(characters, numMembers)
+function CharacterTeam:init(characters, numMembers)
+    Team:init(characters, numMembers)
     self.inventory = Inventory(Team:getMembers())
 end;
 
@@ -33,4 +32,5 @@ end;
 
 function CharacterTeam:draw()
   Team:draw()
+  love.graphics.print(self.members[1]:getEntityName(), 100, 100)
 end;

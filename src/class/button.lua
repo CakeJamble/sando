@@ -1,6 +1,6 @@
 --! filename: button
-local class = require 'libs/middleclass'
-Button = class('Button')
+Class = require 'libs.hump.class'
+Button = Class{}
 
 Button.static.BASE_DX = 150
 

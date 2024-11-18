@@ -7,10 +7,10 @@
 
 require('class.gear')
 
-local class = require 'libs/middleclass'
-Inventory = class('Inventory')
+Class = require 'libs.hump.class'
+Inventory = Class{}
 
-function Inventory:initialize(members)
+function Inventory:init(members)
     self.gears = {} -- Character and Gear
 end
 

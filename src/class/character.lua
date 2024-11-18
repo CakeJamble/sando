@@ -1,4 +1,4 @@
---! file: Character
+--! filename: Character
 --[[
   Character class
   Used to create a character object, which consists of 
@@ -14,8 +14,8 @@ require("class.action_ui")
 require("class.gear")
 
 
-local class = require 'libs/middleclass'
-Character = class('Character', Entity)
+Class = require "hump.class"
+Character = Class{__includes = Entity}
 
 -- Integers used for calculating required exp to level up. Changes at soft cap
 Character.static.EXP_POW_SCALE = 1.8
@@ -29,8 +29,8 @@ Character.static.xPos = 100
   -- Character constructor
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
-function Character:initialize(stats, actionButton)
-  Entity:initialize(stats, Character.static.xPos, Character.static.yPos)
+function Character:init(stats, actionButton)
+  Entity:init(stats, Character.static.xPos, Character.static.yPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
   self.basic = {}

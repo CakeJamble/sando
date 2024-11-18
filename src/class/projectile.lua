@@ -1,13 +1,12 @@
 --! filename: projectile
 
-local class = require 'libs/middleclass'
-
-Projectile = class('Projectile')
+Class = require 'libs.hump.class'
+Projectile = Class{}
 
 Projectile.static.SPEED_LIMIT = 300
 Projectile.static.GRAVITY = 300     -- TODO allow for projectiles to travel in an arc. Current implementation only moves in a straight line
 
-function Projectile:initialize(spritePath, userX, userY, userWidth, userHeight, targetX, targetY, dx, dy, a, r, tR, damage)
+function Projectile:init(spritePath, userX, userY, userWidth, userHeight, targetX, targetY, dx, dy, a, r, tR, damage)
   self.image = love.graphics.newImage(spritePath)
   self.width = self.image:getWidth()
   self.height = self.image:getHeight()

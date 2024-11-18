@@ -2,8 +2,8 @@
 require('class.solo_button')
 require('class.flour_button')
 require('class.duo_button')
-local class = require 'libs/middleclass'
-ActionUI = class('ActionUI')
+Class = require 'libs.hump.class'
+ActionUI = Class{}
 
 ActionUI.static.ICON_SPACER = 50
 ActionUI.static.ICON_SCALE = 0.6
@@ -15,7 +15,7 @@ ActionUI.static.ICON_BASE_DX = 150
     -- postconditions: initializes action ui icons for the character
 -- NOTE: Only one set of UI for development rn, customization comes later
 -- character only has own x and y, not sure if they need offset
-function ActionUI:initialize(x, y, skillList, currentFP, currentDP)
+function ActionUI:init(x, y, skillList, currentFP, currentDP)
   self.uiState = 'actionSelect'
   self.iconSpacer = 50
   self.soloButton = SoloButton(x, y)

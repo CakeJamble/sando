@@ -1,9 +1,10 @@
 --! filename: gear
 require("class.equip")
-local class = require 'libs/middleclass'
-Gear = class('Gear')
 
-function Gear:initialize()
+Class = require 'libs.hump.class'
+Gear = Class{}
+
+function Gear:init()
     self.equips = {}        -- 1 accessory, 1 equipment
     self.equipOffset = 40   -- pixels between equips
     self.hasEquip = false

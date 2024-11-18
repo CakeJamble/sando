@@ -2,12 +2,12 @@
 require("class.entity")
 require('class.action_ui')
 
-local class = require 'libs/middleclass'
-Team = class('Team')
+Class = require 'libs.hump.class'
+Team = Class{}
 
 
   -- Team constructor
-function Team:initialize(entities, numMembers)
+function Team:init(entities, numMembers)
   self.members = entities
   self.numMembers = numMembers
   
