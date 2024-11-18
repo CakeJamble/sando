@@ -2,7 +2,7 @@
 require("class.character_team")
 local character_select = {}
 
-local TEAM_CAP = 1
+local TEAM_CAP = 2
 local SELECT_START = 100
 local GRID_LENGTH = 1
 
@@ -14,7 +14,6 @@ local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
 local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
-team = CharacterTeam()
 
 function character_select:init()
   cursor = love.graphics.newImage(CURSOR_PATH)  
@@ -25,17 +24,28 @@ function character_select:init()
 end;
 
 function character_select:enter()
+  team = CharacterTeam(TEAM_CAP)
   index = 0
   spriteRow = 0
   spriteCol = 0
   spriteXOffset = 0
   spriteYOffset = 0
   numPlayableCharacters = 4
-  teamCount = 0
+  teamCount = 1
+  
   selectedTeamIndices = {}
-  for k, _ in pairs(Entities) do Entities[k] = nil end
+  for i=1,TEAM_CAP do
+    selectedTeamIndices[i] = {}
+  end
+
+  for k, _ in pairs(Entities) do 
+    Entities[k] = nil 
+  end
+
   statPreview = nil
   character_select:setStatPreview()
+  
+  confirmText = "This is your team: "
 end;
 
 function character_select:keypressed(key)
@@ -118,34 +128,25 @@ function character_select:set_down()
 end;
 
 function character_select:validate_selection()
-  if teamCount == TEAM_CAP then
-    character_select:index_to_character()
+  if teamCount == TEAM_CAP + 1 then
     Gamestate.switch(states['combat'], team)
   else
-    table.insert(selectedTeamIndices, index)
+    selectedTeamIndices[teamCount] = index
     teamCount = teamCount + 1
+    
+    if teamCount == TEAM_CAP + 1 then
+      character_select:index_to_character()
+      confirmText = confirmText .. team:printMembers()
+    end
+    
   end
 end;
 
   -- Takes table of selected character indices and converts
   -- each index to a valid Character object, adding to the global team table
 function character_select:index_to_character()
-  for i=0, TEAM_CAP do
-    if selectedTeamIndices[i] == 0 then
-      bake = Character(get_bake_stats(), 'b')
-      team:addMember(bake)
-    elseif selectedTeamIndices[i] == 1 then
-      stats = get_marco_stats()
-      marco = Character(stats, 'm')
-      team:addMember(marco)
-      team:setFocusedMember(marco)
-    elseif selectedTeamIndices[i] == 2 then
-      maria = Character(get_maria_stats(), 'a')
-      team:addMember(maria)
-    elseif selectedTeamIndices[i] == 3 then
-      key = Character(get_key_stats(), 'k')
-      team:addMember(key)
-    end
+  for i=1,#selectedTeamIndices do
+    team:addMember(selectedTeamIndices[i])
   end
 end;
 
@@ -165,9 +166,6 @@ function character_select:statsToString(stats)
   return 'Name: ' .. stats['entityName'] .. '\n' .. 'HP: ' .. stats['hp'] .. '\n' .. 'FP: ' .. stats['fp'] .. '\n' .. 'Attack: ' .. stats['attack'] .. '\n' .. 'Defense: ' .. stats['defense'] .. '\n' .. 'Speed: ' .. stats['speed'] .. '\n' .. 'Luck: ' .. stats['luck']
 end;
 
-function character_select:update(dt)
-end;
-
 function character_select:draw()
   love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10, OFFSET * (GRID_LENGTH + 1) + 10)
   love.graphics.draw(bakePortrait, SELECT_START, SELECT_START)
@@ -176,6 +174,7 @@ function character_select:draw()
   love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
   love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
   love.graphics.print(statPreview, 300, 100)
+  love.graphics.print(confirmText, 100, 300)
 end;
 
 return character_select

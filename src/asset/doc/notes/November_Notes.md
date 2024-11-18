@@ -28,3 +28,6 @@
             - ex: The `CharacterTeam` object is created in the `character_select.lua` gamestate, and so it has to be passed to the `combat.lua` gamestate via a parameter in the hump.gamestate function `switch(to, ...)`. 
 
     - Need to think about how a Skill passes up the targeting type to the... Character? ActionUI? OffenseState?
+
+### 11/14/24 Reflection
+    - Bug: If you have two objects of the same base class type (EnemyTeam, CharacterTeam), then it's fucked.

@@ -30,12 +30,11 @@ Character.static.xPos = 100
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
 function Character:initialize(stats, actionButton)
-  Entity:initialize(stats, Character.static.xPos, Character.static.xPos)
+  Entity:initialize(stats, Character.static.xPos, Character.static.yPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
   self.basic = {}
-  current_skills = {}
-  Character:setBaseSkills()
+  self.currentSkills = Character:setBaseSkill(Entity:getSkills())
   self.level = 1
   self.totalExp = 0
   self.experience = 0
@@ -52,11 +51,10 @@ function Character:initialize(stats, actionButton)
 end;
 
   -- Sets the basic attack and the starting skill for a character
-function Character:setBaseSkills()    --> void
-  local allSkills = Entity:getSkills()
-  self.basic = allSkills[1]
-  local startingSkill = allSkills[2]
-  table.insert(current_skills, startingSkill)
+function Character:setBaseSkill(skillList)    --> void
+  self.basic = skillList[1]
+  local startingSkill = skillList[2]
+  return startingSkill
 end;
 
   -- Gains exp, leveling up when applicable
@@ -97,7 +95,7 @@ end;
 function Character:updateSkills(lvl)
   for i,skill in pairs(Entity:getSkills()) do
     if lvl == skill['unlock'] then
-      table.insert(current_skills, skill)
+      table.insert(self.current_skills, skill)
       local skillLearnedMsg = Entity:getEntityName() .. ' learned the ' .. skill['attack_type'] .. ' skill: ' .. skill['skill_name'] .. '!'
       print(skillLearnedMsg)
     end
@@ -134,7 +132,7 @@ end;
 
 function Character:applyGear()
   for i, equip in pairs(self.gear:getEquips()) do
-    statMod = equip:getStatModifiers()
+    local statMod = equip:getStatModifiers()
     Entity:modifyBattleStat(statMod['stat'], statMod['amount'])
   end
 end;
@@ -163,11 +161,5 @@ function Character:update(dt)
 end;
 
 function Character:draw()
-  -- if not (self.selectedSkill == nil) then
-      -- self.selectedSkill:draw()
-  if not self.offenseState.getSkill() == nil then
-    self.offenseState:draw() 
-  else
-    Entity:draw()
-  end
+  Entity:draw()
 end;

@@ -12,10 +12,10 @@ Entity = class('Entity')
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
 function Entity:initialize(stats, x, y)
-  baseStats = stats
-  battleStats = stats
-  skillList = {}
-  idleFrames = {}
+  self.baseStats = stats
+  self.battleStats = stats
+  self.skillList = stats['skillList']
+  self.idleFrames = {}
   self.subdir = ''
   self.entityName = stats['entityName']
   self.x=x
@@ -25,12 +25,6 @@ function Entity:initialize(stats, x, y)
   self.frameWidth = stats['width']      -- width of sprite (or width for a single frame of animation for this character)
   self.frameHeight = stats['height']    -- height of sprite (or height for a single frame of animation for this character)
   self.movementState = MovementState(self.x, self.y, self.frameHeight)
-
-  -- Set Skills
-  for k,v in ipairs(stats['skillList']) do
-    table.insert(skillList, v)
-  end
-  
   self.currentFrame = 1
 end;
 
@@ -58,37 +52,37 @@ function Entity:getFHeight()
 end;
 
 function Entity:getSpeed() --> int
-  return battleStats['speed']
+  return self.battleStats['speed']
 end;
 
 function Entity:getHealth() --> int
-  return battleStats['hp']
+  return self.battleStats['hp']
 end;
 
 function Entity:getMaxHealth() --> int
-  return baseStats['hp']
+  return self.baseStats['hp']
 end;
 
 function Entity:getStats() --> table
-  return baseStats
+  return self.baseStats
 end;
 
 function Entity:getBattleStats() --> table
-  return battleStats
+  return self.battleStats
 end;
 
 function Entity:getSkills() --> table
-  return skillList
+  return self.skillList
 end;
 
 function Entity:isAlive() --> bool
-  return battleStats['hp'] > 0
+  return self.battleStats['hp'] > 0
 end;
 
 -- MUTATORS
 
 function Entity:modifyBattleStat(stat_name, amount) --> void
-  battleStats[stat_name] = math.ceil(battleStats[stat_name] * (amount * 1.25))
+  self.battleStats[stat_name] = math.ceil(self.battleStats[stat_name] * (amount * 1.25))
 end;
 
 function Entity:setPos(x, y) --> void
@@ -97,8 +91,8 @@ function Entity:setPos(x, y) --> void
 end;
 
 function Entity:setDXDY(dx, dy) --> void
-  dX = dx
-  dY = dy
+  self.dX = dx
+  self.dY = dy
 end;
 
 function Entity:setSubdir(subdir)
@@ -110,18 +104,18 @@ function Entity:setMovementState(state) --> void
 end;
 
 function Entity:heal(amount) --> void
-  battleStats["hp"] = math.min(battleStats["hp"], battleStats["hp"] + amount)
+  self.battleStats["hp"] = math.min(self.battleStats["hp"], self.battleStats["hp"] + amount)
 end;
 
 function Entity:takeDamage(amount) --> void
-  battleStats["hp"] = math.max(0, battleStats["hp"] - amount)
+  self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
 end;
 
 -- ONLY run this after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void
-  for stat,val in pairs(baseStats) do
+  for stat,val in pairs(self.baseStats) do
     if stat ~= 'hp' or stat ~= 'fp' then
-      battleStats[stat] = baseStats[stat]
+      self.battleStats[stat] = self.baseStats[stat]
     end
   end
 end;
@@ -138,7 +132,7 @@ function Entity:setAnimations(subdir)
 
   -- Quads
   local durations = get_state_animations(self.entityName)
-  Entity:populateFrames(idleFrames, durations['idle_frames'], self.idleImage)
+  Entity:populateFrames(self.idleFrames, durations['idle_frames'], self.idleImage)
 --  Entity:populateFrames(xMoveFrames, durations['move_x_frames'], self.moveXImage, moveXFrames)
 --  Entity:populateFrames(flinchFrames, durations['flinch_frames'], self.flinchImage, flinchFrames)
 --  Entity:populateFrames(koFrames, durations['ko_frames'], self.koImage, koFrames)
@@ -164,7 +158,7 @@ function Entity:draw() --> void
     -- walk, jump, idle
   local state = self.movementState:getState()
   if state == 'idle' then
-    love.graphics.draw(self.idleImage, idleFrames[math.floor(self.currentFrame)], self.x, self.y)
+    love.graphics.draw(self.idleImage, self.idleFrames[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveX' then
     print("Moving left and right")
   elseif state == 'moveY' then
