@@ -43,10 +43,5 @@ function Enemy:selectAttack() --> Skill (?)
 end;
 
 function Enemy:draw()
-  if not(self.selectedSkill == nil) then
-    self.selectedSkill:draw()
-  else
-    Entity:draw()
-  end
-  
+  Entity:draw()
 end;

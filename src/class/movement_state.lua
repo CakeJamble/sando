@@ -9,25 +9,25 @@ MovementState.static.GRAVITY = 30
 MovementState.static.JUMP_SPEED = 24
 
 function MovementState:initialize(x, y, frameHeight)
-    self.x = x
-    self.y = y
-    self.dx = 0
-    self.dy = 0
-    self.frameHeight = frameHeight
-    self.groundLevel = y + frameHeight
+  self.x = x
+  self.y = y
+  self.dx = 0
+  self.dy = 0
+  self.frameHeight = frameHeight
+  self.groundLevel = y + frameHeight
     
-    self.targetX = 0
-    self.targetY = 0
-    self.state = 'idle'
+  self.targetX = 0
+  self.targetY = 0
+  self.state = 'idle'
 end;
 
 function MovementState:getPosition()
-    return self.x, self.y
+  return self.x, self.y
 end
 
 function MovementState:setPosition(x, y)
-    self.x = x
-    self.y = y
+  self.x = x
+  self.y = y
 end;
 
 function MovementState:moveTowards(tX, tY)

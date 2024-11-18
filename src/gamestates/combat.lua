@@ -3,16 +3,18 @@ require("class.entity")
 require("class.character")
 require("class.enemy")
 require("class.action_ui")
-require("util.encounter_generator")
+require("util.encounter_pools")
 require('gamestates/character_select')
 
 local combat = {}
 local FIRST_MEMBER_X = 100
 local FIRST_MEMBER_Y = 100
+local numFloors = 50
 
-Entities = {}
 local TARGET_SPRITE = 'asset/sprites/combat/target_cursor.png'
-
+entities = {}
+enemyTeam = {}
+characterTeam = {}
 
 function combat:init()
   targetCursor = love.graphics.newImage(TARGET_SPRITE)
@@ -26,11 +28,29 @@ function combat:init()
 end;
 
 function combat:enter(previous, team)
-  -- Create enemy team
-  enemyTeam = generateEncounter(floorNumber)
-  characterTeam = team
-  combat:addToEncounter(characterTeam)
-  combat:addToEncounter(enemyTeam)
+  characterTeam = CharacterTeam(team:getNumMembers())
+  characterTeam:copy(team)
+  encounteredPools = {}
+  
+  -- init encounteredPools to keep track of all encounters across a run
+  for i=1,numFloors do
+    encounteredPools[i] = {}
+  end;
+  
+  -- Log the floor's encounter in encounteredPools, then generate the encounter
+  combat:logEncounter(floorNumber)
+  enemyNameList = encounteredPools[floorNumber]
+  
+  -- TODO: needs to determine between types of enemies
+  enemyTeam = EnemyTeam(#enemyNameList)
+  for i=1,#enemyNameList do
+    local enemy = Enemy(enemyNameList[i], "Enemy")
+    enemyTeam:addMember(enemy)
+  end
+  
+  combat:addToEncounter(characterTeam)  -- adds whatever team is created most recently :(
+  -- combat:addToEncounter(enemyTeam)
+
 
   rewardExp = 0
   rewardMoney = 0
@@ -38,16 +58,17 @@ function combat:enter(previous, team)
 -- TODO needs to be fixed
 --  combat:sortEntities(Entities)
 
-  if type(Entities[1]) == 'Character' then
-    team:setFocusedMember(Entities[1])
+  if type(entities[1]) == 'Character' then
+    team:setFocusedMember(entities[1])
   end
 
 end;
 
 function combat:addToEncounter(team)
-  for i, v in ipairs(enemyTeam) do
-    table.insert(Entities, v)
-    print('added ' .. v:getEntityName() .. ' to the combat')
+  local members = team:getMembers()
+  for _,v in pairs(members) do
+    table.insert(entities, v)
+    print('added ' .. v:getEntityName() .. ' to combat')
   end
 end;
 
@@ -65,6 +86,33 @@ function combat:setTargetPos(incr) --> void
   local targetedEnemy = Enemies[enemiesIndex]
   cursorX = targetedEnemy:getX()
   cursorY = targetedEnemy:getY()
+end;
+
+
+
+
+-- Need to port over map generation techniques for weighted random creation of encounters!!!
+function combat:logEncounter(floorNum) --> EnemyTeam
+  local encounter = 0
+  if floorNum < 10 then
+    -- Weighted Randomly grab from Enemy Pool 1
+    -- TODO : Make this actually weighted rand
+    -- local encounter = math.random(1, #enemyPool1)
+    -- encounteredPools[floorNum] = enemyPool1[encounter]
+    encounteredPools[floorNum] = testPool[1]
+  elseif floorNum == 10 then
+    -- Randomly grab from Boss Pool 1
+    local encounter = math.random(1, #bossPool1)
+    encounteredPools[floorNum] = bossPool1[encounter]
+  elseif floorNum < 20 then
+    -- Weighted Randomly grab from Enemy Pool 2
+    -- TODO : Make this actually weighted rand
+    local encounter = math.random(1, #enemyPool2)
+    encounteredPools[floorNum] = enemyPool2[encounter]
+  elseif floorNum == 20 then
+    local encounter = math.random(1, #bossPool2)
+    encounteredPools[floorNum] = bossPool2[encounter]
+  end
 end;
 
 
@@ -88,7 +136,8 @@ end;
 
 function combat:update(dt)
   characterTeam:update(dt)
-  
+  -- enemyTeam:update(dt)
+
   -- Remove an enemy from the Entities table upon defeat
   for _,entity in pairs(Entities) do
     if not entity:isAlive() then
@@ -99,18 +148,16 @@ function combat:update(dt)
       end
     end
   end
-      
+
 end;
 
 function combat:draw()
   characterTeam:draw()
-  for _,enemy in ipairs(enemyTeam) do
-    enemy:draw()
-  end
+  -- enemyTeam:draw()
   
-  if team.actionUI:getUIState() == 'targeting' then
-    love.graphics.draw(targetCursor, cursorX, cursorY)
-  end
+  -- if team.actionUI:getUIState() == 'targeting' then
+  --   love.graphics.draw(targetCursor, cursorX, cursorY)
+  -- end
 end;
   
 return combat

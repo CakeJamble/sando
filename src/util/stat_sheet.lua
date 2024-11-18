@@ -1,5 +1,5 @@
 --! file: stat_sheet
-require('skill_sheet')
+require('util.skill_sheet')
 
 starting_stats = {
   entityName="",            -- name of character

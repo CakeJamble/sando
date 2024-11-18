@@ -1,5 +1,5 @@
 --! filename: combat_ui
-require('class.soloButton')
+require('class.solo_button')
 require('class.flour_button')
 require('class.duo_button')
 local class = require 'libs/middleclass'
@@ -20,7 +20,7 @@ function ActionUI:initialize(x, y, skillList, currentFP, currentDP)
   self.iconSpacer = 50
   self.soloButton = SoloButton(x, y)
   self.flourButton = FlourButton(x - self.iconSpacer, y, currentFP, skillList)
-  self.duoButton = DuoButton(x + self.icon, y, currentDP, skillList)
+  self.duoButton = DuoButton(x + self.iconSpacer, y, currentDP, skillList)
   self.activeAction = 'solo'
   self.centerX = x
 

@@ -12,9 +12,6 @@ Inventory = class('Inventory')
 
 function Inventory:initialize(members)
     self.gears = {} -- Character and Gear
-    for _,member in pairs(members) do
-        gears[member:getName()] = {}
-    end
 end
 
 function Inventory:equip(character, equip) --> number
