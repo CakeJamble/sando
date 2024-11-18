@@ -154,15 +154,17 @@ function Entity:setAnimations(subdir)
   -- Images
   local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
   self.spriteSheets.idle = love.graphics.newImage(path .. 'idle.png')
---  self.moveXImage = love.graphics.newImage(path .. 'move_x.png')
---  self.flinchImage = love.graphics.newImage(path .. 'flinch.png')
---  self.koImage = love.graphics.newImage(path .. 'ko.png')
+--  self.spriteSheets.moveX = love.graphics.newImage(path .. 'move_x.png')
+--  self.spriteSheets.flinch = love.graphics.newImage(path .. 'flinch.png')
+--  self.spriteSheets.ko = love.graphics.newImage(path .. 'ko.png')
 
   -- Quads  
   Entity.populateFrames(self, self.movementAnimations.idle, self.spriteSheets.idle, self.durations.idle)
---  Entity:populateFrames(xMoveFrames, durations['move_x_frames'], self.moveXImage, moveXFrames)
---  Entity:populateFrames(flinchFrames, durations['flinch_frames'], self.flinchImage, flinchFrames)
---  Entity:populateFrames(koFrames, durations['ko_frames'], self.koImage, koFrames)
+--  Entity:populateFrames(self, self.movementAnimations.moveX, self.spriteSheets.moveX, self.durations.moveX)
+--  Entity:populateFrames(self, self.movementAnimations.moveY, self.spriteSheets.moveY, self.durations.moveY)
+--  Entity:populateFrames(self, self.movementAnimations.moveXY, self.spriteSheets.moveXY, self.durations.moveXY)
+--  Entity:populateFrames(self, self.movementAnimations.flinch, self.spriteSheets.flinch, self.durations.flinch)
+--  Entity:populateFrames(self, self.movementAnimations.ko, self.spriteSheets.ko, self.durations.ko)
 end;
 
 function Entity:populateFrames(frames, spriteSheet, numFrames)
@@ -186,16 +188,16 @@ function Entity:draw() --> void
   if state == 'idle' then
     love.graphics.draw(self.spriteSheets.idle, self.movementAnimations.idle[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveX' then
-    print("Moving left and right")
+    -- love.graphics.draw(self.spriteSheets.moveX, self.movementAnimations.moveX[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveY' then
-    print("Moving up and down")
+    -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveXY' then
-    print("Moving diagonally")
+    -- love.graphics.draw(self.spriteSheets.moveXY, self.movementAnimations.moveXY[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'flinch' then
-    print("Flinching... ouch!") 
+    -- love.graphics.draw(self.spriteSheets.flinch, self.movementAnimations.flinch[math.floor(self.currentFrame)], self.x, self.y) 
   elseif state == 'ko' then
-    print("Fainting... eughhh")
+    -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
   else
-    print("There's some undefined state we've entered here, Captain. Red Alert!")
+    print("logical error in determining movement state of entity")
   end
 end;
