@@ -7,38 +7,20 @@ Team = class('Team')
 
 
   -- Team constructor
-function Team:initialize(teamSize)
-  self.members = {}
-  for i=1,teamSize do
-    self.members[i] = {}
-  end
+function Team:initialize(entities, numMembers)
+  self.members = entities
+  self.numMembers = numMembers
+  
   self.membersIndex = 1
-  self.numMembers = teamSize
   self.focusedMember = nil
   self.actionUI = ActionUI(0, 0)
   self.money = 0
 end;
 
-function Team:copy(otherObj)
-  local otherMembers = otherObj:getMembers()
-  for i=1,#otherMembers do
-    self.members[i] = otherMembers[i]
-  end
-  self.membersIndex = otherObj.membersIndex
-  self.focusedMember = otherObj.focusedMember
-  self.actionUI = otherObj.actionUI
-  self.money = otherObj.money
-end;
-
-  -- Called whenever entering the character select gamestate
-function Team:clear()
-  Team:initialize()
-end;
-
   -- Adds a member to the instance variable self.members list
 function Team:addMember(entity) --> void
-  self.members[self.membersIndex] = entity
-  self.membersIndex = self.membersIndex + 1
+  self.numMembers = self.numMembers + 1
+  self.members[self.numMembers] = entity
 end;
 
 function Team:isFull()
@@ -57,12 +39,27 @@ end;
 
 function Team:printMembers()
   result = ''
-  for i,char in ipairs(self.members) do
-    result = result .. char:getEntityName() .. ', '
+  for i=1,#self.members do
+    local entity = self.members[i]
+    result = result .. entity:getEntityName() .. ', '
   end
   return result
 end;
 
+function Team:sortBySpeed()
+  table.sort(self.members, function(a, b) 
+      return a:getSpeed() < b:getSpeed()
+    end
+    )
+end;
+
+function Team:getAt(i)
+  return self.members[i]
+end;
+
+function Team:getSpeedAt(i)
+  return self.members[i]:getSpeed()
+end;
 
 
 function Team:getMembers() --> table
@@ -78,7 +75,6 @@ end;
   -- Sets the focused member to the character
 function Team:setFocusedMember(character) --> void
   self.focusedMember = character
-  self.actionUI:setPos(self.focusedMember:getX() + 25, self.focusedMember:getY() - 50)
 end;
 
 
@@ -103,14 +99,18 @@ end;
 
 
 function Team:update(dt)
-  for _,member in pairs(self.members) do
-    member:update(dt)
+  if Team:isFull() then
+    for i=1,numMembers do
+      self.members[i]:update(dt)
+    end
   end
 end;
 
 
 function Team:draw()
-  for _,member in pairs(self.members) do
-    member:draw()
+  if Team:isFull() then
+    for i=1,numMembers do
+      self.members[i]:draw()
+    end
   end
 end;

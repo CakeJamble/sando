@@ -12,9 +12,6 @@ local FIRST_MEMBER_Y = 100
 local numFloors = 50
 
 local TARGET_SPRITE = 'asset/sprites/combat/target_cursor.png'
-entities = {}
-enemyTeam = {}
-characterTeam = {}
 
 function combat:init()
   targetCursor = love.graphics.newImage(TARGET_SPRITE)
@@ -23,13 +20,14 @@ function combat:init()
   rewardExp = 0
   rewardMoney = 0
   enemyCount = 0
-  enemiesIndex = 1
+  enemyTeamIndex = 1
+  characterTeamIndex = 1
+  turnCount = 1
   floorNumber = 1
 end;
 
 function combat:enter(previous, team)
-  characterTeam = CharacterTeam(team:getNumMembers())
-  characterTeam:copy(team)
+  characterTeam = team
   encounteredPools = {}
   
   -- init encounteredPools to keep track of all encounters across a run
@@ -40,45 +38,24 @@ function combat:enter(previous, team)
   -- Log the floor's encounter in encounteredPools, then generate the encounter
   combat:logEncounter(floorNumber)
   enemyNameList = encounteredPools[floorNumber]
-  
-  -- TODO: needs to determine between types of enemies
-  enemyTeam = EnemyTeam(#enemyNameList)
+  enemyList = {}
   for i=1,#enemyNameList do
     local enemy = Enemy(enemyNameList[i], "Enemy")
-    enemyTeam:addMember(enemy)
+    enemyList[i] = enemy
   end
   
-  combat:addToEncounter(characterTeam)  -- adds whatever team is created most recently :(
-  -- combat:addToEncounter(enemyTeam)
-
-
+  -- TODO: needs to determine between types of enemies
+  enemyTeam = EnemyTeam(enemyList, #enemyNameList)  
+  
+  -- sort teams and do a single pass during combat
+  characterTeam:sortBySpeed()
+  enemyTeam:sortBySpeed()
   rewardExp = 0
   rewardMoney = 0
-
--- TODO needs to be fixed
---  combat:sortEntities(Entities)
-
-  if type(entities[1]) == 'Character' then
-    team:setFocusedMember(entities[1])
-  end
-
+  
+  -- Set the focused character to begin combat
+  combat:nextTurn(characterTeam, enemyTeam)
 end;
-
-function combat:addToEncounter(team)
-  local members = team:getMembers()
-  for _,v in pairs(members) do
-    table.insert(entities, v)
-    print('added ' .. v:getEntityName() .. ' to combat')
-  end
-end;
-
--- function combat:orderFcn(a, b)
---   return a:getSpeed() < b:getSpeed()
--- end
-
--- function combat:sortEntities()
---   table.sort(Entities, orderFcn)
--- end
 
   -- Increments the enemiesIndex counter by the number of times passed, then sets the position of the cursorX & cursorY variables to the position of the targeted enemy
 function combat:setTargetPos(incr) --> void
@@ -89,7 +66,17 @@ function combat:setTargetPos(incr) --> void
 end;
 
 
-
+function combat:nextTurn(characterTeam, enemyTeam)
+  if characterTeam:getSpeedAt(characterTeamIndex) < enemyTeam:getSpeedAt(enemyTeamIndex) then
+    characterTeam:setFocusedMember(nil)
+    enemyTeam:setFocusedMember(enemyTeam:getAt(enemyTeamIndex))
+    enemyTeamIndex = enemyTeamIndex + 1
+  else    -- if next Character.speed >= next Enemey.speed then
+    enemyTeam:setFocusedMember(nil)
+    characterTeam:setFocusedMember(characterTeam:getAt(characterTeamIndex))
+    characterTeamIndex = characterTeamIndex + 1
+  end
+end;
 
 -- Need to port over map generation techniques for weighted random creation of encounters!!!
 function combat:logEncounter(floorNum) --> EnemyTeam

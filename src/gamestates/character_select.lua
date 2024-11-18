@@ -24,28 +24,22 @@ function character_select:init()
 end;
 
 function character_select:enter()
-  team = CharacterTeam(TEAM_CAP)
   index = 0
   spriteRow = 0
   spriteCol = 0
   spriteXOffset = 0
   spriteYOffset = 0
   numPlayableCharacters = 4
-  teamCount = 1
+  teamCount = 0
   
   selectedTeamIndices = {}
+  
   for i=1,TEAM_CAP do
     selectedTeamIndices[i] = {}
   end
 
-  for k, _ in pairs(Entities) do 
-    Entities[k] = nil 
-  end
-
-  statPreview = nil
-  character_select:setStatPreview()
+  statPreview = character_select:setStatPreview()
   
-  confirmText = "This is your team: "
 end;
 
 function character_select:keypressed(key)
@@ -60,7 +54,7 @@ function character_select:keypressed(key)
   elseif key == 'z' then
     character_select:validate_selection()
   end
-  character_select:setStatPreview()
+  statPreview = character_select:setStatPreview()
 end;
   
 
@@ -128,29 +122,38 @@ function character_select:set_down()
 end;
 
 function character_select:validate_selection()
-  if teamCount == TEAM_CAP + 1 then
-    Gamestate.switch(states['combat'], team)
+  if teamCount == TEAM_CAP then
+    Gamestate.switch(states['combat'], CharacterTeam(character_select:index_to_character(), TEAM_CAP))
   else
-    selectedTeamIndices[teamCount] = index
+    selectedTeamIndices[teamCount + 1] = index
     teamCount = teamCount + 1
-    
-    if teamCount == TEAM_CAP + 1 then
-      character_select:index_to_character()
-      confirmText = confirmText .. team:printMembers()
-    end
-    
   end
 end;
 
   -- Takes table of selected character indices and converts
   -- each index to a valid Character object, adding to the global team table
 function character_select:index_to_character()
-  for i=1,#selectedTeamIndices do
-    team:addMember(selectedTeamIndices[i])
+  local characterList = {}
+  for i=1,TEAM_CAP do
+    if selectedTeamIndices[i] == 0 then
+      bake = Character(get_bake_stats(), 'b')
+      characterList[i] = bake
+    elseif selectedTeamIndices[i] == 1 then
+      marco = Character(get_marco_stats(), 'm')
+      characterList[i] = marco
+    elseif selectedTeamIndices[i] == 2 then
+      maria = Character(get_maria_stats(), 'a')
+      characterList[i] = maria
+    elseif selectedTeamIndices[i] == 3 then
+      key = Character(get_key_stats(), 'k')
+      characterList[i] = key
+    end
   end
+  return characterList
 end;
 
 function character_select:setStatPreview()
+  local statPreview = ''
   if spriteRow == 0 and spriteCol == 0 then
     statPreview = character_select:statsToString(get_bake_stats())
   elseif spriteRow == 0 and spriteCol == 1 then
@@ -160,6 +163,7 @@ function character_select:setStatPreview()
   else
     statPreview = character_select:statsToString(get_key_stats())
   end
+  return statPreview
 end;
 
 function character_select:statsToString(stats)
@@ -174,7 +178,6 @@ function character_select:draw()
   love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
   love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
   love.graphics.print(statPreview, 300, 100)
-  love.graphics.print(confirmText, 100, 300)
 end;
 
 return character_select
