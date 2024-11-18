@@ -5,21 +5,19 @@ require("class.entity")
 require("util.enemy_list")
 require("util.enemy_skill_list")
 
-local class = require 'libs/middleclass'
+Class = require "libs.hump.class"
+Enemy = Class{__includes = Entity, 
+  -- for testing
+  xPos = 300, yPos = 100}
 
-Enemy = class('Enemy', Entity)
-
--- why are these static? for testing :D
-Enemy.static.yPos = 100
-Enemy.static.xPos = 300
-
-function Enemy:initialize(enemyName, enemyType)
-  stats = getStatsByName(enemyName, enemyType)
-  Entity:initialize(stats, Enemy.static.xPos, Enemy.static.yPos)
-  Entity:setAnimations(enemyType .. '/')
+function Enemy:init(enemyName, enemyType)
+  Entity.init(self, getStatsByName(enemyName, enemyType), Enemy.xPos, Enemy.yPos)
+  Entity.setAnimations(self, enemyType .. '/')
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']
   self.selectedSkill = nil
+  Enemy.yPos = Enemy.yPos + 150
+
 end;
 
 function Enemy:getExpReward()
@@ -42,6 +40,10 @@ function Enemy:selectAttack() --> Skill (?)
   -- select a random attack and random target(s)
 end;
 
+function Enemy:update(dt)
+  Entity.update(self, dt)
+end;
+
 function Enemy:draw()
-  Entity:draw()
+  Entity.draw(self)
 end;

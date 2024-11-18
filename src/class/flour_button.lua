@@ -1,10 +1,10 @@
 --! filename: flour button
 require('class.button')
-local class = require('libs/middleclass')
-FlourButton = class('FlourButton', Button)
+Class = require 'libs.hump.class'
+FlourButton = Class{__includes = Button}
 
-function FlourButton:initialize(x, y, currentFP, skillList)
-    Button:initialize(x, y, 'asset/sprites/combat/flour.png')
+function FlourButton:init(x, y, currentFP, skillList)
+    Button:init(x, y, Button.BUTTON_PATH .. 'flour.png')
     self.skillList = skillList
     self.currentFP = currentFP
     -- self.skillListHolder = love.graphics.newImage(path/to/image)

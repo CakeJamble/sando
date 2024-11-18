@@ -5,6 +5,7 @@ require("class.enemy")
 require("class.action_ui")
 require("util.encounter_pools")
 require('gamestates/character_select')
+require("util.globals")
 
 local combat = {}
 local FIRST_MEMBER_X = 100
@@ -26,19 +27,20 @@ function combat:init()
   floorNumber = 1
 end;
 
-function combat:enter(previous, team)
-  characterTeam = team
-  encounteredPools = {}
+function combat:enter(previous)
+  characterTeam = loadCharacterTeam()
   
   -- init encounteredPools to keep track of all encounters across a run
+  encounteredPools = {}
   for i=1,numFloors do
     encounteredPools[i] = {}
   end;
   
   -- Log the floor's encounter in encounteredPools, then generate the encounter
-  combat:logEncounter(floorNumber)
+  encounteredPools = combat:logEncounter(encounteredPools, floorNumber)
   enemyNameList = encounteredPools[floorNumber]
   enemyList = {}
+
   for i=1,#enemyNameList do
     local enemy = Enemy(enemyNameList[i], "Enemy")
     enemyList[i] = enemy
@@ -50,6 +52,7 @@ function combat:enter(previous, team)
   -- sort teams and do a single pass during combat
   characterTeam:sortBySpeed()
   enemyTeam:sortBySpeed()
+  
   rewardExp = 0
   rewardMoney = 0
   
@@ -79,27 +82,28 @@ function combat:nextTurn(characterTeam, enemyTeam)
 end;
 
 -- Need to port over map generation techniques for weighted random creation of encounters!!!
-function combat:logEncounter(floorNum) --> EnemyTeam
+function combat:logEncounter(encounteredPools, floorNumber) --> EnemyTeam
   local encounter = 0
-  if floorNum < 10 then
+  if floorNumber < 10 then
     -- Weighted Randomly grab from Enemy Pool 1
     -- TODO : Make this actually weighted rand
     -- local encounter = math.random(1, #enemyPool1)
     -- encounteredPools[floorNum] = enemyPool1[encounter]
-    encounteredPools[floorNum] = testPool[1]
-  elseif floorNum == 10 then
+    encounteredPools[floorNumber] = testPool[1]
+  elseif floorNumber == 10 then
     -- Randomly grab from Boss Pool 1
     local encounter = math.random(1, #bossPool1)
-    encounteredPools[floorNum] = bossPool1[encounter]
-  elseif floorNum < 20 then
+    encounteredPools[floorNumber] = bossPool1[encounter]
+  elseif floorNumber < 20 then
     -- Weighted Randomly grab from Enemy Pool 2
     -- TODO : Make this actually weighted rand
     local encounter = math.random(1, #enemyPool2)
-    encounteredPools[floorNum] = enemyPool2[encounter]
-  elseif floorNum == 20 then
+    encounteredPools[floorNumber] = enemyPool2[encounter]
+  elseif floorNumber == 20 then
     local encounter = math.random(1, #bossPool2)
-    encounteredPools[floorNum] = bossPool2[encounter]
+    encounteredPools[floorNumber] = bossPool2[encounter]
   end
+  return encounteredPools
 end;
 
 
@@ -123,24 +127,12 @@ end;
 
 function combat:update(dt)
   characterTeam:update(dt)
-  -- enemyTeam:update(dt)
-
-  -- Remove an enemy from the Entities table upon defeat
-  for _,entity in pairs(Entities) do
-    if not entity:isAlive() then
-      if type(entity) == Enemy then -- add their rewards to the combat rewards
-        rewardExp = rewardExp + entity:getExpReward()
-        rewardMoney = rewardMoney + entity:getMoneyReward()
-        Entities:pop(entity)
-      end
-    end
-  end
-
+  enemyTeam:update(dt)
 end;
 
 function combat:draw()
   characterTeam:draw()
-  -- enemyTeam:draw()
+  enemyTeam:draw()
   
   -- if team.actionUI:getUIState() == 'targeting' then
   --   love.graphics.draw(targetCursor, cursorX, cursorY)

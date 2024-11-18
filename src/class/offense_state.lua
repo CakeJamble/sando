@@ -1,13 +1,11 @@
 --! filename: attacking state
 
-local class = require 'libs/middleclass'
+Class = require 'libs.hump.class'
+OffenseState = Class{}
 
 -- Attacking State of a Character is responsible for maintaining the animation(s), values, and timed inputs for a chosen action
 
-OffenseState = class('OffenseState')
-
-
-function OffenseState:initialize(actionButton, battleStats) --include luck for lucky miss?
+function OffenseState:init(actionButton, battleStats) --include luck for lucky miss?
   self.skill = nil
   stats = battleStats    -- may be better to pare down and only include necessary stats
   self.damage = 0

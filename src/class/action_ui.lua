@@ -2,20 +2,15 @@
 require('class.solo_button')
 require('class.flour_button')
 require('class.duo_button')
-local class = require 'libs/middleclass'
-ActionUI = class('ActionUI')
-
-ActionUI.static.ICON_SPACER = 50
-ActionUI.static.ICON_SCALE = 0.6
-ActionUI.static.ICON_ROTATION = 0
-ActionUI.static.ICON_BASE_DX = 150
+Class = require 'libs.hump.class'
+ActionUI = Class{ICON_SPACER = 50, ICON_SCALE = 0.6, ICON_ROTATION = 0, ICON_BASE_DX = 150}
 
   -- ActionUI constructor
     -- preconditions: name of the character
     -- postconditions: initializes action ui icons for the character
 -- NOTE: Only one set of UI for development rn, customization comes later
 -- character only has own x and y, not sure if they need offset
-function ActionUI:initialize(x, y, skillList, currentFP, currentDP)
+function ActionUI:init(x, y, skillList, currentFP, currentDP)
   self.uiState = 'actionSelect'
   self.iconSpacer = 50
   self.soloButton = SoloButton(x, y)
@@ -26,15 +21,15 @@ function ActionUI:initialize(x, y, skillList, currentFP, currentDP)
 
 -- TODO lot of refactoring to consider here before just deleting it. Write it out in the Button classes first
   self.soloX = x
-  self.flourX = x - ActionUI.static.ICON_SPACER
-  self.duoX = x + ActionUI.static.ICON_SPACER
+  self.flourX = x - ActionUI.ICON_SPACER
+  self.duoX = x + ActionUI.ICON_SPACER
   self.y = y
   self.soloDest = self.soloX
   self.flourDest = self.flourX
   self.duoDest = self.duoX
   self.soloScale = 1
-  self.flourScale = ActionUI.static.ICON_SCALE
-  self.duoScale = ActionUI.static.ICON_SCALE
+  self.flourScale = ActionUI.ICON_SCALE
+  self.duoScale = ActionUI.ICON_SCALE
   self.soloDX = 1
   self.flourDX = 1
   self.duoDX = 2
@@ -53,8 +48,8 @@ end;
   -- Sets the X positions of the three icons and automatically adjusts the other icons based on the const offset spacer
 function ActionUI:setPos(x, y)
   self.soloX = x
-  self.flourX = x - ActionUI.static.ICON_SPACER
-  self.duoX = x + ActionUI.static.ICON_SPACER
+  self.flourX = x - ActionUI.ICON_SPACER
+  self.duoX = x + ActionUI.ICON_SPACER
   self.y = y
 end;
 
@@ -79,27 +74,27 @@ function ActionUI:keypressed(key)
     if key == 'right' then                         -- spin the wheel left
       if self.activeAction == 'solo' then                          -- {left:solo, center:duo, right:flour}
         self.activeAction = 'duo'
-        self.soloDest = self.soloX - ActionUI.static.ICON_SPACER
+        self.soloDest = self.soloX - ActionUI.ICON_SPACER
         self.soloDX = 1
-        self.flourDest = self.flourX + 2 * ActionUI.static.ICON_SPACER
+        self.flourDest = self.flourX + 2 * ActionUI.ICON_SPACER
         self.flourDX = 2
-        self.duoDest = self.duoX - ActionUI.static.ICON_SPACER
+        self.duoDest = self.duoX - ActionUI.ICON_SPACER
         self.duoDX = 1
       elseif self.activeAction == 'flour' then                     -- {left:flour, center:solo, right:duo}
         self.activeAction = 'solo'
-        self.soloDest = self.soloX - ActionUI.static.ICON_SPACER
+        self.soloDest = self.soloX - ActionUI.ICON_SPACER
         self.soloDX = 1
-        self.flourDest = self.flourX - ActionUI.static.ICON_SPACER
+        self.flourDest = self.flourX - ActionUI.ICON_SPACER
         self.flourDX = 1
-        self.duoDest = self.duoX + 2 * ActionUI.static.ICON_SPACER
+        self.duoDest = self.duoX + 2 * ActionUI.ICON_SPACER
         self.duoDX = 2
       else                                                                  -- {left:duo, center:flour, right:solo}
         self.activeAction = 'flour'
-        self.soloDest = self.soloX + 2 * ActionUI.static.ICON_SPACER
+        self.soloDest = self.soloX + 2 * ActionUI.ICON_SPACER
         self.soloDX = 2
-        self.flourDest = self.flourX - ActionUI.static.ICON_SPACER
+        self.flourDest = self.flourX - ActionUI.ICON_SPACER
         self.flourDX = 1
-        self.duoDest = self.duoX - ActionUI.static.ICON_SPACER
+        self.duoDest = self.duoX - ActionUI.ICON_SPACER
         self.duoDX = 1
       end      
     
@@ -108,27 +103,27 @@ function ActionUI:keypressed(key)
     elseif key == 'left' then                      -- spin the wheel right
       if self.activeAction == 'solo' then                          -- {left:duo, center:flour , right:solo}
         self.activeAction = 'flour'
-        self.soloDest = self.soloX + ActionUI.static.ICON_SPACER
+        self.soloDest = self.soloX + ActionUI.ICON_SPACER
         self.soloDX = 1
-        self.flourDest = self.flourX + ActionUI.static.ICON_SPACER
+        self.flourDest = self.flourX + ActionUI.ICON_SPACER
         self.flourDX = 1
-        self.duoDest = self.duoX - 2 * ActionUI.static.ICON_SPACER
+        self.duoDest = self.duoX - 2 * ActionUI.ICON_SPACER
         self.duoDX = 2
       elseif self.activeAction == 'flour' then                     -- {left:solo, center:duo, right:flour}
         self.activeAction = 'duo'
-        self.soloDest = self.soloX - 2 * ActionUI.static.ICON_SPACER
+        self.soloDest = self.soloX - 2 * ActionUI.ICON_SPACER
         self.soloDX = 2
-        self.flourDest = self.flourX + ActionUI.static.ICON_SPACER
+        self.flourDest = self.flourX + ActionUI.ICON_SPACER
         self.flourDX = 1
-        self.duoDest = self.duoX + ActionUI.static.ICON_SPACER
+        self.duoDest = self.duoX + ActionUI.ICON_SPACER
         self.duoDX = 1
       else                                                                  -- {left:flour, center:solo, right:duo}
         self.activeAction = 'solo'
-        self.soloDest = self.soloX + ActionUI.static.ICON_SPACER
+        self.soloDest = self.soloX + ActionUI.ICON_SPACER
         self.soloDX = 1
-        self.flourDest = self.flourX - 2 * ActionUI.static.ICON_SPACER
+        self.flourDest = self.flourX - 2 * ActionUI.ICON_SPACER
         self.flourDX = 2
-        self.duoDest = self.duoX + ActionUI.static.ICON_SPACER
+        self.duoDest = self.duoX + ActionUI.ICON_SPACER
         self.duoDX = 1
       end
 
@@ -171,9 +166,9 @@ function ActionUI:update(dt)
     
     if self.activeAction == 'flour' and self.flourDest > self.flourX then      -- {left:flour, center:solo, right:duo} -> {left:duo, center:flour, right:solo}
       
-      self.soloX = self.soloX + ActionUI.static.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX + ActionUI.static.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX - ActionUI.static.ICON_BASE_DX * dt * self.duoDX
+      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
       self.soloScale = self.soloScale - dt
       self.flourScale = self.flourScale + dt
       
@@ -183,87 +178,87 @@ function ActionUI:update(dt)
         self.flourX = self.flourDest
         self.duoX = self.duoDest
         self.flourScale = 1
-        self.soloScale = ActionUI.static.ICON_SCALE
+        self.soloScale = ActionUI.ICON_SCALE
         self.uiState = 'actionSelect'
       end
       -- if self.soloScale > 1 then self.soloScale = 1 end
 
     elseif self.activeAction == 'flour' and self.flourDest < self.flourX then  -- {left:solo, center:duo, right:flour} -> {left:duo, center:flour, right:solo}
       
-      self.soloX = self.soloX + ActionUI.static.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX - ActionUI.static.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX - ActionUI.static.ICON_BASE_DX * dt * self.duoDX
+      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
       self.duoScale = self.duoScale - dt
       self.flourScale = self.flourScale + dt
       if self.soloX > self.soloDest then
         self.soloX = self.soloDest
         self.flourX = self.flourDest
         self.duoX = self.duoDest
-        self.duoScale = ActionUI.static.ICON_SCALE
+        self.duoScale = ActionUI.ICON_SCALE
         self.flourScale = 1
         self.uiState = 'actionSelect'
       end
       
     elseif self.activeAction == 'solo' and self.soloDest > self.soloX then -- {left:solo, center:duo, right:flour} -> {left:flour, center:solo, right:duo}
       
-      self.soloX = self.soloX + ActionUI.static.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX - ActionUI.static.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX + ActionUI.static.ICON_BASE_DX * dt * self.duoDX
+      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
       self.duoScale = self.duoScale - dt
       self.soloScale = self.soloScale + dt
       if self.soloX > self.soloDest then
         self.soloX = self.soloDest
         self.flourX = self.flourDest
         self.duoX = self.duoDest
-        self.duoScale = ActionUI.static.ICON_SCALE
+        self.duoScale = ActionUI.ICON_SCALE
         self.soloScale = 1
         self.uiState = 'actionSelect'
       end
       
     elseif self.activeAction == 'solo' and self.soloDest < self.soloX then -- {left:duo, center:flour, right:solo} -> {left:flour, center:solo, right:duo}
       
-      self.soloX = self.soloX - ActionUI.static.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX - ActionUI.static.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX + ActionUI.static.ICON_BASE_DX * dt * self.duoDX
+      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
       self.flourScale = self.flourScale - dt
       self.soloScale = self.soloScale + dt
       if self.soloX < self.soloDest then
         self.soloX = self.soloDest
         self.flourX = self.flourDest
         self.duoX = self.duoDest
-        self.flourScale = ActionUI.static.ICON_SCALE
+        self.flourScale = ActionUI.ICON_SCALE
         self.soloScale = 1
         self.uiState = 'actionSelect'
       end
       
     elseif self.activeAction == 'duo' and self.duoDest > self.duoX then  -- {left:duo, center:flour, right:solo} -> {left:solo, center:duo, right:flour}
       
-      self.soloX = self.soloX - ActionUI.static.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX + ActionUI.static.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX + ActionUI.static.ICON_BASE_DX * dt * self.duoDX
+      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
       self.flourScale = self.flourScale - dt
       self.duoScale = self.duoScale + dt
       if self.soloX < self.soloDest then
         self.soloX = self.soloDest
         self.flourX = self.flourDest
         self.duoX = self.duoDest
-        self.flourScale = ActionUI.static.ICON_SCALE
+        self.flourScale = ActionUI.ICON_SCALE
         self.duoScale = 1
         self.uiState = 'actionSelect'
       end
       
     elseif self.activeAction == 'duo' and self.duoDest < self.duoX then  -- {left:flour, center:solo, right:duo} -> {left:solo, center:duo, right:flour}
       
-      self.soloX = self.soloX - ActionUI.static.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX + ActionUI.static.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX - ActionUI.static.ICON_BASE_DX * dt * self.duoDX
+      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
       self.soloScale = self.soloScale - dt
       self.duoScale = self.duoScale + dt
       if self.soloX < self.soloDest then
         self.soloX = self.soloDest
         self.flourX = self.flourDest
         self.duoX = self.duoDest
-        self.soloScale = ActionUI.static.ICON_SCALE
+        self.soloScale = ActionUI.ICON_SCALE
         self.duoScale = 1
         self.uiState = 'actionSelect'
       end
@@ -277,20 +272,20 @@ function ActionUI:draw()
   -- Currently doesn't do anything because the activeAction is updated first then the positions are moved :(
   if self.activeAction == 'solo' then
       
-    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.static.ICON_ROTATION, self.flourScale, self.flourScale)
-    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.static.ICON_ROTATION, self.duoScale, self.duoScale)
-    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.static.ICON_ROTATION, self.soloScale, self.soloScale)
+    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.ICON_ROTATION, self.flourScale, self.flourScale)
+    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.ICON_ROTATION, self.duoScale, self.duoScale)
+    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.ICON_ROTATION, self.soloScale, self.soloScale)
     
   elseif self.activeAction == 'flour' then
       
-    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.static.ICON_ROTATION, self.duoScale, self.duoScale)
-    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.static.ICON_ROTATION, self.soloScale, self.soloScale)
-    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.static.ICON_ROTATION, self.flourScale, self.flourScale)
+    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.ICON_ROTATION, self.duoScale, self.duoScale)
+    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.ICON_ROTATION, self.soloScale, self.soloScale)
+    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.ICON_ROTATION, self.flourScale, self.flourScale)
   
   else
   
-    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.static.ICON_ROTATION, self.soloScale, self.soloScale)
-    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.static.ICON_ROTATION, self.flourScale, self.flourScale)
-    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.static.ICON_ROTATION, self.duoScale, self.duoScale)
+    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.ICON_ROTATION, self.soloScale, self.soloScale)
+    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.ICON_ROTATION, self.flourScale, self.flourScale)
+    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.ICON_ROTATION, self.duoScale, self.duoScale)
   end
 end;

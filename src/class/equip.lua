@@ -1,9 +1,9 @@
 --! filename: equip
 
-local class = require 'libs/middleclass'
-local Equip = class('Equip')
+Class = require 'libs.hump.class'
+Equip = Class{}
 
-function Equip:initialize(equipDict, x, y)
+function Equip:init(equipDict, x, y)
     self.equip = equipDict
     self.sprite = love.graphics.newImage(equipDict['spritePath'])
     self.x = x

@@ -1,10 +1,10 @@
 --! filename: dup button
 require('class.button')
-local class = require('libs/middleclass')
-DuoButton = class('DuoButton', Button)
+Class = require('libs.hump.class')
+DuoButton = Class{__includes = Button}
 
-function DuoButton:initialize(x, y, currentDP, skillList)
-    Button:initialize(x, y, 'asset/sprites/combat/duo_lame.png')
+function DuoButton:init(x, y, currentDP, skillList)
+    Button.init(self, x, y, Button.BUTTON_PATH .. 'duo.png')
     self.skillList = skillList
     self.currentDP = currentDP
     -- self.skillListHolder = love.graphics.newImage(path/to/image)

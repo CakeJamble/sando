@@ -1,53 +1,58 @@
 --! Animation Frame Counts
 
 local bake_animations = {
-  idle_frames = 5,
-  move_x_frames = 4,
-  move_y_frames = 4,
-  move_xy_frames = 4,
-  flinch_frames = 6,
-  ko_frames = 8
+  idle = 3,
+  moveX = 4,
+  moveY = 4,
+  moveXY = 4,
+  flinch = 6,
+  ko = 8
 }
 
 local maria_animations = {
-  idle_frames = 5,
-  move_x_frames = 4,
-  move_y_frames = 4,
-  move_xy_frames = 4,
-  flinch_frames = 6,
-  ko_frames = 8
+  idleFrames = 5,
+  moveXFrames = 4,
+  moveYFrames = 4,
+  moveXYFrames = 4,
+  flinchFrames = 6,
+  koFrames = 8
 }
 
 local marco_animations = {
-  idle_frames = 5,
-  move_x_frames = 4,
-  move_y_frames = 4,
-  move_xy_frames = 4,
-  flinch_frames = 6,
-  ko_frames = 8
+  idle = 5,
+  moveX = 4,
+  moveY = 4,
+  moveXY = 4,
+  flinch = 6,
+  ko = 8
 }
 
 
 local key_animations = {
-  idle_frames = 5,
-  move_x_frames = 4,
-  move_y_frames = 4,
-  move_xy_frames = 4,
-  flinch_frames = 6,
-  ko_frames = 8
+  idleFrames = 5,
+  moveXFrames = 4,
+  moveYFrames = 4,
+  moveXYFrames = 4,
+  flinchFrames = 6,
+  koFrames = 8
 }
 
 local butter_animations = {
-  idle_frames = 1
+  idleFrames = 5,
+  moveXFrames = 4,
+  moveYFrames = 4,
+  moveXYFrames = 4,
+  flinchFrames = 6,
+  koFrames = 8
 }
 
 local line_animations = {
-  idle_frames = 10,
-  move_x_frames = 10,
-  move_y_frames = 10,
-  move_xy_frames = 10,
-  flinch_frames = 7,
-  ko_frames = 7
+  idle = 10,
+  moveX = 10,
+  moveY = 10,
+  moveXY = 10,
+  flinch = 7,
+  ko = 7
 }
 
 

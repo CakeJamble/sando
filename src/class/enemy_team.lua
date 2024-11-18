@@ -1,17 +1,18 @@
 --! filename: enemy team
 require('class.team')
-local class = require 'libs/middleclass'
+require('class.enemy')
 
-EnemyTeam = class('EnemyTeam', Team)
+Class = require 'libs.hump.class'
+EnemyTeam = Class{__includes = Team}
 
-function EnemyTeam:initialize(enemies, teamSize)
-  Team:initialize(enemies, teamSize)
+function EnemyTeam:init(enemies, teamSize)
+  Team.init(self, enemies, teamSize)
 end;
 
 function EnemyTeam:update(dt)
-  Team:update(dt)
+  Team.update(self, dt)
 end;
 
 function EnemyTeam:draw()
-  Team:draw()
+  Team.draw(self)
 end;

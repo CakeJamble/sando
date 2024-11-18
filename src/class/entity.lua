@@ -1,33 +1,61 @@
 --! file: entity.lua
 require('class.skill')
+require('util.stat_sheet')
+require('util.enemy_list')
+require('util.skill_sheet')
+require('util.enemy_skill_list')
 require('util.animation_frame_counts')
 require('class.movement_state')
 -- global table where all entities are stored
 Entities = {} 
 
-local class = require 'libs/middleclass'
-Entity = class('Entity')
+Class = require "libs.hump.class"
+Entity = Class{}
 
   -- Entity constructor
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
-function Entity:initialize(stats, x, y)
-  self.baseStats = stats
-  self.battleStats = stats
+function Entity:init(stats, x, y)
+  self.baseStats = Entity.copyStats(stats)
+  self.battleStats = Entity.copyStats(stats)
   self.skillList = stats['skillList']
-  self.idleFrames = {}
+  self.spriteSheets = {
+    idle = {},
+    moveX = {},
+    moveY = {},
+    moveXY = {},
+    flinch = {},
+    ko = {}
+  }
+  self.movementAnimations = {
+    idle = {},
+    moveX = {},
+    moveY = {},
+    moveXY = {},
+    flinch = {},
+    ko = {}
+  }    
   self.subdir = ''
-  self.entityName = stats['entityName']
+  self.entityName = self.baseStats['entityName']
+  self.durations = get_state_animations(self.entityName)
   self.x=x
   self.y=y
   self.dX=0
   self.dY=0
-  self.frameWidth = stats['width']      -- width of sprite (or width for a single frame of animation for this character)
-  self.frameHeight = stats['height']    -- height of sprite (or height for a single frame of animation for this character)
+  self.frameWidth = self.battleStats['width']      -- width of sprite (or width for a single frame of animation for this character)
+  self.frameHeight = self.battleStats['height']    -- height of sprite (or height for a single frame of animation for this character)
   self.movementState = MovementState(self.x, self.y, self.frameHeight)
   self.currentFrame = 1
 end;
 
+-- COPY
+function Entity.copyStats(stats)
+  local copy = {}
+  for k,v in pairs(stats) do
+    copy[k] = v
+  end
+  return copy
+end;
 
 -- ACCESSORS
 
@@ -125,51 +153,51 @@ end;
 function Entity:setAnimations(subdir)
   -- Images
   local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
-  self.idleImage = love.graphics.newImage(path .. 'idle.png')
---  self.moveXImage = love.graphics.newImage(path .. 'move_x.png')
---  self.flinchImage = love.graphics.newImage(path .. 'flinch.png')
---  self.koImage = love.graphics.newImage(path .. 'ko.png')
+  self.spriteSheets.idle = love.graphics.newImage(path .. 'idle.png')
+--  self.spriteSheets.moveX = love.graphics.newImage(path .. 'move_x.png')
+--  self.spriteSheets.flinch = love.graphics.newImage(path .. 'flinch.png')
+--  self.spriteSheets.ko = love.graphics.newImage(path .. 'ko.png')
 
-  -- Quads
-  local durations = get_state_animations(self.entityName)
-  Entity:populateFrames(self.idleFrames, durations['idle_frames'], self.idleImage)
---  Entity:populateFrames(xMoveFrames, durations['move_x_frames'], self.moveXImage, moveXFrames)
---  Entity:populateFrames(flinchFrames, durations['flinch_frames'], self.flinchImage, flinchFrames)
---  Entity:populateFrames(koFrames, durations['ko_frames'], self.koImage, koFrames)
+  -- Quads  
+  Entity.populateFrames(self, self.movementAnimations.idle, self.spriteSheets.idle, self.durations.idle)
+--  Entity:populateFrames(self, self.movementAnimations.moveX, self.spriteSheets.moveX, self.durations.moveX)
+--  Entity:populateFrames(self, self.movementAnimations.moveY, self.spriteSheets.moveY, self.durations.moveY)
+--  Entity:populateFrames(self, self.movementAnimations.moveXY, self.spriteSheets.moveXY, self.durations.moveXY)
+--  Entity:populateFrames(self, self.movementAnimations.flinch, self.spriteSheets.flinch, self.durations.flinch)
+--  Entity:populateFrames(self, self.movementAnimations.ko, self.spriteSheets.ko, self.durations.ko)
 end;
 
-function Entity:populateFrames(frames, numFrames, image)
-  for i=0,numFrames do
-    table.insert(frames, love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, image:getWidth(), image:getHeight()))
+function Entity:populateFrames(frames, spriteSheet, numFrames)
+  for i=1,numFrames do
+    frames[i] = love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, spriteSheet:getWidth(), spriteSheet:getHeight())
   end
 end;
 
 function Entity:update(dt) --> void
   self.currentFrame = self.currentFrame + 10 * dt
-  if self.currentFrame >= 6 then -- hardcoded for testing initial animation :(
+  if self.currentFrame > self.durations[self.movementState.state] then
     self.currentFrame = 1
   end
-  self.movementState:update(dt)
 end;
 
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void    
     -- Placeholder for drawing the state or any visual representation
     -- walk, jump, idle
-  local state = self.movementState:getState()
+  local state = self.movementState.state
   if state == 'idle' then
-    love.graphics.draw(self.idleImage, self.idleFrames[math.floor(self.currentFrame)], self.x, self.y)
+    love.graphics.draw(self.spriteSheets.idle, self.movementAnimations.idle[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveX' then
-    print("Moving left and right")
+    -- love.graphics.draw(self.spriteSheets.moveX, self.movementAnimations.moveX[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveY' then
-    print("Moving up and down")
+    -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveXY' then
-    print("Moving diagonally")
+    -- love.graphics.draw(self.spriteSheets.moveXY, self.movementAnimations.moveXY[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'flinch' then
-    print("Flinching... ouch!") 
+    -- love.graphics.draw(self.spriteSheets.flinch, self.movementAnimations.flinch[math.floor(self.currentFrame)], self.x, self.y) 
   elseif state == 'ko' then
-    print("Fainting... eughhh")
+    -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
   else
-    print("There's some undefined state we've entered here, Captain. Red Alert!")
+    print("logical error in determining movement state of entity")
   end
 end;

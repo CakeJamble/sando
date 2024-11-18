@@ -3,17 +3,16 @@ require('class.team')
 require('class.inventory')
 require('class.character')
 
-local class = require 'libs/middleclass'
+Class = require 'libs.hump.class'
+CharacterTeam = Class{__includes = Team}
 
-CharacterTeam = class('CharacterTeam', Team)
-
-function CharacterTeam:initialize(characters, numMembers)
-    Team:initialize(characters, numMembers)
+function CharacterTeam:init(characters, numMembers)
+    Team.init(self, characters, numMembers)
     self.inventory = Inventory(Team:getMembers())
 end;
 
 function CharacterTeam:addMember(character)
-  Entity:addMember(character)
+  Team.addMember(self, character)
 end;
 
 function CharacterTeam:distributeExperience()
@@ -28,9 +27,10 @@ function CharacterTeam:keypressed(key)
 end;
 
 function CharacterTeam:update(dt)
-    Team:update(dt)
+    Team.update(self, dt)
 end;
 
 function CharacterTeam:draw()
-  Team:draw()
+  Team.draw(self)
+  love.graphics.print(self.members[1]:getEntityName(), 100, 100)
 end;

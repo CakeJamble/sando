@@ -1,10 +1,9 @@
---! file: Character
+--! filename: Character
 --[[
   Character class
   Used to create a character object, which consists of 
   a character's stats, skills, states, and gear.
 ]]
-
 require("util.skill_sheet")
 require("util.stat_sheet")
 require("class.entity")
@@ -14,39 +13,35 @@ require("class.action_ui")
 require("class.gear")
 
 
-local class = require 'libs/middleclass'
-Character = class('Character', Entity)
-
--- Integers used for calculating required exp to level up. Changes at soft cap
-Character.static.EXP_POW_SCALE = 1.8
-Character.static.EXP_MULT_SCALE = 4
-Character.static.EXP_BASE_ADD = 10
-
--- why are these static? For testing!!!
-Character.static.yPos = 100
-Character.static.xPos = 100
+Class = require "libs.hump.class"
+Character = Class{__includes = Entity, 
+  EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
+  -- For testing
+  yPos = 100,
+  xPos = 100
+}
 
   -- Character constructor
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
-function Character:initialize(stats, actionButton)
-  Entity:initialize(stats, Character.static.xPos, Character.static.yPos)
+function Character:init(stats, actionButton)
+  Entity.init(self, stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
   self.basic = {}
-  self.currentSkills = Character:setBaseSkill(Entity:getSkills())
+  self.currentSkills = Character.setBaseSkill(self, stats['skillList'])
   self.level = 1
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
-  Entity:setAnimations('character/')
-  Character.static.yPos = Character.static.yPos + 150
+  Entity.setAnimations(self, 'character/')
+  Character.yPos = Character.yPos + 150
   
-  self.offenseState = OffenseState(actionButton, Entity:getBattleStats())
-  self.defenseState = DefenseState(actionButton, Entity:getBattleStats()['defense'])
+  self.offenseState = OffenseState(actionButton, self.battleStats)
+  self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
   
   self.selectedSkill = nil
-  self.actionUI = ActionUI(Entity:getX(), Entity:getY(), current_skills)
+  self.actionUI = ActionUI(self.x, self.y, self.currentSkills)
   self.gear = Gear()
 end;
 
@@ -81,9 +76,9 @@ end;
 function Character:getRequiredExperience(lvl) --> int
   result = 0
   if lvl < 3 then
-    result = lvl^Character.static.EXP_POW_SCALE + lvl * Character.static.EXP_MULT_SCALE + Character.static.EXP_BASE_ADD
+    result = lvl^Character.EXP_POW_SCALE + lvl * Character.EXP_MULT_SCALE + Character.EXP_BASE_ADD
   else
-    result = lvl^Character.static.EXP_POW_SCALE + lvl * Character.static.EXP_MULT_SCALE
+    result = lvl^Character.EXP_POW_SCALE + lvl * Character.EXP_MULT_SCALE
   end
     
   return result
@@ -152,14 +147,14 @@ function Character:keypressed(key)
 end;
     
 function Character:update(dt)
-  Entity:update(dt)
+  Entity.update(self, dt)
   if self.state == 'offense' then
-    self.offenseState:update(dt)
+    self.offenseState.update(self, dt)
   elseif self.state == 'defense' then
-    self.defenseState:update(dt)
+    self.defenseState.update(self, dt)
   end
 end;
 
 function Character:draw()
-  Entity:draw()
+  Entity.draw(self)
 end;

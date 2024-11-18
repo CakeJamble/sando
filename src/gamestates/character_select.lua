@@ -1,5 +1,9 @@
 --! file: gamestates/character_select
 require("class.character_team")
+require("util.globals")
+require("util.stat_sheet")
+require("class.character")
+
 local character_select = {}
 
 local TEAM_CAP = 2
@@ -123,7 +127,8 @@ end;
 
 function character_select:validate_selection()
   if teamCount == TEAM_CAP then
-    Gamestate.switch(states['combat'], CharacterTeam(character_select:index_to_character(), TEAM_CAP))
+    saveCharacterTeam(CharacterTeam(character_select:indicesToCharacters(), TEAM_CAP))
+    Gamestate.switch(states['combat'])
   else
     selectedTeamIndices[teamCount + 1] = index
     teamCount = teamCount + 1
@@ -132,7 +137,7 @@ end;
 
   -- Takes table of selected character indices and converts
   -- each index to a valid Character object, adding to the global team table
-function character_select:index_to_character()
+function character_select:indicesToCharacters()
   local characterList = {}
   for i=1,TEAM_CAP do
     if selectedTeamIndices[i] == 0 then

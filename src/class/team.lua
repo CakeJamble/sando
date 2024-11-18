@@ -2,14 +2,17 @@
 require("class.entity")
 require('class.action_ui')
 
-local class = require 'libs/middleclass'
-Team = class('Team')
+Class = require 'libs.hump.class'
+Team = Class{}
 
 
   -- Team constructor
-function Team:initialize(entities, numMembers)
-  self.members = entities
+function Team:init(entities, numMembers)
+  self.members = {}
   self.numMembers = numMembers
+  for i=1,self.numMembers do
+    self.members[i] = entities[i]:clone()
+  end
   
   self.membersIndex = 1
   self.focusedMember = nil
@@ -21,10 +24,6 @@ end;
 function Team:addMember(entity) --> void
   self.numMembers = self.numMembers + 1
   self.members[self.numMembers] = entity
-end;
-
-function Team:isFull()
-  return self.membersIndex == self.numMembers
 end;
 
   -- Iterates over team members to check if they are all knocked out
@@ -48,7 +47,7 @@ end;
 
 function Team:sortBySpeed()
   table.sort(self.members, function(a, b) 
-      return a:getSpeed() < b:getSpeed()
+      return a.battleStats.speed < b.battleStats.speed
     end
     )
 end;
@@ -58,7 +57,7 @@ function Team:getAt(i)
 end;
 
 function Team:getSpeedAt(i)
-  return self.members[i]:getSpeed()
+  return self.members[i].battleStats.speed
 end;
 
 
@@ -97,20 +96,15 @@ function Team:increaseMoney(amount)
   self.money = self.money + amount
 end;
 
-
 function Team:update(dt)
-  if Team:isFull() then
-    for i=1,numMembers do
-      self.members[i]:update(dt)
-    end
+  for _,member in pairs(self.members) do
+    member:update(dt)
   end
 end;
 
 
 function Team:draw()
-  if Team:isFull() then
-    for i=1,numMembers do
-      self.members[i]:draw()
-    end
+  for i=1,self.numMembers do
+    self.members[i]:draw()
   end
 end;
