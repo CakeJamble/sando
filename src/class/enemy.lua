@@ -11,9 +11,8 @@ Enemy = Class{__includes = Entity,
   xPos = 100, yPos = 100}
 
 function Enemy:init(enemyName, enemyType)
-  stats = getStatsByName(enemyName, enemyType)
-  Entity:init(stats, Enemy.xPos, Enemy.yPos)
-  Entity:setAnimations(enemyType .. '/')
+  Entity.init(self, getStatsByName(enemyName, enemyType), Enemy.xPos, Enemy.yPos)
+  Entity.setAnimations(self, enemyType .. '/')
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']
   self.selectedSkill = nil

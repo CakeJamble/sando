@@ -7,7 +7,7 @@ Class = require 'libs.hump.class'
 CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters, numMembers)
-    Team:init(characters, numMembers)
+    Team.init(self, characters, numMembers)
     self.inventory = Inventory(Team:getMembers())
 end;
 
@@ -27,10 +27,10 @@ function CharacterTeam:keypressed(key)
 end;
 
 function CharacterTeam:update(dt)
-    Team:update(dt)
+    Team.update(self, dt)
 end;
 
 function CharacterTeam:draw()
-  Team:draw()
+  Team.draw(self)
   love.graphics.print(self.members[1]:getEntityName(), 100, 100)
 end;

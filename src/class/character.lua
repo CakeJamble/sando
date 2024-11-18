@@ -25,23 +25,23 @@ Character = Class{__includes = Entity,
     -- preconditions: stats dict and skills dict
     -- postconditions: Creates a valid character
 function Character:init(stats, actionButton)
-  Entity:init(stats, Character.xPos, Character.yPos)
+  Entity.init(self, stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
   self.basic = {}
-  self.currentSkills = Character:setBaseSkill(Entity:getSkills())
+  self.currentSkills = Character.setBaseSkill(self, stats['skillList'])
   self.level = 1
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
-  Entity:setAnimations('character/')
+  Entity.setAnimations(self, 'character/')
   Character.yPos = Character.yPos + 150
   
-  self.offenseState = OffenseState(actionButton, Entity:getBattleStats())
-  self.defenseState = DefenseState(actionButton, Entity:getBattleStats()['defense'])
+  self.offenseState = OffenseState(actionButton, self.battleStats)
+  self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
   
   self.selectedSkill = nil
-  self.actionUI = ActionUI(Entity:getX(), Entity:getY(), current_skills)
+  self.actionUI = ActionUI(self.x, self.y, self.currentSkills)
   self.gear = Gear()
 end;
 
@@ -147,14 +147,14 @@ function Character:keypressed(key)
 end;
     
 function Character:update(dt)
-  Entity:update(dt)
+  Entity.update(self, dt)
   if self.state == 'offense' then
-    self.offenseState:update(dt)
+    self.offenseState.update(self, dt)
   elseif self.state == 'defense' then
-    self.defenseState:update(dt)
+    self.defenseState.update(self, dt)
   end
 end;
 
 function Character:draw()
-  Entity:draw()
+  Entity.draw(self)
 end;

@@ -8,8 +8,11 @@ Team = Class{}
 
   -- Team constructor
 function Team:init(entities, numMembers)
-  self.members = entities
+  self.members = {}
   self.numMembers = numMembers
+  for i=1,self.numMembers do
+    self.members[i] = entities[i]:clone()
+  end
   
   self.membersIndex = 1
   self.focusedMember = nil
@@ -48,7 +51,7 @@ end;
 
 function Team:sortBySpeed()
   table.sort(self.members, function(a, b) 
-      return a:getSpeed() < b:getSpeed()
+      return a.battleStats.speed < b.battleStats.speed
     end
     )
 end;
@@ -58,7 +61,7 @@ function Team:getAt(i)
 end;
 
 function Team:getSpeedAt(i)
-  return self.members[i]:getSpeed()
+  return self.members[i].battleStats.speed
 end;
 
 
@@ -97,10 +100,9 @@ function Team:increaseMoney(amount)
   self.money = self.money + amount
 end;
 
-
 function Team:update(dt)
   if Team:isFull() then
-    for i=1,numMembers do
+    for i=1,self.numMembers do
       self.members[i]:update(dt)
     end
   end
@@ -109,7 +111,7 @@ end;
 
 function Team:draw()
   if Team:isFull() then
-    for i=1,numMembers do
+    for i=1,self.numMembers do
       self.members[i]:draw()
     end
   end
