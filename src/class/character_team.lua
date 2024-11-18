@@ -12,7 +12,7 @@ function CharacterTeam:init(characters, numMembers)
 end;
 
 function CharacterTeam:addMember(character)
-  Entity:addMember(character)
+  Team.addMember(self, character)
 end;
 
 function CharacterTeam:distributeExperience()

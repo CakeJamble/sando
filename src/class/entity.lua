@@ -37,6 +37,7 @@ function Entity:init(stats, x, y)
   }    
   self.subdir = ''
   self.entityName = self.baseStats['entityName']
+  self.durations = get_state_animations(self.entityName)
   self.x=x
   self.y=y
   self.dX=0
@@ -157,24 +158,22 @@ function Entity:setAnimations(subdir)
 --  self.flinchImage = love.graphics.newImage(path .. 'flinch.png')
 --  self.koImage = love.graphics.newImage(path .. 'ko.png')
 
-  -- Quads
-  local durations = get_state_animations(self.entityName)
-  
-  Entity.populateFrames(self, durations.idleFrames)
+  -- Quads  
+  Entity.populateFrames(self, self.movementAnimations.idle, self.spriteSheets.idle, self.durations.idle)
 --  Entity:populateFrames(xMoveFrames, durations['move_x_frames'], self.moveXImage, moveXFrames)
 --  Entity:populateFrames(flinchFrames, durations['flinch_frames'], self.flinchImage, flinchFrames)
 --  Entity:populateFrames(koFrames, durations['ko_frames'], self.koImage, koFrames)
 end;
 
-function Entity:populateFrames(numFrames)
+function Entity:populateFrames(frames, spriteSheet, numFrames)
   for i=1,numFrames do
-    self.movementAnimations.idle[i] = love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, self.spriteSheets.idle:getWidth(), self.spriteSheets.idle:getHeight())
+    frames[i] = love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, spriteSheet:getWidth(), spriteSheet:getHeight())
   end
 end;
 
 function Entity:update(dt) --> void
   self.currentFrame = self.currentFrame + 10 * dt
-  if self.currentFrame >= 6 then -- hardcoded for testing initial animation :(
+  if self.currentFrame > self.durations[self.movementState.state] then
     self.currentFrame = 1
   end
 end;

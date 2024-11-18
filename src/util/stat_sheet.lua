@@ -15,7 +15,7 @@ starting_stats = {
  
 local bake_stats = {
    entityName = "Bake",
-   width=80,height=80,
+   width=64,height=64,
    hp=10,
    fp=10,
    attack=10,

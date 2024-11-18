@@ -26,10 +26,6 @@ function Team:addMember(entity) --> void
   self.members[self.numMembers] = entity
 end;
 
-function Team:isFull()
-  return self.membersIndex == self.numMembers
-end;
-
   -- Iterates over team members to check if they are all knocked out
     -- preconditions: none
     -- postcondition: returns true if team wiped, false otherwise
@@ -101,18 +97,14 @@ function Team:increaseMoney(amount)
 end;
 
 function Team:update(dt)
-  if Team:isFull() then
-    for i=1,self.numMembers do
-      self.members[i]:update(dt)
-    end
+  for _,member in pairs(self.members) do
+    member:update(dt)
   end
 end;
 
 
 function Team:draw()
-  if Team:isFull() then
-    for i=1,self.numMembers do
-      self.members[i]:draw()
-    end
+  for i=1,self.numMembers do
+    self.members[i]:draw()
   end
 end;

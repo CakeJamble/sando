@@ -8,7 +8,7 @@ require("util.enemy_skill_list")
 Class = require "libs.hump.class"
 Enemy = Class{__includes = Entity, 
   -- for testing
-  xPos = 100, yPos = 100}
+  xPos = 300, yPos = 100}
 
 function Enemy:init(enemyName, enemyType)
   Entity.init(self, getStatsByName(enemyName, enemyType), Enemy.xPos, Enemy.yPos)
@@ -16,6 +16,8 @@ function Enemy:init(enemyName, enemyType)
   self.expReward = stats['experienceReward']
   self.moneyReward = stats['moneyReward']
   self.selectedSkill = nil
+  Enemy.yPos = Enemy.yPos + 150
+
 end;
 
 function Enemy:getExpReward()
@@ -38,6 +40,10 @@ function Enemy:selectAttack() --> Skill (?)
   -- select a random attack and random target(s)
 end;
 
+function Enemy:update(dt)
+  Entity.update(self, dt)
+end;
+
 function Enemy:draw()
-  Entity:draw()
+  Entity.draw(self)
 end;

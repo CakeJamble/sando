@@ -127,24 +127,12 @@ end;
 
 function combat:update(dt)
   characterTeam:update(dt)
-  -- enemyTeam:update(dt)
-
-  -- Remove an enemy from the Entities table upon defeat
-  for _,entity in pairs(Entities) do
-    if not entity:isAlive() then
-      if type(entity) == Enemy then -- add their rewards to the combat rewards
-        rewardExp = rewardExp + entity:getExpReward()
-        rewardMoney = rewardMoney + entity:getMoneyReward()
-        Entities:pop(entity)
-      end
-    end
-  end
-
+  enemyTeam:update(dt)
 end;
 
 function combat:draw()
   characterTeam:draw()
-  -- enemyTeam:draw()
+  enemyTeam:draw()
   
   -- if team.actionUI:getUIState() == 'targeting' then
   --   love.graphics.draw(targetCursor, cursorX, cursorY)
