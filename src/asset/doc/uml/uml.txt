@@ -1,7 +1,7 @@
 @startuml
 
 abstract class Team {
-    +initialize()
+    +init()
     +clear()
     +addMember(character: Character) : void
     +isWipedOut() : boolean
@@ -18,8 +18,9 @@ abstract class Team {
 }
 
 class CharacterTeam {
-    +initialize()
-    +distributeExperience()
+    +init(characters: table<Character>, numMembers: number)
+    +addMember(character: Character)
+    +distributeExperience() **
     +getInventory() : Inventory
     +keypressed(key) : void
     +update(dt: number)
@@ -28,13 +29,13 @@ class CharacterTeam {
 }
 
 class EnemyTeam {
-    +initialize()
+    +init()
     +update(dt: number)
     +draw()
 }
 
 class Entity {
-    +initialize(stats: table, x: number, y: number)
+    +init(stats: table, x: number, y: number)
     +getEntityName(): string
     +getX(): number
     +getY(): number
@@ -81,7 +82,7 @@ class Entity {
 }
 
 class Skill {
-    +initialize(skillDict: table, width: number, height: number)
+    +init(skillDict: table, width: number, height: number)
     +getSkillDict() : table
     +newAnimation(path: string, width: number, height: number, duration: number) : table
     +update(dt) : void
@@ -98,13 +99,14 @@ class Skill {
 }
 
 class Character {
-    +initialize(stats: table, actionButton: string)
-    +setBaseSkills(): void
+    +init(stats: table, actionButton: string)
+    +setBaseSkill(skillList: table<Skill>): void
     +gainExp(amount: number): void
     +getRequiredExperience(lvl: number): number
     +updateSkills(lvl: number): void
     +getCurrentSkills(): table
     +getUIState(): UIState
+    +getActionUI(): ActionUI
     +setSelectedSkill(): void
     +equip(equip: Equip) : void
     +unequip(equip: Equip) : void
@@ -126,6 +128,7 @@ class Character {
     -defenseState: DefenseState
     -selectedSkill: Skill
     -gear: Gear
+    -actionUI: ActionUI
 
     {static} -EXP_POW_SCALE: number = 1.8
     {static} -EXP_MULT_SCALE: number = 4
@@ -135,21 +138,21 @@ class Character {
 }
 
 class Enemy {
-    +initialize(enemyName: string, enemyType: string)
+    +init(enemyName: string, enemyType: string)
     +getExpReward() : number
     +setExpReward(amount: number) : void
     +getMoneyReward() : number
     +setMoneyReward(moneyReward: number)
     +selectAttack() : Skill
+    +update(dt)
     +draw()
-    -stats : table
     -expReward: number
     -moneyReward: number
     -selectedSkill: Skill
 }
 
 class MovementState {
-    +initialize(x: number, y: number, frameHeight: number)
+    +init(x: number, y: number, frameHeight: number)
     +getPosition() : table<number>
     +setPosition(x: number, y: number) : void
     +moveTowards(tX: number, tY: number) : void
@@ -161,7 +164,7 @@ class MovementState {
 }
 
 class OffenseState {
-    +initialize(actionButton: string, battleStats: table)
+    +init(actionButton: string, battleStats: table)
     +getSkill() : Skill
     +setSkill(skillObj : Skill) : void
     +setTargetXY(x: number, y: number) : void
@@ -189,7 +192,7 @@ class OffenseState {
 }
 
 class DefenseState {
-    +initialize(baseDefense: number, blockBonus: number, blockWindw: number, dodgeWindow: number)
+    +init(actionButton: string, baseDefense: number)
     +setActionButton(newButton: string) : void
     +setDefense(defense: number) : void
     +setIncomingSkill(skill: Skill) : void
@@ -202,6 +205,7 @@ class DefenseState {
     -blockBonus: number
     -blockWindow: number
     -incomingSkill: Skill
+    -stance: string
     -actionButton: string
     -frameCount: number
     -frameWindow: number
@@ -211,7 +215,7 @@ class DefenseState {
 }
 
 class ActionUI {
-    +initialize(x: number, y: number, skillList: table<Skill>)
+    +init(x: number, y: number, skillList: table<Skill>)
     +getPos() : table
     +setPos(x: number, y: number) : void
     +setActiveAction(action: string) : void
@@ -252,7 +256,7 @@ class ActionUI {
 }
 
 abstract class Button {
-    +initialize(x: number, y: number)
+    +init(x: number, y: number)
     +getButton() : Image
     +getPos() : table
     +setPos(x: number, y: number)
@@ -269,14 +273,14 @@ abstract class Button {
 }
 
 class SoloButton {
-    +initialize(x: number, y: number)
+    +init(x: number, y: number)
     +keypressed(key) : void
     +update(dt) : void
     +draw() : void
 }
 
 class FlourButton {
-    +initialize(x: number, y: number, currentFP: number, skillList: table<Skill>)
+    +init(x: number, y: number, currentFP: number, skillList: table<Skill>)
     +formatSkillList() : string
     +keypressed(key) : void
     +update(dt) : void
@@ -289,7 +293,7 @@ class FlourButton {
 }
 
 class DuoButton {
-    +initialize(x: number, y: number, currentDP: number, skillList: table<Skill>)
+    +init(x: number, y: number, currentDP: number, skillList: table<Skill>)
     +formatSkillList() : string
     +keypressed(key) : void
     +update(dt) : void
@@ -317,7 +321,7 @@ class Cookware {
 }
 
 class Gear {
-    +initialize()
+    +init()
     +equip(equip: Equip) : void
     +unequip(equip: Equip) : void
     +getEquip(equipName: string) : Equip
@@ -327,7 +331,7 @@ class Gear {
 }
 
 class Equip {
-    +initialize(equipDict: table, x: number, y: number)
+    +init(equipDict: table, x: number, y: number)
     +getStatModifiers(): table
     +setPosition(x: number, y: number): void
     +draw(): void
