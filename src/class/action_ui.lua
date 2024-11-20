@@ -268,24 +268,4 @@ function ActionUI:draw()
     self.flourButton:draw()
     self.duoButton:draw()
   end
-  
-  
-  if self.activeAction == 'solo' then
-      
-    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.ICON_ROTATION, self.flourScale, self.flourScale)
-    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.ICON_ROTATION, self.duoScale, self.duoScale)
-    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.ICON_ROTATION, self.soloScale, self.soloScale)
-    
-  elseif self.activeAction == 'flour' then
-      
-    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.ICON_ROTATION, self.duoScale, self.duoScale)
-    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.ICON_ROTATION, self.soloScale, self.soloScale)
-    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.ICON_ROTATION, self.flourScale, self.flourScale)
-  
-  else
-  
-    love.graphics.draw(self.soloButton, self.soloX, self.y, ActionUI.ICON_ROTATION, self.soloScale, self.soloScale)
-    love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.ICON_ROTATION, self.flourScale, self.flourScale)
-    love.graphics.draw(self.duoButton, self.duoX, self.y, ActionUI.ICON_ROTATION, self.duoScale, self.duoScale)
-  end
 end;

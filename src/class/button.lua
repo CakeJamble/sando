@@ -1,6 +1,6 @@
 --! filename: button
 Class = require 'libs.hump.class'
-Button = Class{BASE_DX = 150, SPACER = 50, SCALE_DOWN = 0.6, BUTTON_PATH = 'asset/sprites/combat/'}
+Button = Class{BASE_DX = 150, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/'}
 
 function Button:initialize(x, y, path)
     self.centerX = x
@@ -48,5 +48,5 @@ function Button:update(dt)
 end;
 
 function Button:draw()
-    --TODO
+    love.graphics.draw(self.button, self.x, self.y, 0, self.scaleFactor, self.scaleFactor)
 end;

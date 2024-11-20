@@ -4,7 +4,7 @@ Class = require 'libs.hump.class'
 FlourButton = Class{__includes = Button}
 
 function FlourButton:init(x, y, currentFP, skillList)
-    Button:init(x, y, Button.BUTTON_PATH .. 'flour.png')
+    Button:init(x, y, Button.PATH .. 'flour.png')
     self.skillList = skillList
     self.currentFP = currentFP
     -- self.skillListHolder = love.graphics.newImage(path/to/image)
@@ -27,6 +27,5 @@ function FlourButton:update(dt)
 end;
 
 function FlourButton:draw()
-    Button:draw()
-    -- TODO : draw the skill list & cursor
+    Button.draw()
 end;
