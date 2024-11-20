@@ -72,8 +72,13 @@ end;
 
   -- Verifies that each character is in valid focus state
 function Team:setFocusedMember(character) --> void
-  for _,member in pairs(self.members ) do
-    character:setFocused(member.entityName == character.entityName)
+  if character ~= nil then
+    self.focusedMember = character
+    for _,member in pairs(self.members ) do
+      character:setFocused(member.entityName == character.entityName)
+    end
+  else
+    self.focusedMember = nil
   end
 end;
 

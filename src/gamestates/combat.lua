@@ -74,10 +74,12 @@ function combat:nextTurn(characterTeam, enemyTeam)
     characterTeam:setFocusedMember(nil)
     enemyTeam:setFocusedMember(enemyTeam:getAt(enemyTeamIndex))
     enemyTeamIndex = enemyTeamIndex + 1
+    
   else    -- if next Character.speed >= next Enemey.speed then
     enemyTeam:setFocusedMember(nil)
     characterTeam:setFocusedMember(characterTeam:getAt(characterTeamIndex))
     characterTeamIndex = characterTeamIndex + 1
+    
   end
 end;
 

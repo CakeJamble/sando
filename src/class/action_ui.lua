@@ -263,6 +263,13 @@ end;
 function ActionUI:draw()
   -- To make the wheel convincing, we have to draw the activeAction last so it appears to rotate in front of the other icons
   -- Currently doesn't do anything because the activeAction is updated first then the positions are moved :(
+  if self.uiState ~= 'qte' then
+    self.soloButton:draw()
+    self.flourButton:draw()
+    self.duoButton:draw()
+  end
+  
+  
   if self.activeAction == 'solo' then
       
     love.graphics.draw(self.flourButton, self.flourX, self.y, ActionUI.ICON_ROTATION, self.flourScale, self.flourScale)
