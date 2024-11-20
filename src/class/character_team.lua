@@ -23,7 +23,7 @@ function CharacterTeam:getInventory()
 end;
 
 function CharacterTeam:keypressed(key)
-  Team:getFocusedMember():keypressed(key)
+  self.focusedMember:keypressed(key)
 end;
 
 function CharacterTeam:update(dt)

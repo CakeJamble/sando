@@ -110,21 +110,7 @@ end;
 
 
 function combat:keypressed(key)
-  if team.actionUI:getUIState() == 'targeting' then
-    if key == 'down' then
-      combat:setTargetPos(1)
-    elseif key == 'up' then
-      combat:setTargetPos(-1)
-    end
-  elseif key == 'escape' then
-    Gamestate.push(states['pause'])
-  end
-  
-  team:keypressed(key)
-    
-  -- come back to me when you have a team of enemies ready to load in :) 
-  -- if team.actionUI:getUIState() == 'targeting' then
-    
+  characterTeam:keypressed(key)
 end;
 
 function combat:update(dt)

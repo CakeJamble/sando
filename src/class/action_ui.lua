@@ -97,6 +97,7 @@ function ActionUI:keypressed(key)
         self.soloButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)
         self.duoButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)
         self.flourButton:setTargetPos(self.x, 1)
+      
       elseif self.activeAction == self.flourButton then                     -- {left:solo, center:duo, right:flour}
         self.activeAction = self.duoButton
         self.flourButton:setIsActiveButton(false)
@@ -125,8 +126,7 @@ function ActionUI:keypressed(key)
       else
         self.uiState = 'submenuing'
       end
-  end
-  
+    end
     
   elseif self.uiState == 'submenuing' then    -- the activeAction is either flourButton or duoButton
     self.activeAction:keypressed(key)

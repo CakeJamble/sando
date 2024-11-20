@@ -41,7 +41,8 @@ function Character:init(stats, actionButton)
   self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
   
   self.selectedSkill = nil
-  self.actionUI = ActionUI(self.x, self.y, self.currentSkills)
+  self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
+  
   self.isFocusedCharacter = false
   self.gear = Gear()
 end;
@@ -139,17 +140,7 @@ function Character:applyGear()
 end;
 
 function Character:keypressed(key)
-  if key == self.actionButton then
-
-    if self.state == 'defense' then
-      self.defenseState:keypressed(key)
-    elseif self.state == 'offense' then
-      self.offenseState:keypressed(key)
-    else  -- self.state == 'waiting' then
-      print('strike a pose')
-    end
-    
-  end
+  self.actionUI:keypressed(key)
 end;
     
 function Character:update(dt)
