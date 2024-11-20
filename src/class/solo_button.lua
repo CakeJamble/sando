@@ -5,8 +5,9 @@ require('class.button')
 Class = require 'libs.hump.class'
 SoloButton = Class{__includes = Button}
 
-function SoloButton:init(x, y)
+function SoloButton:init(x, y, basicAttack)
     Button:init(x, y, Button.BUTTON_PATH .. 'solo_lame.png')
+    self.basicAttack = basicAttack
 end;
 
 function SoloButton:keypressed(key)

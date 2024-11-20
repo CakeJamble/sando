@@ -42,6 +42,7 @@ function Character:init(stats, actionButton)
   
   self.selectedSkill = nil
   self.actionUI = ActionUI(self.x, self.y, self.currentSkills)
+  self.isFocusedCharacter = false
   self.gear = Gear()
 end;
 
@@ -50,6 +51,11 @@ function Character:setBaseSkill(skillList)    --> void
   self.basic = skillList[1]
   local startingSkill = skillList[2]
   return startingSkill
+end;
+
+-- Sets conditional variable for determining whether or not to draw their ActionUI
+function Character:setFocused(isFocused) --> void
+  self.isFocusedCharacter = isFocused
 end;
 
   -- Gains exp, leveling up when applicable
@@ -157,4 +163,7 @@ end;
 
 function Character:draw()
   Entity.draw(self)
+  if self.isFocusedCharacter then
+    self.actionUI.draw(self)
+  end
 end;

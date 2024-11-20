@@ -16,7 +16,6 @@ function Team:init(entities, numMembers)
   
   self.membersIndex = 1
   self.focusedMember = nil
-  self.actionUI = ActionUI(0, 0)
   self.money = 0
 end;
 
@@ -71,9 +70,11 @@ function Team:getNumMembers() --> int
 end;
 
 
-  -- Sets the focused member to the character
+  -- Verifies that each character is in valid focus state
 function Team:setFocusedMember(character) --> void
-  self.focusedMember = character
+  for _,member in pairs(self.members ) do
+    character:setFocused(member.entityName == character.entityName)
+  end
 end;
 
 
