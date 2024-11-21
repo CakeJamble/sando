@@ -17,7 +17,7 @@ end
 function Inventory:equip(character, equip) --> number
     local profit = 0
     for _,g in pairs(self.gears) do
-        if g['name'] == gear['name'] and g['gearType'] == gear['gearType'] then
+        if g['name'] == equip['name'] and g['gearType'] == equip['gearType'] then
             print('Gear or Gear Type already in inventory')
             -- TODO: option to replace and sell old gear
             -- profit = g['value']
@@ -27,7 +27,7 @@ function Inventory:equip(character, equip) --> number
     character:equip(equip)
     table.insert(self.gears[character:getEntityName()], equip)
     
-    print('Added ' .. gear['name'] .. ' to inventory')
+    print('Added ' .. equip['name'] .. ' to inventory')
     return profit
 end;
 
