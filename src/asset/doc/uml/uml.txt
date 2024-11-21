@@ -378,9 +378,11 @@ Entity <|-- Enemy
 Character o-- OffenseState : has
 Character o-- DefenseState : has
 Character o-- ActionUI : has
-Character "1" o-- "1..2" Gear : has
+Character "1" o-- "1" Gear : has
+Gear "1" o-- "1..2" Equip : composes
 Team <|-- CharacterTeam
 Team <|-- EnemyTeam
+CharacterTeam "1" o-- "1" Inventory : has
 CharacterTeam "1" o-- "1..*" Character : composes
 EnemyTeam "1" o-- "1..*" Enemy : composes
 SoloButton <|-- Button
@@ -389,6 +391,10 @@ DuoButton <|-- Button
 ActionUI "1" o-- "1" SoloButton : has
 ActionUI "1" o-- "1" FlourButton : has
 ActionUI "1" o-- "1" DuoButton : has
-
+Inventory "1" o-- "0..*" Cookware : has
+PauseMenu "1" o-- "1" InventoryTab
+PauseMenu "1" o-- "1" TeamTab
+PauseMenu "1" o-- "1" SettingsTab
+PauseMenu "1" o-- "1" QuitTab
 
 @enduml
