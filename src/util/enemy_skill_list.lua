@@ -1,5 +1,5 @@
 --! filename: Enemy Skill List
-
+require('util.enemy_list')
 local placeholderSkillList = {}
 
 function getplaceholderSkillList()
@@ -115,7 +115,7 @@ local buttlerSkills = {
     damage_type = 'physical',
     attack_type = 'solo',
     target_type = 'single',
-    effects = slip,
+    effects = 'slip',
     proc = 1,
     partners = nil,
     sprite_path = nil,
@@ -193,6 +193,7 @@ local lineSkills = {
 function getSkillsByName(enemyName, enemyType) --> Table
   if(enemyType == 'Enemy') then
     -- go through enemy table and find match
+    local enemyTable = getAllEnemies()
     for i,v in ipairs(enemyTable) do
       if(v['enemyName'] == enemyName) then
         return v
@@ -200,13 +201,15 @@ function getSkillsByName(enemyName, enemyType) --> Table
     end
   elseif(enemyType == 'Elite') then
     -- go through elite table and find match
-    for i,v in ipairs(eliteTable) do
+    local eliteTable = getAllElites()
+    for _,v in pairs(eliteTable) do
       if(v['enemyName'] == enemyName) then
         return v
       end
     end
   else
     -- go through boss table and find match
+    local bossTable = getAllBosses()
     for i,v in ipairs(bossTable) do
       if(v['enemyName'] == enemyName) then
         return v

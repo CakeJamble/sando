@@ -27,5 +27,5 @@ function FlourButton:update(dt)
 end;
 
 function FlourButton:draw()
-    Button.draw()
+    Button.draw(self)
 end;

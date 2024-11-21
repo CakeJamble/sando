@@ -4,7 +4,6 @@ require('class.entity')
 require('class.enemy')
 require('class.character_team')
 require('class.enemy_team')
-require('gamestates/game')
 
 testPool = { 
   {'Line', 'Line'}, 

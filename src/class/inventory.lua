@@ -33,10 +33,10 @@ end;
 
 function Inventory:unequip(character, equip) --> number
     local value = 0
-    for i,g in pairs(self.gears) do
-        if g['name'] == gear['name'] then
+    for _,g in pairs(self.gears) do
+        if g['name'] == equip['name'] then
             character:unequip(g)
-            print('Sold ' .. gear['name'] .. ' from inventory')
+            print('Sold ' .. equip['name'] .. ' from inventory')
             print('Profit: ' .. g['value'])
             value = g['value']
         end

@@ -4,7 +4,7 @@ require("class.character")
 require("class.enemy")
 require("class.action_ui")
 require("util.encounter_pools")
-require('gamestates/character_select')
+require('gamestates.character_select')
 require("util.globals")
 
 local combat = {}
