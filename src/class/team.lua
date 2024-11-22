@@ -8,8 +8,7 @@ Team = Class{}
   -- Team constructor
 function Team:init(entities, numMembers)
   self.members = entities
-  self.numMembers = numMembers
-  
+  self.numMembers = numMembers  
   self.membersIndex = 1
   self.money = 0
 end;

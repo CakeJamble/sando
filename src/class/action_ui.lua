@@ -15,12 +15,11 @@ function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy pos
   self.y = y
   self.uiState = 'actionSelect'
   self.iconSpacer = 50
-  self.soloButton = SoloButton(self.x, self.y)
-  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, currentFP, skillList)
+  self.soloButton = SoloButton(x, y)
+  self.flourButton = FlourButton(x - self.iconSpacer, self.y, currentFP, skillList)
   self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, currentDP, skillList)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton}
   self.activeButton = self.soloButton
-
   
   -- skill list needs to be printed on another display interface
   self.skillList = skillList
@@ -138,111 +137,111 @@ function ActionUI:targetEnemy(x, y)
   self.drawCursor = true
 end;
 
--- function ActionUI:update(dt)
---   if self.uiState == 'rotating' then
+function ActionUI:update(dt)
+  if self.uiState == 'rotating' then
     
---     if self.activeButton == 'flour' and self.flourDest > self.flourX then      -- {left:flour, center:solo, right:duo} -> {left:duo, center:flour, right:solo}
+    if self.activeButton == self.flourButton and self.flourDest > self.flourX then      -- {left:flour, center:solo, right:duo} -> {left:duo, center:flour, right:solo}
       
---       self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
---       self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
---       self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
---       self.soloScale = self.soloScale - dt
---       self.flourScale = self.flourScale + dt
+      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
+      self.soloScale = self.soloScale - dt
+      self.flourScale = self.flourScale + dt
       
---       -- In case the updated coordinates overshoot, set them them to correct destination and exit the rotating ui state
---       if self.soloX > self.soloDest then
---         self.soloX = self.soloDest
---         self.flourX = self.flourDest
---         self.duoX = self.duoDest
---         self.flourScale = 1
---         self.soloScale = ActionUI.ICON_SCALE
---         self.uiState = 'actionSelect'
---       end
---       -- if self.soloScale > 1 then self.soloScale = 1 end
+      -- In case the updated coordinates overshoot, set them them to correct destination and exit the rotating ui state
+      if self.soloX > self.soloDest then
+        self.soloX = self.soloDest
+        self.flourX = self.flourDest
+        self.duoX = self.duoDest
+        self.flourScale = 1
+        self.soloScale = ActionUI.ICON_SCALE
+        self.uiState = 'actionSelect'
+      end
+      -- if self.soloScale > 1 then self.soloScale = 1 end
 
---     elseif self.activeButton == 'flour' and self.flourDest < self.flourX then  -- {left:solo, center:duo, right:flour} -> {left:duo, center:flour, right:solo}
+    elseif self.activeButton == 'flour' and self.flourDest < self.flourX then  -- {left:solo, center:duo, right:flour} -> {left:duo, center:flour, right:solo}
       
---       self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
---       self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
---       self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
---       self.duoScale = self.duoScale - dt
---       self.flourScale = self.flourScale + dt
---       if self.soloX > self.soloDest then
---         self.soloX = self.soloDest
---         self.flourX = self.flourDest
---         self.duoX = self.duoDest
---         self.duoScale = ActionUI.ICON_SCALE
---         self.flourScale = 1
---         self.uiState = 'actionSelect'
---       end
+      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
+      self.duoScale = self.duoScale - dt
+      self.flourScale = self.flourScale + dt
+      if self.soloX > self.soloDest then
+        self.soloX = self.soloDest
+        self.flourX = self.flourDest
+        self.duoX = self.duoDest
+        self.duoScale = ActionUI.ICON_SCALE
+        self.flourScale = 1
+        self.uiState = 'actionSelect'
+      end
       
---     elseif self.activeButton == 'solo' and self.soloDest > self.soloX then -- {left:solo, center:duo, right:flour} -> {left:flour, center:solo, right:duo}
+    elseif self.activeButton == 'solo' and self.soloDest > self.soloX then -- {left:solo, center:duo, right:flour} -> {left:flour, center:solo, right:duo}
       
---       self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
---       self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
---       self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
---       self.duoScale = self.duoScale - dt
---       self.soloScale = self.soloScale + dt
---       if self.soloX > self.soloDest then
---         self.soloX = self.soloDest
---         self.flourX = self.flourDest
---         self.duoX = self.duoDest
---         self.duoScale = ActionUI.ICON_SCALE
---         self.soloScale = 1
---         self.uiState = 'actionSelect'
---       end
+      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
+      self.duoScale = self.duoScale - dt
+      self.soloScale = self.soloScale + dt
+      if self.soloX > self.soloDest then
+        self.soloX = self.soloDest
+        self.flourX = self.flourDest
+        self.duoX = self.duoDest
+        self.duoScale = ActionUI.ICON_SCALE
+        self.soloScale = 1
+        self.uiState = 'actionSelect'
+      end
       
---     elseif self.activeButton == 'solo' and self.soloDest < self.soloX then -- {left:duo, center:flour, right:solo} -> {left:flour, center:solo, right:duo}
+    elseif self.activeButton == 'solo' and self.soloDest < self.soloX then -- {left:duo, center:flour, right:solo} -> {left:flour, center:solo, right:duo}
       
---       self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
---       self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
---       self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
---       self.flourScale = self.flourScale - dt
---       self.soloScale = self.soloScale + dt
---       if self.soloX < self.soloDest then
---         self.soloX = self.soloDest
---         self.flourX = self.flourDest
---         self.duoX = self.duoDest
---         self.flourScale = ActionUI.ICON_SCALE
---         self.soloScale = 1
---         self.uiState = 'actionSelect'
---       end
+      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
+      self.flourScale = self.flourScale - dt
+      self.soloScale = self.soloScale + dt
+      if self.soloX < self.soloDest then
+        self.soloX = self.soloDest
+        self.flourX = self.flourDest
+        self.duoX = self.duoDest
+        self.flourScale = ActionUI.ICON_SCALE
+        self.soloScale = 1
+        self.uiState = 'actionSelect'
+      end
       
---     elseif self.activeButton == 'duo' and self.duoDest > self.duoX then  -- {left:duo, center:flour, right:solo} -> {left:solo, center:duo, right:flour}
+    elseif self.activeButton == 'duo' and self.duoDest > self.duoX then  -- {left:duo, center:flour, right:solo} -> {left:solo, center:duo, right:flour}
       
---       self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
---       self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
---       self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
---       self.flourScale = self.flourScale - dt
---       self.duoScale = self.duoScale + dt
---       if self.soloX < self.soloDest then
---         self.soloX = self.soloDest
---         self.flourX = self.flourDest
---         self.duoX = self.duoDest
---         self.flourScale = ActionUI.ICON_SCALE
---         self.duoScale = 1
---         self.uiState = 'actionSelect'
---       end
+      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
+      self.flourScale = self.flourScale - dt
+      self.duoScale = self.duoScale + dt
+      if self.soloX < self.soloDest then
+        self.soloX = self.soloDest
+        self.flourX = self.flourDest
+        self.duoX = self.duoDest
+        self.flourScale = ActionUI.ICON_SCALE
+        self.duoScale = 1
+        self.uiState = 'actionSelect'
+      end
       
---     elseif self.activeButton == 'duo' and self.duoDest < self.duoX then  -- {left:flour, center:solo, right:duo} -> {left:solo, center:duo, right:flour}
+    elseif self.activeButton == 'duo' and self.duoDest < self.duoX then  -- {left:flour, center:solo, right:duo} -> {left:solo, center:duo, right:flour}
       
---       self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
---       self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
---       self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
---       self.soloScale = self.soloScale - dt
---       self.duoScale = self.duoScale + dt
---       if self.soloX < self.soloDest then
---         self.soloX = self.soloDest
---         self.flourX = self.flourDest
---         self.duoX = self.duoDest
---         self.soloScale = ActionUI.ICON_SCALE
---         self.duoScale = 1
---         self.uiState = 'actionSelect'
---       end
---     end
---   end
+      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
+      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
+      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
+      self.soloScale = self.soloScale - dt
+      self.duoScale = self.duoScale + dt
+      if self.soloX < self.soloDest then
+        self.soloX = self.soloDest
+        self.flourX = self.flourDest
+        self.duoX = self.duoDest
+        self.soloScale = ActionUI.ICON_SCALE
+        self.duoScale = 1
+        self.uiState = 'actionSelect'
+      end
+    end
+  end
   
--- end;
+end;
 
 function ActionUI:draw()
   -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons

@@ -142,13 +142,13 @@ function Character:update(dt)
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
   else
---    self.actionUI:update(dt)
+    self.actionUI:update(dt)
   end
 end;
 
 function Character:draw()
   Entity.draw(self)
   if self.isFocusedMember then
-    -- self.actionUI:draw()
+    self.actionUI:draw()
   end
 end;
