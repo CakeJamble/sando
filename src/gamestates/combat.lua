@@ -36,7 +36,6 @@ function combat:enter(previous)
   print(self.bake.actionUI.keypressed)
   self.characterTeam = CharacterTeam({self.bake, self.marco}, 2)
   
-  print(self.characterTeam:checkActionUI())
   -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
     self.encounteredPools[i] = {}

@@ -7,11 +7,8 @@ Team = Class{}
 
   -- Team constructor
 function Team:init(entities, numMembers)
-  self.members = {}
+  self.members = entities
   self.numMembers = numMembers
-  for i=1,self.numMembers do
-    self.members[i] = entities[i]:clone()
-  end
   
   self.membersIndex = 1
   self.money = 0
