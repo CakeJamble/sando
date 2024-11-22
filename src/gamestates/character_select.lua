@@ -127,7 +127,6 @@ end;
 
 function character_select:validate_selection()
   if teamCount == TEAM_CAP then
-    saveCharacterTeam(CharacterTeam(character_select:indicesToCharacters(), TEAM_CAP))
     Gamestate.switch(states['combat'])
   else
     selectedTeamIndices[teamCount + 1] = index
@@ -154,7 +153,13 @@ function character_select:indicesToCharacters()
       characterList[i] = key
     end
   end
-  return characterList
+  characterTeam = CharacterTeam(characterList, TEAM_CAP)
+  for i=1, TEAM_CAP do
+    print(characterTeam.members[i].actionUI)
+    print(characterTeam.members[i].actionUI.keypressed)
+  end
+  
+  saveCharacterTeam(characterTeam, TEAM_CAP)
 end;
 
 function character_select:setStatPreview()

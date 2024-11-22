@@ -1,6 +1,5 @@
 --! filename: team
 require("class.entity")
-require('class.action_ui')
 
 Class = require 'libs.hump.class'
 Team = Class{}
@@ -15,7 +14,6 @@ function Team:init(entities, numMembers)
   end
   
   self.membersIndex = 1
-  self.focusedMember = nil
   self.money = 0
 end;
 
@@ -56,7 +54,7 @@ function Team:getAt(i)
 end;
 
 function Team:getSpeedAt(i)
-  return self.members[i].battleStats.speed
+  return self.members[i]:getSpeed()
 end;
 
 
@@ -73,12 +71,9 @@ end;
   -- Verifies that each character is in valid focus state
 function Team:setFocusedMember(character) --> void
   if character ~= nil then
-    self.focusedMember = character
-    for _,member in pairs(self.members ) do
-      character:setFocused(member.entityName == character.entityName)
+    for i=1,self.numMembers do
+      self.members[i]:setFocused(self.members[1].entityName == character.entityName)
     end
-  else
-    self.focusedMember = nil
   end
 end;
 
@@ -103,8 +98,8 @@ function Team:increaseMoney(amount)
 end;
 
 function Team:update(dt)
-  for _,member in pairs(self.members) do
-    member:update(dt)
+  for i=1,self.numMembers do
+    self.members[i]:update(dt)
   end
 end;
 

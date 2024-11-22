@@ -28,8 +28,8 @@ function Character:init(stats, actionButton)
   Entity.init(self, stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
   self.fp = stats['fp']
-  self.basic = {}
-  self.currentSkills = Character.setBaseSkill(self, stats['skillList'])
+  self.basic = stats.skillList[1]
+  self.currentSkills = stats.skillList[2]
   self.level = 1
   self.totalExp = 0
   self.experience = 0
@@ -39,24 +39,13 @@ function Character:init(stats, actionButton)
   
   self.offenseState = OffenseState(actionButton, self.battleStats)
   self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
+  self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.fp, self.battleStats['fp'])
   
-  self.selectedSkill = nil
-  self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
-  
-  self.isFocusedCharacter = false
+  self.selectedSkill = {}
   self.gear = Gear()
-end;
-
-  -- Sets the basic attack and the starting skill for a character
-function Character:setBaseSkill(skillList)    --> void
-  self.basic = skillList[1]
-  local startingSkill = skillList[2]
-  return startingSkill
-end;
-
--- Sets conditional variable for determining whether or not to draw their ActionUI
-function Character:setFocused(isFocused) --> void
-  self.isFocusedCharacter = isFocused
+  self.isFocusedMember = false
+  self.state = 'idle'
+  
 end;
 
   -- Gains exp, leveling up when applicable
@@ -112,9 +101,6 @@ function Character:getUIState()
   return self.ui:getUIState()
 end;
 
-function Character:getActionUI()
-  return self.actionUI
-end;
 
 function Character:setSelectedSkill()
   self.selectedSkill = self.offenseState:getSkill()
@@ -140,21 +126,29 @@ function Character:applyGear()
 end;
 
 function Character:keypressed(key)
-  self.actionUI:keypressed(key)
+  if self.state == 'offense' then
+    self.offenseState:keypressed(key)
+  elseif self.state == 'defense' then
+    self.defenseState:keypressed(key)
+  else  -- it is the character's turn and they haven't selected an action yet
+    self.actionUI:keypressed(key)
+  end
 end;
     
 function Character:update(dt)
   Entity.update(self, dt)
   if self.state == 'offense' then
-    self.offenseState.update(self, dt)
+    self.offenseState:update(dt)
   elseif self.state == 'defense' then
-    self.defenseState.update(self, dt)
+    self.defenseState:update(dt)
+  else
+--    self.actionUI:update(dt)
   end
 end;
 
 function Character:draw()
   Entity.draw(self)
-  if self.isFocusedCharacter then
-    self.actionUI.draw(self)
+  if self.isFocusedMember then
+    -- self.actionUI:draw()
   end
 end;

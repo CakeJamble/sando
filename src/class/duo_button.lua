@@ -4,7 +4,7 @@ Class = require('libs.hump.class')
 DuoButton = Class{__includes = Button}
 
 function DuoButton:init(x, y, currentDP, skillList)
-    Button.init(self, x, y, Button.PATH .. 'duo.png')
+    Button.init(self, x, y, 'duo_lame.png')
     self.skillList = skillList
     self.currentDP = currentDP
     -- self.skillListHolder = love.graphics.newImage(path/to/image)

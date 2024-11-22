@@ -2,13 +2,14 @@
 Class = require 'libs.hump.class'
 Button = Class{BASE_DX = 150, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/'}
 
-function Button:initialize(x, y, path)
+function Button:init(x, y, path)
     self.centerX = x
     self.x = x
     self.y = y
     self.tX = nil
     self.tY = nil
-    self.button = love.graphics.newImage(path)
+    local buttonPath = Button.PATH .. path
+    self.button = love.graphics.newImage(buttonPath)
     self.tX = nil
     self.dX = 0
     self.scaleFactor = 1

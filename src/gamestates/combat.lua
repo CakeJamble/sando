@@ -1,11 +1,12 @@
 --! file: gamestates/combat
-require("class.entity")
-require("class.character")
 require("class.enemy")
 require("class.action_ui")
 require("util.encounter_pools")
 require('gamestates.character_select')
 require("util.globals")
+require('class.character_team')
+require('class.enemy_team')
+require('util.stat_sheet')
 
 local combat = {}
 local FIRST_MEMBER_X = 100
@@ -15,112 +16,116 @@ local numFloors = 50
 local TARGET_SPRITE = 'asset/sprites/combat/target_cursor.png'
 
 function combat:init()
-  targetCursor = love.graphics.newImage(TARGET_SPRITE)
-  cursorX = 0
-  cursorY = 0
-  rewardExp = 0
-  rewardMoney = 0
-  enemyCount = 0
-  enemyTeamIndex = 1
-  characterTeamIndex = 1
-  turnCount = 1
-  floorNumber = 1
+  self.targetCursor = love.graphics.newImage(TARGET_SPRITE)
+  self.cursorX = 0
+  self.cursorY = 0
+  self.rewardExp = 0
+  self.rewardMoney = 0
+  self.enemyCount = 0
+  self.enemyTeamIndex = 1
+  self.characterTeamIndex = 1
+  self.turnCount = 1
+  self.encounteredPools = {}
+  self.floorNumber = 1
 end;
 
 function combat:enter(previous)
-  characterTeam = loadCharacterTeam()
+  self.bake = Character(get_bake_stats(), 'b')
+  self.marco = Character(get_marco_stats(), 'm')
+  print(self.bake.actionUI)
+  print(self.bake.actionUI.keypressed)
+  self.characterTeam = CharacterTeam({self.bake, self.marco}, 2)
   
+  print(self.characterTeam:checkActionUI())
   -- init encounteredPools to keep track of all encounters across a run
-  encounteredPools = {}
   for i=1,numFloors do
-    encounteredPools[i] = {}
+    self.encounteredPools[i] = {}
   end;
   
-  -- Log the floor's encounter in encounteredPools, then generate the encounter
-  encounteredPools = combat:logEncounter(encounteredPools, floorNumber)
-  enemyNameList = encounteredPools[floorNumber]
-  enemyList = {}
+  -- Log & Generate the floor's encounter in encounteredPools
+  combat:logEncounter(self.encounteredPools, self.floorNumber)
+  self.enemyNameList = self.encounteredPools[self.floorNumber]
+  self.enemyList = {}
 
-  for i=1,#enemyNameList do
-    local enemy = Enemy(enemyNameList[i], "Enemy")
-    enemyList[i] = enemy
+  for i=1,#self.enemyNameList do
+    local enemy = Enemy(self.enemyNameList[i], "Enemy")
+    self.enemyList[i] = enemy
   end
   
   -- TODO: needs to determine between types of enemies
-  enemyTeam = EnemyTeam(enemyList, #enemyNameList)  
+  self.enemyTeam = EnemyTeam(self.enemyList, #self.enemyNameList)  
   
-  -- sort teams and do a single pass during combat
-  characterTeam:sortBySpeed()
-  enemyTeam:sortBySpeed()
+  -- sort teams and do a single pass during comba
+  -- self.characterTeam:sortBySpeed()
+  -- self.enemyTeam:sortBySpeed()
   
-  rewardExp = 0
-  rewardMoney = 0
+  self.rewardExp = 0
+  self.rewardMoney = 0
   
   -- Set the focused character to begin combat
-  combat:nextTurn(characterTeam, enemyTeam)
+  combat:nextTurn()
 end;
 
   -- Increments the enemiesIndex counter by the number of times passed, then sets the position of the cursorX & cursorY variables to the position of the targeted enemy
 function combat:setTargetPos(incr) --> void
-  enemiesIndex = (enemiesIndex + incr) % enemyCount
-  local targetedEnemy = Enemies[enemiesIndex]
-  cursorX = targetedEnemy:getX()
-  cursorY = targetedEnemy:getY()
+  self.enemyTeamIndex = (self.enemyTeamIndex + incr) % self.enemyCount
+  local targetedEnemy = Enemies[self.enemyTeamIndex]
+  self.cursorX = self.targetedEnemy:getX()
+  self.cursorY = self.targetedEnemy:getY()
 end;
 
 
-function combat:nextTurn(characterTeam, enemyTeam)
-  if characterTeam:getSpeedAt(characterTeamIndex) < enemyTeam:getSpeedAt(enemyTeamIndex) then
-    characterTeam:setFocusedMember(nil)
-    enemyTeam:setFocusedMember(enemyTeam:getAt(enemyTeamIndex))
-    enemyTeamIndex = enemyTeamIndex + 1
+function combat:nextTurn()
+  if self.characterTeam:getSpeedAt(self.characterTeamIndex) < self.enemyTeam:getSpeedAt(self.enemyTeamIndex) then
+    self.characterTeam:setFocusedMember(nil)
+    self.enemyTeam:setFocusedMember(self.enemyTeam:getAt(self.enemyTeamIndex))
+    self.enemyTeamIndex = self.enemyTeamIndex + 1
     
   else    -- if next Character.speed >= next Enemey.speed then
-    enemyTeam:setFocusedMember(nil)
-    characterTeam:setFocusedMember(characterTeam:getAt(characterTeamIndex))
-    characterTeamIndex = characterTeamIndex + 1
+    self.enemyTeam:setFocusedMember(nil)
+    self.characterTeam:setFocusedMember(self.characterTeam:getAt(self.characterTeamIndex))
+    self.characterTeamIndex = self.characterTeamIndex + 1
     
   end
 end;
 
 -- Need to port over map generation techniques for weighted random creation of encounters!!!
-function combat:logEncounter(encounteredPools, floorNumber) --> EnemyTeam
+function combat:logEncounter() --> EnemyTeam
   local encounter = 0
-  if floorNumber < 10 then
+  if self.floorNumber < 10 then
     -- Weighted Randomly grab from Enemy Pool 1
     -- TODO : Make this actually weighted rand
     -- local encounter = math.random(1, #enemyPool1)
     -- encounteredPools[floorNum] = enemyPool1[encounter]
-    encounteredPools[floorNumber] = testPool[1]
-  elseif floorNumber == 10 then
+    self.encounteredPools[self.floorNumber] = testPool[1]
+  elseif self.floorNumber == 10 then
     -- Randomly grab from Boss Pool 1
     local encounter = math.random(1, #bossPool1)
-    encounteredPools[floorNumber] = bossPool1[encounter]
-  elseif floorNumber < 20 then
+    self.encounteredPools[self.floorNumber] = bossPool1[encounter]
+  elseif self.floorNumber < 20 then
     -- Weighted Randomly grab from Enemy Pool 2
     -- TODO : Make this actually weighted rand
     local encounter = math.random(1, #enemyPool2)
-    encounteredPools[floorNumber] = enemyPool2[encounter]
-  elseif floorNumber == 20 then
+    self.encounteredPools[self.floorNumber] = enemyPool2[encounter]
+  elseif self.floorNumber == 20 then
     local encounter = math.random(1, #bossPool2)
-    encounteredPools[floorNumber] = bossPool2[encounter]
+    self.encounteredPools[self.floorNumber] = bossPool2[encounter]
   end
-  return encounteredPools
 end;
 
 
 function combat:keypressed(key)
-  characterTeam:keypressed(key)
+  self.characterTeam:keypressed(key)
 end;
 
 function combat:update(dt)
-  characterTeam:update(dt)
-  enemyTeam:update(dt)
+  self.characterTeam:update(dt)
+  self.enemyTeam:update(dt)
 end;
 
 function combat:draw()
-  characterTeam:draw()
-  enemyTeam:draw()
+  self.characterTeam:draw()
+  self.enemyTeam:draw()
   
   -- if team.actionUI:getUIState() == 'targeting' then
   --   love.graphics.draw(targetCursor, cursorX, cursorY)

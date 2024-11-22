@@ -6,8 +6,6 @@ require('util.skill_sheet')
 require('util.enemy_skill_list')
 require('util.animation_frame_counts')
 require('class.movement_state')
--- global table where all entities are stored
-Entities = {} 
 
 Class = require "libs.hump.class"
 Entity = Class{}
@@ -46,6 +44,7 @@ function Entity:init(stats, x, y)
   self.frameHeight = self.battleStats['height']    -- height of sprite (or height for a single frame of animation for this character)
   self.movementState = MovementState(self.x, self.y, self.frameHeight)
   self.currentFrame = 1
+
 end;
 
 -- COPY
@@ -129,6 +128,11 @@ end;
 
 function Entity:setMovementState(state) --> void
   self.movementState = state
+end;
+
+-- Sets conditional variable for determining whether or not to draw their ActionUI
+function Entity:setFocused(isFocused) --> void
+  self.isFocusedMember = isFocused
 end;
 
 function Entity:heal(amount) --> void

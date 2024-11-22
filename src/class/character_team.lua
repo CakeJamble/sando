@@ -6,13 +6,24 @@ require('class.character')
 Class = require 'libs.hump.class'
 CharacterTeam = Class{__includes = Team}
 
+function CharacterTeam:checkActionUI()
+  print(self.members[1].actionUI)
+  print(self.members[1].actionUI.keypressed)
+end;
+  
+
 function CharacterTeam:init(characters, numMembers)
     Team.init(self, characters, numMembers)
     self.inventory = Inventory(Team:getMembers())
 end;
 
 function CharacterTeam:addMember(character)
-  Team.addMember(self, character)
+  Team:addMember(character)
+end;
+
+function CharacterTeam:at(index)
+  local members = Team:getMembers()
+  return members[index]
 end;
 
 function CharacterTeam:distributeExperience()
@@ -23,14 +34,7 @@ function CharacterTeam:getInventory()
 end;
 
 function CharacterTeam:keypressed(key)
-  self.focusedMember:keypressed(key)
-end;
-
-function CharacterTeam:update(dt)
-    Team.update(self, dt)
-end;
-
-function CharacterTeam:draw()
-  Team.draw(self)
-  love.graphics.print(self.members[1]:getEntityName(), 100, 100)
+  for i=1, self.numMembers do
+    self.members[i]:keypressed(key)
+  end
 end;

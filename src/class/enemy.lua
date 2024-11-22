@@ -13,8 +13,8 @@ Enemy = Class{__includes = Entity,
 function Enemy:init(enemyName, enemyType)
   Entity.init(self, getStatsByName(enemyName, enemyType), Enemy.xPos, Enemy.yPos)
   Entity.setAnimations(self, enemyType .. '/')
-  self.expReward = stats['experienceReward']
-  self.moneyReward = stats['moneyReward']
+  self.expReward = self.baseStats['experienceReward']
+  self.moneyReward = self.baseStats['moneyReward']
   self.selectedSkill = nil
   Enemy.yPos = Enemy.yPos + 150
 

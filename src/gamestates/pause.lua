@@ -1,5 +1,4 @@
 --! filename: pause
-
 local pause = {}
 
 function pause:initialize()
@@ -24,8 +23,8 @@ function pause:enter(previous, team)
         'exit'
     }
 
-    self.menuSprite = love.graphics.newImage('asset/sprites/pause_menu.png')
-    self.menuCursor = Cursor()
+    self.menuSprite = love.graphics.newImage('asset/sprites/pause/menu.png')
+    self.menuCursor = love.graphics.newImage('asset/sprites/pause/cursor.png')
     
     self.teamInventory = team:getInventory()
 end;
