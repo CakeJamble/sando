@@ -15,7 +15,7 @@ function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy pos
   self.y = y
   self.uiState = 'actionSelect'
   self.iconSpacer = 50
-  self.soloButton = SoloButton(x, y)
+  self.soloButton = SoloButton(x, y, skillList[1])
   self.flourButton = FlourButton(x - self.iconSpacer, self.y, currentFP, skillList)
   self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, currentDP, skillList)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton}

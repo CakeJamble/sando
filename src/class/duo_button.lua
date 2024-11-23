@@ -23,10 +23,10 @@ function DuoButton:keypressed(key)
 end;
 
 function DuoButton:update(dt)
-    Button:update(dt)
+    Button.update(self, dt)
 end;
 
 function DuoButton:draw()
-    Button:draw()
+    Button.draw(self)
     -- TODO : draw the skill list & cursor
 end;

@@ -6,7 +6,7 @@ Class = require 'libs.hump.class'
 SoloButton = Class{__includes = Button}
 
 function SoloButton:init(x, y, basicAttack)
-    Button:init(x, y, 'solo_lame.png')
+    Button.init(self, x, y, 'solo_lame.png')
     self.basicAttack = basicAttack
 end;
 
@@ -16,8 +16,4 @@ end;
 
 function SoloButton:update(dt)
     Button:update(dt)
-end;
-
-function SoloButton:draw()
-    Button:draw()
 end;
