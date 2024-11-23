@@ -142,10 +142,11 @@ end;
 
 function ActionUI:update(dt)
   if self.uiState == 'rotating' then
+    for i=1,#self.buttons do
+      self.buttons[i]:update()
+    end
     
-    if self.activeButton == self.flourButton and self.flourDest > self.flourX then      -- {left:flour, center:solo, right:duo} -> {left:duo, center:flour, right:solo}
-      
-      
+    if self.activeButton == self.flourButton and self.flourButton:isRotatingRight() then      -- {left:flour, center:solo, right:duo} -> {left:duo, center:flour, right:solo}
       self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
       self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
       self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
@@ -163,7 +164,7 @@ function ActionUI:update(dt)
       end
       -- if self.soloScale > 1 then self.soloScale = 1 end
 
-    elseif self.activeButton == 'flour' and self.flourDest < self.flourX then  -- {left:solo, center:duo, right:flour} -> {left:duo, center:flour, right:solo}
+    elseif self.activeButton == 'flour' and self.flourButton:isRotatingLeft() then  -- {left:solo, center:duo, right:flour} -> {left:duo, center:flour, right:solo}
       
       self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
       self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
@@ -179,7 +180,7 @@ function ActionUI:update(dt)
         self.uiState = 'actionSelect'
       end
       
-    elseif self.activeButton == 'solo' and self.soloDest > self.soloX then -- {left:solo, center:duo, right:flour} -> {left:flour, center:solo, right:duo}
+    elseif self.activeButton == self.soloButton and self.soloButton:isRotatingRight() then -- {left:solo, center:duo, right:flour} -> {left:flour, center:solo, right:duo}
       
       self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
       self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
@@ -195,7 +196,7 @@ function ActionUI:update(dt)
         self.uiState = 'actionSelect'
       end
       
-    elseif self.activeButton == 'solo' and self.soloDest < self.soloX then -- {left:duo, center:flour, right:solo} -> {left:flour, center:solo, right:duo}
+    elseif self.activeButton self.soloButton and self.soloButton:isRotatingLeft() then -- {left:duo, center:flour, right:solo} -> {left:flour, center:solo, right:duo}
       
       self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
       self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
@@ -211,7 +212,7 @@ function ActionUI:update(dt)
         self.uiState = 'actionSelect'
       end
       
-    elseif self.activeButton == 'duo' and self.duoDest > self.duoX then  -- {left:duo, center:flour, right:solo} -> {left:solo, center:duo, right:flour}
+    elseif self.activeButton == self.duoButton and self.duoButton:isRotatingRight() then  -- {left:duo, center:flour, right:solo} -> {left:solo, center:duo, right:flour}
       
       self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
       self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
@@ -227,7 +228,7 @@ function ActionUI:update(dt)
         self.uiState = 'actionSelect'
       end
       
-    elseif self.activeButton == 'duo' and self.duoDest < self.duoX then  -- {left:flour, center:solo, right:duo} -> {left:solo, center:duo, right:flour}
+    elseif self.activeButton == self.duoButton and self.duoButton:isRotatingLeft() then  -- {left:flour, center:solo, right:duo} -> {left:solo, center:duo, right:flour}
       
       self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
       self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
