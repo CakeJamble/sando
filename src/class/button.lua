@@ -35,6 +35,10 @@ function Button:setPos(x, y)
     self.y = y
 end;
 
+function Button:isRotatingRight()
+  return self.x < self.tX
+end;
+
 function Button:setIsActiveButton(isActive)
     if isActive then
         self.scaleFactor = 1
