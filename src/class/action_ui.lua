@@ -44,14 +44,15 @@ end;
 function ActionUI:keypressed(key) --> void
   if self.uiState == 'actionSelect' then  
     if key == 'right' then                         -- spin the wheel left
-      if self.activeButton == self.soloButton then                          -- {left:solo, center:duo, right:flour}
+      if self.activeButton == self.soloButton then                            -- {left:flour, center:solo, right:duo}
         self.activeButton = self.duoButton
         self.duoButton:setIsActiveButton(true)
         self.soloButton:setIsActiveButton(false)
         self.soloButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)
         self.duoButton:setTargetPos(self.x, 1)
-        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)
-      elseif self.activeButton == self.flourButton then                     -- {left:flour, center:solo, right:duo}
+        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)     -- result : {left:flour, center:solo, right:duo}
+        
+      elseif self.activeButton == self.flourButton then                       -- 
         self.activeButton = self.soloButton
         self.flourButton:setIsActiveButton(false)
         self.soloButton:setIsActiveButton(true)
