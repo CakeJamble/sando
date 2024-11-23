@@ -52,8 +52,53 @@ function Button:setIsActiveButton(isActive)
     self.isActiveButton = isActive
 end;
 
+function Button:isFinishedRotating() --> boolean
+  return self.x == self.tX
+end;
+
+function Button:rotateRight(dt)
+  self.x = self.x + self.dX * dt
+    if self.isActiveButton then
+      self.scaleFactor = self.scaleFactor + dt
+    else
+      self.scaleFactor = self.scaleFactor - dt
+    end
+    
+    if self.x > self.tX then
+      self.x = self.tX
+      if self.isActiveButton then
+        self.scaleFactor = 1
+      else
+        self.scaleFactor = Button.SCALE_DOWN
+      end
+    end
+end;
+
+function Button:rotateLeft(dt)
+  self.x = self.x - self.dX * dt
+  if self.isActiveButton then
+    self.scaleFactor = self.scaleFactor + dt
+  else
+    self.scaleFactor = self.scaleFactor - dt
+  end
+  if self.x < self.tX then
+    self.x = self.tX
+    if self.isActiveButton then
+      self.scaleFactor = 1
+    else
+      self.scaleFactor = Button.SCALE_DOWN
+    end
+  end
+end;
+
+
 function Button:update(dt)
-    -- TODO
+  self.isActiveButton = self.x == self.tX
+  if Button.isRotatingRight(self) then
+    Button.rotateRight(self, dt)
+  elseif Button.isRotatingLeft(self, dt) then
+    Button.rotateLeft(self, dt)
+  end
 end;
 
 function Button:draw()

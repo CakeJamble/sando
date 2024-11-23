@@ -30,10 +30,9 @@ function combat:init()
 end;
 
 function combat:enter(previous)
+  -- TODO: put this back in the character_select gamestate
   self.bake = Character(get_bake_stats(), 'b')
   self.marco = Character(get_marco_stats(), 'm')
-  print(self.bake.actionUI)
-  print(self.bake.actionUI.keypressed)
   self.characterTeam = CharacterTeam({self.bake, self.marco}, 2)
   
   -- init encounteredPools to keep track of all encounters across a run
