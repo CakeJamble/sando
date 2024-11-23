@@ -13,3 +13,7 @@ end;
 function SoloButton:keypressed(key)
     -- TODO
 end;
+
+function SoloButton:update(dt)
+  Button.update(self, dt)
+end;

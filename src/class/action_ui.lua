@@ -153,10 +153,10 @@ end;
 function ActionUI:update(dt)
   if self.uiState == 'rotating' then
     for i=1,#self.buttons do
-      self.buttons[i]:update()
+      self.buttons[i]:update(dt)
     end
     
-    if ActionUI:areDoneRotating() then
+    if ActionUI.areDoneRotating(self) then
       self.uiState = 'actionSelect'
     end
 
