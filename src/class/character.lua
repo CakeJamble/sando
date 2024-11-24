@@ -43,7 +43,6 @@ function Character:init(stats, actionButton)
 
   self.selectedSkill = {}
   self.gear = Gear()
-  self.isFocusedMember = false
   self.state = 'idle'
 end;
 

@@ -93,7 +93,7 @@ end;
 
 
 function Button:update(dt)
-  self.isActiveButton = self.x == self.tX
+  self.isActiveButton = self.centerX == self.tX
   if Button.isRotatingRight(self) then
     Button.rotateRight(self, dt)
   elseif Button.isRotatingLeft(self, dt) then
