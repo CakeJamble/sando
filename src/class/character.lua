@@ -146,7 +146,7 @@ end;
 
 function Character:draw()
   Entity.draw(self)
-  if self.isFocusedMember then
+  if self.isFocusedMember then  -- not working for some reason?
     self.actionUI:draw()
   end
 end;
