@@ -9,6 +9,7 @@ Skill = Class{}
     -- postconditions: A Skill with an animation appended to the skill dict
 function Skill:init(skillDict, width, height)
   self.skill = skillDict
+  self.skillName = skillDict['skill_name']
   self.hitType = skillDict['hit_type']
   self.animation = Skill:newAnimation(self.skill['sprite_path'], width, height, self.skill['duration'])
   projectiles = {}

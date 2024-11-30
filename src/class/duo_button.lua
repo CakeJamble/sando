@@ -10,6 +10,7 @@ function DuoButton:init(x, y, currentDP, skillList)
     -- self.skillListHolder = love.graphics.newImage(path/to/image)
     -- self.skillListCursor = love.graphics.newImage(path/to/image)
     self.selectedSkill = nil
+    self.displaySkillList = false
 end;
 
 function DuoButton:formatSkillList() --> string

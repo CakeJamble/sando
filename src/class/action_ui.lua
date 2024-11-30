@@ -115,6 +115,13 @@ function ActionUI:keypressed(key) --> void
     end
     
   elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
+    if self.activeButton ~= self.soloButton then
+      self.activeButton.displaySkillList = true
+    else
+      self.flourButton.displaySkillList = false
+      self.duoButton.displaySkillList = false
+    end
+    
     self.activeButton:keypressed(key)
   
     if key == 'z' then
@@ -128,7 +135,7 @@ function ActionUI:keypressed(key) --> void
       end
     end
 
-  elseif self.uiState == 'targeting' then -- maybe just else?
+  elseif self.uiState == 'targeting' then -- maybe just else? maybe this is handled in button classes?
     self.targets = self.activeButton:getTargets()
     self.uiState = 'qte'
   end

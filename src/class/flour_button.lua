@@ -6,20 +6,25 @@ FlourButton = Class{__includes = Button}
 function FlourButton:init(x, y, currentFP, skillList)
     Button.init(self, x, y, 'flour.png')
     self.skillList = skillList
+    self.skillListString = FlourButton.skillListToStr(self)
+    self.skillIndex = 1
     self.currentFP = currentFP
     -- self.skillListHolder = love.graphics.newImage(path/to/image)
     -- self.skillListCursor = love.graphics.newImage(path/to/image)
     self.selectedSkill = nil
+    self.displaySkillList = false
 end;
 
-function FlourButton:formatSkillList() --> string
-    result = ''
-    -- TODO
-    return result
+function FlourButton:skillListToStr()
+  local result = ''
+  for i=1,#self.skillList do
+    result = result .. self.skillList[i].skillName .. '\n'
+  end
+  return result
 end;
 
 function FlourButton:keypressed(key)
-    -- TODO
+  
 end;
 
 function FlourButton:update(dt)
@@ -27,5 +32,8 @@ function FlourButton:update(dt)
 end;
 
 function FlourButton:draw()
-    Button.draw(self)
+  Button.draw(self)
+  if self.isActiveButton and self.displaySkillList then
+    love.graphics.print(self.skillListString, self.x, self.y)
+  end
 end;
