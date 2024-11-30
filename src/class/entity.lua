@@ -44,7 +44,7 @@ function Entity:init(stats, x, y)
   self.frameHeight = self.battleStats['height']    -- height of sprite (or height for a single frame of animation for this character)
   self.movementState = MovementState(self.x, self.y, self.frameHeight)
   self.currentFrame = 1
-
+  self.isFocused = false
 end;
 
 -- COPY

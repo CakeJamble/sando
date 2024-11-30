@@ -40,12 +40,10 @@ function Character:init(stats, actionButton)
   self.offenseState = OffenseState(actionButton, self.battleStats)
   self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
   self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.fp, self.battleStats['fp'])
-  
+
   self.selectedSkill = {}
   self.gear = Gear()
-  self.isFocusedMember = false
   self.state = 'idle'
-  
 end;
 
   -- Gains exp, leveling up when applicable
@@ -148,7 +146,7 @@ end;
 
 function Character:draw()
   Entity.draw(self)
-  if self.isFocusedMember then
+  if self.isFocusedMember then  -- not working for some reason?
     self.actionUI:draw()
   end
 end;

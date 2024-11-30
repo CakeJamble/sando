@@ -50,54 +50,56 @@ function ActionUI:keypressed(key) --> void
         self.soloButton:setIsActiveButton(false)
         self.soloButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)
         self.duoButton:setTargetPos(self.x, 1)
-        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)     -- result : {left:flour, center:solo, right:duo}
+        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)     -- result : {left:solo, center:duo, right:flour}
         
-      elseif self.activeButton == self.flourButton then                       -- 
+      elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
         self.activeButton = self.soloButton
         self.flourButton:setIsActiveButton(false)
         self.soloButton:setIsActiveButton(true)
 
         self.soloButton:setTargetPos(self.x, 1)
         self.duoButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)
-        self.flourButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)
-      else                                                                  -- {left:duo, center:flour, right:solo}
+        self.flourButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)     -- result : {left:flour, center:solo, right:duo}
+        
+      else                                                                    -- {left:duo, center:flour, right:solo}
         self.activeButton = self.flourButton
         self.duoButton:setIsActiveButton(false)
         self.flourButton:setIsActiveButton(true)
 
         self.soloButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)
         self.duoButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)
-        self.flourButton:setTargetPos(self.x, 1)
+        self.flourButton:setTargetPos(self.x, 1)                               -- result : {left: duo, center: flour, right: solo}
       end      
     
       self.uiState = 'rotating'
       
     elseif key == 'left' then                      -- spin the wheel right
-      if self.activeButton == self.soloButton then                          -- {left:duo, center:flour , right:solo}
+      if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
         self.activeButton = self.flourButton
         self.soloButton:setIsActiveButton(false)
         self.flourButton:setIsActiveButton(true)
 
         self.soloButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)
         self.duoButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)
-        self.flourButton:setTargetPos(self.x, 1)
-      
-      elseif self.activeButton == self.flourButton then                     -- {left:solo, center:duo, right:flour}
+        self.flourButton:setTargetPos(self.x, 1)                              -- result: {left: duo, center: flour, right: solo}
+                                                                              
+      elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
         self.activeButton = self.duoButton
         self.flourButton:setIsActiveButton(false)
         self.duoButton:setIsActiveButton(true)
 
         self.soloButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)
         self.duoButton:setTargetPos(self.x, 1)
-        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)
-      else                                                                  -- {left:flour, center:solo, right:duo}
+        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)     -- result: {left: solo, center: duo, right: flour}
+        
+      else                                                                  -- {left:solo, center:duo, right:flour}
         self.activeButton = self.soloButton
         self.soloButton:setIsActiveButton(true)
         self.duoButton:setIsActiveButton(false)
 
         self.soloButton:setTargetPos(self.x, 1)
         self.duoButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)
-        self.flourButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)
+        self.flourButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)   -- result: {left: flour, center: solo, right: duo}
       end
 
       self.uiState = 'rotating'
@@ -138,112 +140,31 @@ function ActionUI:targetEnemy(x, y)
   self.drawCursor = true
 end;
 
+function ActionUI:areDoneRotating()
+  for i=1,#self.buttons do
+    if not self.buttons[i]:isFinishedRotating() then
+      return false
+    end
+  end
+  return true
+end;
+
+
 function ActionUI:update(dt)
   if self.uiState == 'rotating' then
-    
-    if self.activeButton == self.flourButton and self.flourDest > self.flourX then      -- {left:flour, center:solo, right:duo} -> {left:duo, center:flour, right:solo}
-      
-      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
-      self.soloScale = self.soloScale - dt
-      self.flourScale = self.flourScale + dt
-      
-      -- In case the updated coordinates overshoot, set them them to correct destination and exit the rotating ui state
-      if self.soloX > self.soloDest then
-        self.soloX = self.soloDest
-        self.flourX = self.flourDest
-        self.duoX = self.duoDest
-        self.flourScale = 1
-        self.soloScale = ActionUI.ICON_SCALE
-        self.uiState = 'actionSelect'
-      end
-      -- if self.soloScale > 1 then self.soloScale = 1 end
-
-    elseif self.activeButton == 'flour' and self.flourDest < self.flourX then  -- {left:solo, center:duo, right:flour} -> {left:duo, center:flour, right:solo}
-      
-      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
-      self.duoScale = self.duoScale - dt
-      self.flourScale = self.flourScale + dt
-      if self.soloX > self.soloDest then
-        self.soloX = self.soloDest
-        self.flourX = self.flourDest
-        self.duoX = self.duoDest
-        self.duoScale = ActionUI.ICON_SCALE
-        self.flourScale = 1
-        self.uiState = 'actionSelect'
-      end
-      
-    elseif self.activeButton == 'solo' and self.soloDest > self.soloX then -- {left:solo, center:duo, right:flour} -> {left:flour, center:solo, right:duo}
-      
-      self.soloX = self.soloX + ActionUI.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
-      self.duoScale = self.duoScale - dt
-      self.soloScale = self.soloScale + dt
-      if self.soloX > self.soloDest then
-        self.soloX = self.soloDest
-        self.flourX = self.flourDest
-        self.duoX = self.duoDest
-        self.duoScale = ActionUI.ICON_SCALE
-        self.soloScale = 1
-        self.uiState = 'actionSelect'
-      end
-      
-    elseif self.activeButton == 'solo' and self.soloDest < self.soloX then -- {left:duo, center:flour, right:solo} -> {left:flour, center:solo, right:duo}
-      
-      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX - ActionUI.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
-      self.flourScale = self.flourScale - dt
-      self.soloScale = self.soloScale + dt
-      if self.soloX < self.soloDest then
-        self.soloX = self.soloDest
-        self.flourX = self.flourDest
-        self.duoX = self.duoDest
-        self.flourScale = ActionUI.ICON_SCALE
-        self.soloScale = 1
-        self.uiState = 'actionSelect'
-      end
-      
-    elseif self.activeButton == 'duo' and self.duoDest > self.duoX then  -- {left:duo, center:flour, right:solo} -> {left:solo, center:duo, right:flour}
-      
-      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX + ActionUI.ICON_BASE_DX * dt * self.duoDX
-      self.flourScale = self.flourScale - dt
-      self.duoScale = self.duoScale + dt
-      if self.soloX < self.soloDest then
-        self.soloX = self.soloDest
-        self.flourX = self.flourDest
-        self.duoX = self.duoDest
-        self.flourScale = ActionUI.ICON_SCALE
-        self.duoScale = 1
-        self.uiState = 'actionSelect'
-      end
-      
-    elseif self.activeButton == 'duo' and self.duoDest < self.duoX then  -- {left:flour, center:solo, right:duo} -> {left:solo, center:duo, right:flour}
-      
-      self.soloX = self.soloX - ActionUI.ICON_BASE_DX * dt * self.soloDX
-      self.flourX = self.flourX + ActionUI.ICON_BASE_DX * dt * self.flourDX
-      self.duoX = self.duoX - ActionUI.ICON_BASE_DX * dt * self.duoDX
-      self.soloScale = self.soloScale - dt
-      self.duoScale = self.duoScale + dt
-      if self.soloX < self.soloDest then
-        self.soloX = self.soloDest
-        self.flourX = self.flourDest
-        self.duoX = self.duoDest
-        self.soloScale = ActionUI.ICON_SCALE
-        self.duoScale = 1
-        self.uiState = 'actionSelect'
-      end
+    for i=1,#self.buttons do
+      self.buttons[i]:update(dt)
     end
+    
+    if ActionUI.areDoneRotating(self) then
+      self.uiState = 'actionSelect'
+    end
+
   end
   
 end;
 
+  
 function ActionUI:draw()
   -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
   if self.uiState ~= 'qte' then

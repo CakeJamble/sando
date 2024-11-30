@@ -15,5 +15,5 @@ function SoloButton:keypressed(key)
 end;
 
 function SoloButton:update(dt)
-    Button:update(dt)
+  Button.update(self, dt)
 end;
