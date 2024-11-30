@@ -11,12 +11,12 @@ ActionUI = Class{BUTTON_SPACER = 50, BUTTON_SCALE = 0.6, ICON_ROTATION = 0}
     -- postconditions: initializes action ui icons for the character
 function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy positions list?
 -- The ActionUI position (self.x, self.y) is at the coordinates of the center of the button wheel
-  self.x = x
-  self.y = y
+  self.x = x + 20 -- replace constant
+  self.y = y - 45 -- replace constant
   self.uiState = 'actionSelect'
   self.iconSpacer = 50
-  self.soloButton = SoloButton(x, y, skillList[1])
-  self.flourButton = FlourButton(x - self.iconSpacer, self.y, currentFP, skillList)
+  self.soloButton = SoloButton(self.x, self.y, skillList[1])
+  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, currentFP, skillList)
   self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, currentDP, skillList)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton}
   self.activeButton = self.soloButton
@@ -163,7 +163,6 @@ function ActionUI:update(dt)
   end
   
 end;
-
   
 function ActionUI:draw()
   -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons

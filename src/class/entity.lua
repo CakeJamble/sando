@@ -132,7 +132,7 @@ end;
 
 -- Sets conditional variable for determining whether or not to draw their ActionUI
 function Entity:setFocused(isFocused) --> void
-  self.isFocusedMember = isFocused
+  self.isFocused = isFocused
 end;
 
 function Entity:heal(amount) --> void

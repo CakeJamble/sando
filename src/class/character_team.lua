@@ -15,11 +15,6 @@ function CharacterTeam:addMember(character)
   Team:addMember(character)
 end;
 
-function CharacterTeam:at(index)
-  local members = Team:getMembers()
-  return members[index]
-end;
-
 function CharacterTeam:distributeExperience()
 end;
 

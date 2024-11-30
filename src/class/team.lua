@@ -45,8 +45,11 @@ function Team:sortBySpeed()
     )
 end;
 
-function Team:getAt(i)
-  return self.members[i]
+function Team:at(i)
+  if i ~= nil then
+    return self.members[i]
+  end
+  
 end;
 
 function Team:getSpeedAt(i)
@@ -65,10 +68,14 @@ end;
 
 
   -- Verifies that each character is in valid focus state
-function Team:setFocusedMember(character) --> void
-  if character ~= nil then
+function Team:setFocusedMember(index) --> void
+  if index ~= nil then
     for i=1,self.numMembers do
-      self.members[i]:setFocused(self.members[1].entityName == character.entityName)
+      self.members[i]:setFocused(index == i)
+    end
+  else
+    for i=1,self.numMembers do
+      self.members[i]:setFocused(index == i)
     end
   end
 end;

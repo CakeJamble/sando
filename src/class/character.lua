@@ -129,7 +129,10 @@ function Character:keypressed(key)
   elseif self.state == 'defense' then
     self.defenseState:keypressed(key)
   else  -- it is the character's turn and they haven't selected an action yet
-    self.actionUI:keypressed(key)
+    if self.isFocused then
+      self.actionUI:keypressed(key)
+    end
+    
   end
 end;
     
@@ -140,13 +143,15 @@ function Character:update(dt)
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
   else
-    self.actionUI:update(dt)
+    if self.isFocused then
+      self.actionUI:update(dt)
+    end
   end
 end;
 
 function Character:draw()
   Entity.draw(self)
-  if self.isFocusedMember then  -- not working for some reason?
+  if self.isFocused then
     self.actionUI:draw()
   end
 end;
