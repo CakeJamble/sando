@@ -1,6 +1,6 @@
 --! filename: button
 Class = require 'libs.hump.class'
-Button = Class{BASE_DX = 150, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/'}
+Button = Class{BASE_DX = 300, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/'}
 
 function Button:init(x, y, path)
     self.centerX = x
@@ -10,9 +10,8 @@ function Button:init(x, y, path)
     self.tY = nil
     local buttonPath = Button.PATH .. path
     self.button = love.graphics.newImage(buttonPath)
-    self.tX = nil
     self.dX = 0
-    self.scaleFactor = 1
+    self.scaleFactor = Button.SCALE_DOWN
     self.isActiveButton = false
     self.targets = {}
 end;
@@ -44,12 +43,12 @@ function Button:isRotatingLeft()
 end;
 
 function Button:setIsActiveButton(isActive)
-    if isActive then
-        self.scaleFactor = 1
-    else
-        self.scaleFactor = Button.SCALE_DOWN
-    end
-    self.isActiveButton = isActive
+  self.isActiveButton = isActive
+  if isActive then
+    self.scaleFactor = 1
+  else
+      self.scaleFactor = Button.SCALE_DOWN
+  end
 end;
 
 function Button:isFinishedRotating() --> boolean
@@ -58,11 +57,11 @@ end;
 
 function Button:rotateRight(dt)
   self.x = self.x + self.dX * dt
-    if self.isActiveButton then
-      self.scaleFactor = self.scaleFactor + dt
-    else
-      self.scaleFactor = self.scaleFactor - dt
-    end
+  if self.isActiveButton then
+    self.scaleFactor = self.scaleFactor + dt
+  else
+    self.scaleFactor = self.scaleFactor - dt
+  end
     
     if self.x > self.tX then
       self.x = self.tX
@@ -93,7 +92,6 @@ end;
 
 
 function Button:update(dt)
-  self.isActiveButton = self.centerX == self.tX
   if Button.isRotatingRight(self) then
     Button.rotateRight(self, dt)
   elseif Button.isRotatingLeft(self, dt) then

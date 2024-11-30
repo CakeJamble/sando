@@ -8,6 +8,7 @@ SoloButton = Class{__includes = Button}
 function SoloButton:init(x, y, basicAttack)
     Button.init(self, x, y, 'solo_lame.png')
     self.basicAttack = basicAttack
+    self.scaleFactor = 1
 end;
 
 function SoloButton:keypressed(key)
