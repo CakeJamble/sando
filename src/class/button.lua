@@ -26,7 +26,7 @@ function Button:getPos()
 end;
 
 function Button:setTargetPos(tX, speedMul)
-    self.tX = self.x + tX
+    self.tX = tX
     self.dX = Button.BASE_DX * speedMul
 end;
 
