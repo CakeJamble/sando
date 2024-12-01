@@ -27,7 +27,6 @@ Character = Class{__includes = Entity,
 function Character:init(stats, actionButton)
   Entity.init(self, stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
-  self.fp = stats['fp']
   self.basic = stats.skillList[1]
   self.currentSkills = stats.skillList[2]
   self.level = 1
@@ -39,7 +38,7 @@ function Character:init(stats, actionButton)
   
   self.offenseState = OffenseState(actionButton, self.battleStats)
   self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
-  self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.fp, self.battleStats['fp'])
+  self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
 
   self.selectedSkill = {}
   self.gear = Gear()

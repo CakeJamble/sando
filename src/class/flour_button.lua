@@ -3,17 +3,20 @@ require('class.button')
 Class = require 'libs.hump.class'
 FlourButton = Class{__includes = Button}
 
-function FlourButton:init(x, y, currentFP, skillList)
+function FlourButton:init(x, y, skillList)
     Button.init(self, x, y, 'flour.png')
     self.skillList = skillList
     self.skillListString = FlourButton.skillListToStr(self)
     self.skillIndex = 1
-    self.currentFP = currentFP
     -- self.skillListHolder = love.graphics.newImage(path/to/image)
     -- self.skillListCursor = love.graphics.newImage(path/to/image)
     self.selectedSkill = nil
     self.displaySkillList = false
     self.skillPreview = skillList[1].description
+    self.pickableSkillIndices = {}
+    for i=1,#self.skillList do
+      self.pickableSkillIndices[i] = false
+    end
 end;
 
 function FlourButton:skillListToStr()
@@ -28,13 +31,24 @@ function FlourButton:setSkillPreview()
   self.skillPreview = skillList[self.skillIndex].description
 end;
 
+function FlourButton:validateSkillCosts(currentFP)
+  for i=1,#self.skillList do
+    self.pickableSkillIndices[i] = (self.skillList[i].cost < currentFP)
+  end
+end;
+
 function FlourButton:keypressed(key)
   if key == 'down' then
     self.skillIndex = math.max(1, (self.skillIndex + 1) % #self.skillList)
   elseif key == 'up' then
     self.skillIndex = if self.skillIndex > 1 then self.skillIndex - 1 else #self.skillList end
   elseif key == 'z' then
-    -- TODO: Switch to active state with Character:offenseState
+    if self.pickableSkillIndices then
+      -- TODO: Switch to active state with Character:offenseState
+    else
+      -- show some message that you don't have enough FP
+      print('error - cost exceeds fp')  -- STUB
+    end
   end
 end;
 
@@ -46,8 +60,13 @@ function FlourButton:draw()
   Button.draw(self)
   if self.isActiveButton and self.displaySkillList then
     for i=1,#self.skillList do
-      
-    love.graphics.print(self.skillListString, self.x, self.y)
+      if self.pickableSkillLists[i] then
+        -- Print skill as usual
+        love.graphics.print(self.skillString, self.x, self.y + i * self.textOffset)
+      else
+        -- Print skill with a disabled text font (TODO)
+        love.graphics.print(self.skillString, self.x, self.y + i * self.textOffset)
+      end
     -- draw cursor @ offset based on position & self.skillIndex
   end
 end;

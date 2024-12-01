@@ -13,11 +13,13 @@ function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy pos
 -- The ActionUI position (self.x, self.y) is at the coordinates of the center of the button wheel
   self.x = x + 20 -- replace constant
   self.y = y - 45 -- replace constant
+  self.currentFP = currentFP
+  self.currentDP = currentDP
   self.uiState = 'actionSelect'
   self.iconSpacer = 50
   self.soloButton = SoloButton(self.x, self.y, skillList[1])
-  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, currentFP, skillList)
-  self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, currentDP, skillList)
+  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, skillList)
+  self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, skillList)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton}
   self.activeButton = self.soloButton
   
@@ -105,6 +107,7 @@ function ActionUI:keypressed(key) --> void
         self.uiState = 'targeting'
       else
         self.uiState = 'submenuing'
+        self.activeButton:validateSkillCosts(self.currentFP) -- TODO: need a separate validator for Duo attacks too
       end
     end
     
