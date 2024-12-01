@@ -20,7 +20,7 @@ local marco_skills = {
     description = 'Deals physical damage to a single target twice',
     unlock = nil
   },
-  
+
   {
     skill_name = 'Score',
     damage = 5,
