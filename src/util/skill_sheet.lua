@@ -1,5 +1,5 @@
 --! file: skill_sheet
-
+require('class.skill')
 local marco_skills = {
   {
     skill_name = 'Basic Attack',
@@ -122,14 +122,31 @@ local key_skills = {
 
   
 function get_marco_skills() 
-  return marco_skills
+  local marcoSkills = {}
+  for i=1,#marco_skills do
+    marcoSkills[i] = Skill(marco_skills[i], 96, 96)
+  end
+  return marcoSkills
 end
+
 function get_bake_skills()
-  return bake_skills
+  local bakeSkills = {}
+  for i=1,#bake_skills do
+    bakeSkills[i] = Skill(bake_skills[i], 64, 64)
+  end
+  return bakeSkills
 end
 function get_maria_skills()
-  return maria_skills
+  local mariaSkills = {}
+  for i=1,#maria_skills do
+    mariaSkills[i] = Skill(maria_skills[i], 80, 80)
+  end
+  return mariaSkills
 end
 function get_key_skills()
-  return key_skills
+  local keySkills = {}
+  for i=1,#key_skills do
+    keySkills[i] = Skill(key_skills[i], 80, 80)
+  end
+  return keySkills
 end

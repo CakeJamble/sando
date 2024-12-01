@@ -31,6 +31,9 @@ end;
 
 function combat:enter(previous)
   -- TODO: put this back in the character_select gamestate
+  local bakeStats = get_bake_stats()
+  local bakeSkills = bakeStats['skillList']
+  local skillName = bakeSkills[1].skillName
   self.bake = Character(get_bake_stats(), 'b')
   self.marco = Character(get_marco_stats(), 'm')
   self.characterTeam = CharacterTeam({self.bake, self.marco}, 2)
