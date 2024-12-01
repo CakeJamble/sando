@@ -10,6 +10,8 @@ Skill = Class{}
 function Skill:init(skillDict, width, height)
   self.skill = skillDict
   self.skillName = skillDict['skill_name']
+  self.cost = skillDict['cost']
+  self.description = skillDict['description']
   self.hitType = skillDict['hit_type']
   self.animation = Skill:newAnimation(self.skill['sprite_path'], width, height, self.skill['duration'])
   projectiles = {}
@@ -37,7 +39,7 @@ function Skill:newAnimation(path, width, height, duration)
   
   animation.duration = duration or 1
   animation.currentFrame = 0
-    
+  
   return animation
 end;
 
@@ -53,7 +55,7 @@ function Skill:update(dt)
     for i, projectile in pairs(projectiles) do
       projectile:update(dt)
     end
-    
+  
   end
 end;
 

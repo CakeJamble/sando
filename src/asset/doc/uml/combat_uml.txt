@@ -215,13 +215,13 @@ class DefenseState {
 }
 
 class ActionUI {
-    +init(x: number, y: number, skillList: table<Skill>)
+    +init(x: number, y: number, skillList: table<Skill>, currentFP: number, currentDP: number)
     +getPos() : table
-    +setPos(x: number, y: number) : void
     +setActiveAction(action: string) : void
-    +getUIState() : string
     +keypressed(key) : void
     +targetEnemy(x: number, y:number) : void
+    +targetEnemy(x: number, y: number): void
+    +areDoneRotating() : boolean
     +update(dt: number) : void
     +draw() : void
     -uiState: string
@@ -229,30 +229,15 @@ class ActionUI {
     -flourButton:Image
     -duoButton:Image
     -activeAction:string
-    -centerX: number
-    -soloX: number
-    -flourX: number
-    -duoX: number
+    -x: number
     -y: number
-    -soloDest: number
-    -flourDest: number
-    -duoDest: number
-    -soloScale: number
-    -flourScale: number
-    -duoScale: number
-    -soloDX: number
-    -flourDX: number
-    -duoDX: number
-    -skillList: table<Skill>
-    {static} -SOLO_BUTTON_PATH: string
-    {static} -FLOUR_BUTTON_PATH: string
-    {static} -DUO_BUTTON_PATH: string
-    {static} -ICON_SPACER: number
-    {static} -ICON_SCALE: number
-    {static} -SCALE_FACTOR: number
-    {static} -ICON_ROTATION: number
-    {static} -ICON_BASE_DX: number 
-
+    -soloButton: SoloButton
+    -flourButton: FlourButton
+    -duoButton: DuoButton
+    -buttons: table<Button>
+    -activeButton: Button
+    -skillList: table<Skill> 
+    -selectedSkill: Skill
 }
 
 abstract class Button {
@@ -346,14 +331,8 @@ class PauseMenu {
     -sprite: Image
     -tabs: table{Inventory, TeamTab, SettingsTab, QuitTab}
     -tabIndex: number
-    -cursor: Cursor
     +keypressed(key): void
     +draw(): void
-}
-
-'not implemented yet
-class Cursor {
-
 }
 
 'not implemented yet

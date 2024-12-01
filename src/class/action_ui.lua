@@ -4,7 +4,7 @@ require('class.flour_button')
 require('class.duo_button')
 
 Class = require 'libs.hump.class'
-ActionUI = Class{BUTTON_SPACER = 50, BUTTON_SCALE = 0.6, ICON_ROTATION = 0}
+ActionUI = Class{}
 
   -- ActionUI constructor
     -- preconditions: name of the character
@@ -33,12 +33,6 @@ end;
   -- Returns a table containing the position of the top left of the center icon in (x,y) coords
 function ActionUI:getPos()
   return {self.x, self.y}
-end;
-
-  -- Sets the X positions of the three icons and automatically adjusts the other icons based on the const offset spacer
-function ActionUI:setPos(x, y)
-  self.x = x
-  self.y = y
 end;
 
 function ActionUI:keypressed(key) --> void
