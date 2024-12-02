@@ -107,7 +107,10 @@ function ActionUI:keypressed(key) --> void
         self.uiState = 'targeting'
       else
         self.uiState = 'submenuing'
-        self.activeButton:validateSkillCosts(self.currentFP) -- TODO: need a separate validator for Duo attacks too
+        if self.activeButton == self.flourButton then
+          self.activeButton:validateSkillCosts(self.currentFP)
+        else
+          self.activeButton:validateSkillCosts(self.currentDP)
       end
     end
     
@@ -133,7 +136,6 @@ function ActionUI:keypressed(key) --> void
     end
 
   elseif self.uiState == 'targeting' then -- maybe just else? maybe this is handled in button classes?
-    self.targets = self.activeButton:getTargets()
     self.uiState = 'qte'
   end
 
@@ -159,13 +161,11 @@ function ActionUI:update(dt)
     for i=1,#self.buttons do
       self.buttons[i]:update(dt)
     end
-    
+
     if ActionUI.areDoneRotating(self) then
       self.uiState = 'actionSelect'
     end
-
   end
-  
 end;
   
 function ActionUI:draw()

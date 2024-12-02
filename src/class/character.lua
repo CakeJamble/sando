@@ -43,6 +43,7 @@ function Character:init(stats, actionButton)
   self.selectedSkill = {}
   self.gear = Gear()
   self.state = 'idle'
+  self.enemyTargets = {}
 end;
 
   -- Gains exp, leveling up when applicable
@@ -124,6 +125,7 @@ end;
 
 function Character:keypressed(key)
   if self.state == 'offense' then
+    -- set self.enemyTargets here (TODO)
     self.offenseState:keypressed(key)
   elseif self.state == 'defense' then
     self.defenseState:keypressed(key)
