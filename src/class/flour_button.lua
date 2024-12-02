@@ -41,7 +41,7 @@ function FlourButton:keypressed(key)
   if key == 'down' then
     self.skillIndex = math.max(1, (self.skillIndex + 1) % #self.skillList)
   elseif key == 'up' then
-    self.skillIndex = if self.skillIndex > 1 then self.skillIndex - 1 else #self.skillList end
+    if self.skillIndex > 1 then self.skillIndex = self.skillIndex - 1 else self.skillIndex = #self.skillList end
   elseif key == 'z' then
     if self.pickableSkillIndices then
       -- TODO: Switch to active state with Character:offenseState
@@ -67,6 +67,8 @@ function FlourButton:draw()
         -- Print skill with a disabled text font (TODO)
         love.graphics.print(self.skillString, self.x, self.y + i * self.textOffset)
       end
+    end
+    
     -- draw cursor @ offset based on position & self.skillIndex
   end
 end;
