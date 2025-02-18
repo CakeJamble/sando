@@ -30,13 +30,7 @@ function combat:init()
 end;
 
 function combat:enter(previous)
-  -- TODO: put this back in the character_select gamestate
-  local bakeStats = get_bake_stats()
-  local bakeSkills = bakeStats['skillList']
-  local skillName = bakeSkills[1].skillName
-  self.bake = Character(get_bake_stats(), 'b')
-  self.marco = Character(get_marco_stats(), 'm')
-  self.characterTeam = CharacterTeam({self.bake, self.marco}, 2)
+  self.characterTeam = loadCharacterTeam()
   
   -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do

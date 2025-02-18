@@ -153,12 +153,8 @@ function character_select:indicesToCharacters()
       characterList[i] = key
     end
   end
-  characterTeam = CharacterTeam(characterList, TEAM_CAP)
-  for i=1, TEAM_CAP do
-    print(characterTeam.members[i].actionUI)
-    print(characterTeam.members[i].actionUI.keypressed)
-  end
   
+  characterTeam = CharacterTeam(characterList, TEAM_CAP)
   saveCharacterTeam(characterTeam, TEAM_CAP)
 end;
 
