@@ -52,29 +52,11 @@ local bake_skills = {
     proc = nil,
     cost = 0,
     partners = nil,
-    sprite_path = '../asset/sprites/entities/character/bake/basic.png',
+    sprite_path = 'asset/sprites/entities/character/bake/basic.png',
     duration = 60,
     qte_window = 25,
     qte_type = "BUTTON_PRESS",
     description = "Deals physical damage to a single target once",
-    unlock = nil
-  },
-  
-  {
-    skill_name = 'Pan Punch',
-    damage = 2,
-    damage_type = 'physical',
-    attack_type = 'solo',
-    target_type = 'single',
-    effects = nil,
-    proc = nil,
-    cost = 3,
-    partners = nil,
-    sprite_path = '../asset/characters/bake/pan_punch',
-    duration = 240,
-    qte_window = 200,
-    qte_type = 'STICK_MOVE',
-    description = 'The power of pan in the palm of my hand.',
     unlock = nil
   }
   
@@ -91,7 +73,7 @@ local maria_skills = {
     proc = nil,
     cost = 0,
     partners = nil,
-    sprite_path = '../asset/characters/maria/basic_attack',
+    sprite_path = 'asset/sprites/entities/character/maria/basic.png',
     duration = 60,
     qte_window = 25,
     qte_type = "BUTTON_PRESS",
@@ -111,7 +93,7 @@ local key_skills = {
     proc = nil,
     cost = 0,
     partners = nil,
-    sprite_path = '../asset/characters/key/basic_attack',
+    sprite_path = 'asset/sprites/entities/character/key/basic.png',
     duration = 60,
     qte_window = 25,
     qte_type = "BUTTON_PRESS",

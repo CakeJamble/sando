@@ -13,13 +13,15 @@ function Skill:init(skillDict, width, height)
   self.cost = skillDict['cost']
   self.description = skillDict['description']
   self.hitType = skillDict['hit_type']
-  self.animation = Skill:newAnimation(self.skill['sprite_path'], width, height, self.skill['duration'])
+  self.animation = Skill:newAnimation(self.skill.sprite_path, width, height, self.skill.duration)
   projectiles = {}
   self.frameCount = 0
   self.projectileCount = 0
   self.projectileRate = skillDict['projectile_rate']
   self.projectileCountLimit = skillDict['projectile_count']
-  self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
+  if(self.skill.damage_type == 'projectile') then
+    self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
+  end
 end;
 
 function Skill:getSkillDict()
@@ -31,6 +33,7 @@ end;
     -- postconditions: Returns an animation using a table of quads from a spritesheet
 function Skill:newAnimation(path, width, height, duration)
   local animation = {}
+  print(path)
   animation.spriteSheet = love.graphics.newImage(path)
   animation.frames = {}
   for i=0,duration do

@@ -111,6 +111,7 @@ function ActionUI:keypressed(key) --> void
           self.activeButton:validateSkillCosts(self.currentFP)
         else
           self.activeButton:validateSkillCosts(self.currentDP)
+        end
       end
     end
     
