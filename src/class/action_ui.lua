@@ -44,9 +44,9 @@ function ActionUI:keypressed(key) --> void
         self.activeButton = self.duoButton
         self.duoButton:setIsActiveButton(true)
         self.soloButton:setIsActiveButton(false)
-        self.soloButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)
+        self.soloButton:setTargetPos(self.x - self.iconSpacer, 1)
         self.duoButton:setTargetPos(self.x, 1)
-        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)     -- result : {left:solo, center:duo, right:flour}
+        self.flourButton:setTargetPos(self.x + self.iconSpacer, 2)     -- result : {left:solo, center:duo, right:flour}
         
       elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
         self.activeButton = self.soloButton
@@ -54,16 +54,16 @@ function ActionUI:keypressed(key) --> void
         self.soloButton:setIsActiveButton(true)
 
         self.soloButton:setTargetPos(self.x, 1)
-        self.duoButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)
-        self.flourButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)     -- result : {left:flour, center:solo, right:duo}
+        self.duoButton:setTargetPos(self.x + self.iconSpacer, 2)
+        self.flourButton:setTargetPos(self.x - self.iconSpacer, 1)     -- result : {left:flour, center:solo, right:duo}
         
       else                                                                    -- {left:duo, center:flour, right:solo}
         self.activeButton = self.flourButton
         self.duoButton:setIsActiveButton(false)
         self.flourButton:setIsActiveButton(true)
 
-        self.soloButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 2)
-        self.duoButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 1)
+        self.soloButton:setTargetPos(self.x + self.iconSpacer, 2)
+        self.duoButton:setTargetPos(self.x - self.iconSpacer, 1)
         self.flourButton:setTargetPos(self.x, 1)                               -- result : {left: duo, center: flour, right: solo}
       end      
     
@@ -75,8 +75,8 @@ function ActionUI:keypressed(key) --> void
         self.soloButton:setIsActiveButton(false)
         self.flourButton:setIsActiveButton(true)
 
-        self.soloButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)
-        self.duoButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)
+        self.soloButton:setTargetPos(self.x + self.iconSpacer, 1)
+        self.duoButton:setTargetPos(self.x - self.iconSpacer, 2)
         self.flourButton:setTargetPos(self.x, 1)                              -- result: {left: duo, center: flour, right: solo}
                                                                               
       elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
@@ -84,9 +84,9 @@ function ActionUI:keypressed(key) --> void
         self.flourButton:setIsActiveButton(false)
         self.duoButton:setIsActiveButton(true)
 
-        self.soloButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)
+        self.soloButton:setTargetPos(self.x - self.iconSpacer, 2)
         self.duoButton:setTargetPos(self.x, 1)
-        self.flourButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)     -- result: {left: solo, center: duo, right: flour}
+        self.flourButton:setTargetPos(self.x + self.iconSpacer, 1)     -- result: {left: solo, center: duo, right: flour}
         
       else                                                                  -- {left:solo, center:duo, right:flour}
         self.activeButton = self.soloButton
@@ -94,8 +94,8 @@ function ActionUI:keypressed(key) --> void
         self.duoButton:setIsActiveButton(false)
 
         self.soloButton:setTargetPos(self.x, 1)
-        self.duoButton:setTargetPos(self.x + ActionUI.BUTTON_SPACER, 1)
-        self.flourButton:setTargetPos(self.x - ActionUI.BUTTON_SPACER, 2)   -- result: {left: flour, center: solo, right: duo}
+        self.duoButton:setTargetPos(self.x + self.iconSpacer, 1)
+        self.flourButton:setTargetPos(self.x - self.iconSpacer, 2)   -- result: {left: flour, center: solo, right: duo}
       end
 
       self.uiState = 'rotating'
