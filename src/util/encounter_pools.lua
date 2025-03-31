@@ -26,6 +26,22 @@ enemyPool1 = {
     'Dasbunny'
   }
 }
+enemyPool2 = {
+  {
+    'Sortilla',
+    'Reggie',
+  },
+  
+  {
+    'Line'
+  },
+  
+  {
+    'Goki',
+    'Dasbunny'
+  }
+}
+
 
 elitePool1 = {
   {

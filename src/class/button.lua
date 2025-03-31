@@ -94,7 +94,7 @@ end;
 function Button:update(dt)
   if Button.isRotatingRight(self) then
     Button.rotateRight(self, dt)
-  elseif Button.isRotatingLeft(self, dt) then
+  elseif Button.isRotatingLeft(self) then
     Button.rotateLeft(self, dt)
   end
 end;

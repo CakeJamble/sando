@@ -28,7 +28,7 @@ function Character:init(stats, actionButton)
   Entity.init(self, stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
   self.basic = stats.skillList[1]
-  self.currentSkills = stats.skillList[2]
+  self.currentSkills = stats.skillList
   self.level = 1
   self.totalExp = 0
   self.experience = 0

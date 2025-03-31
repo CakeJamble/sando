@@ -53,7 +53,8 @@ function Team:at(i)
 end;
 
 function Team:getSpeedAt(i)
-  return self.members[i]:getSpeed()
+  local member = self.members[i]
+  return member:getSpeed()
 end;
 
 

@@ -1,3 +1,4 @@
+---@diagnostic disable: redundant-parameter, undefined-field
 --[[
 Copyright (c) 2010-2013 Matthias Richter
 

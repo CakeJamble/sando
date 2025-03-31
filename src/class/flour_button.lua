@@ -28,7 +28,7 @@ function FlourButton:skillListToStr()
 end;
 
 function FlourButton:setSkillPreview()
-  self.skillPreview = skillList[self.skillIndex].description
+  self.skillPreview = self.skillList[self.skillIndex].description
 end;
 
 function FlourButton:validateSkillCosts(currentFP)

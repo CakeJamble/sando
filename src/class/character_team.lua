@@ -19,7 +19,7 @@ function CharacterTeam:distributeExperience()
 end;
 
 function CharacterTeam:getInventory()
-    return self.inventory
+  return self.inventory
 end;
 
 function CharacterTeam:keypressed(key)

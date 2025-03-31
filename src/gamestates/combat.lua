@@ -30,15 +30,14 @@ function combat:init()
 end;
 
 function combat:enter(previous)
-  self.characterTeam = loadCharacterTeam()
-  
+  self.characterTeam = loadCharacterTeam()  
   -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
     self.encounteredPools[i] = {}
   end;
   
   -- Log & Generate the floor's encounter in encounteredPools
-  combat:logEncounter(self.encounteredPools, self.floorNumber)
+  combat:logEncounter()
   self.enemyNameList = self.encounteredPools[self.floorNumber]
   self.enemyList = {}
 
@@ -64,7 +63,7 @@ end;
   -- Increments the enemiesIndex counter by the number of times passed, then sets the position of the cursorX & cursorY variables to the position of the targeted enemy
 function combat:setTargetPos(incr) --> void
   self.enemyTeamIndex = (self.enemyTeamIndex + incr) % self.enemyCount
-  local targetedEnemy = Enemies[self.enemyTeamIndex]
+  local targetedEnemy = self.enemyTeam[self.enemyTeamIndex]
   self.cursorX = self.targetedEnemy:getX()
   self.cursorY = self.targetedEnemy:getY()
 end;

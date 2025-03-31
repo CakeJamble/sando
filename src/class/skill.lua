@@ -33,7 +33,6 @@ end;
     -- postconditions: Returns an animation using a table of quads from a spritesheet
 function Skill:newAnimation(path, width, height, duration)
   local animation = {}
-  print(path)
   animation.spriteSheet = love.graphics.newImage(path)
   animation.frames = {}
   for i=0,duration do
