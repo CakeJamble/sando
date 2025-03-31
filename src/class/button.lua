@@ -14,6 +14,7 @@ function Button:init(x, y, path)
     self.scaleFactor = Button.SCALE_DOWN
     self.isActiveButton = false
     self.targets = {}
+    self.displaySkillList = false
 end;
 
 function Button:getButton()
@@ -101,4 +102,7 @@ end;
 
 function Button:draw()
     love.graphics.draw(self.button, self.x, self.y, 0, self.scaleFactor, self.scaleFactor)
+    if self.displaySkillList then
+      love.graphics.rectangle('fill', self.x + 150, self.y, 50, 20)
+    end
 end;

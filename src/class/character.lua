@@ -99,7 +99,6 @@ function Character:getUIState()
   return self.ui:getUIState()
 end;
 
-
 function Character:setSelectedSkill()
   self.selectedSkill = self.offenseState:getSkill()
 end;
@@ -135,16 +134,15 @@ function Character:keypressed(key)
       if key == 'z' then
         if self.actionUI.activeButton == self.actionUI.soloButton then
           print("Solo Button Selected. Attack!!!")
-        else if self.actionUI.activeButton == self.actionUI.flourButton then
+        elseif self.actionUI.activeButton == self.actionUI.flourButton then
           print("Flour Button Selected. Displaying Skill List")
         else -- self.activeButton == self.duoButton
           print("Duo Button Selected. Displaying Duo List")
-        end -- self.activeButton == self.soloButton
-      end   -- self.key == 'z'
-    end     -- self.isFocused
-  end       -- self.state == 'offense'
-end;        -- function
-end -- ????
+        end
+      end
+    end
+  end
+end;
     
 function Character:update(dt)
   Entity.update(self, dt)
