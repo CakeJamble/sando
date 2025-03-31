@@ -132,10 +132,19 @@ function Character:keypressed(key)
   else  -- it is the character's turn and they haven't selected an action yet
     if self.isFocused then
       self.actionUI:keypressed(key)
-    end
-    
-  end
-end;
+      if key == 'z' then
+        if self.actionUI.activeButton == self.actionUI.soloButton then
+          print("Solo Button Selected. Attack!!!")
+        else if self.actionUI.activeButton == self.actionUI.flourButton then
+          print("Flour Button Selected. Displaying Skill List")
+        else -- self.activeButton == self.duoButton
+          print("Duo Button Selected. Displaying Duo List")
+        end -- self.activeButton == self.soloButton
+      end   -- self.key == 'z'
+    end     -- self.isFocused
+  end       -- self.state == 'offense'
+end;        -- function
+end -- ????
     
 function Character:update(dt)
   Entity.update(self, dt)

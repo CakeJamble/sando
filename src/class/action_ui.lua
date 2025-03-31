@@ -102,19 +102,15 @@ function ActionUI:keypressed(key) --> void
       
      -- stand ins for confirm/cancel button input 
     elseif key == 'z' then
+      print(self.activeButton)
       self.activeButton:keypressed(key)
       if self.activeButton == 'solo' then
         self.uiState = 'targeting'
       else
         self.uiState = 'submenuing'
-        if self.activeButton == self.flourButton then
-          self.activeButton:validateSkillCosts(self.currentFP)
-        else
-          self.activeButton:validateSkillCosts(self.currentDP)
-        end
+-- temp
       end
     end
-    
   elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
     if self.activeButton ~= self.soloButton then
       self.activeButton.displaySkillList = true
@@ -133,6 +129,7 @@ function ActionUI:keypressed(key) --> void
         self.uiState = 'actionSelect'
       else  -- self.uiState == 'submenuing'
         self.uiState = 'actionSelect'
+        self.activeButton.displaySkillList = false
       end
     end
 
@@ -174,6 +171,9 @@ function ActionUI:draw()
   if self.uiState ~= 'qte' then
     for i=1,#self.buttons do
       self.buttons[i]:draw()
+    end
+    if self.activeButton.displaySkillList then
+      love.graphics.rectangle('fill', self.x + 50, self.y, 50, 20)
     end
   end
 end;
