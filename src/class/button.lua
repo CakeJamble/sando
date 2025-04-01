@@ -2,10 +2,11 @@
 Class = require 'libs.hump.class'
 Button = Class{BASE_DX = 300, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/'}
 
-function Button:init(x, y, path)
+function Button:init(x, y, layer, path)
     self.centerX = x
     self.x = x
     self.y = y
+    self.layer = layer
     self.tX = nil
     self.tY = nil
     local buttonPath = Button.PATH .. path

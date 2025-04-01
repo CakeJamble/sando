@@ -2,6 +2,7 @@
 require('class.solo_button')
 require('class.flour_button')
 require('class.duo_button')
+require('util.globals')
 
 Class = require 'libs.hump.class'
 ActionUI = Class{}
@@ -17,9 +18,9 @@ function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy pos
   self.currentDP = currentDP
   self.uiState = 'actionSelect'
   self.iconSpacer = 50
-  self.soloButton = SoloButton(self.x, self.y, skillList[1])
-  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, skillList)
-  self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, skillList)
+  self.soloButton = SoloButton(self.x, self.y, 1, skillList[1])
+  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, 2, skillList)
+  self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, 3, skillList)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton}
   self.activeButton = self.soloButton
   
@@ -38,7 +39,7 @@ function ActionUI:getPos()
 end;
 
 function ActionUI:keypressed(key) --> void
-  if self.uiState == 'actionSelect' then  
+  if self.uiState == 'actionSelect' then
     if key == 'right' then                         -- spin the wheel left
       if self.activeButton == self.soloButton then                            -- {left:flour, center:solo, right:duo}
         self.activeButton = self.duoButton
@@ -47,6 +48,11 @@ function ActionUI:keypressed(key) --> void
         self.soloButton:setTargetPos(self.x - self.iconSpacer, 1)
         self.duoButton:setTargetPos(self.x, 1)
         self.flourButton:setTargetPos(self.x + self.iconSpacer, 2)     -- result : {left:solo, center:duo, right:flour}
+        
+        -- set layers
+        self.activeButton.layer = 1
+        self.soloButton.layer = 2
+        self.flourButton.layer = 3
         
       elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
         self.activeButton = self.soloButton
@@ -57,7 +63,12 @@ function ActionUI:keypressed(key) --> void
         self.duoButton:setTargetPos(self.x + self.iconSpacer, 2)
         self.flourButton:setTargetPos(self.x - self.iconSpacer, 1)     -- result : {left:flour, center:solo, right:duo}
         
-      else                                                                    -- {left:duo, center:flour, right:solo}
+        -- set layers
+        self.activeButton.layer = 1
+        self.duoButton.layer = 3
+        self.flourButton.layer = 2
+        
+      else                                                                    -- {left:solo, center:duo, right:flour}
         self.activeButton = self.flourButton
         self.duoButton:setIsActiveButton(false)
         self.flourButton:setIsActiveButton(true)
@@ -65,6 +76,12 @@ function ActionUI:keypressed(key) --> void
         self.soloButton:setTargetPos(self.x + self.iconSpacer, 2)
         self.duoButton:setTargetPos(self.x - self.iconSpacer, 1)
         self.flourButton:setTargetPos(self.x, 1)                               -- result : {left: duo, center: flour, right: solo}
+        
+        -- set layers
+        self.activeButton.layer = 1
+        self.duoButton.layer = 2
+        self.soloButton.layer = 3
+        
       end      
     
       self.uiState = 'rotating'
@@ -79,6 +96,11 @@ function ActionUI:keypressed(key) --> void
         self.duoButton:setTargetPos(self.x - self.iconSpacer, 2)
         self.flourButton:setTargetPos(self.x, 1)                              -- result: {left: duo, center: flour, right: solo}
                                                                               
+        -- set layers
+        self.activeButton.layer = 1
+        self.soloButton.layer = 2
+        self.duoButton.layer = 3
+        
       elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
         self.activeButton = self.duoButton
         self.flourButton:setIsActiveButton(false)
@@ -88,6 +110,11 @@ function ActionUI:keypressed(key) --> void
         self.duoButton:setTargetPos(self.x, 1)
         self.flourButton:setTargetPos(self.x + self.iconSpacer, 1)     -- result: {left: solo, center: duo, right: flour}
         
+        -- set layers
+        self.activeButton.layer = 1
+        self.soloButton.layer = 2
+        self.flourButton.layer = 3
+        
       else                                                                  -- {left:solo, center:duo, right:flour}
         self.activeButton = self.soloButton
         self.soloButton:setIsActiveButton(true)
@@ -96,6 +123,11 @@ function ActionUI:keypressed(key) --> void
         self.soloButton:setTargetPos(self.x, 1)
         self.duoButton:setTargetPos(self.x + self.iconSpacer, 1)
         self.flourButton:setTargetPos(self.x - self.iconSpacer, 2)   -- result: {left: flour, center: solo, right: duo}
+        
+        -- set layers
+        self.activeButton.layer = 1
+        self.duoButton.layer = 2
+        self.flourButton.layer = 3
       end
 
       self.uiState = 'rotating'
@@ -171,4 +203,5 @@ function ActionUI:draw()
       self.buttons[i]:draw()
     end
   end
+  
 end;

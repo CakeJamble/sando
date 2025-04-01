@@ -3,8 +3,8 @@ require('class.button')
 Class = require('libs.hump.class')
 DuoButton = Class{__includes = Button}
 
-function DuoButton:init(x, y, skillList)
-    Button.init(self, x, y, 'duo_lame.png')
+function DuoButton:init(x, y, layer, skillList)
+    Button.init(self, x, y, layer, 'duo_lame.png')
     self.skillList = skillList
     -- self.skillListHolder = love.graphics.newImage(path/to/image)
     -- self.skillListCursor = love.graphics.newImage(path/to/image)

@@ -124,7 +124,7 @@ function combat:draw()
   self.characterTeam:draw()
   self.enemyTeam:draw()
   
-  -- if team.actionUI:getUIState() == 'targeting' then
+  -- if characterTeam.focusedMember.actionUI.uiState == 'targeting' then
   --   love.graphics.draw(targetCursor, cursorX, cursorY)
   -- end
 end;

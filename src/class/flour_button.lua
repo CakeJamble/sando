@@ -3,8 +3,8 @@ require('class.button')
 Class = require 'libs.hump.class'
 FlourButton = Class{__includes = Button}
 
-function FlourButton:init(x, y, skillList)
-    Button.init(self, x, y, 'flour.png')
+function FlourButton:init(x, y, layer, skillList)
+    Button.init(self, x, y, layer, 'flour.png')
     self.skillList = skillList
     self.skillListString = FlourButton.skillListToStr(self)
     self.skillIndex = 1

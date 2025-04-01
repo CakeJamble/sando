@@ -56,3 +56,11 @@ function deepCopy(original)
   end
   return copy
 end;
+
+function sortLayers(T)
+	table.sort(T,
+		function(first, second)
+			return first.layer < second.layer
+		end
+	)
+end
