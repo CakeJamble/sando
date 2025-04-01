@@ -14,8 +14,10 @@ local FIRST_MEMBER_Y = 100
 local numFloors = 50
 
 local TARGET_SPRITE = 'asset/sprites/combat/target_cursor.png'
+local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
 
 function combat:init()
+  self.background = love.graphics.newImage(TEMP_BG)
   self.targetCursor = love.graphics.newImage(TARGET_SPRITE)
   self.cursorX = 0
   self.cursorY = 0
@@ -118,6 +120,7 @@ function combat:update(dt)
 end;
 
 function combat:draw()
+  love.graphics.draw(self.background, 0, 0, 0, 1.5, 2.25)
   self.characterTeam:draw()
   self.enemyTeam:draw()
   

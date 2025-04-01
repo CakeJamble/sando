@@ -8,7 +8,7 @@ require("util.enemy_skill_list")
 Class = require "libs.hump.class"
 Enemy = Class{__includes = Entity, 
   -- for testing
-  xPos = 300, yPos = 100}
+  xPos = 350, yPos = 200}
 
 function Enemy:init(enemyName, enemyType)
   Entity.init(self, getStatsByName(enemyName, enemyType), Enemy.xPos, Enemy.yPos)
@@ -17,7 +17,6 @@ function Enemy:init(enemyName, enemyType)
   self.moneyReward = self.baseStats['moneyReward']
   self.selectedSkill = nil
   Enemy.yPos = Enemy.yPos + 150
-
 end;
 
 function Enemy:getExpReward()

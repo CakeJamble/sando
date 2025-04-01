@@ -17,7 +17,7 @@ Class = require "libs.hump.class"
 Character = Class{__includes = Entity, 
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
-  yPos = 100,
+  yPos = 200,
   xPos = 100
 }
 

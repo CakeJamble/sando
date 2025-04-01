@@ -190,7 +190,7 @@ function Entity:draw() --> void
     -- walk, jump, idle
   local state = self.movementState.state
   if state == 'idle' then
-    love.graphics.draw(self.spriteSheets.idle, self.movementAnimations.idle[math.floor(self.currentFrame)], self.x, self.y)
+    love.graphics.draw(self.spriteSheets.idle, self.movementAnimations.idle[math.floor(self.currentFrame)], self.x, self.y, 0, 1.5, 1.5)
   elseif state == 'moveX' then
     -- love.graphics.draw(self.spriteSheets.moveX, self.movementAnimations.moveX[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveY' then
