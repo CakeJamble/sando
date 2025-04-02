@@ -146,6 +146,11 @@ function Character:update(dt)
     self.movementState:update(dt)
     self.x = self.movementState.x
     self.y = self.movementState.y
+    if self.movementState.state == 'idle' then
+      if self.isFocused then
+        self.state = 'offense'
+      end
+    end
   end
 end;
 

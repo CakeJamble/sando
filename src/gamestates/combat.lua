@@ -128,14 +128,12 @@ function combat:keypressed(key)
     local character = self.characterTeam.members[self.characterTeamIndex]
     
     if self.actionUI.uiState == 'moving' then
-      character.movementState:moveTowards(self.actionUI.tX, self.actionUI.tY)
+      character.movementState:moveTowards(self.actionUI.tX, self.actionUI.tY, true)
       character.movementState.state = 'move'
       character.state = 'move'
     end
-    
-  end
-  
 
+  end
 
 end;
 
@@ -146,6 +144,12 @@ function combat:update(dt)
   if self.actionUI then
     self.actionUI:update(dt)
   end
+  
+  local character = self.characterTeam.members[self.characterTeamIndex]
+  if character.movementState.state == 'idle' and character.movementState.isEnemy then
+    character.state = 'offense'
+  end
+    
 
 end;
 

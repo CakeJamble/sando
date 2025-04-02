@@ -23,8 +23,9 @@ function MovementState:setPosition(x, y)
   self.y = y
 end;
 
-function MovementState:moveTowards(tX, tY)
+function MovementState:moveTowards(tX, tY, isEnemy)
   self.state = 'move'
+  self.isEnemy = isEnemy
   self.targetX = tX - MovementState.SPRITE_SPACE
   self.targetY = tY
 end;
