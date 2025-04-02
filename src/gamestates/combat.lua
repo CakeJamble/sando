@@ -125,9 +125,12 @@ function combat:keypressed(key)
   
   if self.actionUI then
     self.actionUI:keypressed(key)
+    local character = self.characterTeam.members[self.characterTeamIndex]
     
     if self.actionUI.uiState == 'moving' then
-      self.characterTeam.members[self.characterTeamIndex].movementState:moveTowards(self.actionUI.tX, self.actionUI.tY)
+      character.movementState:moveTowards(self.actionUI.tX, self.actionUI.tY)
+      character.movementState.state = 'move'
+      character.state = 'move'
     end
     
   end

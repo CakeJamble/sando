@@ -1,7 +1,7 @@
 --! filename: movement state
 
 Class = require 'libs.hump.class'
-MovementState = Class{MOVE_SPEED = 20, GRAVITY = 30, JUMP_SPEED = 24}
+MovementState = Class{MOVE_SPEED = 200, GRAVITY = 30, JUMP_SPEED = 24, SPRITE_SPACE = 96, DIST_MARGIN = 5}
 
 function MovementState:init(x, y)
   self.x = x
@@ -25,7 +25,7 @@ end;
 
 function MovementState:moveTowards(tX, tY)
   self.state = 'move'
-  self.targetX = tX
+  self.targetX = tX - MovementState.SPRITE_SPACE
   self.targetY = tY
 end;
 
@@ -55,9 +55,10 @@ function MovementState:update(dt)
     self.dy = self.targetY - self.y
     local distance = math.sqrt(self.dx * self.dx + self.dy * self.dy)
     
-    if distance < 1 then
+    if distance < MovementState.DIST_MARGIN then
       self.x = self.targetX
       self.y = self.targetY
+      self.state = 'idle'
       return
     end
     

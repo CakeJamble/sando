@@ -161,13 +161,13 @@ function Entity:setAnimations(subdir)
   -- Images
   local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
   self.spriteSheets.idle = love.graphics.newImage(path .. 'idle.png')
---  self.spriteSheets.moveX = love.graphics.newImage(path .. 'move_x.png')
+  self.spriteSheets.moveX = love.graphics.newImage(path .. 'move_x.png')
 --  self.spriteSheets.flinch = love.graphics.newImage(path .. 'flinch.png')
 --  self.spriteSheets.ko = love.graphics.newImage(path .. 'ko.png')
 
   -- Quads  
   self.movementAnimations.idle = Entity.populateFrames(self, self.spriteSheets.idle)
---  Entity:populateFrames(self, self.movementAnimations.moveX, self.spriteSheets.moveX, self.durations.moveX)
+  self.movementAnimations.moveX = Entity.populateFrames(self, self.spriteSheets.moveX)
 --  Entity:populateFrames(self, self.movementAnimations.moveY, self.spriteSheets.moveY, self.durations.moveY)
 --  Entity:populateFrames(self, self.movementAnimations.moveXY, self.spriteSheets.moveXY, self.durations.moveXY)
 --  Entity:populateFrames(self, self.movementAnimations.flinch, self.spriteSheets.flinch, self.durations.flinch)
@@ -201,7 +201,10 @@ function Entity:update(dt) --> void
   local animation
   if state == 'idle' then
     animation = self.movementAnimations.idle
+  elseif state == 'move' then
+    animation = self.movementAnimations.moveX
   end
+  
   
   animation.currentTime = animation.currentTime + dt
   if animation.currentTime >= animation.duration then 
@@ -218,10 +221,10 @@ function Entity:draw() --> void
   local animation
   if state == 'idle' then
     animation = self.movementAnimations.idle
-    spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-    love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
-  elseif state == 'moveX' then
-    -- love.graphics.draw(self.spriteSheets.moveX, self.movementAnimations.moveX[math.floor(self.currentFrame)], self.x, self.y)
+    -- spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+    -- love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
+  elseif state == 'move' then
+    animation = self.movementAnimations.moveX
   elseif state == 'moveY' then
     -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveXY' then
@@ -233,4 +236,6 @@ function Entity:draw() --> void
   else
     print("logical error in determining movement state of entity")
   end
+  spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1)
 end;
