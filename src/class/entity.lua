@@ -35,7 +35,6 @@ function Entity:init(stats, x, y)
   }    
   self.subdir = ''
   self.entityName = self.baseStats['entityName']
-  self.durations = get_state_animations(self.entityName)
   self.x=x
   self.y=y
   self.dX=0
@@ -167,7 +166,7 @@ function Entity:setAnimations(subdir)
 --  self.spriteSheets.ko = love.graphics.newImage(path .. 'ko.png')
 
   -- Quads  
-  Entity.populateFrames(self, self.movementAnimations.idle, self.spriteSheets.idle, self.durations.idle)
+  self.movementAnimations.idle = Entity.populateFrames(self, self.spriteSheets.idle)
 --  Entity:populateFrames(self, self.movementAnimations.moveX, self.spriteSheets.moveX, self.durations.moveX)
 --  Entity:populateFrames(self, self.movementAnimations.moveY, self.spriteSheets.moveY, self.durations.moveY)
 --  Entity:populateFrames(self, self.movementAnimations.moveXY, self.spriteSheets.moveXY, self.durations.moveXY)
@@ -175,16 +174,38 @@ function Entity:setAnimations(subdir)
 --  Entity:populateFrames(self, self.movementAnimations.ko, self.spriteSheets.ko, self.durations.ko)
 end;
 
-function Entity:populateFrames(frames, spriteSheet, numFrames)
+function Entity:populateFrames(image, spriteSheet, duration)
+  local animation = {}
+  animation.spriteSheet = image
+  animation.quads = {}
+  
+  for y = 0, image:getHeight() - self.frameHeight, self.frameHeight do
+    for x = 0, image:getWidth() - self.frameWidth, self.frameWidth do
+      table.insert(animation.quads, love.graphics.newQuad(x, y, self.frameWidth, self.frameHeight, image:getDimensions()))
+    end
+  end
+  
+  animation.duration = duration or 1
+  animation.currentTime = 0
+  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
+  
+  return animation
+  --[[
   for i=1,numFrames do
     frames[i] = love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, spriteSheet:getWidth(), spriteSheet:getHeight())
-  end
+  end]]
 end;
 
 function Entity:update(dt) --> void
-  self.currentFrame = self.currentFrame + 10 * dt
-  if self.currentFrame > self.durations[self.movementState.state] then
-    self.currentFrame = 1
+  local state = self.movementState.state
+  local animation
+  if state == 'idle' then
+    animation = self.movementAnimations.idle
+  end
+  
+  animation.currentTime = animation.currentTime + dt
+  if animation.currentTime >= animation.duration then 
+    animation.currentTime = animation.currentTime - animation.duration
   end
 end;
 
@@ -193,8 +214,12 @@ function Entity:draw() --> void
     -- Placeholder for drawing the state or any visual representation
     -- walk, jump, idle
   local state = self.movementState.state
+  local spriteNum
+  local animation
   if state == 'idle' then
-    love.graphics.draw(self.spriteSheets.idle, self.movementAnimations.idle[math.floor(self.currentFrame)], self.x, self.y, 0, 1.5, 1.5)
+    animation = self.movementAnimations.idle
+    spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+    love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
   elseif state == 'moveX' then
     -- love.graphics.draw(self.spriteSheets.moveX, self.movementAnimations.moveX[math.floor(self.currentFrame)], self.x, self.y)
   elseif state == 'moveY' then
