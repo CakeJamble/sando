@@ -70,6 +70,10 @@ function Entity:getY()  --> int
   return self.y
 end;
 
+function Entity:getPos() --> {int, int}
+  return {['x'] = self.x, ['y'] = self.y}
+end;
+
 function Entity:getFWidth()
   return self.frameWidth
 end;

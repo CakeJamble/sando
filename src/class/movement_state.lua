@@ -3,13 +3,11 @@
 Class = require 'libs.hump.class'
 MovementState = Class{MOVE_SPEED = 20, GRAVITY = 30, JUMP_SPEED = 24}
 
-function MovementState:init(x, y, frameHeight)
+function MovementState:init(x, y)
   self.x = x
   self.y = y
   self.dx = 0
   self.dy = 0
-  self.frameHeight = frameHeight
-  self.groundLevel = y + frameHeight
     
   self.targetX = 0
   self.targetY = 0
@@ -48,9 +46,9 @@ function MovementState:applyGravity(dt)
 end;
 
 function MovementState:update(dt)
-  if MovementState:isGrounded(self.groundLevel, self.y, self.frameHeight) then
+--[[  if MovementState:isGrounded(self.groundLevel, self.y, self.frameHeight) then
     MovementState:applyGravity(dt)
-  end
+  end]]
   
   if self.state == 'move' then
     self.dx = self.targetX - self.x
@@ -68,8 +66,8 @@ function MovementState:update(dt)
     
     self.x = self.x + directionX * MovementState.MOVE_SPEED * dt
     self.y = self.y + directionY * MovementState.MOVE_SPEED * dt
-  elseif self.state == 'jump' then
-    self.y = self.y + (MovementState.JUMP_SPEED * dt)
+  --[[elseif self.state == 'jump' then
+    self.y = self.y + (MovementState.JUMP_SPEED * dt)]]
   end
   
 end;

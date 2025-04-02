@@ -22,6 +22,10 @@ function CharacterTeam:getInventory()
   return self.inventory
 end;
 
+
+--[[ Keypress is done for each member because you can press their action button
+to perform their action (jump for now) at any time during combat,
+even when it isn't optimal (unless the focused member is in offense state)]]
 function CharacterTeam:keypressed(key)
   for i=1, self.numMembers do
     self.members[i]:keypressed(key)

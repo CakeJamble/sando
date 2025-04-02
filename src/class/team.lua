@@ -8,9 +8,23 @@ Team = Class{}
   -- Team constructor
 function Team:init(entities, numMembers)
   self.members = entities
+  self.oppositionTeamPositions = {}
+    
   self.numMembers = numMembers  
   self.membersIndex = 1
   self.money = 0
+end;
+
+function Team:setOppositionTeamPositions(positions)
+  self.oppositionTeamPositions = positions
+end;
+
+function Team:getPositions() --> Table({x:int, y:int})
+  local result = {}
+  for i=1,self.numMembers do
+    table.insert(result, self.members[i]:getPos())
+  end
+  return result
 end;
 
   -- Adds a member to the instance variable self.members list

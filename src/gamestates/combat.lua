@@ -12,13 +12,10 @@ local combat = {}
 local FIRST_MEMBER_X = 100
 local FIRST_MEMBER_Y = 100
 local numFloors = 50
-
-local TARGET_SPRITE = 'asset/sprites/combat/target_cursor.png'
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
 
 function combat:init()
   self.background = love.graphics.newImage(TEMP_BG)
-  self.targetCursor = love.graphics.newImage(TARGET_SPRITE)
   self.cursorX = 0
   self.cursorY = 0
   self.rewardExp = 0
@@ -32,11 +29,13 @@ function combat:init()
 end;
 
 function combat:enter(previous)
-  self.characterTeam = loadCharacterTeam()  
+  self.characterTeam = loadCharacterTeam()
   -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
     self.encounteredPools[i] = {}
   end;
+  
+  self.actionUI = nil
   
   -- Log & Generate the floor's encounter in encounteredPools
   combat:logEncounter()
@@ -62,7 +61,8 @@ function combat:enter(previous)
   combat:nextTurn()
 end;
 
-  -- Increments the enemiesIndex counter by the number of times passed, then sets the position of the cursorX & cursorY variables to the position of the targeted enemy
+--[[ Increments the enemiesIndex counter by the number of times passed, 
+then sets the position of the cursorX & cursorY variables to the position of the targeted enemy ]]
 function combat:setTargetPos(incr) --> void
   self.enemyTeamIndex = (self.enemyTeamIndex + incr) % self.enemyCount
   local targetedEnemy = self.enemyTeam[self.enemyTeamIndex]
@@ -70,19 +70,22 @@ function combat:setTargetPos(incr) --> void
   self.cursorY = self.targetedEnemy:getY()
 end;
 
-
+--[[ Sets the focused member, and adjusts ActionUI accordingly ]]
 function combat:nextTurn()
   if self.characterTeam:getSpeedAt(self.characterTeamIndex) < self.enemyTeam:getSpeedAt(self.enemyTeamIndex) then
     self.characterTeam:setFocusedMember(nil)
     self.enemyTeam:setFocusedMember(self.enemyTeamIndex)
     self.enemyTeamIndex = self.enemyTeamIndex + 1
+    self.actionUI = nil
     
   else    -- if next Character.speed >= next Enemey.speed then
     self.enemyTeam:setFocusedMember(nil)
     self.characterTeam:setFocusedMember(self.characterTeamIndex)
     self.characterTeamIndex = self.characterTeamIndex + 1
-
+    self.actionUI = ActionUI(self.characterTeam.members[self.characterTeamIndex], self.enemyTeam:getPositions())
+    print('Starting turn of ' .. self.characterTeam.members[self.characterTeamIndex].entityName)
   end
+
 end;
 
 -- Need to port over map generation techniques for weighted random creation of encounters!!!
@@ -109,14 +112,38 @@ function combat:logEncounter() --> EnemyTeam
   end
 end;
 
-
+--[[ Hierarchy of keypressed chain:
+  1. 
+    combat:keypressed -> characterTeam:keypressed
+      characterTeam:keypressed -> each character:keypressed
+        character:keypressed -> offenseState:keypressed OR defenseState:keypressed
+  
+  2. combat:keypressed -> actionUI:keypressed
+]]
 function combat:keypressed(key)
   self.characterTeam:keypressed(key)
+  
+  if self.actionUI then
+    self.actionUI:keypressed(key)
+    
+    if self.actionUI.uiState == 'moving' then
+      self.characterTeam.members[self.characterTeamIndex].movementState:moveTowards(self.actionUI.tX, self.actionUI.tY)
+    end
+    
+  end
+  
+
+
 end;
 
 function combat:update(dt)
   self.characterTeam:update(dt)
   self.enemyTeam:update(dt)
+  
+  if self.actionUI then
+    self.actionUI:update(dt)
+  end
+
 end;
 
 function combat:draw()
@@ -124,9 +151,10 @@ function combat:draw()
   self.characterTeam:draw()
   self.enemyTeam:draw()
   
-  -- if characterTeam.focusedMember.actionUI.uiState == 'targeting' then
-  --   love.graphics.draw(targetCursor, cursorX, cursorY)
-  -- end
+  if self.actionUI then
+    self.actionUI:draw()
+  end
+
 end;
   
 return combat

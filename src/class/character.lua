@@ -29,16 +29,20 @@ function Character:init(stats, actionButton)
   self.actionButton = actionButton
   self.basic = stats.skillList[1]
   self.currentSkills = stats.skillList
+  self.chosenSkill = nil
   self.level = 1
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
   Entity.setAnimations(self, 'character/')
   Character.yPos = Character.yPos + 150
+  self.currentFP = stats.fp
+  self.currentDP = stats.dp
   
   self.offenseState = OffenseState(actionButton, self.battleStats)
   self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
-  self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
+  self.movementState = MovementState(self.x, self.y)
+  -- self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
 
   self.selectedSkill = {}
   self.gear = Gear()
@@ -128,20 +132,8 @@ function Character:keypressed(key)
     self.offenseState:keypressed(key)
   elseif self.state == 'defense' then
     self.defenseState:keypressed(key)
-  else  -- it is the character's turn and they haven't selected an action yet
-    if self.isFocused then
-      self.actionUI:keypressed(key)
-      if key == 'z' then
-        if self.actionUI.activeButton == self.actionUI.soloButton then
-          print("Solo Button Selected. Attack!!!")
-        elseif self.actionUI.activeButton == self.actionUI.flourButton then
-          print("Flour Button Selected. Displaying Skill List")
-        else -- self.activeButton == self.duoButton
-          print("Duo Button Selected. Displaying Duo List")
-        end
-      end
-    end
   end
+  -- if in movement state, does nothing
 end;
     
 function Character:update(dt)
@@ -150,16 +142,11 @@ function Character:update(dt)
     self.offenseState:update(dt)
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
-  else
-    if self.isFocused then
-      self.actionUI:update(dt)
-    end
+  elseif self.state == 'movement' then
+    self.movementState:update(dt)
   end
 end;
 
 function Character:draw()
   Entity.draw(self)
-  if self.isFocused then
-    self.actionUI:draw()
-  end
 end;

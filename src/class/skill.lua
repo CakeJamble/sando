@@ -12,7 +12,7 @@ function Skill:init(skillDict, width, height)
   self.skillName = skillDict['skill_name']
   self.cost = skillDict['cost']
   self.description = skillDict['description']
-  self.hitType = skillDict['hit_type']
+  self.targetType = skillDict['target_type']
   self.animation = Skill:newAnimation(self.skill.sprite_path, width, height, self.skill.duration)
   projectiles = {}
   self.frameCount = 0
