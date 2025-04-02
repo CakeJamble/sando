@@ -14,6 +14,8 @@ states = {
 }
 
 function love.load()
+  font = love.graphics.newFont('asset/Cafe Francoise_D.otf')
+  love.graphics.setFont(font)
   loveframes.update(dt)
   Gamestate.registerEvents()
   Gamestate.switch(states['main_menu'])
