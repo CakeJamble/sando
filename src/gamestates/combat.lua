@@ -146,7 +146,9 @@ function combat:update(dt)
   end
   
   local character = self.characterTeam.members[self.characterTeamIndex]
-  if character.movementState.state == 'idle' and character.movementState.isEnemy then
+  if  character.state ~= 'offense' and 
+      character.movementState.state == 'idle' and 
+      character.movementState.isEnemy then
     character.state = 'offense'
   end
     

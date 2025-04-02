@@ -56,8 +56,9 @@ end;
 function OffenseState:updateBadInputPenalty(applyPenalty)
   if applyPenalty then
     self.badInputPenalty = self.badInputPenalty + 20
-  elseif self.badInputPenalty > 0 then
-    self.badInputPenalty = self.badInputPenalty - 1
+    if self.badInputPenalty > 0 then
+      self.badInputPenalty = self.badInputPenalty - 1
+    end
   end
 end;
 

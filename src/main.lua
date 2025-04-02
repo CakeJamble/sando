@@ -14,7 +14,7 @@ states = {
 }
 
 function love.load()
-  font = love.graphics.newFont('asset/Cafe Francoise_D.otf')
+  font = love.graphics.newFont('asset/scribble-marker.regular.otf', 20)
   love.graphics.setFont(font)
   loveframes.update(dt)
   Gamestate.registerEvents()
