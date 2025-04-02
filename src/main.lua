@@ -14,7 +14,7 @@ states = {
 }
 
 function love.load()
-  font = love.graphics.newFont('asset/scribble-marker.regular.otf', 20)
+  font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
   love.graphics.setFont(font)
   loveframes.update(dt)
   Gamestate.registerEvents()

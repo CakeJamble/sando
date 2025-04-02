@@ -44,7 +44,7 @@ function Character:init(stats, actionButton)
   self.movementState = MovementState(self.x, self.y)
   -- self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
 
-  self.selectedSkill = {}
+  self.selectedSkill = nil
   self.gear = Gear()
   self.state = 'idle'
   self.enemyTargets = {}
@@ -155,5 +155,9 @@ function Character:update(dt)
 end;
 
 function Character:draw()
-  Entity.draw(self)
+  if self.selectedSkill then
+    self.selectedSkill:draw()
+  else 
+    Entity.draw(self)
+  end
 end;

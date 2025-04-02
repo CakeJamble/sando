@@ -1,7 +1,7 @@
 --! filename: movement state
 
 Class = require 'libs.hump.class'
-MovementState = Class{MOVE_SPEED = 200, GRAVITY = 30, JUMP_SPEED = 24, SPRITE_SPACE = 96, DIST_MARGIN = 5}
+MovementState = Class{MOVE_SPEED = 400, GRAVITY = 30, JUMP_SPEED = 24, SPRITE_SPACE = 96, DIST_MARGIN = 5}
 
 function MovementState:init(x, y)
   self.x = x
