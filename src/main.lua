@@ -16,7 +16,9 @@ states = {
 function love.load()
   font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
   love.graphics.setFont(font)
-  loveframes.update(dt)
+  --loveframes.update(dt)
+  joysticks = love.joystick.getJoysticks()
+  active_joystick = joysticks[1]
   Gamestate.registerEvents()
   Gamestate.switch(states['main_menu'])
 end;

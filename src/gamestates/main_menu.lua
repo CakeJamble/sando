@@ -26,6 +26,7 @@ function main_menu:init()
   settingsButton = love.graphics.newImage(SETTINGS_BUTTON_PATH)
   quitButton = love.graphics.newImage(QUIT_BUTTON_PATH)
   cursor = love.graphics.newImage(CURSOR_PATH)
+  
 end;
 
 function main_menu:enter(previous) -- runs every time the state is entered
@@ -41,6 +42,28 @@ function main_menu:keypressed(key)
     main_menu:set_down()
   end
 end;
+
+function main_menu:keyreleased(key, code)
+  if key == 'z' then
+    main_menu:validate_selection()
+  end
+end;
+
+function main_menu:gamepadpressed(joystick, button)
+  if button == 'dpup' then
+    main_menu:set_up()
+  elseif button == 'dpdown' then
+    main_menu:set_down()
+  end
+  
+end;
+
+function main_menu:gamepadreleased(joystick, button)
+  if button == 'a' then
+    main_menu:validate_selection()
+  end
+end;
+
   
 function main_menu:set_up()
   if index > 1 then
@@ -72,13 +95,6 @@ function main_menu:draw()
   love.graphics.draw(settingsButton, BUTTONS_START_X, BUTTONS_START_Y + (3 * BUTTONS_OFFSET_Y))
   love.graphics.draw(quitButton, BUTTONS_START_X, BUTTONS_START_Y + (4 * BUTTONS_OFFSET_Y))
   love.graphics.draw(cursor, cursorX, cursorY)
-  
-end;
-
-function main_menu:keyreleased(key, code)
-  if key == 'z' then
-    main_menu:validate_selection()
-  end
   
 end;
 

@@ -61,7 +61,20 @@ function character_select:keypressed(key)
   statPreview = character_select:setStatPreview()
 end;
   
-
+function character_select:gamepadpressed(joystick, button)
+  if button == 'dpright' then
+    character_select:set_right()
+  elseif button == 'dpleft' then
+    character_select:set_left()
+  elseif button == 'dpup' then
+    character_select:set_up()
+  elseif button == 'dpdown' then
+    character_select:set_down()
+  elseif button == 'a' then
+    character_select:validate_selection()
+  end
+  statPreview = character_select:setStatPreview()
+end;
 
 function character_select:set_right()
   if spriteCol < GRID_LENGTH then
@@ -141,16 +154,16 @@ function character_select:indicesToCharacters()
   local characterList = {}
   for i=1,TEAM_CAP do
     if selectedTeamIndices[i] == 0 then
-      bake = Character(get_bake_stats(), 'b')
+      bake = Character(get_bake_stats(), 'a')
       characterList[i] = bake
     elseif selectedTeamIndices[i] == 1 then
-      marco = Character(get_marco_stats(), 'm')
+      marco = Character(get_marco_stats(), 'b')
       characterList[i] = marco
     elseif selectedTeamIndices[i] == 2 then
-      maria = Character(get_maria_stats(), 'a')
+      maria = Character(get_maria_stats(), 'x')
       characterList[i] = maria
     elseif selectedTeamIndices[i] == 3 then
-      key = Character(get_key_stats(), 'k')
+      key = Character(get_key_stats(), 'y')
       characterList[i] = key
     end
   end

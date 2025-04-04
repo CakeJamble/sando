@@ -137,6 +137,23 @@ function combat:keypressed(key)
 
 end;
 
+function combat:gamepadpressed(joystick, button)
+  self.characterTeam:gamepadpressed(joystick, button)
+  
+  if self.actionUI then
+    self.actionUI:gamepadpressed(joystick, button)
+    local character = self.characterTeam.members[self.characterTeamIndex]
+    
+    if self.actionUI.uiState == 'moving' then
+      character.movementState:moveTowards(self.actionUI.tX, self.actionUI.tY, true)
+      character.movementState.state = 'move'
+      character.state = 'move'
+    end
+
+  end
+
+end;
+
 function combat:update(dt)
   self.characterTeam:update(dt)
   self.enemyTeam:update(dt)

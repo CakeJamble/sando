@@ -19,7 +19,7 @@ Character = Class{__includes = Entity,
   -- For testing
   yPos = 200,
   xPos = 100,
-  ACTION_ICON_STEM = 'asset/sprites/input_icons/',
+  ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
 }
 
   -- Character constructor
@@ -42,8 +42,8 @@ function Character:init(stats, actionButton)
   self.setSkill = nil
   
   -- temp for testing
-  self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'keyboard_' .. actionButton .. '.png')
-  self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'keyboard_' .. actionButton .. '_outline.png')
+  self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '_outline.png')
+  self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '.png')
   self.actionIcons = {['raised'] = self.actionIcon, ['depressed'] = self.actionIconDepressed}
   
   self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
@@ -146,11 +146,20 @@ function Character:keypressed(key)
   end
   -- if in movement state, does nothing
 end;
+
+function Character:gamepadpressed(joystick, button)
+  if self.state == 'offense' then
+    -- set self.enemyTargets here (TODO)
+    self.offenseState:gamepadpressed(joystick, button)
+  elseif self.state == 'defense' then
+    self.defenseState:gamepadpressed(joystick, button)
+  end
+  -- if in movement state, does nothing
+end;
     
 function Character:update(dt)
   Entity.update(self, dt)
   if self.state == 'offense' then
-    print(2)
     self.offenseState:update(dt)
     if self.offenseState.frameCount > self.offenseState.animFrameLength then
       self.state = 'move'

@@ -14,7 +14,7 @@ function Skill:init(skillDict, width, height)
   self.cost = skillDict['cost']
   self.description = skillDict['description']
   self.targetType = skillDict['target_type']
-  self.animation = Skill:newAnimation(love.graphics.newImage(self.skill.sprite_path), width, height)
+  self.animation = Skill:newAnimation(love.graphics.newImage(self.skill.sprite_path), width, height, 1)
   self.qte_bonus = skillDict['qte_bonus']
   projectiles = {}
   self.frameCount = 0

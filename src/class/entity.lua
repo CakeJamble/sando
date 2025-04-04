@@ -190,10 +190,6 @@ function Entity:populateFrames(image, spriteSheet, duration)
   animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
   
   return animation
-  --[[
-  for i=1,numFrames do
-    frames[i] = love.graphics.newQuad(i * self.frameWidth, 0, self.frameWidth, self.frameHeight, spriteSheet:getWidth(), spriteSheet:getHeight())
-  end]]
 end;
 
 function Entity:update(dt) --> void

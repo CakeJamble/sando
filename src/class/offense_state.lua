@@ -99,6 +99,14 @@ function OffenseState:keypressed(key)
   end
 end;
 
+function OffenseState:gamepadpressed(joystick, button)
+  if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
+    OffenseState.applyBonus(self)
+  elseif key == self.actionButton and not self.isWindowActive then
+    OffenseState.updateBadInputPenalty(self, true)
+  end
+end;
+
 function OffenseState:update(dt)
   self.skill:update(dt)
   if self.isWindowActive then

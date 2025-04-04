@@ -31,3 +31,9 @@ function CharacterTeam:keypressed(key)
     self.members[i]:keypressed(key)
   end
 end;
+
+function CharacterTeam:gamepadpressed(joystick, button)
+  for i=1, self.numMembers do
+    self.members[i]:gamepadpressed(joystick, button)
+  end
+end;
