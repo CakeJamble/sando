@@ -32,6 +32,12 @@ function MovementState:moveTowards(tX, tY, isEnemy)
   self.targetY = tY
 end;
 
+function MovementState:moveBack()
+  self.state = 'move'
+  self.targetX = self.oX
+  self.targetY = self.oY
+end;
+
 function MovementState:getState()
   return self.state
 end;

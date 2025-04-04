@@ -18,7 +18,8 @@ Character = Class{__includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
   yPos = 200,
-  xPos = 100
+  xPos = 100,
+  ACTION_ICON_STEM = 'asset/sprites/input_icons/',
 }
 
   -- Character constructor
@@ -38,9 +39,15 @@ function Character:init(stats, actionButton)
   Character.yPos = Character.yPos + 150
   self.currentFP = stats.fp
   self.currentDP = stats.dp
+  self.setSkill = nil
   
-  self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats)
-  self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'])
+  -- temp for testing
+  self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'keyboard_' .. actionButton .. '.png')
+  self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'keyboard_' .. actionButton .. '_outline.png')
+  self.actionIcons = {['raised'] = self.actionIcon, ['depressed'] = self.actionIconDepressed}
+  
+  self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
+  self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'], self.actionIcons)
   self.movementState = MovementState(self.x, self.y)
   -- self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
 
@@ -48,6 +55,9 @@ function Character:init(stats, actionButton)
   self.gear = Gear()
   self.state = 'idle'
   self.enemyTargets = {}
+  self.hasUsedAction = false
+  self.turnFinish = false
+
 end;
 
   -- Gains exp, leveling up when applicable
@@ -103,10 +113,6 @@ function Character:getUIState()
   return self.ui:getUIState()
 end;
 
-function Character:setSelectedSkill()
-  self.selectedSkill = self.offenseState:getSkill()
-end;
-
 function Character:getGear()
   return self.gear
 end
@@ -127,6 +133,7 @@ function Character:applyGear()
 end;
 
 function Character:setSelectedSkill(selectedSkill, x, y)
+  self.setSkill = selectedSkill
   self.offenseState:setSkill(selectedSkill, x, y)
 end;
 
@@ -143,17 +150,21 @@ end;
 function Character:update(dt)
   Entity.update(self, dt)
   if self.state == 'offense' then
+    print(2)
     self.offenseState:update(dt)
+    if self.offenseState.frameCount > self.offenseState.animFrameLength then
+      self.state = 'move'
+      self.hasUsedAction = true
+      self.movementState:moveBack()
+    end
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
   elseif self.state == 'move' then
     self.movementState:update(dt)
     self.x = self.movementState.x
     self.y = self.movementState.y
-    if self.movementState.state == 'idle' then
-      if self.isFocused then
-        self.state = 'offense'
-      end
+    if self.movementState.state == 'idle' and self.hasUsedAction then
+      self.turnFinish = true
     end
   end
 end;

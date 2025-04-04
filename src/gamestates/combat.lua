@@ -81,9 +81,9 @@ function combat:nextTurn()
   else    -- if next Character.speed >= next Enemey.speed then
     self.enemyTeam:setFocusedMember(nil)
     self.characterTeam:setFocusedMember(self.characterTeamIndex)
-    self.characterTeamIndex = self.characterTeamIndex + 1
     self.actionUI = ActionUI(self.characterTeam.members[self.characterTeamIndex], self.enemyTeam:getPositions())
     print('Starting turn of ' .. self.characterTeam.members[self.characterTeamIndex].entityName)
+    
   end
 
 end;
@@ -144,13 +144,16 @@ function combat:update(dt)
   if self.actionUI then
     self.actionUI:update(dt)
   end
-  
+
   local character = self.characterTeam.members[self.characterTeamIndex]
   if  character.state ~= 'offense' and 
       character.movementState.state == 'idle' and 
       character.movementState.isEnemy then
-    character.state = 'offense'
     character:setSelectedSkill(self.actionUI.selectedSkill, character.movementState.x, character.movementState.y)
+    character.state = 'offense'
+  elseif character.turnFinish == true then
+    self.characterTeamIndex = self.characterTeamIndex + 1
+    combat:nextTurn()
   end
     
 

@@ -1,17 +1,22 @@
 --! filename: attacking state
 
 Class = require 'libs.hump.class'
-OffenseState = Class{}
+OffenseState = Class{
+  ACTION_ICON_X = 300,
+  ACTION_ICON_Y = 10
+  }
 
 -- Attacking State of a Character is responsible for maintaining the animation(s), values, and timed inputs for a chosen action
 
-function OffenseState:init(x, y, actionButton, battleStats) --include luck for lucky miss?
+function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --include luck for lucky miss?
   self.x = x
   self.y = y
   self.skill = nil
+  self.animFrameLength = nil
   stats = battleStats    -- may be better to pare down and only include necessary stats
   self.damage = 0
   self.bonus = nil
+  self.actionIcons = actionIcons
   
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
@@ -21,6 +26,7 @@ function OffenseState:init(x, y, actionButton, battleStats) --include luck for l
   self.actionButtonPressed = false
   self.badInputPenalty = 0
   self.bonusApplied = false
+  
 end;
 
 function OffenseState:getSkill()
@@ -30,6 +36,9 @@ end;
 function OffenseState:setSkill(skillObj, x, y)
   self.skill = skillObj
   self.skill:setPos(x, y)
+  self.frameWindow = skillObj.qte_window
+  self.animFrameLength = skillObj.duration
+  self.bonus = skillObj.qte_bonus
 end;
 
 function OffenseState:setTargetXY(x, y)
@@ -48,12 +57,6 @@ end;
 
 function OffenseState:setActionButton(newButton)
   self.actionButton = newButton
-end;
-
-function OffenseState:startFrameWindow()
-  self.isWindowActive = true
-  self.frameCounter = 0
-  self.actionButtonPressed = false
 end;
 
 function OffenseState:updateBadInputPenalty(applyPenalty)
@@ -77,9 +80,9 @@ function OffenseState:setBattleStats(battleStats)
 end;
 
 function OffenseState:applyBonus()
-  local skillDict = self.skill:getSkillDict()
-  self.bonus = self.bonus + skillDict['qte_bonus']
+  self.damage = self.damage + self.bonus
   self.bonusApplied = true
+  print('bonus applied!')
 end;
 
 function OffenseState:clearSkillModifiers()
@@ -90,25 +93,34 @@ end;
 
 function OffenseState:keypressed(key)
   if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
-    OffenseState:applyBonus()
+    OffenseState.applyBonus(self)
   elseif key == self.actionButton and not self.isWindowActive then
-    OffenseState:updateBadInputPenalty(true)
+    OffenseState.updateBadInputPenalty(self, true)
   end
 end;
 
 function OffenseState:update(dt)
   self.skill:update(dt)
   if self.isWindowActive then
-    self.frameCount = self.frameCount + 1
-    
-    if self.frameCount > self.frameWindow then
+    if self.frameCount > self.animFrameLength then
       self.isWindowActive = false
     end
+  else
+    if self.frameCount > self.animFrameLength - self.frameWindow and self.frameCount < self.animFrameLength then
+      self.isWindowActive = true
+    end
   end
-  OffenseState:updateBadInputPenalty(false)
+  OffenseState.updateBadInputPenalty(self, false)
+  self.frameCount = self.frameCount + 1
 end;
 
 
 function OffenseState:draw()
+  if self.isWindowActive then
+    love.graphics.draw(self.actionIcons.depressed, OffenseState.ACTION_ICON_X, OffenseState.ACTION_ICON_Y)
+  else
+    love.graphics.draw(self.actionIcons.raised, OffenseState.ACTION_ICON_X, OffenseState.ACTION_ICON_Y)
+  end
+  
   self.skill:draw()
 end;

@@ -95,11 +95,6 @@ function Team:setFocusedMember(index) --> void
   end
 end;
 
-
-function Team:getFocusedMember() --> Character
-  return self.focusedMember
-end;
-
   -- Distributes exp of equal amount to each living player
 function Team:distributeExperience(amount)
   for _,member in pairs(self.members) do
