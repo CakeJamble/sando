@@ -5,7 +5,9 @@ OffenseState = Class{}
 
 -- Attacking State of a Character is responsible for maintaining the animation(s), values, and timed inputs for a chosen action
 
-function OffenseState:init(actionButton, battleStats) --include luck for lucky miss?
+function OffenseState:init(x, y, actionButton, battleStats) --include luck for lucky miss?
+  self.x = x
+  self.y = y
   self.skill = nil
   stats = battleStats    -- may be better to pare down and only include necessary stats
   self.damage = 0
@@ -25,8 +27,9 @@ function OffenseState:getSkill()
   return self.skill
 end;
 
-function OffenseState:setSkill(skillObj)
+function OffenseState:setSkill(skillObj, x, y)
   self.skill = skillObj
+  self.skill:setPos(x, y)
 end;
 
 function OffenseState:setTargetXY(x, y)
@@ -94,6 +97,7 @@ function OffenseState:keypressed(key)
 end;
 
 function OffenseState:update(dt)
+  self.skill:update(dt)
   if self.isWindowActive then
     self.frameCount = self.frameCount + 1
     

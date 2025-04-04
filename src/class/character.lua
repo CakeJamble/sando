@@ -39,8 +39,8 @@ function Character:init(stats, actionButton)
   self.currentFP = stats.fp
   self.currentDP = stats.dp
   
-  self.offenseState = OffenseState(actionButton, self.battleStats)
-  self.defenseState = DefenseState(actionButton, self.battleStats['defense'])
+  self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats)
+  self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'])
   self.movementState = MovementState(self.x, self.y)
   -- self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
 
@@ -126,6 +126,10 @@ function Character:applyGear()
   end
 end;
 
+function Character:setSelectedSkill(selectedSkill, x, y)
+  self.offenseState:setSkill(selectedSkill, x, y)
+end;
+
 function Character:keypressed(key)
   if self.state == 'offense' then
     -- set self.enemyTargets here (TODO)
@@ -155,8 +159,8 @@ function Character:update(dt)
 end;
 
 function Character:draw()
-  if self.selectedSkill then
-    self.selectedSkill:draw()
+  if self.state == 'offense' then
+    self.offenseState:draw()
   else 
     Entity.draw(self)
   end

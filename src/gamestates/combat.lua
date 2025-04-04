@@ -150,7 +150,7 @@ function combat:update(dt)
       character.movementState.state == 'idle' and 
       character.movementState.isEnemy then
     character.state = 'offense'
-    character.selectedSkill = self.actionUI.selectedSkill
+    character:setSelectedSkill(self.actionUI.selectedSkill, character.movementState.x, character.movementState.y)
   end
     
 

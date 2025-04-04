@@ -4,6 +4,7 @@ require('class.projectile')
 Class = require 'libs.hump.class'
 Skill = Class{}
 
+-- needs position to draw?
   -- Skill Constructor
     -- preconditions: A table of a single Character skill
     -- postconditions: A Skill with an animation appended to the skill dict
@@ -13,7 +14,7 @@ function Skill:init(skillDict, width, height)
   self.cost = skillDict['cost']
   self.description = skillDict['description']
   self.targetType = skillDict['target_type']
-  self.animation = Skill:newAnimation(self.skill.sprite_path, width, height, self.skill.duration)
+  self.animation = Skill:newAnimation(love.graphics.newImage(self.skill.sprite_path), width, height)
   projectiles = {}
   self.frameCount = 0
   self.projectileCount = 0
@@ -22,30 +23,44 @@ function Skill:init(skillDict, width, height)
   if(self.skill.damage_type == 'projectile') then
     self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
   end
+  self.x = 0
+  self.y = 0
 end;
 
 function Skill:getSkillDict()
   return self.skill
 end;
 
+function Skill:setPos(x, y)
+  self.x = x
+  self.y = y
+end;
+
   -- Create and return a new animation
     -- preconditions: A love.graphics.newImage object, the width, height, and duration (number of frames)
     -- postconditions: Returns an animation using a table of quads from a spritesheet
-function Skill:newAnimation(path, width, height, duration)
+function Skill:newAnimation(image, width, height, duration)
   local animation = {}
-  animation.spriteSheet = love.graphics.newImage(path)
-  animation.frames = {}
-  for i=0,duration do
-    table.insert(animation.frames, love.graphics.newQuad(i * width, 0, width, height, animation.spriteSheet:getWidth(), animation.spriteSheet:getHeight()))
-  end
+  animation.spriteSheet = image
+  animation.quads = {}
   
+  for y=0, image:getHeight() - height, height do
+    for x=0, image:getWidth() - width, width do
+      table.insert(animation.quads, love.graphics.newQuad(x, y, width, height, image:getDimensions()))
+    end
+  end
+
   animation.duration = duration or 1
-  animation.currentFrame = 0
+  animation.currentTime = 0
   
   return animation
 end;
 
 function Skill:update(dt)
+  self.animation.currentTime = self.animation.currentTime + dt
+  if self.animation.currentTime >= self.animation.duration then
+      self.animation.currentTime = self.animation.currentTime - self.animation.duration
+  end
   if self.hitType == 'projectile' then
     self.frameCount = self.frameCount + 1
     
@@ -57,17 +72,17 @@ function Skill:update(dt)
     for i, projectile in pairs(projectiles) do
       projectile:update(dt)
     end
-  
   end
+  
 end;
 
 function Skill:draw()
-  love.graphics.draw(self.animation.spriteSheet, self.animation.frames[math.floor(self.animation.currentFrame)], 100, 100)
-
+  local spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) + 1
+  love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], self.x, self.y, 0, 1)
   if self.hitType == 'projectile' then
     for i, projectile in pairs(projectiles) do
       projectile:draw()
     end
   end
-
+  
 end;

@@ -6,6 +6,8 @@ MovementState = Class{MOVE_SPEED = 400, GRAVITY = 30, JUMP_SPEED = 24, SPRITE_SP
 function MovementState:init(x, y)
   self.x = x
   self.y = y
+  self.oX = x
+  self.oY = y
   self.dx = 0
   self.dy = 0
     
