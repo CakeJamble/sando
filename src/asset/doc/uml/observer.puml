@@ -1,0 +1,62 @@
+@startuml Controller Config
+class CombatGameState {
+    +inputHandler : InputHandler
+    +turnQueue : Entity[]
+
+
+    -void setCombatInputConfig()
+    -void registerInputListeners()
+}
+
+class InputHandler {
+    +combatControls : Map<string, string>
+    +pauseMenuControls : Map<string, string>
+    +activeMapping: Map<string, string>
+    +listeners : Entity[]
+    +inputs : List<input : string, timeStamp : long>
+
+    -void setMapping(key)
+    -void update(dt)
+    -void addListener(listener : Entity)
+    -void removeListener(listener : Entity)
+    -gamepadpressed(key: string)
+    -keypressed(joystick, button)
+}
+
+class Entity {
+    +currentState : string
+    +offense : OffenseState
+    +defense: DefenseState
+    +move: MovementState
+    +isMyTurn : bool
+}
+class Character extends Entity {
+    -update(dt)
+}
+
+class Enemy extends Entity {
+    -update(dt)
+}
+
+class OffenseState {
+    -void attackPressed(joystick, button)
+}
+
+class DefenseState {
+    -void defensePressed(timeStamp)
+    -void dodgePressed(timeStamp)
+}
+
+class MovementState {
+    -void moveTowards(tX, tY, speed)
+    -void update
+}
+
+CombatGameState *-- InputHandler 
+CombatGameState "1" *-- "2..*" Entity 
+InputHandler "1" o-- "1..*" Entity
+Entity *-- OffenseState
+Entity *-- DefenseState
+Entity *-- MovementState
+
+@enduml

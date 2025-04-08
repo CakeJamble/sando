@@ -178,6 +178,7 @@ function ActionUI:keypressed(key) --> void
       elseif key == 'right' or key == 'down' then
         self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
       elseif key == 'z' then 
+        Signal.emit('move')
         self.uiState = 'moving'
       elseif key == 'x' then
         self.tIndex = 1

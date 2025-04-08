@@ -27,6 +27,7 @@ function character_select:init()
   keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
 end;
 
+
 function character_select:enter()
   index = 0
   spriteRow = 0

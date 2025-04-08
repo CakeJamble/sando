@@ -2,6 +2,8 @@ Gamestate = require "libs.hump.gamestate"
 loveframes = require "libs.loveframes"
 require("class.entity")
 require("class.character")
+Camera = require "libs.hump.camera"
+Signal = require "libs.hump.signal"
 
 states = {
   main_menu         = require 'gamestates.main_menu',
@@ -16,7 +18,7 @@ states = {
 function love.load()
   font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
   love.graphics.setFont(font)
-  --loveframes.update(dt)
+  camera = Camera()
   joysticks = love.joystick.getJoysticks()
   active_joystick = joysticks[1]
   Gamestate.registerEvents()

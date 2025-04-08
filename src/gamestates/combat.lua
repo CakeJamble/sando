@@ -8,6 +8,7 @@ require('class.character_team')
 require('class.enemy_team')
 require('util.stat_sheet')
 
+
 local combat = {}
 local FIRST_MEMBER_X = 100
 local FIRST_MEMBER_Y = 100
@@ -29,6 +30,13 @@ function combat:init()
 end;
 
 function combat:enter(previous)
+  self.lockCamera = false
+  Signal.register('move',
+    function(x, y)
+      camera:zoom(1.5)
+      self.lockCamera = true
+    end
+  )
   self.characterTeam = loadCharacterTeam()
   -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
@@ -172,11 +180,15 @@ function combat:update(dt)
     self.characterTeamIndex = self.characterTeamIndex + 1
     combat:nextTurn()
   end
-    
-
+  
+  if self.lockCamera then
+    camera:lockPosition(character.x, character.y)
+  end
+  
 end;
 
 function combat:draw()
+  camera:attach()
   love.graphics.draw(self.background, 0, 0, 0, 1.5, 2.25)
   self.characterTeam:draw()
   self.enemyTeam:draw()
@@ -184,7 +196,7 @@ function combat:draw()
   if self.actionUI then
     self.actionUI:draw()
   end
-
+  camera:detach()
 end;
   
 return combat
