@@ -37,6 +37,13 @@ function combat:enter(previous)
       self.lockCamera = true
     end
   )
+  Signal.register('endTurn',
+    function()
+      camera:zoom(0.6666)
+      self.lockCamera = false
+    end
+  )
+  
   self.characterTeam = loadCharacterTeam()
   -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
@@ -182,7 +189,7 @@ function combat:update(dt)
   end
   
   if self.lockCamera then
-    camera:lockPosition(character.x, character.y)
+    camera:lockWindow(character.x, character.y, 0, character.x + 100, 0, character.y + 100)
   end
   
 end;
