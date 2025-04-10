@@ -169,7 +169,7 @@ function Character:update(dt)
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
   elseif self.state == 'move' then
-    if(!self.turnFinish) then 
+    if not self.turnFinish then 
       self.movementState:update(dt)
       self.x = self.movementState.x
       self.y = self.movementState.y
