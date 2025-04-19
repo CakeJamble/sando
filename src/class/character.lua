@@ -57,8 +57,36 @@ function Character:init(stats, actionButton)
   self.enemyTargets = {}
   self.hasUsedAction = false
   self.turnFinish = false
+  
 
 end;
+
+function Character:registerCombatSignals(inputManager)
+  -- Register signals for inputs
+  Signal.register('guard', Character:Guard())
+  Signal.register('jump', Character:Jump())
+  Signal.register('toggle', Character:Toggle())
+  --Signal.register('startTurn', Character:StartTurn)
+end;
+
+function Character:Guard()
+end;
+
+function Character:Jump()
+end;
+
+function Character:Toggle()
+end;
+
+function Character:StartTurn()
+  --[[
+    1. Setup Signals for Confirm / Cancel
+    2. Load Skills to Action UI? (not currently contained here)
+  ]]
+  Signal.register('select', Character:Select())
+  Signal.register('cancel', Character:Cancel())
+end;
+
 
   -- Gains exp, leveling up when applicable
     -- preconditions: an amount of exp to gain

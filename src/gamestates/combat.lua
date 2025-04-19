@@ -7,6 +7,8 @@ require("util.globals")
 require('class.character_team')
 require('class.enemy_team')
 require('util.stat_sheet')
+require('class.input.command_manager')
+require('class.turn_manager')
 
 
 local combat = {}
@@ -31,6 +33,9 @@ end;
 
 function combat:enter(previous)
   self.lockCamera = false
+  self.commandManager = CommandManager()
+  self.turnManager = TurnManager()
+  
   Signal.register('move',
     function(x, y)
       camera:zoom(1.5)
@@ -56,7 +61,6 @@ function combat:enter(previous)
   combat:logEncounter()
   self.enemyNameList = self.encounteredPools[self.floorNumber]
   self.enemyList = {}
-
   for i=1,#self.enemyNameList do
     local enemy = Enemy(self.enemyNameList[i], "Enemy")
     self.enemyList[i] = enemy
@@ -65,14 +69,21 @@ function combat:enter(previous)
   -- TODO: needs to determine between types of enemies
   self.enemyTeam = EnemyTeam(self.enemyList, #self.enemyNameList)  
   
-  -- sort teams and do a single pass during comba
-  -- self.characterTeam:sortBySpeed()
-  -- self.enemyTeam:sortBySpeed()
-  
   self.rewardExp = 0
   self.rewardMoney = 0
   
-  -- Set the focused character to begin combat
+  -- Add Characters and Enemies to Turn Manager
+  for i=1,#self.characterTeam.members do
+    self.turnManager:addListener(self.characterTeam.members[i])
+    self.commandManager:addListener(self.characterTeam.members[i])
+  end
+  for i=1,#self.enemyTeam.members do
+    self.turnManager:addListener(self.enemyTeam.members[i])
+  end
+  
+  -- sort teams and do a single pass during comba
+  -- self.turnManager:sortBySpeed()
+  
   combat:nextTurn()
 end;
 
@@ -87,6 +98,8 @@ end;
 
 --[[ Sets the focused member, and adjusts ActionUI accordingly ]]
 function combat:nextTurn()
+  self.turnManager:setNext()
+  self.turnManager:notifyListeners()
   if self.characterTeam:getSpeedAt(self.characterTeamIndex) < self.enemyTeam:getSpeedAt(self.enemyTeamIndex) then
     self.characterTeam:setFocusedMember(nil)
     self.enemyTeam:setFocusedMember(self.enemyTeamIndex)

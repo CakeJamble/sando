@@ -11,7 +11,7 @@ function DefenseState:init(actionButton, baseDefense)
   self.blockWindow = nil
   self.incomingSkill = nil
   self.stance = 'block'
-  
+
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
   self.frameCount = 0
@@ -19,7 +19,6 @@ function DefenseState:init(actionButton, baseDefense)
   self.isWindowActive = false
   self.actionButtonPressed = false
   self.badInputPenalty = 0
-
 end;
 
 function DefenseState:setActionButton(newButton)
