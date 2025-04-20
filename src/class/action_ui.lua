@@ -59,8 +59,6 @@ function ActionUI:set(charRef)
   self.actionButton = charRef.actionButton
   self.selectedSkill = self.skillList[1]
   self.active = true
-  
-  print('action ui x:', self.x)
 end;
     
   -- Returns a table containing the position of the top left of the center icon in (x,y) coords
@@ -91,12 +89,12 @@ function ActionUI:keypressed(key) --> void
       
       -- Tell all the Buttons where to go
       Signal.emit('SpinUIWheelLeft', before, x)
-    
       self.uiState = 'rotating'
       
     elseif key == 'left' then                      -- spin the wheel right
       if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
         before = 'fsd'
+        self.activeButton = self.flourButton
         
       elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
         before = 'dfs'
@@ -106,6 +104,7 @@ function ActionUI:keypressed(key) --> void
         before = 'sdf'
         self.activeButton = self.soloButton        
       end
+    
       Signal.emit('SpinUIWheelRight', before, x)
       self.uiState = 'rotating'
       
@@ -324,12 +323,8 @@ function ActionUI:update(dt)
   if self.active then
     if self.uiState == 'rotating' then
       
-      print("The x and tX of buttons")
-      
       for i=1,#self.buttons do
         local button = self.buttons[i]
-        print('button' .. i)
-        print(button.x, button.tX)
         button:update(dt)
       end
 

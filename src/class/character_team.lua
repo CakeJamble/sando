@@ -28,6 +28,10 @@ to perform their action (jump for now) at any time during combat,
 even when it isn't optimal (unless the focused member is in offense state)]]
 function CharacterTeam:keypressed(key)
   for i=1, self.numMembers do
+    local m = self.members[i]
+    if m.actionUI.active then
+    end
+    
     self.members[i]:keypressed(key)
   end
 end;

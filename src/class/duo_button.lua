@@ -16,17 +16,20 @@ function DuoButton:init(x, y, layer, skillList)
       if before == 'fsd' then -- after == {left:solo, center:duo, right:flour}
         self.active = true
         self.layer = 2
-        Button:setTargetPos(x, 1)
+        self.tX = x
+        self.dX = Button.BASE_DX
 
       elseif before == 'dfs' then -- result: {left:flour, center:solo, right:duo} 
         self.active = false
         self.layer = 3
-        Button:setTargetPos(x + Button.SPACER, 2)
+        self.tX = x + Button.SPACER
+        self.dX = Button.BASE_DX * 2
 
       elseif before == 'sdf' then -- result: {left: duo, center: flour, right: solo}
         self.active = false
-        self.layer = 1,
-        Button:setTargetPos(x - Button.SPACER, 1)
+        self.layer = 1
+        self.tX = x - Button.SPACER
+        self.dX = Button.BASE_DX
 
       end
     end
@@ -34,23 +37,23 @@ function DuoButton:init(x, y, layer, skillList)
   
   Signal.register('SpinUIWheelRight',
     function(before, x)
-      print(before)
       if before == 'fsd' then -- result: {left: duo, center: flour, right: solo}
-        print('duo button settting position')
-
         self.active = false
         self.layer = 1
-        Button:setTargetPos(x - Button.SPACER, 2)
+        self.tX = x - Button.SPACER
+        self.dX = Button.BASE_DX * 2
 
       elseif before == 'dfs' then -- result: {left: solo, center: duo, right: flour}
         self.active = true
         self.layer = 1
-        Button:setTargetPos(x, 1)
+        self.tX = x
+        self.dX = Button.BASE_DX
 
       elseif before == 'sdf' then -- result: {left: flour, center: solo, right: duo}
         self.active = false
         self.layer = 1
-        Button:setTargetPos(x + Button.SPACER, 1)
+        self.tX = x + Button.SPACER
+        self.dX = Button.BASE_DX
 
       end
     end

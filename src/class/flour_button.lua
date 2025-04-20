@@ -23,21 +23,18 @@ function FlourButton:init(x, y, layer, skillList)
       if before == 'fsd' then -- after == {left:solo, center:duo, right:flour}
         self.active = false
         self.layer = 3
-        Button:setTargetPos(x + Button.SPACER, 2)
-        self.isRotatingRight = true
-        self.isRotatingLeft = false
+        self.tX = x + Button.SPACER
+        self.dX = Button.BASE_DX * 2
       elseif before == 'dfs' then -- result: {left:flour, center:solo, right:duo} 
         self.active = false
         self.layer = 3
-        Button:setTargetPos(x - Button.SPACER, 1)
-        self.isRotatingRight = false
-        self.isRotatingLeft = true
+        self.tX = x - Button.SPACER
+        self.dX = Button.BASE_DX
       elseif before == 'sdf' then -- result: {left: duo, center: flour, right: solo}
         self.active = true
         self.layer = 1
-        Button:setTargetPos(x, 1)
-        self.isRotatingRight = false
-        self.isRotatingLeft = true
+        self.tX = x
+        self.dX = Button.BASE_DX
       end
     end
   );
@@ -45,25 +42,20 @@ function FlourButton:init(x, y, layer, skillList)
   Signal.register('SpinUIWheelRight',
     function(before, x)
       if before == 'fsd' then -- result: {left: duo, center: flour, right: solo}
-        print('flour button settting position')
-
         self.active = true
         self.layer = 1
-        Button:setTargetPos(x, 1)
-        self.isRotatingRight = true
-        self.isRotatingLeft = false
+        self.tX = x
+        self.dX = Button.BASE_DX * 1
       elseif before == 'dfs' then -- result: {left: solo, center: duo, right: flour}
         self.active = false
         self.layer = 1
-        Button:setTargetPos(x + Button.SPACER, 1)
-        self.isRotatingRight = true
-        self.isRotatingLeft = false
+        self.tX = x + Button.SPACER
+        self.dX = Button.BASE_DX
       elseif before == 'sdf' then -- result: {left: flour, center: solo, right: duo}
         self.active = false
         self.layer = 3
-        Button:setTargetPos(x - Button.SPACER, 2)
-        self.isRotatingRight = false
-        self.isRotatingLeft = true
+        self.tX = x - Button.SPACER
+        self.dX = Button.BASE_DX * 2
       end
     end
     );
@@ -87,7 +79,7 @@ function FlourButton:validateSkillCosts(currentFP)
     self.pickableSkillIndices[i] = (self.skillList[i].cost < currentFP)
   end
 end;
-
+--[[
 function FlourButton:keypressed(key)
   if key == 'down' then
     self.skillIndex = math.max(1, (self.skillIndex + 1) % #self.skillList)
@@ -102,7 +94,7 @@ function FlourButton:keypressed(key)
     end
   end
 end;
-
+]]
 function FlourButton:draw()
   Button.draw(self)
   if self.isActiveButton and self.displaySkillList then

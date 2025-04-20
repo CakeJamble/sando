@@ -154,6 +154,7 @@ end;
   2. combat:keypressed -> actionUI:keypressed
 ]]
 function combat:keypressed(key)
+
   self.characterTeam:keypressed(key)
   
   --[[if self.actionUI then

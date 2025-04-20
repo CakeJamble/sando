@@ -175,6 +175,7 @@ function Character:setSelectedSkill(selectedSkill, x, y)
 end;
 
 function Character:keypressed(key)
+  
   if self.state == 'offense' then
     -- set self.enemyTargets here (TODO)
     self.offenseState:keypressed(key)
@@ -200,9 +201,7 @@ end;
     
 function Character:update(dt)
   Entity.update(self, dt)
-  if self.actionUI.active then
-    self.actionUI:update(dt)
-  end
+  self.actionUI:update(dt)
   
   if self.state == 'offense' then
     self.offenseState:update(dt)
