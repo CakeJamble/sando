@@ -13,39 +13,50 @@ function SoloButton:init(x, y, layer, basicAttack)
   
   Signal.register('SpinUIWheelLeft', 
     function(before, x)
-      print('test signal in SoloButton')
-      if before == {'flour', 'solo', 'duo'} then -- result: {left:solo, center:duo, right:flour}
+      if before == 'fsd' then -- result: {left:solo, center:duo, right:flour}
         self.active = false
         self.layer = 1
-        Button:setTargetPos(x - Button.SPACER, 1)
-      elseif before == {'duo', 'flour', 'solo'} then -- result: {left:flour, center:solo, right:duo} 
+        self.setTargetPos(self, x - Button.SPACER, 1)
+        self.isRotatingRight = false
+        self.isRotatingLeft = true
+      elseif before == 'dfs' then -- result: {left:flour, center:solo, right:duo} 
         self.active = true
         self.layer = 1
         Button:setTargetPos(x, 1)
-      elseif before == {'solo', 'duo', 'flour'} then -- result: {left: duo, center: flour, right: solo}
+        self.isRotatingRight = false
+        self.isRotatingLeft = true
+      elseif before == 'sdf' then -- result: {left: duo, center: flour, right: solo}
         self.active = false
         self.layer = 3
         Button:setTargetPos(x + Button.SPACER, 2)
+        self.isRotatingRight = true
+        self.isRotatingLeft = false
       end
     end
   );
   
   Signal.register('SpinUIWheelRight',
     function(before, x)
-      print('test signal in SoloButton')
-
-      if before == {'flour', 'solo', 'duo'} then -- result: {left: duo, center: flour, right: solo}
+      if before == 'fsd' then -- result: {left: duo, center: flour, right: solo}
         self.active = false
         self.layer = 1
-        Button:setTargetPos(x + Button.SPACER, 1)
-      elseif before == {'duo', 'flour', 'solo'} then -- result: {left: solo, center: duo, right: flour}
+        -- lets do it here instead Button:setTargetPos(x + Button.SPACER, 1)
+        self.tX = x + Button.SPACER
+        self.dX = Button.BASE_DX * 1
+        self.isRotatingRight = true
+        self.isRotatingLeft = false
+      elseif before == 'dfs' then -- result: {left: solo, center: duo, right: flour}
         self.active = false
         self.layer = 3
         Button:setTargetPos(x - Button.SPACER, 2)
-      elseif before == {'solo', 'duo', 'flour'} then -- result: {left: flour, center: solo, right: duo}
+        self.isRotatingRight = false
+        self.isRotatingLeft = true
+      elseif before == 'sdf' then -- result: {left: flour, center: solo, right: duo}
         self.active = true
         self.layer = 1
-        Button:setPos(x, 1)
+        Button:setTargetPos(x, 1)
+        self.isRotatingRight = true
+        self.isRotatingLeft = false
       end
     end
   );
@@ -53,8 +64,4 @@ end;
 
 function SoloButton:keypressed(key)
     -- TODO
-end;
-
-function SoloButton:update(dt)
-  Button.update(self, dt)
 end;

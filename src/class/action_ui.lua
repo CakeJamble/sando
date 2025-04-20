@@ -24,8 +24,6 @@ function ActionUI:init()
   self.y = nil
   self.actionButton = nil
   self.numTargets = nil
-  self.tX = nil --= targetPositions[1].x
-  self.tY = nil --= targetPositions[1].y
   self.uiState  = nil--= 'actionSelect'
   self.iconSpacer = ActionUI.ICON_SPACER
   
@@ -61,6 +59,8 @@ function ActionUI:set(charRef)
   self.actionButton = charRef.actionButton
   self.selectedSkill = self.skillList[1]
   self.active = true
+  
+  print('action ui x:', self.x)
 end;
     
   -- Returns a table containing the position of the top left of the center icon in (x,y) coords
@@ -72,19 +72,19 @@ end;
 function ActionUI:keypressed(key) --> void
   if self.active then
   if self.uiState == 'actionSelect' then
-    local before = {}
+    local before = ''
     local x = self.x
     if key == 'right' then                         -- spin the wheel left
       if self.activeButton == self.soloButton then
-        before = {'flour', 'solo', 'duo'}
+        before = 'fsd'
         self.activeButton = self.duoButton
         
       elseif self.activeButton == self.flourButton then
-        before = {'duo', 'flour', 'solo'}
+        before = 'dfs'
         self.activeButton = self.soloButton
         
       else
-        before = {'solo', 'duo', 'flour'}
+        before = 'sdf'
         self.activeButton = self.flourButton
         
       end      
@@ -96,17 +96,16 @@ function ActionUI:keypressed(key) --> void
       
     elseif key == 'left' then                      -- spin the wheel right
       if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
-        before = {'flour', 'solo', 'duo'}
+        before = 'fsd'
         
       elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
-        before = {'duo', 'flour', 'solo'}
+        before = 'dfs'
         self.activeButton = self.duoButton
         
       else                                                                  -- {left:solo, center:duo, right:flour}
-        before = {'solo', 'duo', 'flour'}
+        before = 'sdf'
         self.activeButton = self.soloButton        
       end
-      
       Signal.emit('SpinUIWheelRight', before, x)
       self.uiState = 'rotating'
       
@@ -324,8 +323,14 @@ end;
 function ActionUI:update(dt)
   if self.active then
     if self.uiState == 'rotating' then
+      
+      print("The x and tX of buttons")
+      
       for i=1,#self.buttons do
-        self.buttons[i]:update(dt)
+        local button = self.buttons[i]
+        print('button' .. i)
+        print(button.x, button.tX)
+        button:update(dt)
       end
 
       if ActionUI.areDoneRotating(self) then

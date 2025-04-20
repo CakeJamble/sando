@@ -16,6 +16,8 @@ function Button:init(x, y, layer, path)
     self.active = false
     self.targets = {}
     self.displaySkillList = false
+    self.isRotatingRight = false
+    self.isRotatingLeft = false
 end;
 
 function Button:getButton()
@@ -28,6 +30,7 @@ end;
 
 function Button:setTargetPos(tX, speedMul)
     self.tX = tX
+    print(self.x, self.tX)
     self.dX = Button.BASE_DX * speedMul
 end;
 
@@ -36,12 +39,12 @@ function Button:setPos(x, y)
     self.y = y
 end;
 
-function Button:isRotatingRight()
-  return self.x < self.tX
+function Button.isRotatingRight(x, tX)
+  return x < tX
 end;
 
-function Button:isRotatingLeft()
-  return self.x > self.tX
+function Button.isRotatingLeft(x, tX)
+  return x > tX
 end;
 
 function Button:setIsActiveButton(isActive)
@@ -53,11 +56,12 @@ function Button:setIsActiveButton(isActive)
   end
 end;
 
-function Button:isFinishedRotating() --> boolean
-  return self.x == self.tX
+function Button.isFinishedRotating(x, tX) --> boolean
+  return x == tX
 end;
 
-function Button:rotateRight(dt)
+-- cant set members of class in this context
+function Button.rotateRight(self, dt)
   self.x = self.x + self.dX * dt
   if self.active then
     self.scaleFactor = self.scaleFactor + dt
@@ -75,7 +79,7 @@ function Button:rotateRight(dt)
     end
 end;
 
-function Button:rotateLeft(dt)
+function Button.rotateLeft(self, dt)
   self.x = self.x - self.dX * dt
   if self.active then
     self.scaleFactor = self.scaleFactor + dt
@@ -94,9 +98,10 @@ end;
 
 
 function Button:update(dt)
-  if Button.isRotatingRight(self) then
+  print('The x and tX of this button:', self.x, self.tX)
+  if Button.isRotatingRight(self.x, self.tX) then
     Button.rotateRight(self, dt)
-  elseif Button.isRotatingLeft(self) then
+  elseif Button.isRotatingLeft(self.x, self.tX) then
     Button.rotateLeft(self, dt)
   end
 end;

@@ -180,7 +180,7 @@ function Character:keypressed(key)
     self.offenseState:keypressed(key)
   elseif self.state == 'defense' then
     self.defenseState:keypressed(key)
-  else
+  elseif self.actionUI.active then
     self.actionUI:keypressed(key)
   end
   -- if in movement state, does nothing
@@ -200,7 +200,10 @@ end;
     
 function Character:update(dt)
   Entity.update(self, dt)
-  self.actionUI.update(self, dt)
+  if self.actionUI.active then
+    self.actionUI:update(dt)
+  end
+  
   if self.state == 'offense' then
     self.offenseState:update(dt)
     if self.offenseState.frameCount > self.offenseState.animFrameLength then

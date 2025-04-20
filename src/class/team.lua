@@ -113,7 +113,7 @@ function Team:increaseMoney(amount)
 end;
 
 function Team:update(dt)
-  for i=1,self.numMembers do
+  for i=1,#self.members do
     self.members[i]:update(dt)
   end
 end;

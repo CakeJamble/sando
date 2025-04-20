@@ -87,7 +87,7 @@ function combat:enter(previous)
   -- self.turnManager:sortBySpeed()
   self.turnManager:setNext()
   Signal.emit('NextTurn', self.turnManager.activeEntity)
-  combat:nextTurn()
+  -- combat:nextTurn()
 end;
 
 --[[ Increments the enemiesIndex counter by the number of times passed, 
@@ -191,10 +191,6 @@ end;
 function combat:update(dt)
   self.characterTeam:update(dt)
   self.enemyTeam:update(dt)
-  
-  if self.actionUI then
-    self.actionUI:update(dt)
-  end
 
   local character = self.characterTeam.members[self.characterTeamIndex]
   if  character.state ~= 'offense' and 
