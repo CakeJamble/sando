@@ -4,19 +4,56 @@ Class = require 'libs.hump.class'
 FlourButton = Class{__includes = Button}
 
 function FlourButton:init(x, y, layer, skillList)
-    Button.init(self, x, y, layer, 'flour.png')
-    self.skillList = skillList
-    self.skillListString = FlourButton.skillListToStr(self)
-    self.skillIndex = 1
-    -- self.skillListHolder = love.graphics.newImage(path/to/image)
-    -- self.skillListCursor = love.graphics.newImage(path/to/image)
-    self.selectedSkill = nil
-    self.displaySkillList = false
-    self.skillPreview = skillList[1].description
-    self.pickableSkillIndices = {}
-    for i=1,#self.skillList do
-      self.pickableSkillIndices[i] = false
+  Button.init(self, x, y, layer, 'flour.png')
+  self.skillList = skillList
+  self.skillListString = FlourButton.skillListToStr(self)
+  self.skillIndex = 1
+  -- self.skillListHolder = love.graphics.newImage(path/to/image)
+  -- self.skillListCursor = love.graphics.newImage(path/to/image)
+  self.selectedSkill = nil
+  self.displaySkillList = false
+  self.skillPreview = skillList[1].description
+  self.pickableSkillIndices = {}
+  for i=1,#self.skillList do
+    self.pickableSkillIndices[i] = false
+  end
+    
+  Signal.register('SpinUIWheelLeft', 
+    function(before, x)
+      if before == {'flour', 'solo', 'duo'} then -- after == {left:solo, center:duo, right:flour}
+        self.active = false
+        self.layer = 3
+        Button:setTargetPos(x + Button.SPACER, 2)
+      elseif before == {'duo', 'flour', 'solo'} then -- result: {left:flour, center:solo, right:duo} 
+        self.active = false
+        self.layer = 3
+        Button:setTargetPos(x - Button.SPACER, 1)
+      elseif before == {'solo', 'duo', 'flour'} then -- result: {left: duo, center: flour, right: solo}
+        self.active = true
+        self.layer = 1
+        Button:setTargetPos(x, 1)
+      end
     end
+  );
+  
+  Signal.register('SpinUIWheelRight',
+    function(before, x)
+      if before == {'flour', 'solo', 'duo'} then -- result: {left: duo, center: flour, right: solo}
+        self.active = true
+        self.layer = 1
+        Button:setTargetPos(x, 1)
+      elseif before == {'duo', 'flour', 'solo'} then -- result: {left: solo, center: duo, right: flour}
+        self.active = false
+        self.layer = 1
+        Button:setTargetPos(x + Button.SPACER, 1)
+      elseif before == {'solo', 'duo', 'flour'} then -- result: {left: flour, center: solo, right: duo}
+        self.active = false
+        self.layer = 3
+        Button:setTargetPos(x - Button.SPACER, 2)
+      end
+    end
+    );
+    
 end;
 
 function FlourButton:skillListToStr()

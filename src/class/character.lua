@@ -49,7 +49,7 @@ function Character:init(stats, actionButton)
   self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
   self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'], self.actionIcons)
   self.movementState = MovementState(self.x, self.y)
-  -- self.actionUI = ActionUI(self.x, self.y, self.currentSkills, self.battleStats['fp'], self.battleStats['fp'])
+  self.actionUI = ActionUI()
 
   self.selectedSkill = nil
   self.gear = Gear()
@@ -58,7 +58,16 @@ function Character:init(stats, actionButton)
   self.hasUsedAction = false
   self.turnFinish = false
   
-
+  Signal.register('NextTurn',
+    function(activeEntity)
+      if self.entityName == activeEntity.entityName then
+        self.actionUI:set(activeEntity)
+      else
+        self.actionUI.active = false
+      end
+    end
+  );
+  
 end;
 
 function Character:registerCombatSignals(inputManager)
@@ -171,6 +180,8 @@ function Character:keypressed(key)
     self.offenseState:keypressed(key)
   elseif self.state == 'defense' then
     self.defenseState:keypressed(key)
+  else
+    self.actionUI:keypressed(key)
   end
   -- if in movement state, does nothing
 end;
@@ -181,12 +192,15 @@ function Character:gamepadpressed(joystick, button)
     self.offenseState:gamepadpressed(joystick, button)
   elseif self.state == 'defense' then
     self.defenseState:gamepadpressed(joystick, button)
+  else
+    self.actionUI:gamepadpressed(joystick, button)
   end
   -- if in movement state, does nothing
 end;
     
 function Character:update(dt)
   Entity.update(self, dt)
+  self.actionUI.update(self, dt)
   if self.state == 'offense' then
     self.offenseState:update(dt)
     if self.offenseState.frameCount > self.offenseState.animFrameLength then
@@ -213,5 +227,6 @@ function Character:draw()
     self.offenseState:draw()
   else 
     Entity.draw(self)
+    self.actionUI:draw()
   end
 end;

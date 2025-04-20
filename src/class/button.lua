@@ -13,7 +13,7 @@ function Button:init(x, y, layer, path)
     self.button = love.graphics.newImage(buttonPath)
     self.dX = 0
     self.scaleFactor = Button.SCALE_DOWN
-    self.isActiveButton = false
+    self.active = false
     self.targets = {}
     self.displaySkillList = false
 end;
@@ -59,7 +59,7 @@ end;
 
 function Button:rotateRight(dt)
   self.x = self.x + self.dX * dt
-  if self.isActiveButton then
+  if self.active then
     self.scaleFactor = self.scaleFactor + dt
   else
     self.scaleFactor = self.scaleFactor - dt
@@ -67,7 +67,7 @@ function Button:rotateRight(dt)
     
     if self.x > self.tX then
       self.x = self.tX
-      if self.isActiveButton then
+      if self.active then
         self.scaleFactor = 1
       else
         self.scaleFactor = Button.SCALE_DOWN
@@ -77,14 +77,14 @@ end;
 
 function Button:rotateLeft(dt)
   self.x = self.x - self.dX * dt
-  if self.isActiveButton then
+  if self.active then
     self.scaleFactor = self.scaleFactor + dt
   else
     self.scaleFactor = self.scaleFactor - dt
   end
   if self.x < self.tX then
     self.x = self.tX
-    if self.isActiveButton then
+    if self.active then
       self.scaleFactor = 1
     else
       self.scaleFactor = Button.SCALE_DOWN

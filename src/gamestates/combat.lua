@@ -49,6 +49,8 @@ function combat:enter(previous)
     end
   )
   
+
+  
   self.characterTeam = loadCharacterTeam()
   -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
@@ -83,7 +85,8 @@ function combat:enter(previous)
   
   -- sort teams and do a single pass during comba
   -- self.turnManager:sortBySpeed()
-  
+  self.turnManager:setNext()
+  Signal.emit('NextTurn', self.turnManager.activeEntity)
   combat:nextTurn()
 end;
 
@@ -100,16 +103,18 @@ end;
 function combat:nextTurn()
   self.turnManager:setNext()
   self.turnManager:notifyListeners()
+  
+  -- this is what should happen when the signal is emitted for the next turn to start
   if self.characterTeam:getSpeedAt(self.characterTeamIndex) < self.enemyTeam:getSpeedAt(self.enemyTeamIndex) then
     self.characterTeam:setFocusedMember(nil)
     self.enemyTeam:setFocusedMember(self.enemyTeamIndex)
     self.enemyTeamIndex = self.enemyTeamIndex + 1
-    self.actionUI = nil
+    -- self.actionUI = nil
     
   else    -- if next Character.speed >= next Enemey.speed then
     self.enemyTeam:setFocusedMember(nil)
     self.characterTeam:setFocusedMember(self.characterTeamIndex)
-    self.actionUI = ActionUI(self.characterTeam.members[self.characterTeamIndex], self.enemyTeam:getPositions())
+    -- self.actionUI = ActionUI(self.characterTeam.members[self.characterTeamIndex], self.enemyTeam:getPositions())
     print('Starting turn of ' .. self.characterTeam.members[self.characterTeamIndex].entityName)
     
   end
@@ -151,9 +156,9 @@ end;
 function combat:keypressed(key)
   self.characterTeam:keypressed(key)
   
-  if self.actionUI then
+  --[[if self.actionUI then
     self.actionUI:keypressed(key)
-    local character = self.characterTeam.members[self.characterTeamIndex]
+  local character = self.turnManager.activeEntity
     
     if self.actionUI.uiState == 'moving' then
       character.movementState:moveTowards(self.actionUI.tX, self.actionUI.tY, true)
@@ -162,6 +167,7 @@ function combat:keypressed(key)
     end
 
   end
+  ]]
 
 end;
 
@@ -212,10 +218,6 @@ function combat:draw()
   love.graphics.draw(self.background, 0, 0, 0, 1.5, 2.25)
   self.characterTeam:draw()
   self.enemyTeam:draw()
-  
-  if self.actionUI then
-    self.actionUI:draw()
-  end
   camera:detach()
 end;
   

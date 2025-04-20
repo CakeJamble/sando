@@ -13,6 +13,8 @@ function Team:init(entities, numMembers)
   self.numMembers = numMembers  
   self.membersIndex = 1
   self.money = 0
+  
+
 end;
 
 function Team:setOppositionTeamPositions(positions)
