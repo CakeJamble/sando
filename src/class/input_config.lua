@@ -19,14 +19,14 @@ function InputConfig:init()
     ['dpleft'] = {},
     ['dpright'] = {}
   }
-  self.currentControllerInputs = xboxInputs
+  self.currentControllerInputs = self.xboxInputs
   self.timeStamp = 0
   self.listening = false
 end;
 
 function InputConfig:update()
   if self.listening then
-    self.timeStamp += 1
+    self.timeStamp = self.timeStamp + 1
   end
 end;
 
@@ -41,7 +41,7 @@ end;
 function InputConfig:validateQTE(input, qteWindow) --> bool
   local timeStamps = self.currentControllerInputs[input]
   for i=1, #timeStamps do
-    if isWithinWindow(timeStamps[i], qteWindow) then
+    if InputConfig:isWithinWindow(timeStamps[i], qteWindow) then
       return true
     end
   end
@@ -55,9 +55,10 @@ function InputConfig:isWithinWindow(timeStamp, qteWindow)
   return timeStamp >= windowOpen and timeStamp <= windowClose
 end;
 
-function emitSignal()
+--[[ Redundant fcn
+function InputConfig:notifyListeners()
   Signal.emit('input')
 end;
-
+]]
   
   

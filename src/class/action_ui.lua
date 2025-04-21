@@ -35,11 +35,10 @@ function ActionUI:init()
   self.duoButton = nil
   self.buttons = nil
   self.activeButton = nil
+  self.targetableEnemyPositions = nil
   
-  -- self.targetableEnemyPositions = targetPositions
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
-
 end;
 
 function ActionUI:set(charRef)
@@ -60,7 +59,11 @@ function ActionUI:set(charRef)
   self.selectedSkill = self.skillList[1]
   self.active = true
 end;
-    
+
+function ActionUI:initializeTarget(enemyPositions)
+  self.targetableEnemyPositions = enemyPositions
+end;
+
   -- Returns a table containing the position of the top left of the center icon in (x,y) coords
 function ActionUI:getPos()
   return {self.x, self.y}
@@ -69,238 +72,186 @@ end;
 -- Great candidate for observer pattern refactor
 function ActionUI:keypressed(key) --> void
   if self.active then
-  if self.uiState == 'actionSelect' then
-    local before = ''
-    local x = self.x
-    if key == 'right' then                         -- spin the wheel left
-      if self.activeButton == self.soloButton then
-        before = 'fsd'
-        self.activeButton = self.duoButton
-        
-      elseif self.activeButton == self.flourButton then
-        before = 'dfs'
-        self.activeButton = self.soloButton
-        
-      else
-        before = 'sdf'
-        self.activeButton = self.flourButton
-        
-      end      
-      
-      -- Tell all the Buttons where to go
-      Signal.emit('SpinUIWheelLeft', before, x)
-      self.uiState = 'rotating'
-      
-    elseif key == 'left' then                      -- spin the wheel right
-      if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
-        before = 'fsd'
-        self.activeButton = self.flourButton
-        
-      elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
-        before = 'dfs'
-        self.activeButton = self.duoButton
-        
-      else                                                                  -- {left:solo, center:duo, right:flour}
-        before = 'sdf'
-        self.activeButton = self.soloButton        
-      end
-    
-      Signal.emit('SpinUIWheelRight', before, x)
-      self.uiState = 'rotating'
-      
-     -- stand ins for confirm/cancel button input 
-    elseif key == 'z' then
-      if self.activeButton == self.soloButton then
-        self.uiState = 'targeting'
-      else
-        self.uiState = 'submenuing'
-      end
-    end
-  elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
-    if self.activeButton ~= self.soloButton then
-      self.activeButton.displaySkillList = true
-    else
-      self.flourButton.displaySkillList = false
-      self.duoButton.displaySkillList = false
-    end
-
-    if key == 'z' then
-      self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
-      self.uiState = 'targeting'
-    elseif key == 'x' then
-      if self.activeButton == self.soloButton then
-        self.uiState = 'actionSelect'
-      else  -- self.uiState == 'submenuing'
-        self.uiState = 'actionSelect'
-        self.activeButton.displaySkillList = false
-      end
-    end
-
-  elseif self.uiState == 'targeting' then
-    if self.selectedSkill.targetType == 'single' then
-      -- TODO : need to account for self targeting or team targets for heals/buffs in the future
-      if key == 'left' or key == 'up' then
-        self.tIndex = math.max(1, self.tIndex - 1)
-      elseif key == 'right' or key == 'down' then
-        self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
-      elseif key == 'z' then 
-        -- Signal.emit('move')
-        self.uiState = 'moving'
-      elseif key == 'x' then
-        self.tIndex = 1
+    if self.uiState == 'actionSelect' then
+      local before = ''
+      local x = self.x
+      if key == 'right' then                         -- spin the wheel left
         if self.activeButton == self.soloButton then
-          self.uiState = 'actionSelect'
+          before = 'fsd'
+          self.activeButton = self.duoButton
+          
+        elseif self.activeButton == self.flourButton then
+          before = 'dfs'
+          self.activeButton = self.soloButton
+          
+        else
+          before = 'sdf'
+          self.activeButton = self.flourButton
+          
+        end      
+        
+        -- Tell all the Buttons where to go
+        Signal.emit('SpinUIWheelLeft', before, x)
+        self.uiState = 'rotating'
+        
+      elseif key == 'left' then                      -- spin the wheel right
+        if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
+          before = 'fsd'
+          self.activeButton = self.flourButton
+          
+        elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
+          before = 'dfs'
+          self.activeButton = self.duoButton
+          
+        else                                                                  -- {left:solo, center:duo, right:flour}
+          before = 'sdf'
+          self.activeButton = self.soloButton        
+        end
+      
+        Signal.emit('SpinUIWheelRight', before, x)
+        self.uiState = 'rotating'
+        
+       -- stand ins for confirm/cancel button input 
+      elseif key == 'z' then
+        if self.activeButton == self.soloButton then
+          self.uiState = 'targeting'
         else
           self.uiState = 'submenuing'
         end
       end
+    elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
+      if self.activeButton ~= self.soloButton then
+        self.activeButton.displaySkillList = true
+      else
+        self.flourButton.displaySkillList = false
+        self.duoButton.displaySkillList = false
+      end
+
+      if key == 'z' then
+        self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
+        self.uiState = 'targeting'
+      elseif key == 'x' then
+        if self.activeButton == self.soloButton then
+          self.uiState = 'actionSelect'
+        else  -- self.uiState == 'submenuing'
+          self.uiState = 'actionSelect'
+          self.activeButton.displaySkillList = false
+        end
+      end
+
+    elseif self.uiState == 'targeting' then
+      if self.selectedSkill.targetType == 'single' then
+        -- TODO : need to account for self targeting or team targets for heals/buffs in the future
+        if key == 'left' or key == 'up' then
+          self.tIndex = math.max(1, self.tIndex - 1)
+        elseif key == 'right' or key == 'down' then
+          self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
+        elseif key == 'z' then 
+          -- Signal.emit('move')
+          self.uiState = 'moving'
+        elseif key == 'x' then
+          self.tIndex = 1
+          if self.activeButton == self.soloButton then
+            self.uiState = 'actionSelect'
+          else
+            self.uiState = 'submenuing'
+          end
+        end
+      end
     end
   end
-  end
-
 end;
 
 function ActionUI:gamepadpressed(joystick, button) --> void
-  if self.uiState == 'actionSelect' then
-    if button == 'dpright' then                         -- spin the wheel left
-      if self.activeButton == self.soloButton then                            -- {left:flour, center:solo, right:duo}
-        self.activeButton = self.duoButton
-        self.duoButton:setIsActiveButton(true)
-        self.soloButton:setIsActiveButton(false)
-        self.soloButton:setTargetPos(self.x - self.iconSpacer, 1)
-        self.duoButton:setTargetPos(self.x, 1)
-        self.flourButton:setTargetPos(self.x + self.iconSpacer, 2)     -- result : {left:solo, center:duo, right:flour}
-        
-        -- set layers
-        self.activeButton.layer = 1
-        self.soloButton.layer = 2
-        self.flourButton.layer = 3
-        
-      elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
-        self.activeButton = self.soloButton
-        self.flourButton:setIsActiveButton(false)
-        self.soloButton:setIsActiveButton(true)
-
-        self.soloButton:setTargetPos(self.x, 1)
-        self.duoButton:setTargetPos(self.x + self.iconSpacer, 2)
-        self.flourButton:setTargetPos(self.x - self.iconSpacer, 1)     -- result : {left:flour, center:solo, right:duo}
-        
-        -- set layers
-        self.activeButton.layer = 1
-        self.duoButton.layer = 3
-        self.flourButton.layer = 2
-        
-      else                                                                    -- {left:solo, center:duo, right:flour}
-        self.activeButton = self.flourButton
-        self.duoButton:setIsActiveButton(false)
-        self.flourButton:setIsActiveButton(true)
-
-        self.soloButton:setTargetPos(self.x + self.iconSpacer, 2)
-        self.duoButton:setTargetPos(self.x - self.iconSpacer, 1)
-        self.flourButton:setTargetPos(self.x, 1)                               -- result : {left: duo, center: flour, right: solo}
-        
-        -- set layers
-        self.activeButton.layer = 1
-        self.duoButton.layer = 2
-        self.soloButton.layer = 3
-        
-      end      
-    
-      self.uiState = 'rotating'
-      
-    elseif button == 'dpleft' then                      -- spin the wheel right
-      if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
-        self.activeButton = self.flourButton
-        self.soloButton:setIsActiveButton(false)
-        self.flourButton:setIsActiveButton(true)
-
-        self.soloButton:setTargetPos(self.x + self.iconSpacer, 1)
-        self.duoButton:setTargetPos(self.x - self.iconSpacer, 2)
-        self.flourButton:setTargetPos(self.x, 1)                              -- result: {left: duo, center: flour, right: solo}
-                                                                              
-        -- set layers
-        self.activeButton.layer = 1
-        self.soloButton.layer = 2
-        self.duoButton.layer = 3
-        
-      elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
-        self.activeButton = self.duoButton
-        self.flourButton:setIsActiveButton(false)
-        self.duoButton:setIsActiveButton(true)
-
-        self.soloButton:setTargetPos(self.x - self.iconSpacer, 2)
-        self.duoButton:setTargetPos(self.x, 1)
-        self.flourButton:setTargetPos(self.x + self.iconSpacer, 1)     -- result: {left: solo, center: duo, right: flour}
-        
-        -- set layers
-        self.activeButton.layer = 1
-        self.soloButton.layer = 2
-        self.flourButton.layer = 3
-        
-      else                                                                  -- {left:solo, center:duo, right:flour}
-        self.activeButton = self.soloButton
-        self.soloButton:setIsActiveButton(true)
-        self.duoButton:setIsActiveButton(false)
-
-        self.soloButton:setTargetPos(self.x, 1)
-        self.duoButton:setTargetPos(self.x + self.iconSpacer, 1)
-        self.flourButton:setTargetPos(self.x - self.iconSpacer, 2)   -- result: {left: flour, center: solo, right: duo}
-        
-        -- set layers
-        self.activeButton.layer = 1
-        self.duoButton.layer = 2
-        self.flourButton.layer = 3
-      end
-
-      self.uiState = 'rotating'
-      
-     -- stand ins for confirm/cancel button input 
-    elseif button == self.actionButton then
-      if self.activeButton == self.soloButton then
-        self.uiState = 'targeting'
-      else
-        self.uiState = 'submenuing'
-      end
-    end
-  elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
-    if self.activeButton ~= self.soloButton then
-      self.activeButton.displaySkillList = true
-    else
-      self.flourButton.displaySkillList = false
-      self.duoButton.displaySkillList = false
-    end
-
-    if button == self.actionButton then
-      self.selectedSkill = self.activeButton.selectedSkill
-      self.uiState = 'targeting'
-    elseif key == 'leftshoulder' then
-      if self.activeButton == self.soloButton then
-        self.uiState = 'actionSelect'
-      else  -- self.uiState == 'submenuing'
-        self.uiState = 'actionSelect'
-        self.activeButton.displaySkillList = false
-      end
-    end
-
-  elseif self.uiState == 'targeting' then
-    if self.selectedSkill.targetType == 'single' then
-      -- TODO : need to account for self targeting or team targets for heals/buffs in the future
-      if button == 'dpleft' or button == 'dpup' then
-        self.tIndex = math.max(1, self.tIndex - 1)
-      elseif button == 'dpright' or button == 'dpdown' then
-        self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
-      elseif button == self.actionButton then 
-        self.uiState = 'moving'
-      elseif button == 'leftshoulder' then
-        self.tIndex = 1
+  if self.active then
+    if self.uiState == 'actionSelect' then
+      local before = ''
+      local x = self.x
+      if button == 'dpright' then                         -- spin the wheel left
         if self.activeButton == self.soloButton then
-          self.uiState = 'actionSelect'
+          before = 'fsd'
+          self.activeButton = self.duoButton
+          
+        elseif self.activeButton == self.flourButton then
+          before = 'dfs'
+          self.activeButton = self.soloButton
+          
+        else
+          before = 'sdf'
+          self.activeButton = self.flourButton
+          
+        end      
+        
+        -- Tell all the Buttons where to go
+        Signal.emit('SpinUIWheelLeft', before, x)
+        self.uiState = 'rotating'
+        
+      elseif button == 'dpleft' then                      -- spin the wheel right
+        if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
+          before = 'fsd'
+          self.activeButton = self.flourButton
+          
+        elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
+          before = 'dfs'
+          self.activeButton = self.duoButton
+          
+        else                                                                  -- {left:solo, center:duo, right:flour}
+          before = 'sdf'
+          self.activeButton = self.soloButton        
+        end
+      
+        Signal.emit('SpinUIWheelRight', before, x)
+        self.uiState = 'rotating'
+        
+       -- stand ins for confirm/cancel button input 
+      elseif button == 'a' then
+        if self.activeButton == self.soloButton then
+          self.uiState = 'targeting'
         else
           self.uiState = 'submenuing'
         end
       end
+    elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
+      if self.activeButton ~= self.soloButton then
+        self.activeButton.displaySkillList = true
+      else
+        self.flourButton.displaySkillList = false
+        self.duoButton.displaySkillList = false
+      end
+  
+      if button == 'a' then
+        self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
+        self.uiState = 'targeting'
+      elseif button == 'b' then
+        if self.activeButton == self.soloButton then
+          self.uiState = 'actionSelect'
+        else  -- self.uiState == 'submenuing'
+          self.uiState = 'actionSelect'
+          self.activeButton.displaySkillList = false
+        end
+      end
+  
+    elseif self.uiState == 'targeting' then
+      if self.selectedSkill.targetType == 'single' then
+        -- TODO : need to account for self targeting or team targets for heals/buffs in the future
+        if button == 'dpleft' or button == 'dpup' then
+          self.tIndex = math.max(1, self.tIndex - 1)
+        elseif button == 'dpright' or button == 'dpdown' then
+          self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
+        elseif button == 'a' then 
+          -- Signal.emit('move')
+          self.uiState = 'moving'
+        elseif button == 'b' then
+          self.tIndex = 1
+          if self.activeButton == self.soloButton then
+            self.uiState = 'actionSelect'
+          else
+            self.uiState = 'submenuing'
+          end
+        end
+      end
     end
-  end
+    end
 
 end;
 
@@ -317,7 +268,6 @@ function ActionUI:areDoneRotating()
   end
   return true
 end;
-
 
 function ActionUI:update(dt)
   if self.active then

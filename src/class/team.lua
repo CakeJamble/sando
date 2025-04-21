@@ -83,7 +83,7 @@ function Team:getNumMembers() --> int
   return self.numMembers
 end;
 
-
+--[[ Legacy: Now handled by TurnManager
   -- Verifies that each character is in valid focus state
 function Team:setFocusedMember(index) --> void
   if index ~= nil then
@@ -96,6 +96,7 @@ function Team:setFocusedMember(index) --> void
     end
   end
 end;
+]]
 
   -- Distributes exp of equal amount to each living player
 function Team:distributeExperience(amount)

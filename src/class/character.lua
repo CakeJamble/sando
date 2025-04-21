@@ -40,12 +40,11 @@ function Character:init(stats, actionButton)
   self.currentFP = stats.fp
   self.currentDP = stats.dp
   self.setSkill = nil
-  
+
   -- temp for testing
   self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '_outline.png')
   self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '.png')
   self.actionIcons = {['raised'] = self.actionIcon, ['depressed'] = self.actionIconDepressed}
-  
   self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
   self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'], self.actionIcons)
   self.movementState = MovementState(self.x, self.y)
@@ -60,13 +59,28 @@ function Character:init(stats, actionButton)
   
   Signal.register('NextTurn',
     function(activeEntity)
-      if self.entityName == activeEntity.entityName then
+      if self.isFocused then
         self.actionUI:set(activeEntity)
       else
         self.actionUI.active = false
       end
     end
   );
+
+  Signal.register('SkillSelected',
+    function(skill, targets)
+      self.actionUI.uiState = 'targeting'
+      self.chosenSkill = skill
+      
+    end
+  );
+  
+  Signal.register('TargetSelect',
+    function(enemyPositions)
+      self.actionUI:initializeTarget(enemyPositions)
+    end
+    );
+    
   
 end;
 
@@ -183,6 +197,11 @@ function Character:keypressed(key)
     self.defenseState:keypressed(key)
   elseif self.actionUI.active then
     self.actionUI:keypressed(key)
+    
+    if self.actionUI.uiState == 'targeting' then
+      Signal.emit('Targeting', targets)
+    end
+
   end
   -- if in movement state, does nothing
 end;
@@ -193,7 +212,7 @@ function Character:gamepadpressed(joystick, button)
     self.offenseState:gamepadpressed(joystick, button)
   elseif self.state == 'defense' then
     self.defenseState:gamepadpressed(joystick, button)
-  else
+  elseif self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
   end
   -- if in movement state, does nothing

@@ -38,6 +38,9 @@ end;
 
 function CharacterTeam:gamepadpressed(joystick, button)
   for i=1, self.numMembers do
-    self.members[i]:gamepadpressed(joystick, button)
+    local m = self.members[i]
+    if m.actionUI.active then
+      self.members[i]:gamepadpressed(joystick, button)
+    end
   end
 end;
