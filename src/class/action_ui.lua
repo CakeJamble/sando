@@ -64,6 +64,10 @@ function ActionUI:initializeTarget(enemyPositions)
   self.targetableEnemyPositions = enemyPositions
 end;
 
+function ActionUI:getTargetPos()
+  return self.targetableEnemyPositions[self.tIndex]
+end;
+
   -- Returns a table containing the position of the top left of the center icon in (x,y) coords
 function ActionUI:getPos()
   return {self.x, self.y}
@@ -147,8 +151,13 @@ function ActionUI:keypressed(key) --> void
         elseif key == 'right' or key == 'down' then
           self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
         elseif key == 'z' then 
-          -- Signal.emit('move')
           self.uiState = 'moving'
+          local target = self.targetableEnemyPositions[self.tIndex]
+          local x = target[1]
+          local y = target[2]
+          print('value of tIndex should be 1:', self.tIndex)
+          print('size of targetable enemy pos table should be 2:', #self.targetableEnemyPositions)
+          Signal.emit('MoveToEnemy', x, y)
         elseif key == 'x' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then
@@ -239,8 +248,8 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         elseif button == 'dpright' or button == 'dpdown' then
           self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
         elseif button == 'a' then 
-          -- Signal.emit('move')
           self.uiState = 'moving'
+          -- Signal.emit('MoveToEnemy', self.targetableEnemyPositions[self.tIndex])
         elseif button == 'b' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then

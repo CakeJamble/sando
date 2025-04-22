@@ -56,6 +56,8 @@ function Character:init(stats, actionButton)
   self.enemyTargets = {}
   self.hasUsedAction = false
   self.turnFinish = false
+  self.enemyCandidates = nil
+  self.target = nil
   
   Signal.register('NextTurn',
     function(activeEntity)
@@ -71,17 +73,34 @@ function Character:init(stats, actionButton)
     function(skill, targets)
       self.actionUI.uiState = 'targeting'
       self.chosenSkill = skill
-      
     end
   );
   
   Signal.register('TargetSelect',
     function(enemyPositions)
+      self.targetCandidates = enemyPositions
+      print('size of target candidates should be 2:', enemyPositions)
       self.actionUI:initializeTarget(enemyPositions)
     end
-    );
-    
+  );
   
+  Signal.register('TargetConfirm',
+    function(target)
+      self.target = target
+    end
+  );
+  
+  Signal.register('MoveToEnemy',
+    function(x, y)
+      self.movementState:moveTowards(x, y, true)
+    end
+  );
+
+  Signal.register('MoveBack',
+    function()
+    end
+  );
+
 end;
 
 function Character:registerCombatSignals(inputManager)

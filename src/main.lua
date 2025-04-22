@@ -1,5 +1,4 @@
 Gamestate = require "libs.hump.gamestate"
-loveframes = require "libs.loveframes"
 require("class.entity")
 require("class.character")
 Camera = require "libs.hump.camera"
