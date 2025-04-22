@@ -23,3 +23,6 @@ function love.load()
   Gamestate.registerEvents()
   Gamestate.switch(states['main_menu'])
 end;
+
+-- for live console output during program execution
+io.stdout:setvbuf('no')
