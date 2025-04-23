@@ -126,6 +126,7 @@ function ActionUI:keypressed(key) --> void
         if self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
           self.uiState = 'targeting'
+          Signal.emit('TargetSelect')
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'

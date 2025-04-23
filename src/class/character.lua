@@ -102,6 +102,8 @@ function Character:init(stats, actionButton)
   Signal.register('Attack',
     function()
       if self.isFocused then
+        self.offenseState.x = self.x
+        self.offenseState.y = self.y
         self.state = 'offense'
       end
     end
