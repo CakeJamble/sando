@@ -44,7 +44,7 @@ local marco_stats = {
    fp=10,
    attack=10,
    defense=10,
-   speed=10,
+   speed=20,
    luck=10,
    skillList = get_marco_skills()
  }

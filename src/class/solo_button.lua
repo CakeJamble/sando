@@ -7,7 +7,7 @@ SoloButton = Class{__includes = Button}
 
 function SoloButton:init(x, y, layer, basicAttack)
   Button.init(self, x, y, layer, 'solo_lame.png')
-  self.basicAttack = basicAttack
+  self.selectedSkill = basicAttack
   self.scaleFactor = 1
   self.active = false
   

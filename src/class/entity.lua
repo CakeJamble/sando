@@ -46,6 +46,14 @@ function Entity:init(stats, x, y)
   self.isFocused = false
 end;
 
+function Entity:startTurn()
+  self.isFocused = false
+end;
+
+function Entity:endTurn()
+  self.isFocused = false
+end;
+
 -- COPY
 function Entity.copyStats(stats)
   local copy = {}
@@ -197,7 +205,7 @@ function Entity:update(dt) --> void
   local animation
   if state == 'idle' then
     animation = self.movementAnimations.idle
-  elseif state == 'move' then
+  elseif state == 'move' or 'moveback' then
     animation = self.movementAnimations.moveX
   end
   
@@ -219,7 +227,7 @@ function Entity:draw() --> void
     animation = self.movementAnimations.idle
     -- spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
     -- love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
-  elseif state == 'move' then
+  elseif state == 'move' or 'moveback' then
     animation = self.movementAnimations.moveX
   elseif state == 'moveY' then
     -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
@@ -230,7 +238,7 @@ function Entity:draw() --> void
   elseif state == 'ko' then
     -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
   else
-    print("logical error in determining movement state of entity")
+    print("logical error in determining movement state of entity. state is", state)
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1)

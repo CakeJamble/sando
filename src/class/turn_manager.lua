@@ -8,6 +8,23 @@ function TurnManager:init()
   self.listenerCount = 0
   self.turnIndex = 0
   self.activeEntity = nil
+
+  Signal.register('NextTurn', 
+    function ()
+      print('Starting turn for:', self.activeEntity.entityName)
+
+      local previousEntityIndex
+      if self.turnIndex < 2 then
+        previousEntityIndex = #self.listeners
+      else
+        previousEntityIndex = self.turnIndex - 1
+      end
+
+      local previousTurnEntity = self.listeners[previousEntityIndex]
+      previousTurnEntity:endTurn()
+      self.activeEntity:startTurn()
+    end
+  );
 end;
 
 function TurnManager:update(dt)
@@ -36,8 +53,6 @@ function TurnManager:setNext()
   for i=1, #self.listeners do
     self.listeners[i].isFocused = self.listeners[i] == self.activeEntity
   end
-
-  print('Starting turn for:', self.activeEntity.entityName)
 end;
 
 function TurnManager:sortQueue()

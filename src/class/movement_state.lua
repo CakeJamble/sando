@@ -33,7 +33,7 @@ function MovementState:moveTowards(tX, tY, isEnemy)
 end;
 
 function MovementState:moveBack()
-  self.state = 'move'
+  self.state = 'moveback'
   self.targetX = self.oX
   self.targetY = self.oY
 end;
@@ -59,7 +59,7 @@ function MovementState:update(dt)
     MovementState:applyGravity(dt)
   end]]
   
-  if self.state == 'move' then
+  if self.state == 'move' or self.state == 'moveback' then
     self.dx = self.targetX - self.x
     self.dy = self.targetY - self.y
     local distance = math.sqrt(self.dx * self.dx + self.dy * self.dy)
@@ -67,6 +67,12 @@ function MovementState:update(dt)
     if distance < MovementState.DIST_MARGIN then
       self.x = self.targetX
       self.y = self.targetY
+
+      if self.state == 'move' then
+        Signal.emit('Attack')
+      elseif self.state == 'moveback' then
+        Signal.emit('NextTurn')
+      end
       self.state = 'idle'
       return
     end

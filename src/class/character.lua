@@ -59,27 +59,27 @@ function Character:init(stats, actionButton)
   self.enemyCandidates = nil
   self.target = nil
   
-  Signal.register('NextTurn',
-    function(activeEntity)
-      if self.isFocused then
-        self.actionUI:set(activeEntity)
-      else
-        self.actionUI.active = false
-      end
-    end
-  );
+  -- Signal.register('NextTurn',
+  --   function(activeEntity)
+  --     if self.isFocused then
+  --       self.actionUI:set(activeEntity)
+  --     else
+  --       self.actionUI.active = false
+  --     end
+  --   end
+  -- );
 
   Signal.register('SkillSelected',
-    function(skill, targets)
-      self.actionUI.uiState = 'targeting'
-      self.chosenSkill = skill
+    function(skill)
+      -- self.actionUI.uiState = 'targeting'
+      -- self.chosenSkill = skill
+      self.offenseState:setSkill(skill)
     end
   );
   
   Signal.register('TargetSelect',
     function(enemyPositions)
       self.targetCandidates = enemyPositions
-      print('size of target candidates should be 2:', enemyPositions)
       self.actionUI:initializeTarget(enemyPositions)
     end
   );
@@ -92,16 +92,33 @@ function Character:init(stats, actionButton)
   
   Signal.register('MoveToEnemy',
     function(x, y)
-      self.movementState:moveTowards(x, y, true)
+      if self.isFocused then
+        self.movementState:moveTowards(x, y, true)
+        self.state = 'move'
+      end
+    end
+  );
+
+  Signal.register('Attack',
+    function()
+      if self.isFocused then
+        self.state = 'offense'
+      end
     end
   );
 
   Signal.register('MoveBack',
     function()
+      if self.isFocused then
+        self.movementState:moveBack()
+        self.state = 'move'
+      end
     end
   );
 
 end;
+
+
 
 function Character:registerCombatSignals(inputManager)
   -- Register signals for inputs
@@ -109,6 +126,16 @@ function Character:registerCombatSignals(inputManager)
   Signal.register('jump', Character:Jump())
   Signal.register('toggle', Character:Toggle())
   --Signal.register('startTurn', Character:StartTurn)
+end;
+
+function Character:startTurn()
+  self.isFocused = true
+  self.actionUI:set(self)
+end
+
+function Character:endTurn()
+  self.isFocused = false
+  self.actionUI:unset()
 end;
 
 function Character:Guard()
@@ -246,7 +273,8 @@ function Character:update(dt)
     if self.offenseState.frameCount > self.offenseState.animFrameLength then
       self.state = 'move'
       self.hasUsedAction = true
-      self.movementState:moveBack()
+      -- self.movementState:moveBack()
+      Signal.emit('MoveBack')
     end
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
@@ -256,6 +284,7 @@ function Character:update(dt)
       self.x = self.movementState.x
       self.y = self.movementState.y
       if self.movementState.state == 'idle' and self.hasUsedAction then
+        -- Emit Signal for the TurnManager to start next turn
         self.turnFinish = true
       end
     end

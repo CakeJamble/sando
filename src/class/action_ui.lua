@@ -60,6 +60,13 @@ function ActionUI:set(charRef)
   self.active = true
 end;
 
+function ActionUI:unset()
+  self.x, self.y, self.skillList, 
+  self.soloButton, self.flourButton, self.duoButton, 
+  self.buttons, self.activeButton = nil
+  self.isFocused = false
+end;
+
 function ActionUI:initializeTarget(enemyPositions)
   self.targetableEnemyPositions = enemyPositions
 end;
@@ -73,7 +80,6 @@ function ActionUI:getPos()
   return {self.x, self.y}
 end;
 
--- Great candidate for observer pattern refactor
 function ActionUI:keypressed(key) --> void
   if self.active then
     if self.uiState == 'actionSelect' then
@@ -118,7 +124,9 @@ function ActionUI:keypressed(key) --> void
        -- stand ins for confirm/cancel button input 
       elseif key == 'z' then
         if self.activeButton == self.soloButton then
+          self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
           self.uiState = 'targeting'
+          Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
         end
@@ -134,6 +142,9 @@ function ActionUI:keypressed(key) --> void
       if key == 'z' then
         self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
         self.uiState = 'targeting'
+        Signal.emit('SkillSelected', self.selectedSkill)
+        print("test")
+
       elseif key == 'x' then
         if self.activeButton == self.soloButton then
           self.uiState = 'actionSelect'
@@ -155,9 +166,6 @@ function ActionUI:keypressed(key) --> void
           local target = self.targetableEnemyPositions[self.tIndex]
           local x = target[1]
           local y = target[2]
-          print('value of tIndex should be 1:', self.tIndex)
-          print('size of targetable enemy pos table should be 2:', #self.targetableEnemyPositions)
-          Signal.emit('MoveToEnemy', x, y)
         elseif key == 'x' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then

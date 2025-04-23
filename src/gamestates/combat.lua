@@ -36,16 +36,19 @@ function combat:init()
   end
   
   -- Register Signals
-  Signal.register('move',
+  Signal.register('MoveToEnemy',
   function(x, y)
     camera:zoom(1.5)
     self.lockCamera = true
   end
   );
-  Signal.register('endTurn',
+  Signal.register('NextTurn',
     function()
-      camera:zoom(0.6666)
-      self.lockCamera = false
+      if camera.scale > 1 then
+        camera:zoom(0.6666)
+        self.lockCamera = false
+      end
+      self.turnManager:setNext()
     end
   );
 
@@ -74,7 +77,7 @@ function combat:enter(previous)
   -- sort teams and do a single pass during comba
   -- self.turnManager:sortBySpeed()
   self.turnManager:setNext()
-  Signal.emit('NextTurn', self.turnManager.activeEntity)
+  Signal.emit('NextTurn')
 end;
 
 --[[ Increments the enemiesIndex counter by the number of times passed, 
@@ -149,8 +152,10 @@ function combat:keypressed(key)
     local targetPositions = self.enemyTeam:getPositions()
     Signal.emit('TargetSelect', targetPositions)
   elseif self.turnManager.activeEntity.actionUI.uiState == 'moving' then
-    local e = self.turnManager.activeEntity
-    Signal.emit('MoveToEnemy')
+    local target = self.enemyTeam.members[self.enemyTeamIndex]
+    local x = target.x
+    local y = target.y
+    Signal.emit('MoveToEnemy', x, y)
   end
 end;
 
@@ -169,7 +174,8 @@ end;
 function combat:update(dt)
   self.turnManager:update(dt)
   if self.lockCamera then
-    camera:lockWindow(character.x, character.y, 0, character.x + 100, 0, character.y + 100)
+    local cameraTarget = self.turnManager.activeEntity
+    camera:lockWindow(cameraTarget.x, cameraTarget.y, 0, cameraTarget.x + 100, 0, cameraTarget.y + 100)
   end
   
 end;
