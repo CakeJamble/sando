@@ -8,7 +8,7 @@ Save the bakery! Recruit team members and level-up in this active turn-based com
 - [Progress Tracking on Trello](https://trello.com/b/HwgkOIyj/sando)
 
 ## ✅ Repository Structure
-The source code for the game can be found in its entirety in `src`. Use your preferred build method to launch in LOVE.
+The source code for the game can be found in its entirety in `src`. Use your preferred build method to launch in LOVE. Test script files are hosted in a private repository. If you have a strong reason for wanting to view these files, reach me at the email listed in the inquiries section at the bottom of this page.
 
 ### 🎨 `asset` 
 Contains sprite sheets and documentation.
