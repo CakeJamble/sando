@@ -13,7 +13,7 @@ The source code for the game can be found in its entirety in `src`. Use your pre
 ### 🎨 `asset` 
 Contains sprite sheets and documentation.
 
-### `🖥️ class` 
+### 🖥️ `class` 
 Contains the source code for OOP classes. Uses `hump.class` to support its implementations. See `src.class.README.md` for more detailed class breakdowns.
 
 ### 🎮 `gamestates` 
