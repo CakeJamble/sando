@@ -45,7 +45,7 @@ Contains helper functions and globals for the game.
 - [ ] More more more but I will have to trickle that out after some testable alpha is done.
 
 ### 📈 Marketing 
-TBD
+TBD - Store pages have been acquired for itch.io & Steam, but will remain unpublished until the demo releases.
 
 ### 📢 Publication 
 Targeting a release window for a Vertical Slice Demo of the game's core roguelike loop in Q3/Q4 2025.
