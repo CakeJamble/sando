@@ -52,3 +52,6 @@ Targeting a release window for a Vertical Slice Demo of the game's core roguelik
 
 ## 📫 Inquiries
 Direct all inquiries regarding to the development of this product to the email of the sole author of Sando: [CakeJamble](mailto:cakejamblegames@gmail.com)
+
+# ⚠️ Disclaimer
+I provide no support for learning from this repository. Despite the code being publicly available, this is NOT an open-source software. At any time, especially as development kicks into full-swing following my graduation from university, I reserve the right to change the visibility of this repository without any notice or reason.
