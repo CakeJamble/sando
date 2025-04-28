@@ -148,15 +148,15 @@ function combat:keypressed(key)
   else]]
   self.characterTeam:keypressed(key)
   
-  if self.turnManager.activeEntity.actionUI.uiState == 'targeting' then
-    local targetPositions = self.enemyTeam:getPositions()
-    Signal.emit('TargetSelect', targetPositions)
-  elseif self.turnManager.activeEntity.actionUI.uiState == 'moving' then
-    local target = self.enemyTeam.members[self.enemyTeamIndex]
-    local x = target.x
-    local y = target.y
-    Signal.emit('MoveToEnemy', x, y)
-  end
+  -- if self.turnManager.activeEntity.actionUI.uiState == 'targeting' then
+  --   local targetPositions = self.enemyTeam:getPositions()
+  --   Signal.emit('TargetSelect', targetPositions)
+  -- elseif self.turnManager.activeEntity.actionUI.uiState == 'moving' then
+  --   local target = self.enemyTeam.members[self.enemyTeamIndex]
+  --   local x = target.x
+  --   local y = target.y
+  --   Signal.emit('MoveToEnemy', x, y)
+  -- end
 end;
 
 function combat:gamepadpressed(joystick, button)
