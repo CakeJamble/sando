@@ -35,7 +35,6 @@ end;
 
 function OffenseState:setSkill(skillObj, x, y)
   self.skill = skillObj
-  self.skill:setPos(x, y)
   self.frameWindow = skillObj.qte_window
   self.animFrameLength = skillObj.duration
   self.bonus = skillObj.qte_bonus
@@ -130,5 +129,5 @@ function OffenseState:draw()
     love.graphics.draw(self.actionIcons.raised, OffenseState.ACTION_ICON_X, OffenseState.ACTION_ICON_Y)
   end
   
-  self.skill:draw()
+  self.skill:draw(self.x, self.y)
 end;

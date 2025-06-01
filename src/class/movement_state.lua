@@ -62,7 +62,7 @@ function MovementState:update(dt)
       self.y = self.targetY
 
       if self.state == 'move' then
-        Signal.emit('Attack')
+        Signal.emit('Attack', self.x, self.y)
       end
       self.state = 'idle'
       return
