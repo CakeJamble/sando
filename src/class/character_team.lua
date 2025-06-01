@@ -8,39 +8,36 @@ CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters, numMembers)
     Team.init(self, characters, numMembers)
-    self.inventory = Inventory(Team:getMembers())
+    self.inventory = Inventory(self.members)
 end;
 
-function CharacterTeam:addMember(character)
-  Team:addMember(character)
+  -- Distributes exp of equal amount to each living player
+function Team:distributeExperience(amount)
+  for _,member in pairs(self.members) do
+    if member:isAlive() then  member:gainExp(amount) end
+  end
 end;
 
-function CharacterTeam:distributeExperience()
+function Team:getMoney()
+  return self.money
+end;
+
+function Team:increaseMoney(amount)
+  self.money = self.money + amount
 end;
 
 function CharacterTeam:getInventory()
   return self.inventory
 end;
 
-
---[[ Keypress is done for each member because you can press their action button
-to perform their action (jump for now) at any time during combat,
-even when it isn't optimal (unless the focused member is in offense state)]]
 function CharacterTeam:keypressed(key)
   for i=1, self.numMembers do
-    local m = self.members[i]
-    if m.actionUI.active then
-    end
-    
     self.members[i]:keypressed(key)
   end
 end;
 
 function CharacterTeam:gamepadpressed(joystick, button)
   for i=1, self.numMembers do
-    local m = self.members[i]
-    if m.actionUI.active then
       self.members[i]:gamepadpressed(joystick, button)
-    end
   end
 end;

@@ -8,13 +8,14 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 Cleanup the following files by getting rid of unused or deprecated variables.
 
-- [ ] `combat.lua`
-- [ ] `team.lua`
-- [ ] `character_team.lua`
-- [ ] `enemy_team.lua`
-- [ ] `entity.lua`
-- [ ] `character.lua`
-- [ ] `enemy.lua`
+- [x] `combat.lua`
+- [x] `team.lua`
+- [x] `character_team.lua`
+- [x] `enemy_team.lua`
+- [x] `entity.lua`
+- [x] `character.lua`
+- [x] `enemy.lua`
+- [x] `action_ui.lua`
 
 If there's time refactor & update Signal and method calls
 - [ ] `movement_state.lua`

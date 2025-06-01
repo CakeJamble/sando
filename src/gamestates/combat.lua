@@ -12,8 +12,6 @@ require('class.turn_manager')
 
 
 local combat = {}
-local FIRST_MEMBER_X = 100
-local FIRST_MEMBER_Y = 100
 local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
 
@@ -80,21 +78,6 @@ function combat:enter(previous)
   Signal.emit('SetTargets', self.enemyTeam, self.characterTeam)
 end;
 
---[[ Increments the enemiesIndex counter by the number of times passed, 
-then sets the position of the cursorX & cursorY variables to the position of the targeted enemy ]]
-function combat:setTargetPos(incr) --> void
-  self.enemyTeamIndex = (self.enemyTeamIndex + incr) % self.enemyCount
-  local targetedEnemy = self.enemyTeam[self.enemyTeamIndex]
-  self.cursorX = self.targetedEnemy:getX()
-  self.cursorY = self.targetedEnemy:getY()
-end;
-
---[[ Sets the focused member, and adjusts ActionUI accordingly ]]
-function combat:nextTurn()
-  self.turnManager:setNext()
-  self.turnManager:notifyListeners()
-end;
-
 function combat:generateEncounter() --> EnemyTeam
   local enemyTeam = combat:generateEnemyTeam()
   -- combat:logCombat(enemyTeam)
@@ -147,16 +130,6 @@ function combat:keypressed(key)
     Gamestate.push(states['pause'])
   else]]
   self.characterTeam:keypressed(key)
-  
-  -- if self.turnManager.activeEntity.actionUI.uiState == 'targeting' then
-  --   local targetPositions = self.enemyTeam:getPositions()
-  --   Signal.emit('TargetSelect', targetPositions)
-  -- elseif self.turnManager.activeEntity.actionUI.uiState == 'moving' then
-  --   local target = self.enemyTeam.members[self.enemyTeamIndex]
-  --   local x = target.x
-  --   local y = target.y
-  --   Signal.emit('MoveToEnemy', x, y)
-  -- end
 end;
 
 function combat:gamepadpressed(joystick, button)
@@ -165,10 +138,6 @@ function combat:gamepadpressed(joystick, button)
     Gamestate.push(states['pause'])
   ]]
   self.characterTeam:gamepadpressed(joystick, button)
-  if button == 'a' and self.turnManager.activeEntity.actionUI.uiState == 'targeting' then
-    local targetPositions = self.enemyTeam:getPositions()
-    Signal.emit('TargetSelect', targetPositions)
-  end
 end;
 
 function combat:update(dt)

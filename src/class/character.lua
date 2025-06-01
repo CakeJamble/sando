@@ -101,59 +101,30 @@ function Character:init(stats, actionButton)
 
 end;
 
-
-
-function Character:registerCombatSignals(inputManager)
-  -- Register signals for inputs
-  Signal.register('guard', Character:Guard())
-  Signal.register('jump', Character:Jump())
-  Signal.register('toggle', Character:Toggle())
-  --Signal.register('startTurn', Character:StartTurn)
-end;
-
 function Character:startTurn()
-  self.isFocused = true
+  Entity.startTurn(self)
   self.actionUI:set(self)
 end
 
 function Character:endTurn()
-  self.isFocused = false
+  Entity.endTurn(self)
   self.actionUI:unset()
 end;
 
-function Character:Guard()
-end;
-
-function Character:Jump()
-end;
-
-function Character:Toggle()
-end;
-
-function Character:StartTurn()
-  --[[
-    1. Setup Signals for Confirm / Cancel
-    2. Load Skills to Action UI? (not currently contained here)
-  ]]
-  Signal.register('select', Character:Select())
-  Signal.register('cancel', Character:Cancel())
-end;
-
-
-  -- Gains exp, leveling up when applicable
-    -- preconditions: an amount of exp to gain
-    -- postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
-                      -- continues this until self.experience is less that self.experienceRequired
+  --[[ Gains exp, leveling up when applicable
+        - preconditions: an amount of exp to gain
+        - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
+            Continues this until self.experience is less that self.experienceRequired ]]
 function Character:gainExp(amount)
   self.totalExp = self.totalExp + amount
   self.experience = self.experience + amount
-    
-    -- leveling up until exp is less than exp required for next level
+
+  -- leveling up until exp is less than exp required for next level
   while self.experience >= self.experienceRequired do
     self.level = self.level + 1
     print(Entity:getEntityName() .. ' reached level ' .. self.level .. '!')
-    self.experienceRequired = Character:getRequiredExperience(self.level)
-    Character:updateSkills(self.level)
+    self.experienceRequired = Character:getRequiredExperience()
+    Character:updateSkills()
     -- TODO: need to signal to current gamestate to push new level up reward state
   end
 end;
@@ -161,41 +132,29 @@ end;
   -- Gets the required exp for the next level
     -- preconditions: none
     -- postconditions: updates self.experiencedRequired based on polynomial scaling
-function Character:getRequiredExperience(lvl) --> int
-  result = 0
-  if lvl < 3 then
-    result = lvl^Character.EXP_POW_SCALE + lvl * Character.EXP_MULT_SCALE + Character.EXP_BASE_ADD
+function Character:getRequiredExperience() --> int
+  local result = 0
+  if self.level < 3 then
+    result = self.level^Character.EXP_POW_SCALE + self.level * Character.EXP_MULT_SCALE + Character.EXP_BASE_ADD
   else
-    result = lvl^Character.EXP_POW_SCALE + lvl * Character.EXP_MULT_SCALE
+    result = self.level^Character.EXP_POW_SCALE + self.level * Character.EXP_MULT_SCALE
   end
-    
+
   return result
 end;
-  
-  -- Checks for new learnable skills on lvl up from a table of the character's skills
-    -- preconditions: none
-    -- postconditions: updates self.current_skills
-function Character:updateSkills(lvl)
+
+--[[ Checks for new learnable skills on lvl up from a table of the character's skills
+      - preconditions: none
+      - postconditions: updates self.current_skills ]]
+function Character:updateSkills()
   for i,skill in pairs(Entity:getSkills()) do
-    if lvl == skill['unlock'] then
+    if self.level == skill['unlock'] then
       table.insert(self.current_skills, skill)
       local skillLearnedMsg = Entity:getEntityName() .. ' learned the ' .. skill['attack_type'] .. ' skill: ' .. skill['skill_name'] .. '!'
       print(skillLearnedMsg)
     end
-  end  
+  end
 end;
-
-function Character:getCurrentSkills() --> table
-  return self.current_skills
-end;
-
-function Character:getUIState()
-  return self.ui:getUIState()
-end;
-
-function Character:getGear()
-  return self.gear
-end
 
 function Character:equip(equip)
   self.gear:equip(equip)
@@ -212,24 +171,16 @@ function Character:applyGear()
   end
 end;
 
-function Character:setSelectedSkill(selectedSkill, x, y)
-  self.setSkill = selectedSkill
-  self.offenseState:setSkill(selectedSkill, x, y)
-end;
-
 function Character:keypressed(key)
-  
   if self.state == 'offense' then
     self.offenseState:keypressed(key)
   elseif self.state == 'defense' then
     self.defenseState:keypressed(key)
   elseif self.actionUI.active then
     self.actionUI:keypressed(key)
-    
     if self.actionUI.uiState == 'targeting' then
-      Signal.emit('Targeting', targets)
+      Signal.emit('Targeting', self.targets)
     end
-
   end
   -- if in movement state, does nothing
 end;
@@ -249,7 +200,7 @@ end;
 function Character:update(dt)
   Entity.update(self, dt)
   self.actionUI:update(dt)
-  
+
   if self.state == 'offense' then
     self.offenseState:update(dt)
     if self.offenseState.frameCount > self.offenseState.animFrameLength then
@@ -267,7 +218,7 @@ function Character:update(dt)
       self.y = self.movementState.y
       if self.movementState.state == 'idle' and self.hasUsedAction then
         -- Emit Signal for the TurnManager to start next turn
-        self.turnFinish = true
+        self:endTurn()
       end
     end
   end

@@ -1,5 +1,4 @@
 --! filename: combat_ui
---! NOTE: deprecated name? It's not an action UI anymore, it's just for Selecting the Action you want to perform
 require('class.solo_button')
 require('class.flour_button')
 require('class.duo_button')
@@ -71,22 +70,18 @@ function ActionUI:set(charRef)
 end;
 
 function ActionUI:unset()
-  self.x, self.y, self.skillList, 
-  self.soloButton, self.flourButton, self.duoButton, 
-  self.buttons, self.activeButton = nil
+  self.x = nil; self.y = nil; self.skillList = nil;
+  self.soloButton = nil; self.flourButton = nil; self.duoButton = nil;
+  self.buttons = nil; self.activeButton = nil;
   self.isFocused = false
-end;
-
-function ActionUI:initializeTargets(targets)
-  self.targets = targets
 end;
 
 function ActionUI:getTargetPos()
   return self.targets[self.targetType][self.tIndex]:getPos()
 end;
 
-  -- Returns a table containing the position of the top left of the center icon in (x,y) coords
-function ActionUI:getPos()
+-- Returns a table containing the position of the top left of the center icon in (x,y) coords
+function ActionUI:getPos() --> table
   return {self.x, self.y}
 end;
 
@@ -278,13 +273,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         end
       end
     end
-    end
-
-end;
-
-  -- Sets the cursor to be drawn when an Enemy needs to be targeted
-function ActionUI:targetEnemy(x, y)
-  self.drawCursor = true
+  end
 end;
 
 function ActionUI:areDoneRotating()
@@ -299,7 +288,6 @@ end;
 function ActionUI:update(dt)
   if self.active then
     if self.uiState == 'rotating' then
-      
       for i=1,#self.buttons do
         local button = self.buttons[i]
         button:update(dt)
@@ -311,7 +299,7 @@ function ActionUI:update(dt)
     end
   end
 end;
-  
+
 function ActionUI:draw()
   if(self.active) then
       -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
