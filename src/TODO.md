@@ -13,7 +13,7 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 - [ ] QTE Input Validation
 
 ### Reflection
-HUGE DAY. I am so happy that I got the turn system working!
+HUGE DAY. I am so happy that I got the turn system working! Next time, I want to begin implementing the attacks so that HP is properly updated. And if I have time, I want to implement death and destruction of dead entities, so that we can begin progressing towards a win-state for the combat scene :). This is so exciting!
 
 ## For next time
 
