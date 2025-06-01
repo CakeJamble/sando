@@ -131,7 +131,6 @@ function ActionUI:keypressed(key) --> void
         if self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
           self.uiState = 'targeting'
-          Signal.emit('TargetConfirm', self.targets[self.targetType][self.tIndex])
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
@@ -149,7 +148,6 @@ function ActionUI:keypressed(key) --> void
         self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
         self.uiState = 'targeting'
         Signal.emit('SkillSelected', self.selectedSkill)
-
       elseif key == 'x' then
         if self.activeButton == self.soloButton then
           self.uiState = 'actionSelect'
@@ -166,11 +164,10 @@ function ActionUI:keypressed(key) --> void
           self.tIndex = math.max(1, self.tIndex - 1)
         elseif key == 'right' or key == 'down' then
           self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
-        elseif key == 'z' then 
+        elseif key == 'z' then
+          print(self.targetType, self.tIndex)
+          Signal.emit('TargetConfirm', self.targetType, self.tIndex)
           self.uiState = 'moving'
-          local target = self.targets[self.targetType][self.tIndex]
-          local x = target[1]
-          local y = target[2]
         elseif key == 'x' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then

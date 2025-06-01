@@ -53,9 +53,11 @@ function Entity:init(stats, x, y)
     function(enemyTeam, characterTeam, activeEntity)
       if self.isFocused then
         self.targets = {
-          ["enemyTeam"] = enemyTeam,
-          ["characterTeam"] = characterTeam
+          ["enemyTeam"] = enemyTeam.members,
+          ["characterTeam"] = characterTeam.members
         }
+
+        print('Targets set for', self.entityName)
       end
     end
   );  -- End Signal 'GetTargetPositions'

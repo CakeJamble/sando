@@ -53,7 +53,6 @@ function Character:init(stats, actionButton)
   self.selectedSkill = nil
   self.gear = Gear()
   self.state = 'idle'
-  self.enemyTargets = {}
   self.hasUsedAction = false
   self.turnFinish = false
 
@@ -66,21 +65,17 @@ function Character:init(stats, actionButton)
   );
   
   Signal.register('TargetConfirm',
-    function(target)
-      self.target = target
-    end
-  );
-  
-  Signal.register('MoveToEnemy',
-    function(x, y)
+    function(targetType, tIndex)
       if self.isFocused then
-        self.movementState:moveTowards(x, y, true)
+        self.target = self.targets[targetType][tIndex]
+        local targetPos = self.target:getPos()
         self.state = 'move'
+        self.movementState:moveTowards(targetPos.x, targetPos.y, true)
       end
     end
   );
 
-  Signal.register('Attack',
+    Signal.register('Attack',
     function()
       if self.isFocused then
         self.offenseState.x = self.x
@@ -98,7 +93,6 @@ function Character:init(stats, actionButton)
       end
     end
   );
-
 end;
 
 function Character:startTurn()

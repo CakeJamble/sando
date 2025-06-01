@@ -27,6 +27,7 @@ end;
 
 function MovementState:moveTowards(tX, tY, isEnemy)
   self.state = 'move'
+  print('tX', tX, 'tY', tY)
   self.isEnemy = isEnemy
   self.targetX = tX - MovementState.SPRITE_SPACE
   self.targetY = tY
@@ -36,14 +37,6 @@ function MovementState:moveBack()
   self.state = 'moveback'
   self.targetX = self.oX
   self.targetY = self.oY
-end;
-
-function MovementState:getState()
-  return self.state
-end;
-
-function MovementState:setState(state)
-  self.state = state
 end;
 
 function MovementState:isGrounded(groundLevel, y, frameHeight)

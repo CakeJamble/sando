@@ -70,7 +70,6 @@ function combat:enter(previous)
   for i=1,#self.enemyTeam.members do
     self.turnManager:addListener(self.enemyTeam.members[i])
   end
-  
   -- sort teams and do a single pass during combat
   -- self.turnManager:sortBySpeed()
   self.turnManager:setNext()
