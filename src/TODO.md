@@ -10,6 +10,7 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 - [x] Character animation begins in offense state
 - [x] Turn order and transitions behave as expected, based on speed values
 - [x] Refactor hierarchy so that the TurnManager class updates targets and options for the active entity, instead of each character checking if it's their turn every time the signal is emitted
+- [x] Sort turn order each turn to account for stat changes
 - [ ] QTE Input Validation
 
 ### Reflection
