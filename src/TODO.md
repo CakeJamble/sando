@@ -5,13 +5,15 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 ## 06/01/2025
 
 ### TODO
-- [ ] Selecting a basic attack emits a signal to move the character to the correct place
-- [ ] Character enters offense state once they arrive at destination
-- [ ] Character animation begins in offense state
+- [x] Selecting a basic attack emits a signal to move the character to the correct place
+- [x] Character enters offense state once they arrive at destination
+- [x] Character animation begins in offense state
+- [x] Turn order and transitions behave as expected, based on speed values
+- [x] Refactor hierarchy so that the TurnManager class updates targets and options for the active entity, instead of each character checking if it's their turn every time the signal is emitted
 - [ ] QTE Input Validation
 
 ### Reflection
-(placeholder text)
+HUGE DAY. I am so happy that I got the turn system working!
 
 ## For next time
 
