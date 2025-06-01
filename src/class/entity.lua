@@ -47,29 +47,33 @@ function Entity:init(stats, x, y)
   self.isFocused = false
   self.targets = {}
   self.target = nil
-
-  -- Stores targetable entities by enemy and character separation
-  Signal.register('SetTargets',
-    function(enemyTeam, characterTeam, activeEntity)
-      if self.isFocused then
-        self.targets = {
-          ["enemyTeam"] = enemyTeam.members,
-          ["characterTeam"] = characterTeam.members
-        }
-
-        print('Targets set for', self.entityName)
-      end
-    end
-  );  -- End Signal 'GetTargetPositions'
+  self.hasUsedAction = false
+  self.turnFinish = false
 end;
 
 function Entity:startTurn()
   self.isFocused = true
+  self.hasUsedAction = false
+  self.turnFinish = false
+
+  print('starting turn for ', self.entityName)
 end;
+
+function Entity:setTargets(characterMembers, enemyMembers)
+  self.targets = {
+    ['characters'] = characterMembers,
+    ['enemies'] = enemyMembers
+  }
+  print('targets set for ', self.entityName)
+end;
+
 
 function Entity:endTurn()
   self.isFocused = false
-  -- Signal.emit('EndTurn') ?
+  self.hasUsedAction = false
+  self.turnFinish = false
+
+  print('ending turn for ', self.entityName)
 end;
 
 -- COPY

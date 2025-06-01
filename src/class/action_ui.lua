@@ -35,19 +35,16 @@ function ActionUI:init()
   self.buttons = nil
   self.activeButton = nil
   self.targets = {}
-  self.targetType = 'enemyTeam'
+  self.targetType = 'enemies'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
+end;
 
-  Signal.register('SetTargets', 
-    function(enemyTeam, characterTeam)
-      self.targets = {
-        ['enemyTeam'] = enemyTeam.members,
-        ['characterTeam'] = characterTeam.members
-      }
-    end
-  );
-
+function ActionUI:setTargets(characterMembers, enemyMembers)
+  self.targets = {
+    ['characters'] = characterMembers,
+    ['enemies'] = enemyMembers
+  }
 end;
 
 function ActionUI:set(charRef)

@@ -53,8 +53,7 @@ function Character:init(stats, actionButton)
   self.selectedSkill = nil
   self.gear = Gear()
   self.state = 'idle'
-  self.hasUsedAction = false
-  self.turnFinish = false
+
 
   Signal.register('SkillSelected',
     function(skill)
@@ -67,10 +66,12 @@ function Character:init(stats, actionButton)
   Signal.register('TargetConfirm',
     function(targetType, tIndex)
       if self.isFocused then
+        print('confirming target for', self.entityName, 'for target type', targetType, 'at index', tIndex)
+        print('target should be', self.targets[targetType])
         self.target = self.targets[targetType][tIndex]
         local targetPos = self.target:getPos()
-        self.state = 'move'
         self.movementState:moveTowards(targetPos.x, targetPos.y, true)
+        self.state = 'move'
       end
     end
   );
@@ -89,7 +90,7 @@ function Character:init(stats, actionButton)
     function()
       if self.isFocused then
         self.movementState:moveBack()
-        self.state = 'move'
+        self.state = 'moveback'
       end
     end
   );
@@ -103,6 +104,12 @@ end
 function Character:endTurn()
   Entity.endTurn(self)
   self.actionUI:unset()
+end;
+
+function Character:setTargets(characterMembers, enemyMembers)
+  print('setting targets for ', self.entityName)
+  Entity.setTargets(self, characterMembers, enemyMembers)
+  self.actionUI:setTargets(characterMembers, enemyMembers)
 end;
 
   --[[ Gains exp, leveling up when applicable
@@ -205,14 +212,15 @@ function Character:update(dt)
     end
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
-  elseif self.state == 'move' then
+  elseif self.state == 'move' or self.state == 'moveback'then
     if not self.turnFinish then 
       self.movementState:update(dt)
       self.x = self.movementState.x
       self.y = self.movementState.y
-      if self.movementState.state == 'idle' and self.hasUsedAction then
+      if self.isFocused and self.movementState.state == 'idle' and self.hasUsedAction then
         -- Emit Signal for the TurnManager to start next turn
-        self:endTurn()
+        Character.endTurn(self)
+        Signal.emit('NextTurn')
       end
     end
   end

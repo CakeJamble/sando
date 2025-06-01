@@ -53,8 +53,7 @@ end;
 
 function combat:enter(previous)
   self.lockCamera = false
-  self.commandManager = CommandManager()
-  self.turnManager = TurnManager()  
+  -- self.commandManager = CommandManager()
   self.characterTeam = loadCharacterTeam()
   self.rewardExp = 0
   self.rewardMoney = 0
@@ -63,18 +62,8 @@ function combat:enter(previous)
   self.enemyTeam = combat:generateEncounter()
   
   -- Add Characters and Enemies to Turn Manager
-  for i=1,#self.characterTeam.members do
-    self.turnManager:addListener(self.characterTeam.members[i])
-    self.commandManager:addListener(self.characterTeam.members[i])
-  end
-  for i=1,#self.enemyTeam.members do
-    self.turnManager:addListener(self.enemyTeam.members[i])
-  end
-  -- sort teams and do a single pass during combat
-  -- self.turnManager:sortBySpeed()
-  self.turnManager:setNext()
+  self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
   Signal.emit('NextTurn')
-  Signal.emit('SetTargets', self.enemyTeam, self.characterTeam)
 end;
 
 function combat:generateEncounter() --> EnemyTeam

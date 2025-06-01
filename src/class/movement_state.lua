@@ -63,8 +63,6 @@ function MovementState:update(dt)
 
       if self.state == 'move' then
         Signal.emit('Attack')
-      elseif self.state == 'moveback' then
-        Signal.emit('NextTurn')
       end
       self.state = 'idle'
       return
