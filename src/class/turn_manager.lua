@@ -7,13 +7,18 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.characterTeam = characterTeam
   self.enemyTeam = enemyTeam
   self.turnQueue = self:populateTurnQueue()
-  self:sortQueue()
+  self.turnQueue = self:sortQueue(self.turnQueue)
   self.listenerCount = 0
   self.turnIndex = 1
   self.activeEntity = nil
+  self.turnSpentQueue = {}
 
   Signal.register('NextTurn', 
+--[[ After sorting the remaining combatants to account for stat changes during the turn,
+  set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
+  and start their turn. After starting it, increment the turnIndex for the next combatant. ]]
     function ()
+      self:sortWaitingCombatants()
       self.activeEntity = self.turnQueue[self.turnIndex]
       self.activeEntity:startTurn()
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
@@ -60,10 +65,20 @@ function TurnManager:setNext()
   end
 end;
 
-function TurnManager:sortQueue()
-  table.sort(self.turnQueue,
+function TurnManager:sortQueue(t)
+  table.sort(t,
     function(entity1, entity2)
       return entity1:getSpeed() > entity2:getSpeed()
     end
   );
+  return t
+end;
+
+function TurnManager:sortWaitingCombatants()
+  local waitingCombatants = {unpack(self.turnQueue, self.turnIndex, #self.turnQueue)}
+  local i=1 
+  for j=self.turnIndex, #self.turnQueue do
+    self.turnQueue[j] = waitingCombatants[i]
+    i = i+1
+  end
 end;
