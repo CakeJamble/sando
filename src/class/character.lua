@@ -56,31 +56,12 @@ function Character:init(stats, actionButton)
   self.enemyTargets = {}
   self.hasUsedAction = false
   self.turnFinish = false
-  self.enemyCandidates = nil
-  self.target = nil
-  
-  -- Signal.register('NextTurn',
-  --   function(activeEntity)
-  --     if self.isFocused then
-  --       self.actionUI:set(activeEntity)
-  --     else
-  --       self.actionUI.active = false
-  --     end
-  --   end
-  -- );
 
   Signal.register('SkillSelected',
     function(skill)
       -- self.actionUI.uiState = 'targeting'
       -- self.chosenSkill = skill
       self.offenseState:setSkill(skill)
-    end
-  );
-  
-  Signal.register('TargetSelect',
-    function(enemyPositions)
-      self.targetCandidates = enemyPositions
-      self.actionUI:initializeTarget(enemyPositions)
     end
   );
   
@@ -239,7 +220,6 @@ end;
 function Character:keypressed(key)
   
   if self.state == 'offense' then
-    -- set self.enemyTargets here (TODO)
     self.offenseState:keypressed(key)
   elseif self.state == 'defense' then
     self.defenseState:keypressed(key)

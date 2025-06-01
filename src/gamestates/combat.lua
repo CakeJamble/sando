@@ -48,7 +48,6 @@ function combat:init()
         camera:zoom(0.6666)
         self.lockCamera = false
       end
-      self.turnManager:setNext()
     end
   );
 
@@ -74,10 +73,11 @@ function combat:enter(previous)
     self.turnManager:addListener(self.enemyTeam.members[i])
   end
   
-  -- sort teams and do a single pass during comba
+  -- sort teams and do a single pass during combat
   -- self.turnManager:sortBySpeed()
   self.turnManager:setNext()
   Signal.emit('NextTurn')
+  Signal.emit('SetTargets', self.enemyTeam, self.characterTeam)
 end;
 
 --[[ Increments the enemiesIndex counter by the number of times passed, 

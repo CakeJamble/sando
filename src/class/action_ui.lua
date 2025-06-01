@@ -35,10 +35,20 @@ function ActionUI:init()
   self.duoButton = nil
   self.buttons = nil
   self.activeButton = nil
-  self.targetableEnemyPositions = nil
-  
+  self.targets = {}
+  self.targetType = 'enemyTeam'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
+
+  Signal.register('SetTargets', 
+    function(enemyTeam, characterTeam)
+      self.targets = {
+        ['enemyTeam'] = enemyTeam.members,
+        ['characterTeam'] = characterTeam.members
+      }
+    end
+  );
+
 end;
 
 function ActionUI:set(charRef)
@@ -67,12 +77,12 @@ function ActionUI:unset()
   self.isFocused = false
 end;
 
-function ActionUI:initializeTarget(enemyPositions)
-  self.targetableEnemyPositions = enemyPositions
+function ActionUI:initializeTargets(targets)
+  self.targets = targets
 end;
 
 function ActionUI:getTargetPos()
-  return self.targetableEnemyPositions[self.tIndex]
+  return self.targets[self.targetType][self.tIndex]:getPos()
 end;
 
   -- Returns a table containing the position of the top left of the center icon in (x,y) coords
@@ -126,7 +136,7 @@ function ActionUI:keypressed(key) --> void
         if self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
           self.uiState = 'targeting'
-          Signal.emit('TargetSelect')
+          Signal.emit('TargetConfirm', self.targets[self.targetType][self.tIndex])
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
@@ -144,7 +154,6 @@ function ActionUI:keypressed(key) --> void
         self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
         self.uiState = 'targeting'
         Signal.emit('SkillSelected', self.selectedSkill)
-        print("test")
 
       elseif key == 'x' then
         if self.activeButton == self.soloButton then
@@ -161,10 +170,10 @@ function ActionUI:keypressed(key) --> void
         if key == 'left' or key == 'up' then
           self.tIndex = math.max(1, self.tIndex - 1)
         elseif key == 'right' or key == 'down' then
-          self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
+          self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
         elseif key == 'z' then 
           self.uiState = 'moving'
-          local target = self.targetableEnemyPositions[self.tIndex]
+          local target = self.targets[self.targetType][self.tIndex]
           local x = target[1]
           local y = target[2]
         elseif key == 'x' then
@@ -255,10 +264,10 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         if button == 'dpleft' or button == 'dpup' then
           self.tIndex = math.max(1, self.tIndex - 1)
         elseif button == 'dpright' or button == 'dpdown' then
-          self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
+          self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
         elseif button == 'a' then 
           self.uiState = 'moving'
-          -- Signal.emit('MoveToEnemy', self.targetableEnemyPositions[self.tIndex])
+          -- Signal.emit('MoveToEnemy', self.targets[self.tIndex])
         elseif button == 'b' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then
@@ -307,7 +316,7 @@ function ActionUI:draw()
   if(self.active) then
       -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
     if self.uiState == 'targeting' then
-      local target = self.targetableEnemyPositions[self.tIndex]
+      local target = self.targets[self.targetType][self.tIndex]
       love.graphics.draw(self.targetCursor, target.x + ActionUI.X_OFFSET, target.y + ActionUI.Y_OFFSET)
     elseif self.uiState ~= 'moving' then
       for i=1,#self.buttons do

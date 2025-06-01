@@ -44,10 +44,24 @@ function Entity:init(stats, x, y)
   self.movementState = MovementState(self.x, self.y, self.frameHeight)
   self.currentFrame = 1
   self.isFocused = false
+  self.targets = {}
+  self.target = nil
+
+  -- Stores targetable entities by enemy and character separation
+  Signal.register('SetTargets',
+    function(enemyTeam, characterTeam, activeEntity)
+      if self.isFocused then
+        self.targets = {
+          ["enemyTeam"] = enemyTeam,
+          ["characterTeam"] = characterTeam
+        }
+      end
+    end
+    );  -- End Signal 'GetTargetPositions'
 end;
 
 function Entity:startTurn()
-  self.isFocused = false
+  self.isFocused = true
 end;
 
 function Entity:endTurn()
