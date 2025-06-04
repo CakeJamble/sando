@@ -58,7 +58,6 @@ function Character:init(stats, actionButton)
   Signal.register('SkillSelected',
     function(skill)
       -- self.actionUI.uiState = 'targeting'
-      -- self.chosenSkill = skill
       self.offenseState:setSkill(skill)
     end
   );
@@ -67,8 +66,8 @@ function Character:init(stats, actionButton)
     function(targetType, tIndex)
       if self.isFocused then
         print('confirming target for', self.entityName, 'for target type', targetType, 'at index', tIndex)
-        print('target should be', self.targets[targetType])
         self.target = self.targets[targetType][tIndex]
+        print('target name is ' .. self.target.entityName)
         local targetPos = self.target:getPos()
         self.movementState:moveTowards(targetPos.x, targetPos.y, true)
         self.state = 'move'
@@ -77,11 +76,13 @@ function Character:init(stats, actionButton)
   );
 
     Signal.register('Attack',
-    function(x, y)
+    function()
       if self.isFocused then
-        self.offenseState.x = x
-        self.offenseState.y = y
-        self.state = 'offense'
+        print(self.entityName, 'used ', self.offenseState.skill.skillName)
+        local dmg = self.offenseState.damage
+        self.target:takeDamage(dmg)
+        print(self.target.entityName .. ' took ' .. dmg .. ' damage')
+        print('their health is now ' .. self.target:getHealth())
       end
     end
   );
