@@ -2,9 +2,18 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 06/07/2025
+
+### TODO
+
+- [ ] Implement attacking functionality -> calc damage and update health
+- [ ] Figure out camera with signals -> zoom in, follow, zoom out
+
+
 ## 06/01/2025
 
 ### TODO
+
 - [x] Selecting a basic attack emits a signal to move the character to the correct place
 - [x] Character enters offense state once they arrive at destination
 - [x] Character animation begins in offense state
