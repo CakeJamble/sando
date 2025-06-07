@@ -6,7 +6,8 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ### TODO
 
-- [ ] Refactor signal registries so that Entity base class calls when relevant
+- [x] Refactor signal registries so that Entity base class calls when relevant
+- [x] Move responsibility of relevant signals to be controlled by Turn Manager
 - [ ] QTE Input Validation
 	- [ ] Tune timing to line up with animation
 	- [ ] Add visual indicator for success (print statement ok for now)
@@ -15,7 +16,7 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ### Reflection
 
-
+First two TODO items were way easier than I thought. Having the turn manager... manage turns... was a great idea for removing complexity from the Entity classes.
 
 ## 06/06/2025
 

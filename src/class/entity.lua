@@ -49,6 +49,8 @@ function Entity:init(stats, x, y)
   self.target = nil
   self.hasUsedAction = false
   self.turnFinish = false
+  self.state = 'idle'
+  self.movementState = MovementState(self.x, self.y)
 end;
 
 function Entity:startTurn()

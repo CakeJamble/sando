@@ -48,6 +48,40 @@ function TurnManager:init(characterTeam, enemyTeam)
       end
     end
   );
+
+  Signal.register('SkillSelected',
+    function(skill)
+      self.activeEntity.offenseState:setSkill(skill)
+    end
+  );
+
+  Signal.register('TargetConfirm',
+    function(targetType, tIndex)
+      print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
+      self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
+      print('target name is ' .. self.activeEntity.target.entityName)
+      local targetPos = self.activeEntity.target:getPos()
+      self.activeEntity.movementState:moveTowards(targetPos.x, targetPos.y, true)
+      self.activeEntity.state = 'move'
+    end
+  );
+  
+  Signal.register('MoveBack',
+    function()
+      self.activeEntity.state = 'moveback'
+      self.activeEntity.movementState:moveBack()
+    end
+  );
+
+
+  Signal.register('Attack',
+    function(x, y)
+      self.activeEntity.state = 'offense'
+      self.activeEntity.offenseState.x = x
+      self.activeEntity.offenseState.y = y
+      self.activeEntity.offenseState.target = self.activeEntity.target
+    end
+  );
 end;
 
 function TurnManager:populateTurnQueue()

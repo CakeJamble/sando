@@ -45,55 +45,12 @@ function Character:init(stats, actionButton)
   self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '_outline.png')
   self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '.png')
   self.actionIcons = {['raised'] = self.actionIcon, ['depressed'] = self.actionIconDepressed}
+
   self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
   self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'], self.actionIcons)
-  self.movementState = MovementState(self.x, self.y)
   self.actionUI = ActionUI()
-
   self.selectedSkill = nil
   self.gear = Gear()
-  self.state = 'idle'
-
-
-  Signal.register('SkillSelected',
-    function(skill)
-      -- self.actionUI.uiState = 'targeting'
-      self.offenseState:setSkill(skill)
-    end
-  );
-  
-  Signal.register('TargetConfirm',
-    function(targetType, tIndex)
-      if self.isFocused then
-        print('confirming target for', self.entityName, 'for target type', targetType, 'at index', tIndex)
-        self.target = self.targets[targetType][tIndex]
-        print('target name is ' .. self.target.entityName)
-        local targetPos = self.target:getPos()
-        self.movementState:moveTowards(targetPos.x, targetPos.y, true)
-        self.state = 'move'
-      end
-    end
-  );
-
-    Signal.register('Attack',
-    function(x, y)
-      if self.isFocused then
-        self.state = 'offense'
-        self.offenseState.x = x
-        self.offenseState.y = y
-        self.offenseState.target = self.target
-      end
-    end
-  );
-
-  Signal.register('MoveBack',
-    function()
-      if self.isFocused then
-        self.state = 'moveback'
-        self.movementState:moveBack()
-      end
-    end
-  );
 end;
 
 function Character:startTurn()
