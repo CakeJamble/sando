@@ -10,9 +10,10 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 - [x] Move responsibility of relevant signals to be controlled by Turn Manager
 - [x] Document changes so the responsibility of functions is clear
 - [ ] QTE Input Validation
-	- [ ] Tune timing to line up with animation
-	- [ ] Add visual indicator for success (print statement ok for now)
-	- [ ] Add sound to play on success (anything is fine)
+	- [x] Implement basic functionality to validate input for QTE
+	- [x] Tune timing to line up with animation for Marco's basic attack
+	- [x] Add visual indicator for success (print statement ok for now)
+	- [x] Add sound to play on success (anything is fine)
 - [ ] Figure out camera with signals -> zoom in, follow, zoom out
 
 ### Reflection

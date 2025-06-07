@@ -42,10 +42,14 @@ function Character:init(stats, actionButton)
   self.setSkill = nil
 
   -- temp for testing
-  self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '_outline.png')
-  self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '.png')
+  -- self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '_outline.png')
+  -- self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '.png')
+  self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_b_outline.png')
+  self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_b.png')
+
   self.actionIcons = {['raised'] = self.actionIcon, ['depressed'] = self.actionIconDepressed}
 
+  --! TODO: Consider moving these to base class if all entities have an offense and defense state. Separate the QTE elements from them if so.
   self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
   self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'], self.actionIcons)
   self.actionUI = ActionUI()

@@ -28,7 +28,6 @@ function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --inclu
   self.bonusApplied = false
   self.target = nil
   self.isComplete = false
-  
 end;
 
 function OffenseState:setSkill(skillObj)
@@ -37,7 +36,6 @@ function OffenseState:setSkill(skillObj)
   self.animFrameLength = skillObj.duration
   self.bonus = skillObj.qte_bonus
   self.damage = self.damage + self.skill.skill.damage
-  print('damage: ' .. self.damage)
 end;
 
 function OffenseState:setTargetXY(x, y)
@@ -61,9 +59,9 @@ end;
 function OffenseState:updateBadInputPenalty(applyPenalty)
   if applyPenalty then
     self.badInputPenalty = self.badInputPenalty + 20
-    if self.badInputPenalty > 0 then
+    print('applied penalty for missed input timing')
+  elseif self.badInputPenalty > 0 then
       self.badInputPenalty = self.badInputPenalty - 1
-    end
   end
 end;
 
@@ -88,7 +86,7 @@ end;
 function OffenseState:applyBonus()
   self.damage = self.damage + self.bonus
   self.bonusApplied = true
-  print('bonus applied!')
+  print('bonus applied! Damage is now ' .. self.damage)
 end;
 
 function OffenseState:clearSkillModifiers()
@@ -98,7 +96,9 @@ end;
 
 
 function OffenseState:keypressed(key)
-  if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
+  if key == self.actionButton and self.badInputPenalty == 0 and (self.frameWindow[1] <= self.frameCount and self.frameWindow[2] > self.frameCount) and not self.bonusApplied then
+    print('QTE Window is between frame ' .. self.frameWindow[1] .. ' and ' .. self.frameWindow[2])
+    print('Action Button pressed on frame ' .. self.frameCount)
     self:applyBonus()
   elseif key == self.actionButton and not self.isWindowActive then
     self:updateBadInputPenalty(true)
@@ -127,7 +127,6 @@ function OffenseState:update(dt)
   end 
 
   self:updateBadInputPenalty(false)
-  
 end;
 
 

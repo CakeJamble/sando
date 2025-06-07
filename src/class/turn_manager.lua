@@ -88,6 +88,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.offenseState.x = x
       self.activeEntity.offenseState.y = y
       self.activeEntity.offenseState.target = self.activeEntity.target
+      self.activeEntity.offenseState.skill.sound:play()
     end
   );
 end;

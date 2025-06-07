@@ -176,7 +176,8 @@ local lineSkills = {
     partners = nil,
     sprite_path = nil,
     is_dodgeable = true,
-    is_projectile = false
+    is_projectile = false,
+    sound_path = 'asset/audio/entities/character/marco/basic.wav'
   },
 
 }

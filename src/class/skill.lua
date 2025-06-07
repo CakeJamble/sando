@@ -26,6 +26,9 @@ function Skill:init(skillDict, width, height)
   if(self.skill.damage_type == 'projectile') then
     self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
   end
+  local sound_path = skillDict.sound_path
+  self.sound = love.audio.newSource(sound_path, "static")
+  self.sound:setVolume(0.8)
 end;
 
 function Skill:getSkillDict()
