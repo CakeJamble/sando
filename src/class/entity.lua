@@ -149,6 +149,8 @@ end;
 
 function Entity:takeDamage(amount) --> void
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
+  if self.battleStats["hp"] == 0 then
+  end
 end;
 
 -- Called after setting current_stats HP to reflect damage taken during battle

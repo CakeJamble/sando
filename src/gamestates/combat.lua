@@ -48,7 +48,6 @@ function combat:init()
       end
     end
   );
-
 end;
 
 function combat:enter(previous)

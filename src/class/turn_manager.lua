@@ -12,6 +12,7 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.turnIndex = 1
   self.activeEntity = nil
   self.turnSpentQueue = {}
+  self.rewards = {}
 
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
@@ -27,6 +28,19 @@ function TurnManager:init(characterTeam, enemyTeam)
       for i=1, #self.turnQueue do
         local e = self.turnQueue[i]
         print(e.entityName .. ' HP: ' .. e:getHealth())
+        if e:getHealth() == 0 then
+          local reward = e:knockOut()
+          if reward then
+            table.insert(self.rewards, reward)
+          end
+        end
+      end
+
+      if self.enemyTeam:isWipedOut() then
+        print('end combat')
+      end
+      if self.characterTeam:isWipedOut() then
+        print('you lose')
       end
     end
   );
