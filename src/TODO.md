@@ -14,11 +14,11 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 	- [x] Tune timing to line up with animation for Marco's basic attack
 	- [x] Add visual indicator for success (print statement ok for now)
 	- [x] Add sound to play on success (anything is fine)
-- [ ] Figure out camera with signals -> zoom in, follow, zoom out
+- [x] Figure out camera with signals -> zoom in, follow, zoom out
 
 ### Reflection
 
-First two TODO items were way easier than I thought. Having the turn manager... manage turns... was a great idea for removing complexity from the Entity classes.
+First two TODO items were way easier than I thought. Having the turn manager... manage turns... was a great idea for removing complexity from the Entity classes. QTE Input validation and camera were a little confusing but not too bad!
 
 ## 06/06/2025
 
