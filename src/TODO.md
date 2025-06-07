@@ -8,6 +8,7 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 - [x] Refactor signal registries so that Entity base class calls when relevant
 - [x] Move responsibility of relevant signals to be controlled by Turn Manager
+- [x] Document changes so the responsibility of functions is clear
 - [ ] QTE Input Validation
 	- [ ] Tune timing to line up with animation
 	- [ ] Add visual indicator for success (print statement ok for now)
