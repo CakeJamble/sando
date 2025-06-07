@@ -25,21 +25,26 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
       self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
       local koEntities = {}
+
+      -- loop over combatants, and register those who need to be removed from combat
       for i=1, #self.turnQueue do
         local e = self.turnQueue[i]
         print(e.entityName .. ' HP: ' .. e:getHealth())
         if e:getHealth() == 0 then
           table.insert(koEntities, e)
+
+          -- get rewards from enemies and store them for end of combat
           local reward = e:knockOut()
           if reward then
             table.insert(self.rewards, reward)
           end
+
         end
       end
-
       self.enemyTeam:removeMembers(koEntities)
       self.characterTeam:removeMembers(koEntities)
 
+      -- Check Win/Loss Conditions
       if self.enemyTeam:isWipedOut() then
         print('end combat')
       end
@@ -56,6 +61,7 @@ function TurnManager:init(characterTeam, enemyTeam)
   );
 
   Signal.register('TargetConfirm',
+    -- Set target for active entity, get their position, and begin moving towards it
     function(targetType, tIndex)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
@@ -65,8 +71,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.state = 'move'
     end
   );
-  
+
   Signal.register('MoveBack',
+    -- Signal that is triggered after finishing an attack, as part of ending turn
     function()
       self.activeEntity.state = 'moveback'
       self.activeEntity.movementState:moveBack()
@@ -75,6 +82,7 @@ function TurnManager:init(characterTeam, enemyTeam)
 
 
   Signal.register('Attack',
+    -- Sets offense state of entity to a valid state to perform attacks
     function(x, y)
       self.activeEntity.state = 'offense'
       self.activeEntity.offenseState.x = x
@@ -84,17 +92,23 @@ function TurnManager:init(characterTeam, enemyTeam)
   );
 end;
 
+-- Uses character and enemy teams to make a single turn queue
 function TurnManager:populateTurnQueue()
   local turnQueue = {}
   local characterMembers = self.characterTeam.members
   local enemyMembers = self.enemyTeam.members
+  
+  -- Add characters to turn queue
   for i=1,#characterMembers do
     table.insert(turnQueue, characterMembers[i])
     -- self.commandManager:addListener(self.characterTeam.members[i])
   end
+
+  -- Add enemies to turn queue
   for i=1,#enemyMembers do
     table.insert(turnQueue, enemyMembers[i])
   end
+
   return turnQueue
 end;
 
@@ -110,18 +124,7 @@ function TurnManager:gamepadpressed(joystick, button)
   end
 end;
 
-function TurnManager:removeListener(listener)
-  table.remove(self.turnQueue, listener)
-end;
-
-function TurnManager:setNext()
-  self.turnIndex = (self.turnIndex + 1) % #self.turnQueue
-  self.activeEntity = self.turnQueue[self.turnIndex]
-  for i=1, #self.turnQueue do
-    self.turnQueue[i].isFocused = self.turnQueue[i] == self.activeEntity
-  end
-end;
-
+-- Sorting algorithm for start of combat
 function TurnManager:sortQueue(t)
   table.sort(t,
     function(entity1, entity2)
@@ -131,6 +134,11 @@ function TurnManager:sortQueue(t)
   return t
 end;
 
+--[[ Sorting algorithm for start of a turn
+During a turn, buffs/debuffs can alter a combatants speed.
+We want the turn queue to reflect these changes immediately,
+but it shouldn't allow characters whose turns have already been completed to go twice.
+This only sorts characters who haven't take their turn yet this round.]]
 function TurnManager:sortWaitingCombatants()
   local waitingCombatants = {unpack(self.turnQueue, self.turnIndex, #self.turnQueue)}
   local i=1 
