@@ -4,11 +4,9 @@ require("class.entity")
 Class = require 'libs.hump.class'
 Team = Class{}
 
-
   -- Team constructor
 function Team:init(entities, numMembers)
   self.members = entities
-  self.numMembers = numMembers
   self.membersIndex = 1
   self.money = 0
 end;
@@ -17,6 +15,24 @@ end;
 function Team:addMember(entity) --> void
   self.numMembers = self.numMembers + 1
   self.members[self.numMembers] = entity
+end;
+
+function Team:removeMembers(entities) --> void
+  local removeIndices = {}
+  for i=1, #self.members do
+    for j=1, #entities do  
+      if self.members[i] == entities[j] then
+        table.insert(removeIndices, i)
+      end
+    end
+  end
+
+  for i=1, #removeIndices do
+    print('removing ' .. self.members[removeIndices[i]].entityName .. ' from combat')
+    table.remove(self.members, removeIndices[i])
+  end
+
+  print('done removing')
 end;
 
   -- Iterates over team members to check if they are all knocked out
@@ -52,7 +68,7 @@ function Team:update(dt)
 end;
 
 function Team:draw()
-  for i=1,self.numMembers do
+  for i=1,#self.members do
     self.members[i]:draw()
   end
 end;

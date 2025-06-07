@@ -24,17 +24,21 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity:startTurn()
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
       self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
-
+      local koEntities = {}
       for i=1, #self.turnQueue do
         local e = self.turnQueue[i]
         print(e.entityName .. ' HP: ' .. e:getHealth())
         if e:getHealth() == 0 then
+          table.insert(koEntities, e)
           local reward = e:knockOut()
           if reward then
             table.insert(self.rewards, reward)
           end
         end
       end
+
+      self.enemyTeam:removeMembers(koEntities)
+      self.characterTeam:removeMembers(koEntities)
 
       if self.enemyTeam:isWipedOut() then
         print('end combat')

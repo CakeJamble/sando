@@ -31,13 +31,13 @@ function CharacterTeam:getInventory()
 end;
 
 function CharacterTeam:keypressed(key)
-  for i=1, self.numMembers do
+  for i=1, #self.members do
     self.members[i]:keypressed(key)
   end
 end;
 
 function CharacterTeam:gamepadpressed(joystick, button)
-  for i=1, self.numMembers do
+  for i=1, #self.members do
       self.members[i]:gamepadpressed(joystick, button)
   end
 end;
