@@ -6,9 +6,12 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ### TODO
 
-- [ ] Implement attacking functionality -> calc damage and update health
+- [x] Implement attacking functionality -> calc damage and update health
 - [ ] Figure out camera with signals -> zoom in, follow, zoom out
 
+### Reflection
+
+Good job getting an actual turn based combat system functioning in the combat scene. Next step is to refactor so that signals are emitted by entities rather than just characters so that both teams can properly deconstruct members on death. Then move on to pushing a rewards scene at the end of combat.
 
 ## 06/01/2025
 
@@ -23,6 +26,7 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 - [ ] QTE Input Validation
 
 ### Reflection
+
 HUGE DAY. I am so happy that I got the turn system working! Next time, I want to begin implementing the attacks so that HP is properly updated. And if I have time, I want to implement death and destruction of dead entities, so that we can begin progressing towards a win-state for the combat scene :). This is so exciting!
 
 ## For next time
