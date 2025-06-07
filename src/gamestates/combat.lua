@@ -34,13 +34,13 @@ function combat:init()
   end
   
   -- Register Signals
-  Signal.register('MoveToEnemy',
-  function(x, y)
+  Signal.register('TargetConfirm',
+  function(_, _)
     camera:zoom(1.5)
     self.lockCamera = true
   end
   );
-  Signal.register('NextTurn',
+  Signal.register('MoveBack',
     function()
       if camera.scale > 1 then
         camera:zoom(0.6666)
