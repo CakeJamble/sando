@@ -76,13 +76,12 @@ function Character:init(stats, actionButton)
   );
 
     Signal.register('Attack',
-    function()
+    function(x, y)
       if self.isFocused then
-        print(self.entityName, 'used ', self.offenseState.skill.skillName)
-        local dmg = self.offenseState.damage
-        self.target:takeDamage(dmg)
-        print(self.target.entityName .. ' took ' .. dmg .. ' damage')
-        print('their health is now ' .. self.target:getHealth())
+        self.state = 'offense'
+        self.offenseState.x = x
+        self.offenseState.y = y
+        self.offenseState.target = self.target
       end
     end
   );
@@ -90,8 +89,8 @@ function Character:init(stats, actionButton)
   Signal.register('MoveBack',
     function()
       if self.isFocused then
-        self.movementState:moveBack()
         self.state = 'moveback'
+        self.movementState:moveBack()
       end
     end
   );

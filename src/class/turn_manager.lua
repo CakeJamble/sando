@@ -23,6 +23,11 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity:startTurn()
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
       self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
+
+      for i=1, #self.turnQueue do
+        local e = self.turnQueue[i]
+        print(e.entityName .. ' HP: ' .. e:getHealth())
+      end
     end
   );
 end;

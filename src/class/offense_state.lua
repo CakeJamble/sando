@@ -26,11 +26,9 @@ function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --inclu
   self.actionButtonPressed = false
   self.badInputPenalty = 0
   self.bonusApplied = false
+  self.target = nil
+  self.isComplete = false
   
-end;
-
-function OffenseState:getSkill()
-  return self.skill
 end;
 
 function OffenseState:setSkill(skillObj, x, y)
@@ -38,6 +36,8 @@ function OffenseState:setSkill(skillObj, x, y)
   self.frameWindow = skillObj.qte_window
   self.animFrameLength = skillObj.duration
   self.bonus = skillObj.qte_bonus
+  self.damage = self.skill.skill.damage
+  print('damage: ' .. self.damage)
 end;
 
 function OffenseState:setTargetXY(x, y)
@@ -74,6 +74,13 @@ function OffenseState:calcDamage()
   self.damage = skillDict['damage'] + stats['attack']
 end;
 
+function OffenseState:dealDamage()
+  if self.target then
+    print("dealing damage to " .. self.target.entityName)
+    self.target:takeDamage(self.damage)
+  end
+end;
+
 function OffenseState:setBattleStats(battleStats)
   self.battleStats = battleStats
 end;
@@ -92,33 +99,35 @@ end;
 
 function OffenseState:keypressed(key)
   if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
-    OffenseState.applyBonus(self)
+    self:applyBonus()
   elseif key == self.actionButton and not self.isWindowActive then
-    OffenseState.updateBadInputPenalty(self, true)
+    self:updateBadInputPenalty(true)
   end
 end;
 
 function OffenseState:gamepadpressed(joystick, button)
   if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
-    OffenseState.applyBonus(self)
+    self:applyBonus()
   elseif key == self.actionButton and not self.isWindowActive then
-    OffenseState.updateBadInputPenalty(self, true)
+    self:updateBadInputPenalty(true)
   end
 end;
 
 function OffenseState:update(dt)
-  self.skill:update(dt)
-  if self.isWindowActive then
-    if self.frameCount > self.animFrameLength then
-      self.isWindowActive = false
-    end
-  else
-    if self.frameCount > self.animFrameLength - self.frameWindow and self.frameCount < self.animFrameLength then
-      self.isWindowActive = true
-    end
-  end
-  OffenseState.updateBadInputPenalty(self, false)
+  if self.isComplete then return end
+  if not self.skill then return end
+
   self.frameCount = self.frameCount + 1
+  self.skill:update(dt)
+  
+  if self.frameCount > self.animFrameLength then
+    self:dealDamage()
+    self.isComplete = true
+    self.isWindowActive = false
+  end 
+
+  self:updateBadInputPenalty(false)
+  
 end;
 
 
