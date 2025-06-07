@@ -14,7 +14,7 @@ function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --inclu
   self.skill = nil
   self.animFrameLength = nil
   stats = battleStats    -- may be better to pare down and only include necessary stats
-  self.damage = 0
+  self.damage = battleStats.attack
   self.bonus = nil
   self.actionIcons = actionIcons
   
@@ -31,12 +31,12 @@ function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --inclu
   
 end;
 
-function OffenseState:setSkill(skillObj, x, y)
+function OffenseState:setSkill(skillObj)
   self.skill = skillObj
   self.frameWindow = skillObj.qte_window
   self.animFrameLength = skillObj.duration
   self.bonus = skillObj.qte_bonus
-  self.damage = self.skill.skill.damage
+  self.damage = self.damage + self.skill.skill.damage
   print('damage: ' .. self.damage)
 end;
 
