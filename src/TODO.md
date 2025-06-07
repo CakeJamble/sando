@@ -6,12 +6,27 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ### TODO
 
+- [ ] Refactor signal registries so that Entity base class calls when relevant
+- [ ] QTE Input Validation
+	- [ ] Tune timing to line up with animation
+	- [ ] Add visual indicator for success (print statement ok for now)
+	- [ ] Add sound to play on success (anything is fine)
+- [ ] Figure out camera with signals -> zoom in, follow, zoom out
+
+### Reflection
+
+
+
+## 06/06/2025
+
+### TODO
+
 - [x] Implement attacking functionality -> calc damage and update health
 - [ ] Figure out camera with signals -> zoom in, follow, zoom out
 
 ### Reflection
 
-Good job getting an actual turn based combat system functioning in the combat scene. Next step is to refactor so that signals are emitted by entities rather than just characters so that both teams can properly deconstruct members on death. Then move on to pushing a rewards scene at the end of combat.
+Good job getting an actual turn based combat system functioning in the combat scene. Next step is to refactor so that signals are emitted by entities rather than just characters so that both teams can properly deconstruct members on death. Once that is ready, start digging into a prototype for the QTE input validation. Then move on to pushing a rewards scene at the end of combat.
 
 ## 06/01/2025
 
