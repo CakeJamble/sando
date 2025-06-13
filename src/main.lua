@@ -1,9 +1,9 @@
 Gamestate = require "libs.hump.gamestate"
 require("class.entity")
 require("class.character")
+luis = require("libs.luis.init")("libs/luis/widgets")
 Camera = require "libs.hump.camera"
 Signal = require "libs.hump.signal"
-
 states = {
   main_menu         = require 'gamestates.main_menu',
   character_select  = require 'gamestates.character_select',
