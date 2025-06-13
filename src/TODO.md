@@ -2,6 +2,19 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 06/08/2025
+
+### TODO
+
+- [x] Familiarize with Inventory class
+- [ ] Implement simple Inventory functionality
+- [ ] Familiarize with different items (Gear, Consumables, Tools, etc)
+- [ ] Design basic display of items in inventory (text only ok for implementation)
+
+### Reflection
+
+More groundwork needs to be done in consideration of UI/UX Design. Need to implement some UI stuff using the LUIS library next to see how much easier a layout manager is going to make the dev process of menus. As such, we can move these TODOs to the backlog since this is an exciting new area to learn.
+
 ## 06/07/2025
 
 ### TODO

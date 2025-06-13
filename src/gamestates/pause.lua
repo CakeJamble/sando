@@ -30,6 +30,9 @@ function pause:enter(previous, team)
 end;
 
 function pause:keypressed(key)
+    if key == 'p' then
+        return Gamestate.pop()
+    end
 end;
 
 function pause:update(dt)
@@ -37,7 +40,7 @@ end;
 
 function pause:draw()
     love.graphics.draw(self.menuSprite, 0, 0)
-    self.menuCursor:draw()
+    love.graphics.draw(self.menuCursor, 0, 0)
 end;
 
 return pause

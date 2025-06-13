@@ -47,6 +47,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- Check Win/Loss Conditions
       if self.enemyTeam:isWipedOut() then
         print('end combat')
+        -- rewards screen
       end
       if self.characterTeam:isWipedOut() then
         print('you lose')

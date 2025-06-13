@@ -54,7 +54,7 @@ function Character:init(stats, actionButton)
   self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'], self.actionIcons)
   self.actionUI = ActionUI()
   self.selectedSkill = nil
-  self.gear = Gear()
+  self.equips = {}
 end;
 
 function Character:startTurn()
@@ -116,14 +116,6 @@ function Character:updateSkills()
       print(skillLearnedMsg)
     end
   end
-end;
-
-function Character:equip(equip)
-  self.gear:equip(equip)
-end;
-
-function Character:unequip(equip)
-  self.gear:unequip(equip)
 end;
 
 function Character:applyGear()

@@ -112,11 +112,11 @@ function combat:getEnemyNames() --> void
 end;
 
 function combat:keypressed(key)
-  --[[
-  if key == pause key then
-    Gamestate.push(states['pause'])
-  else]]
-  self.characterTeam:keypressed(key)
+  if key == 'p' then
+    Gamestate.push(states['pause'], self.characterTeam)
+  else
+    self.characterTeam:keypressed(key)
+  end
 end;
 
 function combat:gamepadpressed(joystick, button)
