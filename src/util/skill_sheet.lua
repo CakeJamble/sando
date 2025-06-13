@@ -12,13 +12,14 @@ local marco_skills = {
     attack_type = 'solo',
     partners = nil,
     sprite_path = "asset/sprites/entities/character/marco/basic.png",
-    duration = 100,
-    qte_window = 20,
+    duration = 70,
+    qte_window = {55, 65},
     qte_type = "BUTTON_PRESS",
     qte_bonus_type = 'damage',
     qte_bonus = 1,
     description = 'Deals physical damage to a single target twice',
-    unlock = nil
+    unlock = nil,
+    sound_path = 'asset/audio/entities/character/marco/basic.wav'
   },
 
   {
@@ -37,7 +38,8 @@ local marco_skills = {
     qte_type = 'STICK_MOVE',
     qte_bonus = 1,
     description = 'Phase behind enemy, dealing physical damage. Higher chance for crititical strike.',
-    unlock = nil
+    unlock = nil,
+    sound_path = 'asset/audio/entities/character/marco/basic.wav'
     }
 }
 
@@ -59,7 +61,8 @@ local bake_skills = {
     qte_bonus_type = 'damage',
     qte_bonus = 1,
     description = "Deals physical damage to a single target once",
-    unlock = nil
+    unlock = nil,
+    sound_path = 'asset/audio/entities/character/marco/basic.wav'
   }
   
 }
@@ -80,7 +83,8 @@ local maria_skills = {
     qte_window = 25,
     qte_type = "BUTTON_PRESS",
     description = "Deals physical damage to a single target once",
-    unlock = nil
+    unlock = nil,
+    sound_path = 'asset/audio/entities/character/marco/basic.wav'
   }
 }  
 
@@ -100,7 +104,8 @@ local key_skills = {
     qte_window = 25,
     qte_type = "BUTTON_PRESS",
     description = "Deals physical damage to a random target four times",
-    unlock = nil
+    unlock = nil,
+    sound_path = 'asset/audio/entities/character/marco/basic.wav'
   }
 }
 

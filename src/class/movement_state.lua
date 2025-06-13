@@ -27,6 +27,7 @@ end;
 
 function MovementState:moveTowards(tX, tY, isEnemy)
   self.state = 'move'
+  print('tX', tX, 'tY', tY)
   self.isEnemy = isEnemy
   self.targetX = tX - MovementState.SPRITE_SPACE
   self.targetY = tY
@@ -36,14 +37,6 @@ function MovementState:moveBack()
   self.state = 'moveback'
   self.targetX = self.oX
   self.targetY = self.oY
-end;
-
-function MovementState:getState()
-  return self.state
-end;
-
-function MovementState:setState(state)
-  self.state = state
 end;
 
 function MovementState:isGrounded(groundLevel, y, frameHeight)
@@ -69,9 +62,7 @@ function MovementState:update(dt)
       self.y = self.targetY
 
       if self.state == 'move' then
-        Signal.emit('Attack')
-      elseif self.state == 'moveback' then
-        Signal.emit('NextTurn')
+        Signal.emit('Attack', self.x, self.y)
       end
       self.state = 'idle'
       return

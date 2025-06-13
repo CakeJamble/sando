@@ -16,6 +16,7 @@ Entity = Class{}
 function Entity:init(stats, x, y)
   self.baseStats = Entity.copyStats(stats)
   self.battleStats = Entity.copyStats(stats)
+  self.statUpScaler = 1.25
   self.skillList = stats['skillList']
   self.spriteSheets = {
     idle = {},
@@ -44,14 +45,37 @@ function Entity:init(stats, x, y)
   self.movementState = MovementState(self.x, self.y, self.frameHeight)
   self.currentFrame = 1
   self.isFocused = false
+  self.targets = {}
+  self.target = nil
+  self.hasUsedAction = false
+  self.turnFinish = false
+  self.state = 'idle'
+  self.movementState = MovementState(self.x, self.y)
 end;
 
 function Entity:startTurn()
-  self.isFocused = false
+  self.isFocused = true
+  self.hasUsedAction = false
+  self.turnFinish = false
+
+  print('starting turn for ', self.entityName)
 end;
+
+function Entity:setTargets(characterMembers, enemyMembers)
+  self.targets = {
+    ['characters'] = characterMembers,
+    ['enemies'] = enemyMembers
+  }
+  print('targets set for ', self.entityName)
+end;
+
 
 function Entity:endTurn()
   self.isFocused = false
+  self.hasUsedAction = false
+  self.turnFinish = false
+
+  print('ending turn for ', self.entityName)
 end;
 
 -- COPY
@@ -65,28 +89,8 @@ end;
 
 -- ACCESSORS
 
-function Entity:getEntityName() --> string
-  return self.entityName
-end;
-
-function Entity:getX()  --> int
-  return self.x
-end;
-
-function Entity:getY()  --> int
-  return self.y
-end;
-
 function Entity:getPos() --> {int, int}
   return {['x'] = self.x, ['y'] = self.y}
-end;
-
-function Entity:getFWidth()
-  return self.frameWidth
-end;
-  
-function Entity:getFHeight()
-  return self.frameHeight
 end;
 
 function Entity:getSpeed() --> int
@@ -120,7 +124,7 @@ end;
 -- MUTATORS
 
 function Entity:modifyBattleStat(stat_name, amount) --> void
-  self.battleStats[stat_name] = math.ceil(self.battleStats[stat_name] * (amount * 1.25))
+  self.battleStats[stat_name] = math.ceil(self.battleStats[stat_name] * (amount * self.statUpScaler))
 end;
 
 function Entity:setPos(x, y) --> void
@@ -141,30 +145,27 @@ function Entity:setMovementState(state) --> void
   self.movementState = state
 end;
 
--- Sets conditional variable for determining whether or not to draw their ActionUI
-function Entity:setFocused(isFocused) --> void
-  self.isFocused = isFocused
-end;
-
 function Entity:heal(amount) --> void
   self.battleStats["hp"] = math.min(self.battleStats["hp"], self.battleStats["hp"] + amount)
 end;
 
 function Entity:takeDamage(amount) --> void
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
+  if self.battleStats["hp"] == 0 then
+  end
 end;
 
--- ONLY run this after setting current_stats HP to reflect damage taken during battle
+-- Called after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void
-  for stat,val in pairs(self.baseStats) do
+  for stat,_ in pairs(self.baseStats) do
     if stat ~= 'hp' or stat ~= 'fp' then
       self.battleStats[stat] = self.baseStats[stat]
     end
   end
 end;
 
-  -- Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
-  -- Shared animations are called by the child classes since the location of the subdir depends on the type of class
+  --[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
+  Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
 function Entity:setAnimations(subdir)
   -- Images
   local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'

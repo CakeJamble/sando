@@ -12,8 +12,6 @@ require('class.turn_manager')
 
 
 local combat = {}
-local FIRST_MEMBER_X = 100
-local FIRST_MEMBER_Y = 100
 local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
 
@@ -36,28 +34,25 @@ function combat:init()
   end
   
   -- Register Signals
-  Signal.register('MoveToEnemy',
-  function(x, y)
+  Signal.register('TargetConfirm',
+  function(_, _)
     camera:zoom(1.5)
     self.lockCamera = true
   end
   );
-  Signal.register('NextTurn',
+  Signal.register('MoveBack',
     function()
       if camera.scale > 1 then
         camera:zoom(0.6666)
         self.lockCamera = false
       end
-      self.turnManager:setNext()
     end
   );
-
 end;
 
 function combat:enter(previous)
   self.lockCamera = false
-  self.commandManager = CommandManager()
-  self.turnManager = TurnManager()  
+  -- self.commandManager = CommandManager()
   self.characterTeam = loadCharacterTeam()
   self.rewardExp = 0
   self.rewardMoney = 0
@@ -66,33 +61,8 @@ function combat:enter(previous)
   self.enemyTeam = combat:generateEncounter()
   
   -- Add Characters and Enemies to Turn Manager
-  for i=1,#self.characterTeam.members do
-    self.turnManager:addListener(self.characterTeam.members[i])
-    self.commandManager:addListener(self.characterTeam.members[i])
-  end
-  for i=1,#self.enemyTeam.members do
-    self.turnManager:addListener(self.enemyTeam.members[i])
-  end
-  
-  -- sort teams and do a single pass during comba
-  -- self.turnManager:sortBySpeed()
-  self.turnManager:setNext()
+  self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
   Signal.emit('NextTurn')
-end;
-
---[[ Increments the enemiesIndex counter by the number of times passed, 
-then sets the position of the cursorX & cursorY variables to the position of the targeted enemy ]]
-function combat:setTargetPos(incr) --> void
-  self.enemyTeamIndex = (self.enemyTeamIndex + incr) % self.enemyCount
-  local targetedEnemy = self.enemyTeam[self.enemyTeamIndex]
-  self.cursorX = self.targetedEnemy:getX()
-  self.cursorY = self.targetedEnemy:getY()
-end;
-
---[[ Sets the focused member, and adjusts ActionUI accordingly ]]
-function combat:nextTurn()
-  self.turnManager:setNext()
-  self.turnManager:notifyListeners()
 end;
 
 function combat:generateEncounter() --> EnemyTeam
@@ -142,21 +112,11 @@ function combat:getEnemyNames() --> void
 end;
 
 function combat:keypressed(key)
-  --[[
-  if key == pause key then
-    Gamestate.push(states['pause'])
-  else]]
-  self.characterTeam:keypressed(key)
-  
-  -- if self.turnManager.activeEntity.actionUI.uiState == 'targeting' then
-  --   local targetPositions = self.enemyTeam:getPositions()
-  --   Signal.emit('TargetSelect', targetPositions)
-  -- elseif self.turnManager.activeEntity.actionUI.uiState == 'moving' then
-  --   local target = self.enemyTeam.members[self.enemyTeamIndex]
-  --   local x = target.x
-  --   local y = target.y
-  --   Signal.emit('MoveToEnemy', x, y)
-  -- end
+  if key == 'p' then
+    Gamestate.push(states['pause'], self.characterTeam)
+  else
+    self.characterTeam:keypressed(key)
+  end
 end;
 
 function combat:gamepadpressed(joystick, button)
@@ -165,10 +125,6 @@ function combat:gamepadpressed(joystick, button)
     Gamestate.push(states['pause'])
   ]]
   self.characterTeam:gamepadpressed(joystick, button)
-  if button == 'a' and self.turnManager.activeEntity.actionUI.uiState == 'targeting' then
-    local targetPositions = self.enemyTeam:getPositions()
-    Signal.emit('TargetSelect', targetPositions)
-  end
 end;
 
 function combat:update(dt)

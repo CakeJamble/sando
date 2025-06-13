@@ -26,17 +26,13 @@ function Skill:init(skillDict, width, height)
   if(self.skill.damage_type == 'projectile') then
     self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
   end
-  self.x = 0
-  self.y = 0
+  local sound_path = skillDict.sound_path
+  self.sound = love.audio.newSource(sound_path, "static")
+  self.sound:setVolume(0.8)
 end;
 
 function Skill:getSkillDict()
   return self.skill
-end;
-
-function Skill:setPos(x, y)
-  self.x = x
-  self.y = y
 end;
 
   -- Create and return a new animation
@@ -79,9 +75,9 @@ function Skill:update(dt)
   
 end;
 
-function Skill:draw()
+function Skill:draw(x, y)
   local spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) + 1
-  love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], self.x, self.y, 0, 1)
+  love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], x, y, 0, 1)
   if self.hitType == 'projectile' then
     for i, projectile in pairs(projectiles) do
       projectile:draw()

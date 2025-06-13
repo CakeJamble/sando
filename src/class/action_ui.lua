@@ -1,5 +1,4 @@
 --! filename: combat_ui
---! NOTE: deprecated name? It's not an action UI anymore, it's just for Selecting the Action you want to perform
 require('class.solo_button')
 require('class.flour_button')
 require('class.duo_button')
@@ -35,10 +34,17 @@ function ActionUI:init()
   self.duoButton = nil
   self.buttons = nil
   self.activeButton = nil
-  self.targetableEnemyPositions = nil
-  
+  self.targets = {}
+  self.targetType = 'enemies'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
+end;
+
+function ActionUI:setTargets(characterMembers, enemyMembers)
+  self.targets = {
+    ['characters'] = characterMembers,
+    ['enemies'] = enemyMembers
+  }
 end;
 
 function ActionUI:set(charRef)
@@ -61,22 +67,18 @@ function ActionUI:set(charRef)
 end;
 
 function ActionUI:unset()
-  self.x, self.y, self.skillList, 
-  self.soloButton, self.flourButton, self.duoButton, 
-  self.buttons, self.activeButton = nil
+  self.x = nil; self.y = nil; self.skillList = nil;
+  self.soloButton = nil; self.flourButton = nil; self.duoButton = nil;
+  self.buttons = nil; self.activeButton = nil;
   self.isFocused = false
 end;
 
-function ActionUI:initializeTarget(enemyPositions)
-  self.targetableEnemyPositions = enemyPositions
-end;
-
 function ActionUI:getTargetPos()
-  return self.targetableEnemyPositions[self.tIndex]
+  return self.targets[self.targetType][self.tIndex]:getPos()
 end;
 
-  -- Returns a table containing the position of the top left of the center icon in (x,y) coords
-function ActionUI:getPos()
+-- Returns a table containing the position of the top left of the center icon in (x,y) coords
+function ActionUI:getPos() --> table
   return {self.x, self.y}
 end;
 
@@ -126,7 +128,6 @@ function ActionUI:keypressed(key) --> void
         if self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
           self.uiState = 'targeting'
-          Signal.emit('TargetSelect')
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
@@ -144,8 +145,6 @@ function ActionUI:keypressed(key) --> void
         self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
         self.uiState = 'targeting'
         Signal.emit('SkillSelected', self.selectedSkill)
-        print("test")
-
       elseif key == 'x' then
         if self.activeButton == self.soloButton then
           self.uiState = 'actionSelect'
@@ -161,12 +160,11 @@ function ActionUI:keypressed(key) --> void
         if key == 'left' or key == 'up' then
           self.tIndex = math.max(1, self.tIndex - 1)
         elseif key == 'right' or key == 'down' then
-          self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
-        elseif key == 'z' then 
+          self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
+        elseif key == 'z' then
+          print(self.targetType, self.tIndex)
+          Signal.emit('TargetConfirm', self.targetType, self.tIndex)
           self.uiState = 'moving'
-          local target = self.targetableEnemyPositions[self.tIndex]
-          local x = target[1]
-          local y = target[2]
         elseif key == 'x' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then
@@ -255,10 +253,10 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         if button == 'dpleft' or button == 'dpup' then
           self.tIndex = math.max(1, self.tIndex - 1)
         elseif button == 'dpright' or button == 'dpdown' then
-          self.tIndex = math.min(#self.targetableEnemyPositions, self.tIndex + 1)
+          self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
         elseif button == 'a' then 
           self.uiState = 'moving'
-          -- Signal.emit('MoveToEnemy', self.targetableEnemyPositions[self.tIndex])
+          -- Signal.emit('MoveToEnemy', self.targets[self.tIndex])
         elseif button == 'b' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then
@@ -269,13 +267,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         end
       end
     end
-    end
-
-end;
-
-  -- Sets the cursor to be drawn when an Enemy needs to be targeted
-function ActionUI:targetEnemy(x, y)
-  self.drawCursor = true
+  end
 end;
 
 function ActionUI:areDoneRotating()
@@ -290,7 +282,6 @@ end;
 function ActionUI:update(dt)
   if self.active then
     if self.uiState == 'rotating' then
-      
       for i=1,#self.buttons do
         local button = self.buttons[i]
         button:update(dt)
@@ -302,12 +293,12 @@ function ActionUI:update(dt)
     end
   end
 end;
-  
+
 function ActionUI:draw()
   if(self.active) then
       -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
     if self.uiState == 'targeting' then
-      local target = self.targetableEnemyPositions[self.tIndex]
+      local target = self.targets[self.targetType][self.tIndex]
       love.graphics.draw(self.targetCursor, target.x + ActionUI.X_OFFSET, target.y + ActionUI.Y_OFFSET)
     elseif self.uiState ~= 'moving' then
       for i=1,#self.buttons do

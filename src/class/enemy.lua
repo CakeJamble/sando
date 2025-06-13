@@ -15,8 +15,33 @@ function Enemy:init(enemyName, enemyType)
   Entity.setAnimations(self, enemyType .. '/')
   self.expReward = self.baseStats['experienceReward']
   self.moneyReward = self.baseStats['moneyReward']
+  self.lootReward = self:randPickLoot(self.baseStats['lootPool'])
   self.selectedSkill = nil
   Enemy.yPos = Enemy.yPos + 150
+end;
+
+function Enemy:knockOut()
+  local reward = {}
+  reward.exp = self.expReward
+  reward.money = self.moneyReward
+  reward.loot = self.lootReward
+  return reward
+end;
+
+function Enemy:randPickLoot(lootPool)
+  if not lootPool then return end
+  local lootType = lootPool[math.random(1, #lootPool)]
+  local lootIndex = lootType[math.random(1, #lootPool.lootType)]
+  local lootDict = lootPool.lootType[lootIndex]
+  local loot = {}
+  if lootType == 'gear' then
+    loot = Gear(lootDict)
+  elseif lootType == 'consumable' then
+    loot = Consumable(lootDict)
+  else -- lootType == 'tool'
+    loot = Tool(lootDict)
+  end
+  return loot
 end;
 
 function Enemy:getExpReward()

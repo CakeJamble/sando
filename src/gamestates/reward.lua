@@ -8,7 +8,7 @@ require('util.consumable_pool')
 local reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
-function reward:init()
+function reward:init(rewards, team)
   rareToolChance = 0.2
   rareEquipChance = 0.2
   rareConsumableChance = 0.2
@@ -30,7 +30,7 @@ function reward:enter(previous, team, combatType, rewardExp, rewardMoney)
   if previous == states['combat'] then
     -- Check number of survivors
     livingTeamMembers = 0
-    for member in team do
+    for member in team.members do
       if member:isAlive() then
         livingTeamMembers = livingTeamMembers + 1
       end
