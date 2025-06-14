@@ -20,122 +20,58 @@ local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
 
 function character_select:init()
-  cursor = love.graphics.newImage(CURSOR_PATH)  
-  bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
-  marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
-  mariaPortrait = love.graphics.newImage(MARIA_PORTRAIT_PATH)
-  keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
+  -- Set up the UI Layer
+  luis.newLayer('CharacterSelectTable')
+  luis.enableLayer('CharacterSelectTable')
+  luis.setGridSize(32)
+  self.container = luis.newFlexContainer(20, 25, 6, 2)
+  self.beginContainer = luis.newFlexContainer(4, 4, 25, 25)
+  self.bakeIcon = luis.newButton("", 4, 4, onClickAddBake, onRelease, 1, 1, nil, BAKE_PORTRAIT_PATH)
+  self.marcoIcon = luis.newButton("", 4, 4, onClickAddMarco, onRelease, 2, 1, nil, MARCO_PORTRAIT_PATH)
+  self.mariaIcon = luis.newButton("", 4, 4, onClickAddMaria, onRelease, 3, 1, nil, MARIA_PORTRAIT_PATH)
+  self.keyIcon = luis.newButton("", 4, 4, onClickAddKey, onRelease, 4, 2, nil, KEY_PORTRAIT_PATH)
+  self.beginButton = luis.newButton("Begin", 4, 4, onClickBeginRun, onRelease, 25, 25, nil, nil)
+  self.beginContainer:addChild(self.beginButton)
+  self.container:addChild(self.bakeIcon)
+  self.container:addChild(self.marcoIcon)
+  self.container:addChild(self.mariaIcon)
+  self.container:addChild(self.keyIcon)
+  -- self.container:addChild(self.beginButton)
+  luis.insertElement('CharacterSelectTable', self.container)
+  luis.insertElement('CharacterSelectTable', self.beginContainer)
+  self.container:activateInternalFocus()
 end;
 
 
 function character_select:enter()
-  index = 0
-  spriteRow = 0
-  spriteCol = 0
-  spriteXOffset = 0
-  spriteYOffset = 0
+  index = 1
+  -- spriteRow = 0
+  -- spriteCol = 0
+  -- spriteXOffset = 0
+  -- spriteYOffset = 0
   numPlayableCharacters = 4
   teamCount = 0
-  
-  selectedTeamIndices = {}
-  
+  members = {}  
   for i=1,TEAM_CAP do
-    selectedTeamIndices[i] = {}
+    members[i] = {}
   end
 
-  statPreview = character_select:setStatPreview()
+  -- self.statPreview = character_select:setStatPreview()
   
 end;
 
-function character_select:keypressed(key)
-  if key == 'right' then
-    character_select:set_right()
-  elseif key == 'left' then
-    character_select:set_left()
-  elseif key == 'up' then
-    character_select:set_up()
-  elseif key == 'down' then
-    character_select:set_down()
-  elseif key == 'z' then
-    character_select:validate_selection()
-  end
-  statPreview = character_select:setStatPreview()
+function character_select:leave()
+  self.beginContainer:deactivateInternalFocus()
 end;
-  
+
 function character_select:gamepadpressed(joystick, button)
-  if button == 'dpright' then
-    character_select:set_right()
-  elseif button == 'dpleft' then
-    character_select:set_left()
-  elseif button == 'dpup' then
-    character_select:set_up()
-  elseif button == 'dpdown' then
-    character_select:set_down()
-  elseif button == 'a' then
-    character_select:validate_selection()
-  end
-  statPreview = character_select:setStatPreview()
-end;
+  luis.gamepadpressed(joystick, button)
 
-function character_select:set_right()
-  if spriteCol < GRID_LENGTH then
-    spriteCol = spriteCol + 1
-    spriteXOffset = OFFSET * spriteCol
-    index = index + 1
-  else 
-    spriteCol = 0
-    spriteXOffset = 0
-    if spriteRow < GRID_LENGTH then
-      spriteRow = spriteRow + 1
-      spriteYOffset = spriteYOffset + OFFSET
-      index = index + 1
-    else
-      spriteRow = 0
-      spriteYOffset = 0
-      index = 0
-    end
-  end
-end;
-
-function character_select:set_left()
-  if spriteCol > 0 then
-    spriteCol = spriteCol - 1
-    index = index - 1
-  elseif spriteRow > 0 then
-    spriteRow = spriteRow - 1
-    spriteCol = GRID_LENGTH
-    spriteYOffset = OFFSET * spriteRow
-    index = index - 1
-  else
-    spriteCol = GRID_LENGTH
-    spriteRow = GRID_LENGTH
-    spriteYOffset = OFFSET * spriteRow
-    index = numPlayableCharacters - 1
-  end
-  spriteXOffset = OFFSET * spriteCol
-end;
-
-function character_select:set_up()
-  if spriteRow > 0 then
-    spriteRow = spriteRow - 1
-    spriteYOffset = spriteRow * OFFSET
-    index = index - GRID_LENGTH
-  else
-    spriteRow = GRID_LENGTH
-    spriteYOffset = GRID_LENGTH * OFFSET
-    index = spriteCol + (spriteRow * GRID_LENGTH)
-  end
-end;
-
-function character_select:set_down()
-  if spriteRow < GRID_LENGTH then
-    spriteRow = spriteRow + 1
-    spriteYOffset = spriteRow * OFFSET
-    index = index + GRID_LENGTH
-  else
-    spriteRow = 0
-    spriteYOffset = 0
-    index = spriteCol
+  if(teamCount == TEAM_CAP) then
+    local characterTeam = CharacterTeam(members, TEAM_CAP)
+    saveCharacterTeam(characterTeam)
+    self.container:deactivateInternalFocus()
+    self.beginContainer:activateInternalFocus()
   end
 end;
 
@@ -143,9 +79,6 @@ function character_select:validate_selection()
   if teamCount == TEAM_CAP then
     character_select:indicesToCharacters()
     Gamestate.switch(states['combat'])
-  else
-    selectedTeamIndices[teamCount + 1] = index
-    teamCount = teamCount + 1
   end
 end;
 
@@ -191,14 +124,48 @@ function character_select:statsToString(stats)
   return 'Name: ' .. stats['entityName'] .. '\n' .. 'HP: ' .. stats['hp'] .. '\n' .. 'FP: ' .. stats['fp'] .. '\n' .. 'Attack: ' .. stats['attack'] .. '\n' .. 'Defense: ' .. stats['defense'] .. '\n' .. 'Speed: ' .. stats['speed'] .. '\n' .. 'Luck: ' .. stats['luck']
 end;
 
+function character_select:update(dt)
+  luis.updateScale()
+end;
+
 function character_select:draw()
-  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10, OFFSET * (GRID_LENGTH + 1) + 10)
-  love.graphics.draw(bakePortrait, SELECT_START, SELECT_START)
-  love.graphics.draw(marcoPortrait, SELECT_START + OFFSET, SELECT_START)
-  love.graphics.draw(mariaPortrait, SELECT_START, SELECT_START + OFFSET)
-  love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
-  love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
-  love.graphics.print(statPreview, 300, 100)
+  luis.draw()
+end;
+
+function onClickAddBake()
+  if teamCount <= TEAM_CAP then
+    members[teamCount + 1] = Character(get_bake_stats(), 'a')
+    teamCount = teamCount + 1
+    print(teamCount)
+  end
+end;
+
+function onClickAddMarco()
+  if teamCount < TEAM_CAP then
+    members[teamCount + 1] = Character(get_marco_stats(), 'x')
+    teamCount = teamCount + 1
+    print(teamCount)
+  end
+end;
+
+function onClickAddMaria()
+  if teamCount < TEAM_CAP then
+    selectedTeamIndices[index] = mariaIndex
+    teamCount = teamCount + 1
+  end
+end;
+
+function onClickAddKey()
+  if index < TEAM_CAP then
+    selectedTeamIndices[index] = keyIndex
+    index = index + 1
+  end
+end;
+
+function onClickBeginRun()
+  if teamCount == TEAM_CAP then
+    Gamestate.switch(states['combat'])
+  end
 end;
 
 return character_select

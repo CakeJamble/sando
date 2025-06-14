@@ -1,122 +1,85 @@
 --! file: gamestate/menu
-
+require('util.menu_ui_manager')
 local main_menu = {}
 
-local index = 1
-local BUTTONS_START_X = 100
-local BUTTONS_START_Y = 100
-local BUTTONS_OFFSET_Y = 45
-local cursorX = 100
-local cursorY = 100
+-- local index = 1
+-- local BUTTONS_START_X = 100
+-- local BUTTONS_START_Y = 100
+-- local BUTTONS_OFFSET_Y = 45
+-- local cursorX = 100
+-- local cursorY = 100
 
-local NEW_GAME_BUTTON_PATH = "asset/sprites/main_menu/new_button.png"
-local CONTINUE_BUTTON_PATH = "asset/sprites/main_menu/continue_button.png"
-local BAKERY_BUTTON_PATH = "asset/sprites/main_menu/bakery_button.png"
-local SETTINGS_BUTTON_PATH = "asset/sprites/main_menu/settings_button.png"
-local QUIT_BUTTON_PATH = "asset/sprites/main_menu/quit_button.png"
-local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
+-- local NEW_GAME_BUTTON_PATH = "asset/sprites/main_menu/new_button.png"
+-- local CONTINUE_BUTTON_PATH = "asset/sprites/main_menu/continue_button.png"
+-- local BAKERY_BUTTON_PATH = "asset/sprites/main_menu/bakery_button.png"
+-- local SETTINGS_BUTTON_PATH = "asset/sprites/main_menu/settings_button.png"
+-- local QUIT_BUTTON_PATH = "asset/sprites/main_menu/quit_button.png"
+-- local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
 
 function main_menu:init()
-  -- self.background = love.graphics.newImage('path/to/menu_background')
+  -- Set up the UI Layer
+  luis.newLayer('MainMenuTable')
+  luis.newLayer("Settings")
+  luis.enableLayer('MainMenuTable')
+
+  -- Set up grid size to auto scale
+  luis.setGridSize(32)
+
+  -- Initialize UI Components
+  self.container = luis.newFlexContainer(5, 10, 6, 1)
+  self.newGameButton = luis.newButton("New Game", 4, 2, onClickNewGame, onRelease, 1, 1)
+  self.continueGameButton = luis.newButton("Continue Game", 4, 2, onClickNewGame, onRelease, 2, 1)
+  self.bakeryButton = luis.newButton("Bakery", 4, 2, onClickBakery, nil, 3, 1)
+  self.settingsButton = luis.newButton("Settings", 4, 2, onClickSettings, nil, 4, 1)
+  self.quitButton = luis.newButton("Quit", 4, 2, onClickQuitGame, onRelease, 5, 1)
   
-  -- buttons and cursor
-  newGameButton = love.graphics.newImage(NEW_GAME_BUTTON_PATH)
-  continueButton = love.graphics.newImage(CONTINUE_BUTTON_PATH)
-  bakeryButton = love.graphics.newImage(BAKERY_BUTTON_PATH)
-  settingsButton = love.graphics.newImage(SETTINGS_BUTTON_PATH)
-  quitButton = love.graphics.newImage(QUIT_BUTTON_PATH)
-  cursor = love.graphics.newImage(CURSOR_PATH)
-  
+  -- Add UI Components to Flex Container
+  self.container:addChild(self.newGameButton)
+  self.container:addChild(self.continueGameButton)
+  self.container:addChild(self.bakeryButton)
+  self.container:addChild(self.settingsButton)
+  self.container:addChild(self.quitButton)
+
+  -- Add Flex Container to Layer
+  luis.insertElement('MainMenuTable', self.container)
+
+  -- Set focus to New Game for Gamepad navigation
+  self.container:activateInternalFocus()
+
+  self.settingsContainer = createSettingsContainer()
+  luis.insertElement("Settings", self.settingsContainer)
+
 end;
 
-function main_menu:enter(previous) -- runs every time the state is entered
+function main_menu:leave()
+  self.container:deactivateInternalFocus()
 end;
 
 function main_menu:update(dt) -- runs every frame
+  -- Handle rescaling every frame
+  luis.updateScale()
+  luis.update(dt)
 end;
 
 function main_menu:keypressed(key)
-  if key == 'up' then
-    main_menu:set_up()
-  elseif key == 'down' then
-    main_menu:set_down()
-  end
+  luis.keypressed(key)
 end;
 
 function main_menu:keyreleased(key, code)
-  if key == 'z' then
-    main_menu:validate_selection()
-  end
+  luis.keypressed(key, code)
 end;
 
 function main_menu:gamepadpressed(joystick, button)
-  if button == 'dpup' then
-    main_menu:set_up()
-  elseif button == 'dpdown' then
-    main_menu:set_down()
-  end
-  
+  luis.gamepadpressed(joystick, button)
 end;
 
 function main_menu:gamepadreleased(joystick, button)
-  if button == 'a' then
-    main_menu:validate_selection()
-  end
-end;
-
-  
-function main_menu:set_up()
-  if index > 1 then
-    cursorY = cursorY - BUTTONS_OFFSET_Y
-    index = index - 1
-  else
-    index = 5
-    cursorY = BUTTONS_START_Y + ((index - 1) * BUTTONS_OFFSET_Y)
-  end
-  
-end;
-
-function main_menu:set_down()
-  if index < 5 then
-    cursorY = cursorY + BUTTONS_OFFSET_Y
-    index = index + 1
-  else
-    cursorY = BUTTONS_START_Y
-    index = 0
-  end
-  
+  luis.gamepadreleased(joystick, button)
 end;
 
 function main_menu:draw()
-  -- love.graphics.draw(self.background, 0, 0)
-  love.graphics.draw(newGameButton, BUTTONS_START_X, BUTTONS_START_Y)
-  love.graphics.draw(continueButton, BUTTONS_START_X, BUTTONS_START_Y + BUTTONS_OFFSET_Y)
-  love.graphics.draw(bakeryButton, BUTTONS_START_X, BUTTONS_START_Y + (2 * BUTTONS_OFFSET_Y))
-  love.graphics.draw(settingsButton, BUTTONS_START_X, BUTTONS_START_Y + (3 * BUTTONS_OFFSET_Y))
-  love.graphics.draw(quitButton, BUTTONS_START_X, BUTTONS_START_Y + (4 * BUTTONS_OFFSET_Y))
-  love.graphics.draw(cursor, cursorX, cursorY)
-  
+  luis.draw()
 end;
 
-function main_menu:validate_selection()
-  if index == 1 then
-    Gamestate.switch(states['character_select'])
-  elseif index == 2 and main_menu:saveExists() == true then
-    -- load data
-    love.event.quit() -- remove later
-  elseif index == 3 then
-    Gamestate.switch(states['bakery'])
-  elseif index == 4 then
-    Gamestate.switch(states['settings'])
-  else
-    love.event.quit()
-  end
-  
-    
-end;
-
-function main_menu:saveExists()
-  return false
-end;
 
 return main_menu
