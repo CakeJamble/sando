@@ -14,16 +14,20 @@ require('class.turn_manager')
 local combat = {}
 local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
+local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
+local BAKE_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'bake_portrait.png'
+local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
+local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
+local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
 function combat:init()
+  -- Set a 12x9 grid for a 16:9 aspect ratio
+  luis.setGridSize(love.graphics.getWidth() / 12)
   -- Combat UI Elements
   luis.newLayer("CombatUI")
 
-  -- Character Team Health Bars, stats, etc, at top of screen
-  self.characterTeamUIContainer = luis.newFlexContainer(20, 10, 1, 5)
-
   -- QTE Input UI Container
-  self.qteUIContainer = luis.newFlexContainer(20, 10, 1, 5)
+  -- self.qteUIContainer = luis.newFlexContainer(20, 10, 1, 5)
   
   
   self.background = love.graphics.newImage(TEMP_BG)
@@ -43,21 +47,23 @@ function combat:init()
     self.encounteredPools[i] = {}
   end
   
-  -- Register Signals
-  Signal.register('TargetConfirm',
-  function(_, _)
-    camera:zoom(1.5)
-    self.lockCamera = true
-  end
-  );
-  Signal.register('MoveBack',
-    function()
-      if camera.scale > 1 then
-        camera:zoom(0.6666)
-        self.lockCamera = false
-      end
-    end
-  );
+  -- -- Register Signals
+  -- Signal.register('TargetConfirm',
+  -- function(_, _)
+  --   camera:zoom(1.5)
+  --   self.lockCamera = true
+  -- end
+  -- );
+  -- Signal.register('MoveBack',
+  --   function()
+  --     if camera.scale > 1 then
+  --       camera:zoom(0.6666)
+  --       self.lockCamera = false
+  --     end
+  --   end
+  -- );
+
+  luis.enableLayer('CombatUI')
 end;
 
 function combat:enter(previous)
@@ -67,6 +73,20 @@ function combat:enter(previous)
   self.rewardExp = 0
   self.rewardMoney = 0
 
+  -- Character Team Health Bars, stats, etc, at top of screen
+  local bakeAvatar = luis.newIcon(BAKE_PORTRAIT_PATH, 0.25, 1.5, 4.5)
+  local marcoAvatar = luis.newIcon(MARCO_PORTRAIT_PATH, 0.25, 2, 4.5)
+  luis.insertElement('CombatUI', bakeAvatar)
+  luis.insertElement('CombatUI', marcoAvatar)
+  self.characterTeamHP = {}
+  local curr = {}
+  local total = {}
+  for i=1, #self.characterTeam.members do
+    curr = self.characterTeam.members[i].battleStats.hp
+    total = self.characterTeam.members[i].baseStats.hp
+    self.characterTeamHP[i] = curr .. ' / ' .. total
+  end
+  
   -- Log & Generate the floor's encounter in encounteredPools
   self.enemyTeam = combat:generateEncounter()
   
@@ -147,13 +167,14 @@ function combat:update(dt)
 end;
 
 function combat:draw()
-  luis.draw()
   camera:attach()
   love.graphics.draw(self.background, 0, 0, 0, 1.75, 2.5)
   self.characterTeam:draw()
   self.enemyTeam:draw()
   camera:detach()
-
+  luis.draw()
+  love.graphics.print(self.characterTeamHP[1], 650, 100)
+  love.graphics.print(self.characterTeamHP[2], 650, 175)
 end;
   
 return combat
