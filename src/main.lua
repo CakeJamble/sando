@@ -18,8 +18,6 @@ function love.load()
   font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
   love.graphics.setFont(font)
   camera = Camera()
-  -- joysticks = love.joystick.getJoysticks()
-  -- active_joystick = joysticks[1]
   Gamestate.registerEvents()
   Gamestate.switch(states['main_menu'])
 
@@ -31,8 +29,8 @@ function love.load()
     end
   end
   -- Base resolution
-  luis.baseWidth = 1920  
-  luis.baseHeight = 1080
+  luis.baseWidth = 800
+  luis.baseHeight = 600
   -- Set a 12x9 grid for a 16:9 aspect ratio
   luis.setGridSize(love.graphics.getWidth() / 12)
   -- Window Mode

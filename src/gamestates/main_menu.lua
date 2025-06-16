@@ -87,9 +87,7 @@ function main_menu:joystickremoved(joystick)
 end;
 
 function main_menu:draw()
-  love.graphics.draw(self.background, 0, 0)
-  love.graphics.printf('Sando :)', love.graphics.getWidth() / 2.5, love.graphics.getHeight() / 2.5, 400, 'right', 0, 2, 2)
-
+  love.graphics.draw(self.background, 0, 0, 0, 0.5, 0.5)
   luis.draw()
 end;
 

@@ -21,6 +21,7 @@ local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
 function combat:init()
+  -- Base resolution
   -- Set a 12x9 grid for a 16:9 aspect ratio
   luis.setGridSize(love.graphics.getWidth() / 12)
   -- Combat UI Elements
@@ -74,8 +75,8 @@ function combat:enter(previous)
   self.rewardMoney = 0
 
   -- Character Team Health Bars, stats, etc, at top of screen
-  local bakeAvatar = luis.newIcon(BAKE_PORTRAIT_PATH, 0.25, 1.5, 4.5)
-  local marcoAvatar = luis.newIcon(MARCO_PORTRAIT_PATH, 0.25, 2, 4.5)
+  local bakeAvatar = luis.newIcon(BAKE_PORTRAIT_PATH, 0.5, 1, 1)
+  local marcoAvatar = luis.newIcon(MARCO_PORTRAIT_PATH, 0.5, 1.5, 1)
   luis.insertElement('CombatUI', bakeAvatar)
   luis.insertElement('CombatUI', marcoAvatar)
   self.characterTeamHP = {}
@@ -163,7 +164,6 @@ function combat:update(dt)
     local cameraTarget = self.turnManager.activeEntity
     camera:lockWindow(cameraTarget.x, cameraTarget.y, 0, cameraTarget.x + 100, 0, cameraTarget.y + 100)
   end
-  
 end;
 
 function combat:draw()
@@ -172,9 +172,11 @@ function combat:draw()
   self.characterTeam:draw()
   self.enemyTeam:draw()
   camera:detach()
-  luis.draw()
-  love.graphics.print(self.characterTeamHP[1], 650, 100)
+
+  -- love.graphics.print(self.characterTeamHP[1], 650, 100)
+  love.graphics.print(self.characterTeamHP[1], 10, 0)
   love.graphics.print(self.characterTeamHP[2], 650, 175)
+  luis.draw()
 end;
   
 return combat
