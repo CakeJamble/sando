@@ -3,6 +3,7 @@ require("class.character_team")
 require("util.globals")
 require("util.stat_sheet")
 require("class.character")
+require('util.character_select_ui_manager')
 
 local character_select = {}
 
@@ -23,20 +24,23 @@ function character_select:init()
   -- Set up the UI Layer
   luis.newLayer('CharacterSelectTable')
   luis.enableLayer('CharacterSelectTable')
-  luis.setGridSize(32)
-  self.container = luis.newFlexContainer(20, 25, 6, 2)
-  self.beginContainer = luis.newFlexContainer(4, 4, 25, 25)
-  self.bakeIcon = luis.newButton("", 4, 4, onClickAddBake, onRelease, 1, 1, nil, BAKE_PORTRAIT_PATH)
-  self.marcoIcon = luis.newButton("", 4, 4, onClickAddMarco, onRelease, 2, 1, nil, MARCO_PORTRAIT_PATH)
-  self.mariaIcon = luis.newButton("", 4, 4, onClickAddMaria, onRelease, 3, 1, nil, MARIA_PORTRAIT_PATH)
-  self.keyIcon = luis.newButton("", 4, 4, onClickAddKey, onRelease, 4, 2, nil, KEY_PORTRAIT_PATH)
-  self.beginButton = luis.newButton("Begin", 4, 4, onClickBeginRun, onRelease, 25, 25, nil, nil)
+  luis.setGridSize(love.graphics.getWidth() / 12)
+  local buttonSize = characterSelectFlexConfig.buttonSize
+  local buttonGridPos = characterSelectFlexConfig.buttonGridPos
+
+  self.container = luis.newFlexContainer(4, 1, 2, 2)
+  self.beginContainer = luis.newFlexContainer(1, 1, 6, 2)
+  self.bakeIcon = luis.newButton("Bake", buttonSize.width, buttonSize.height, onClickAddBake, onRelease, 1, 1, nil, BAKE_PORTRAIT_PATH)
+  self.marcoIcon = luis.newButton("Marco", buttonSize.width, buttonSize.height, onClickAddMarco, onRelease, 2, 1, nil, MARCO_PORTRAIT_PATH)
+  self.mariaIcon = luis.newButton("Maria", buttonSize.width, buttonSize.height, onClickAddMaria, onRelease, 3, 1, nil, MARIA_PORTRAIT_PATH)
+  self.keyIcon = luis.newButton("Key", buttonSize.width, buttonSize.height, onClickAddKey, onRelease, 4, 2, nil, KEY_PORTRAIT_PATH)
+  self.beginButton = luis.newButton("Begin", buttonSize.width, buttonSize.height, onClickBeginRun, onRelease, 25, 25, nil, nil)
   self.beginContainer:addChild(self.beginButton)
   self.container:addChild(self.bakeIcon)
   self.container:addChild(self.marcoIcon)
   self.container:addChild(self.mariaIcon)
   self.container:addChild(self.keyIcon)
-  -- self.container:addChild(self.beginButton)
+  self.beginContainer:addChild(self.beginButton)
   luis.insertElement('CharacterSelectTable', self.container)
   luis.insertElement('CharacterSelectTable', self.beginContainer)
   self.container:activateInternalFocus()
@@ -44,34 +48,53 @@ end;
 
 
 function character_select:enter()
-  index = 1
-  -- spriteRow = 0
-  -- spriteCol = 0
-  -- spriteXOffset = 0
-  -- spriteYOffset = 0
-  numPlayableCharacters = 4
+  self.index = 1
+  self.numPlayableCharacters = 4
   teamCount = 0
   members = {}  
   for i=1,TEAM_CAP do
     members[i] = {}
   end
 
-  -- self.statPreview = character_select:setStatPreview()
-  
+  self.statPreview = character_select:setStatPreview()
 end;
 
 function character_select:leave()
   self.beginContainer:deactivateInternalFocus()
+  luis.disableLayer('CharacterSelectTable')
 end;
 
 function character_select:gamepadpressed(joystick, button)
   luis.gamepadpressed(joystick, button)
-
+  
+  -- Updating the Index for Stat Preview
+  if button == 'dpleft' or button == 'dpup' then
+    if self.index == 1 then
+      self.index = self.numPlayableCharacters
+    else
+      self.index = self.index - 1
+    end
+  elseif button == 'dpright' or button == 'dpdown' then
+    if self.index == self.numPlayableCharacters then
+      self.index = 1
+    else
+      self.index = self.index + 1
+    end
+  end
+  
+  -- Move to Begin Button if team is full, and set index to -1
   if(teamCount == TEAM_CAP) then
     local characterTeam = CharacterTeam(members, TEAM_CAP)
     saveCharacterTeam(characterTeam)
+    self.index = -1
     self.container:deactivateInternalFocus()
     self.beginContainer:activateInternalFocus()
+
+  end
+
+  -- Update Stat Preview (if the team isn't full)
+  if self.index ~= -1 then
+    self.statPreview =  self:setStatPreview()
   end
 end;
 
@@ -82,42 +105,8 @@ function character_select:validate_selection()
   end
 end;
 
-  -- Takes table of selected character indices and converts
-  -- each index to a valid Character object, adding to the global team table
-function character_select:indicesToCharacters()
-  local characterList = {}
-  for i=1,TEAM_CAP do
-    if selectedTeamIndices[i] == 0 then
-      bake = Character(get_bake_stats(), 'a')
-      characterList[i] = bake
-    elseif selectedTeamIndices[i] == 1 then
-      marco = Character(get_marco_stats(), 'z')
-      characterList[i] = marco
-    elseif selectedTeamIndices[i] == 2 then
-      maria = Character(get_maria_stats(), 'x')
-      characterList[i] = maria
-    elseif selectedTeamIndices[i] == 3 then
-      key = Character(get_key_stats(), 'y')
-      characterList[i] = key
-    end
-  end
-  
-  characterTeam = CharacterTeam(characterList, TEAM_CAP)
-  saveCharacterTeam(characterTeam)
-end;
-
 function character_select:setStatPreview()
-  local statPreview = ''
-  if spriteRow == 0 and spriteCol == 0 then
-    statPreview = character_select:statsToString(get_bake_stats())
-  elseif spriteRow == 0 and spriteCol == 1 then
-    statPreview = character_select:statsToString(get_marco_stats())
-  elseif spriteRow == 1 and spriteCol == 0 then
-    statPreview = character_select:statsToString(get_maria_stats())
-  else
-    statPreview = character_select:statsToString(get_key_stats())
-  end
-  return statPreview
+  return character_select:statsToString(get_char_stats(self.index))
 end;
 
 function character_select:statsToString(stats)
@@ -130,6 +119,10 @@ end;
 
 function character_select:draw()
   luis.draw()
+
+  if index ~= -1 then
+    love.graphics.print(self.statPreview, 1000, 150)
+  end
 end;
 
 function onClickAddBake()

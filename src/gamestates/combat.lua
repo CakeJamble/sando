@@ -16,6 +16,16 @@ local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
 
 function combat:init()
+  -- Combat UI Elements
+  luis.newLayer("CombatUI")
+
+  -- Character Team Health Bars, stats, etc, at top of screen
+  self.characterTeamUIContainer = luis.newFlexContainer(20, 10, 1, 5)
+
+  -- QTE Input UI Container
+  self.qteUIContainer = luis.newFlexContainer(20, 10, 1, 5)
+  
+  
   self.background = love.graphics.newImage(TEMP_BG)
   self.cursorX = 0
   self.cursorY = 0
@@ -137,11 +147,13 @@ function combat:update(dt)
 end;
 
 function combat:draw()
+  luis.draw()
   camera:attach()
   love.graphics.draw(self.background, 0, 0, 0, 1.75, 2.5)
   self.characterTeam:draw()
   self.enemyTeam:draw()
   camera:detach()
+
 end;
   
 return combat

@@ -1,50 +1,44 @@
 --! file: gamestate/menu
 require('util.menu_ui_manager')
+-- require('util.lui')
 local main_menu = {}
 
--- local index = 1
--- local BUTTONS_START_X = 100
--- local BUTTONS_START_Y = 100
--- local BUTTONS_OFFSET_Y = 45
--- local cursorX = 100
--- local cursorY = 100
-
--- local NEW_GAME_BUTTON_PATH = "asset/sprites/main_menu/new_button.png"
--- local CONTINUE_BUTTON_PATH = "asset/sprites/main_menu/continue_button.png"
--- local BAKERY_BUTTON_PATH = "asset/sprites/main_menu/bakery_button.png"
--- local SETTINGS_BUTTON_PATH = "asset/sprites/main_menu/settings_button.png"
--- local QUIT_BUTTON_PATH = "asset/sprites/main_menu/quit_button.png"
--- local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
+local TEMP_BG = 'asset/sprites/background/temp_mm_bg.png'
 
 function main_menu:init()
+  self.background = love.graphics.newImage(TEMP_BG)
   -- Set up the UI Layer
   luis.newLayer('MainMenuTable')
   luis.newLayer("Settings")
   luis.enableLayer('MainMenuTable')
 
-  -- Set up grid size to auto scale
-  luis.setGridSize(32)
+  -- Set a 12x9 grid for a 16:9 aspect ratio
+  luis.setGridSize(love.graphics.getWidth() / 12)
 
   -- Initialize UI Components
-  self.container = luis.newFlexContainer(5, 10, 6, 1)
-  self.newGameButton = luis.newButton("New Game", 4, 2, onClickNewGame, onRelease, 1, 1)
-  self.continueGameButton = luis.newButton("Continue Game", 4, 2, onClickNewGame, onRelease, 2, 1)
-  self.bakeryButton = luis.newButton("Bakery", 4, 2, onClickBakery, nil, 3, 1)
-  self.settingsButton = luis.newButton("Settings", 4, 2, onClickSettings, nil, 4, 1)
-  self.quitButton = luis.newButton("Quit", 4, 2, onClickQuitGame, onRelease, 5, 1)
-  
-  -- Add UI Components to Flex Container
-  self.container:addChild(self.newGameButton)
-  self.container:addChild(self.continueGameButton)
-  self.container:addChild(self.bakeryButton)
-  self.container:addChild(self.settingsButton)
-  self.container:addChild(self.quitButton)
+  -- self.container = luis.newFlexContainer(20, 2, 30, 18)
+  local buttonSize = mainMenuConfig.buttonSize
+  local buttonGridPos = mainMenuConfig.buttonGridPos
+  local newGameButton = luis.newButton("New Game", buttonSize.width, buttonSize.height, onClickNewGame, nil, buttonGridPos.row, buttonGridPos.col)
+  buttonGridPos.col = buttonGridPos.col + buttonGridPos.offset
 
-  -- Add Flex Container to Layer
-  luis.insertElement('MainMenuTable', self.container)
+  local continueGameButton = luis.newButton("Continue Game", buttonSize.width, buttonSize.height, onClickNewGame, nil, buttonGridPos.row, buttonGridPos.col)
+  buttonGridPos.col = buttonGridPos.col + buttonGridPos.offset
 
-  -- Set focus to New Game for Gamepad navigation
-  self.container:activateInternalFocus()
+  local bakeryButton = luis.newButton("Bakery", buttonSize.width, buttonSize.height, onClickBakery, nil, buttonGridPos.row, buttonGridPos.col)
+  buttonGridPos.col = buttonGridPos.col + buttonGridPos.offset
+
+  local settingsButton = luis.newButton("Settings", buttonSize.width, buttonSize.height, onClickSettings, nil, buttonGridPos.row, buttonGridPos.col)
+  buttonGridPos.col = buttonGridPos.col + buttonGridPos.offset
+
+  local quitButton = luis.newButton("Quit", buttonSize.width, buttonSize.height, onClickQuitGame, nil, buttonGridPos.row, buttonGridPos.col)
+  buttonGridPos.col = buttonGridPos.col + buttonGridPos.offset
+
+  luis.insertElement('MainMenuTable', newGameButton)
+  luis.insertElement('MainMenuTable', continueGameButton)
+  luis.insertElement('MainMenuTable', bakeryButton)
+  luis.insertElement('MainMenuTable', settingsButton)
+  luis.insertElement('MainMenuTable', quitButton)
 
   self.settingsContainer = createSettingsContainer()
   luis.insertElement("Settings", self.settingsContainer)
@@ -52,13 +46,20 @@ function main_menu:init()
 end;
 
 function main_menu:leave()
-  self.container:deactivateInternalFocus()
+  -- self.container:deactivateInternalFocus()
+  luis.disableLayer('MainMenuTable')
 end;
 
 function main_menu:update(dt) -- runs every frame
   -- Handle rescaling every frame
   luis.updateScale()
   luis.update(dt)
+        -- Example: D-pad navigation between elements
+    if luis.joystickJustPressed(1, 'dpdown') or luis.joystickJustPressed(1, 'dpright') then
+        luis.moveFocus("next")
+    elseif luis.joystickJustPressed(1, 'dpup') or luis.joystickJustPressed(1, 'dpleft') then
+        luis.moveFocus("previous")
+    end
 end;
 
 function main_menu:keypressed(key)
@@ -77,7 +78,18 @@ function main_menu:gamepadreleased(joystick, button)
   luis.gamepadreleased(joystick, button)
 end;
 
+function main_menu:joystickadded(joystick)
+  luis.initJoysticks()
+end;
+
+function main_menu:joystickremoved(joystick)
+  luis.removeJoystick(joystick)
+end;
+
 function main_menu:draw()
+  love.graphics.draw(self.background, 0, 0)
+  love.graphics.printf('Sando :)', love.graphics.getWidth() / 2.5, love.graphics.getHeight() / 2.5, 400, 'right', 0, 2, 2)
+
   luis.draw()
 end;
 

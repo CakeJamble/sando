@@ -61,6 +61,16 @@ local marco_stats = {
    skillList = get_key_skills()
  }
  
+local starting_character_stats = {
+  bake_stats,
+  marco_stats,
+  maria_stats,
+  key_stats
+}
+
+function get_char_stats(index)
+  return starting_character_stats[index]
+end;
 function get_bake_stats()
   return bake_stats
 end

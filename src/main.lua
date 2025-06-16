@@ -33,7 +33,8 @@ function love.load()
   -- Base resolution
   luis.baseWidth = 1920  
   luis.baseHeight = 1080
-  
+  -- Set a 12x9 grid for a 16:9 aspect ratio
+  luis.setGridSize(love.graphics.getWidth() / 12)
   -- Window Mode
   love.window.setMode(luis.baseWidth, luis.baseHeight, { resizable=true })
 end;
