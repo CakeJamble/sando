@@ -30,6 +30,13 @@ function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --inclu
   self.isComplete = false
 end;
 
+function OffenseState:reset()
+  self.isComplete = false
+  self.frameCount = 0
+  self.bonusApplied = false
+  self.target = nil
+end;
+
 function OffenseState:setSkill(skillObj)
   self.skill = skillObj
   self.frameWindow = skillObj.qte_window

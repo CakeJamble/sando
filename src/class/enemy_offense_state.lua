@@ -19,6 +19,12 @@ function EnemyOffenseState:init(x, y, battleStats)
 	self.frameWindow = 0
 end;
 
+function EnemyOffenseState:reset()
+  self.isComplete = false
+  self.frameCount = 0
+  self.target = nil
+end;
+
 function EnemyOffenseState:setSkill(skillObj)
 	self.skill = skillObj
 	self.frameWindow = skillObj.qte_window

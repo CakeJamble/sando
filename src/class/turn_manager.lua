@@ -61,7 +61,6 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- Check Win/Loss Conditions
       if self.enemyTeam:isWipedOut() then
         print('end combat')
-        -- rewards screen
         return
       end
       if self.characterTeam:isWipedOut() then
@@ -73,10 +72,7 @@ function TurnManager:init(characterTeam, enemyTeam)
 
       -- Reset frame counters for animations for all entities
       for _,e in pairs(self.turnQueue) do
-        e.offenseState.isComplete = false
-        e.offenseState.frameCount = 0
-        e.offenseState.bonusApplied = false
-        e.offenseState.target = nil
+        e.offenseState:reset()
       end
 
       self.activeEntity:startTurn()
