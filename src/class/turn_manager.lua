@@ -27,7 +27,6 @@ function TurnManager:init(characterTeam, enemyTeam)
         print(e.entityName .. ' HP: ' .. e:getHealth())
         if e:getHealth() == 0 then
           table.insert(koEntities, e)
-
           -- get rewards from enemies and store them for end of combat
           if e.actionUI == nil then
             local reward = e:knockOut()
@@ -37,6 +36,25 @@ function TurnManager:init(characterTeam, enemyTeam)
           end
         end
       end
+
+      local removeIndices = {}
+      for i=1, #self.turnQueue do
+        for j=1, #koEntities do
+          if self.turnQueue[i] == koEntities[j] then
+            table.insert(removeIndices, i)
+          end
+        end
+      end
+
+      for i=1, #removeIndices do
+        print('removing ' .. self.turnQueue[removeIndices[i]].entityName .. ' from combat')
+        table.remove(self.turnQueue, removeIndices[i])
+      end
+
+      for i=1,#self.turnQueue do
+        print(self.turnQueue[i].entityName)
+      end
+
       self.enemyTeam:removeMembers(koEntities)
       self.characterTeam:removeMembers(koEntities)
 
@@ -44,12 +62,23 @@ function TurnManager:init(characterTeam, enemyTeam)
       if self.enemyTeam:isWipedOut() then
         print('end combat')
         -- rewards screen
+        return
       end
       if self.characterTeam:isWipedOut() then
         print('you lose')
+        return
       end
       self:sortWaitingCombatants()
       self.activeEntity = self.turnQueue[self.turnIndex]
+
+      -- Reset frame counters for animations for all entities
+      for _,e in pairs(self.turnQueue) do
+        e.offenseState.isComplete = false
+        e.offenseState.frameCount = 0
+        e.offenseState.bonusApplied = false
+        e.offenseState.target = nil
+      end
+
       self.activeEntity:startTurn()
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
       if self.activeEntity.actionUI == nil then
@@ -120,8 +149,8 @@ function TurnManager:populateTurnQueue()
 end;
 
 function TurnManager:update(dt)
-  for i=1,#self.turnQueue do
-    self.turnQueue[i]:update(dt)
+  for _,entity in pairs(self.turnQueue) do
+    entity:update(dt)
   end
 end;
 

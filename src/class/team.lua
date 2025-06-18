@@ -28,11 +28,9 @@ function Team:removeMembers(entities) --> void
   end
 
   for i=1, #removeIndices do
-    print('removing ' .. self.members[removeIndices[i]].entityName .. ' from combat')
+    print('removing ' .. self.members[removeIndices[i]].entityName .. ' from team')
     table.remove(self.members, removeIndices[i])
   end
-
-  print('done removing')
 end;
 
   -- Iterates over team members to check if they are all knocked out
