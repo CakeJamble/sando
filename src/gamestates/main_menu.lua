@@ -1,5 +1,4 @@
 --! file: gamestate/menu
-require('util.menu_ui_manager')
 local main_menu = {}
 
 local index = 1
