@@ -24,6 +24,10 @@ This TODO will include items I forgot to add from yesterday (06/17/2025)
 - [x] Refactor: Enemies have rarity distributions for rewards
 - [x] Add fetching of rewards (just tools for now) based on new reward distributions of enemies
 
+### Reflection
+
+I feel a lot more focused now that I am not worrying about implementing a mish-mash of different libraries together. This simpler approach will hopefully make it easier for me to focus on the core features. The frontend will inevitably be a mess, but I have some good ideas. Need to start getting back to designing.
+
 ## 06/16/2025
 
 Haven't been updating the TODO because I've been refactoring UI and a lot of small tasks pop up as I do other fixes. Good progress all around though learning about UI libraries and grid systems. This TODO will just be a wrapup of some stuff I've changed the last week.
