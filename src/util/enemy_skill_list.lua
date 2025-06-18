@@ -177,6 +177,9 @@ local lineSkills = {
     sprite_path = nil,
     is_dodgeable = true,
     is_projectile = false,
+    sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
+    duration = 60,
+    qte_window = 25,
     sound_path = 'asset/audio/entities/character/marco/basic.wav'
   },
 
@@ -200,6 +203,10 @@ function getBriocheSkills()
 end;
 
 function getLineSkills()
-  return lineSkills
+  local skills = {}
+  for i=1,#lineSkills do
+    skills[i] = Skill(lineSkills[i], 80, 80)
+  end
+  return skills
 end;
 

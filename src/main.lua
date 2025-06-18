@@ -1,8 +1,14 @@
+-- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
-require("class.entity")
-require("class.character")
 Camera = require "libs.hump.camera"
 Signal = require "libs.hump.signal"
+
+-- Push globals (Screen Size)
+push = require "libs.push"
+local gameWidth, gameHeight = 640, 360
+local windowWidth, windowHeight = love.window.getDesktopDimensions()
+windowWidth, windowHeight = windowWidth * 0.7, windowHeight * 0.7 
+push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
 
 states = {
   main_menu         = require 'gamestates.main_menu',
@@ -18,10 +24,8 @@ function love.load()
   font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
   love.graphics.setFont(font)
   camera = Camera()
-  joysticks = love.joystick.getJoysticks()
-  active_joystick = joysticks[1]
-  Gamestate.registerEvents()
-  Gamestate.switch(states['main_menu'])
+    Gamestate.registerEvents()
+    Gamestate.switch(states['main_menu'])
 end;
 
 -- for live console output during program execution

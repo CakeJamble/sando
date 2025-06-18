@@ -31,9 +31,9 @@ function Skill:init(skillDict, width, height)
   self.sound:setVolume(0.8)
 end;
 
-function Skill:getSkillDict()
-  return self.skill
-end;
+-- function Skill:getSkillDict()
+--   return self.skill
+-- end;
 
   -- Create and return a new animation
     -- preconditions: A love.graphics.newImage object, the width, height, and duration (number of frames)

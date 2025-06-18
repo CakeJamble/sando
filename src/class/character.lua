@@ -17,15 +17,16 @@ Class = require "libs.hump.class"
 Character = Class{__includes = Entity, 
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
-  yPos = 200,
-  xPos = 100,
+  yPos = 110,
+  xPos = 50,
   ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
 }
 
-  -- Character constructor
-    -- preconditions: stats dict and skills dict
-    -- postconditions: Creates a valid character
+-- Character constructor
+  -- preconditions: stats dict and skills dict
+  -- postconditions: Creates a valid character
 function Character:init(stats, actionButton)
+  self.type = 'character'
   Entity.init(self, stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
   self.basic = stats.skillList[1]
@@ -73,10 +74,10 @@ function Character:setTargets(characterMembers, enemyMembers)
   self.actionUI:setTargets(characterMembers, enemyMembers)
 end;
 
-  --[[ Gains exp, leveling up when applicable
-        - preconditions: an amount of exp to gain
-        - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
-            Continues this until self.experience is less that self.experienceRequired ]]
+--[[ Gains exp, leveling up when applicable
+      - preconditions: an amount of exp to gain
+      - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
+          Continues this until self.experience is less that self.experienceRequired ]]
 function Character:gainExp(amount)
   self.totalExp = self.totalExp + amount
   self.experience = self.experience + amount
@@ -91,9 +92,9 @@ function Character:gainExp(amount)
   end
 end;
 
-  -- Gets the required exp for the next level
-    -- preconditions: none
-    -- postconditions: updates self.experiencedRequired based on polynomial scaling
+-- Gets the required exp for the next level
+  -- preconditions: none
+  -- postconditions: updates self.experiencedRequired based on polynomial scaling
 function Character:getRequiredExperience() --> int
   local result = 0
   if self.level < 3 then
@@ -141,12 +142,14 @@ end;
 
 function Character:gamepadpressed(joystick, button)
   if self.state == 'offense' then
-    -- set self.enemyTargets here (TODO)
     self.offenseState:gamepadpressed(joystick, button)
   elseif self.state == 'defense' then
     self.defenseState:gamepadpressed(joystick, button)
   elseif self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
+    if self.actionUI.uiState == 'targeting' then
+      Signal.emit('Targeting', self.targets)
+    end
   end
   -- if in movement state, does nothing
 end;

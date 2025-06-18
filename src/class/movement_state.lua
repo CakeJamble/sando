@@ -16,20 +16,17 @@ function MovementState:init(x, y)
   self.state = 'idle'
 end;
 
-function MovementState:getPosition()
-  return self.x, self.y
-end
-
-function MovementState:setPosition(x, y)
-  self.x = x
-  self.y = y
-end;
-
 function MovementState:moveTowards(tX, tY, isEnemy)
   self.state = 'move'
   print('tX', tX, 'tY', tY)
   self.isEnemy = isEnemy
-  self.targetX = tX - MovementState.SPRITE_SPACE
+
+  -- enemies stop to right of character, characters stop to left of enemy
+  local offset = MovementState.SPRITE_SPACE
+  if not isEnemy then
+    offset = -1 * offset
+  end
+  self.targetX = tX - offset
   self.targetY = tY
 end;
 

@@ -30,17 +30,19 @@ function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --inclu
   self.isComplete = false
 end;
 
+function OffenseState:reset()
+  self.isComplete = false
+  self.frameCount = 0
+  self.bonusApplied = false
+  self.target = nil
+end;
+
 function OffenseState:setSkill(skillObj)
   self.skill = skillObj
   self.frameWindow = skillObj.qte_window
   self.animFrameLength = skillObj.duration
   self.bonus = skillObj.qte_bonus
   self.damage = self.damage + self.skill.skill.damage
-end;
-
-function OffenseState:setTargetXY(x, y)
-  self.targetX = x
-  self.targetY = y
 end;
 
 function OffenseState:resolveProc(proc)
@@ -79,10 +81,6 @@ function OffenseState:dealDamage()
   end
 end;
 
-function OffenseState:setBattleStats(battleStats)
-  self.battleStats = battleStats
-end;
-
 function OffenseState:applyBonus()
   self.damage = self.damage + self.bonus
   self.bonusApplied = true
@@ -114,7 +112,10 @@ function OffenseState:gamepadpressed(joystick, button)
 end;
 
 function OffenseState:update(dt)
-  if self.isComplete then return end
+  if self.isComplete then 
+    print('Turn is finished')
+    return 
+  end
   if not self.skill then return end
 
   self.frameCount = self.frameCount + 1

@@ -1,44 +1,41 @@
 --! file: gamestate/menu
-
 local main_menu = {}
 
 local index = 1
-local BUTTONS_START_X = 100
-local BUTTONS_START_Y = 100
-local BUTTONS_OFFSET_Y = 45
-local cursorX = 100
-local cursorY = 100
+local BUTTONS_START_X = 75
+local BUTTONS_START_Y = 300
+local BUTTONS_OFFSET = 100
 
 local NEW_GAME_BUTTON_PATH = "asset/sprites/main_menu/new_button.png"
 local CONTINUE_BUTTON_PATH = "asset/sprites/main_menu/continue_button.png"
 local BAKERY_BUTTON_PATH = "asset/sprites/main_menu/bakery_button.png"
 local SETTINGS_BUTTON_PATH = "asset/sprites/main_menu/settings_button.png"
 local QUIT_BUTTON_PATH = "asset/sprites/main_menu/quit_button.png"
+local buttonPaths = {
+  NEW_GAME_BUTTON_PATH,
+  CONTINUE_BUTTON_PATH,
+  BAKERY_BUTTON_PATH,
+  SETTINGS_BUTTON_PATH,
+  QUIT_BUTTON_PATH
+}
 local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
+local TEMP_BG = 'asset/sprites/background/temp_mm_bg.png'
 
 function main_menu:init()
-  -- self.background = love.graphics.newImage('path/to/menu_background')
-  
-  -- buttons and cursor
-  newGameButton = love.graphics.newImage(NEW_GAME_BUTTON_PATH)
-  continueButton = love.graphics.newImage(CONTINUE_BUTTON_PATH)
-  bakeryButton = love.graphics.newImage(BAKERY_BUTTON_PATH)
-  settingsButton = love.graphics.newImage(SETTINGS_BUTTON_PATH)
-  quitButton = love.graphics.newImage(QUIT_BUTTON_PATH)
-  cursor = love.graphics.newImage(CURSOR_PATH)
-  
-end;
+  self.background = love.graphics.newImage(TEMP_BG)
+  self.cursor = love.graphics.newImage(CURSOR_PATH)
+  self.cursorPos = {x = BUTTONS_START_X, y = BUTTONS_START_Y}
 
-function main_menu:enter(previous) -- runs every time the state is entered
-end;
-
-function main_menu:update(dt) -- runs every frame
+  self.mmButtons = {}
+  for i=1,#buttonPaths do
+    table.insert(self.mmButtons, love.graphics.newImage(buttonPaths[i]))
+  end
 end;
 
 function main_menu:keypressed(key)
-  if key == 'up' then
+  if key == 'up' or key == 'left' then
     main_menu:set_up()
-  elseif key == 'down' then
+  elseif key == 'down' or key == 'right' then
     main_menu:set_down()
   end
 end;
@@ -50,9 +47,9 @@ function main_menu:keyreleased(key, code)
 end;
 
 function main_menu:gamepadpressed(joystick, button)
-  if button == 'dpup' then
+  if button == 'dpup' or button == 'dpleft' then
     main_menu:set_up()
-  elseif button == 'dpdown' then
+  elseif button == 'dpdown' or button == 'dpright' then
     main_menu:set_down()
   end
   
@@ -64,38 +61,36 @@ function main_menu:gamepadreleased(joystick, button)
   end
 end;
 
-  
 function main_menu:set_up()
   if index > 1 then
-    cursorY = cursorY - BUTTONS_OFFSET_Y
+    self.cursorPos.x = self.cursorPos.x - BUTTONS_OFFSET
     index = index - 1
   else
     index = 5
-    cursorY = BUTTONS_START_Y + ((index - 1) * BUTTONS_OFFSET_Y)
+    self.cursorPos.x = BUTTONS_START_X + ((index - 1) * BUTTONS_OFFSET)
   end
   
 end;
 
 function main_menu:set_down()
   if index < 5 then
-    cursorY = cursorY + BUTTONS_OFFSET_Y
+    self.cursorPos.x = self.cursorPos.x + BUTTONS_OFFSET
     index = index + 1
   else
-    cursorY = BUTTONS_START_Y
-    index = 0
+    self.cursorPos.x = BUTTONS_START_X
+    index = 1
   end
   
 end;
 
 function main_menu:draw()
-  -- love.graphics.draw(self.background, 0, 0)
-  love.graphics.draw(newGameButton, BUTTONS_START_X, BUTTONS_START_Y)
-  love.graphics.draw(continueButton, BUTTONS_START_X, BUTTONS_START_Y + BUTTONS_OFFSET_Y)
-  love.graphics.draw(bakeryButton, BUTTONS_START_X, BUTTONS_START_Y + (2 * BUTTONS_OFFSET_Y))
-  love.graphics.draw(settingsButton, BUTTONS_START_X, BUTTONS_START_Y + (3 * BUTTONS_OFFSET_Y))
-  love.graphics.draw(quitButton, BUTTONS_START_X, BUTTONS_START_Y + (4 * BUTTONS_OFFSET_Y))
-  love.graphics.draw(cursor, cursorX, cursorY)
-  
+  push:start()
+  love.graphics.draw(self.background, 0, 0)
+  for i=1,#self.mmButtons do
+    love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), BUTTONS_START_Y)
+  end
+  love.graphics.draw(self.cursor, self.cursorPos.x, self.cursorPos.y)
+  push:finish()
 end;
 
 function main_menu:validate_selection()
@@ -111,8 +106,6 @@ function main_menu:validate_selection()
   else
     love.event.quit()
   end
-  
-    
 end;
 
 function main_menu:saveExists()

@@ -28,11 +28,9 @@ function Team:removeMembers(entities) --> void
   end
 
   for i=1, #removeIndices do
-    print('removing ' .. self.members[removeIndices[i]].entityName .. ' from combat')
+    print('removing ' .. self.members[removeIndices[i]].entityName .. ' from team')
     table.remove(self.members, removeIndices[i])
   end
-
-  print('done removing')
 end;
 
   -- Iterates over team members to check if they are all knocked out
@@ -52,13 +50,6 @@ function Team:printMembers()
     result = result .. entity:getEntityName() .. ', '
   end
   return result
-end;
-
-function Team:sortBySpeed()
-  table.sort(self.members, function(a, b)
-      return a.battleStats.speed < b.battleStats.speed
-    end
-    )
 end;
 
 function Team:update(dt)

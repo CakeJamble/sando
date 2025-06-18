@@ -14,9 +14,21 @@ require('class.turn_manager')
 local combat = {}
 local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
+local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
+local BAKE_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'bake_portrait.png'
+local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
+local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
+local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
+local COMBAT_UI_PATH = 'asset/sprites/combat/'
+local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
+local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
 
 function combat:init()
   self.background = love.graphics.newImage(TEMP_BG)
+  self.combatTeamUI = love.graphics.newImage(COMBAT_TEAM_UI_PATH)
+  self.hpHolder1 = love.graphics.newImage(HP_HOLDER)
+  self.hpHolder2 = love.graphics.newImage(HP_HOLDER)
+
   self.cursorX = 0
   self.cursorY = 0
   self.rewardExp = 0
@@ -33,21 +45,21 @@ function combat:init()
     self.encounteredPools[i] = {}
   end
   
-  -- Register Signals
-  Signal.register('TargetConfirm',
-  function(_, _)
-    camera:zoom(1.5)
-    self.lockCamera = true
-  end
-  );
-  Signal.register('MoveBack',
-    function()
-      if camera.scale > 1 then
-        camera:zoom(0.6666)
-        self.lockCamera = false
-      end
-    end
-  );
+  -- -- Register Signals
+  -- Signal.register('TargetConfirm',
+  -- function(_, _)
+  --   camera:zoom(1.5)
+  --   self.lockCamera = true
+  -- end
+  -- );
+  -- Signal.register('MoveBack',
+  --   function()
+  --     if camera.scale > 1 then
+  --       camera:zoom(0.6666)
+  --       self.lockCamera = false
+  --     end
+  --   end
+  -- );
 end;
 
 function combat:enter(previous)
@@ -57,6 +69,16 @@ function combat:enter(previous)
   self.rewardExp = 0
   self.rewardMoney = 0
 
+  -- Character Team Health Bars, stats, etc, at top of screen
+  self.characterTeamHP = {}
+  local curr = {}
+  local total = {}
+  for i=1, #self.characterTeam.members do
+    curr = self.characterTeam.members[i].battleStats.hp
+    total = self.characterTeam.members[i].baseStats.hp
+    self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
+  end
+  
   -- Log & Generate the floor's encounter in encounteredPools
   self.enemyTeam = combat:generateEncounter()
   
@@ -133,15 +155,21 @@ function combat:update(dt)
     local cameraTarget = self.turnManager.activeEntity
     camera:lockWindow(cameraTarget.x, cameraTarget.y, 0, cameraTarget.x + 100, 0, cameraTarget.y + 100)
   end
-  
 end;
 
 function combat:draw()
+  push:start()
   camera:attach()
-  love.graphics.draw(self.background, 0, 0, 0, 1.75, 2.5)
+  love.graphics.draw(self.background, 0, 0, 0, 1, 1.2)
+  love.graphics.draw(self.combatTeamUI, 0, 0, 0, 1, 0.75)
+  love.graphics.draw(self.hpHolder1, 10, 10, 0, 1, 0.75)
+  love.graphics.draw(self.hpHolder2, 10, 50, 0, 1, 0.75)
+  love.graphics.print(self.characterTeamHP[1], 20, 6)
+  love.graphics.print(self.characterTeamHP[2], 20, 46)
   self.characterTeam:draw()
   self.enemyTeam:draw()
   camera:detach()
+  push:finish()
 end;
   
 return combat

@@ -14,11 +14,6 @@ function Equip:getStatModifiers()
     return self.equip['statModifiers']
 end;
 
-function Equip:setPosition(x, y) --> void
-    self.x = x
-    self.y = y
-end;
-
 function Equip:draw()
     love.graphics.draw(self.sprite, self.x, self.y)
 end;

@@ -83,12 +83,16 @@ local enemyTable = {
     entityName = "Line",
     entityType = "Enemy",
     width=80,height=80,
-    hp=10,
+    hp=11,
     cr=2,
     attack=10,
     defense=10,
     speed=5,
     luck=10,
+    rewardsDistribution = {
+      uncommon = 0.4,
+      rare = 0.2
+    },
     experienceReward = 10,
     moneyReward = 8,
     skillList = getLineSkills()

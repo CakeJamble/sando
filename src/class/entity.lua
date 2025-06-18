@@ -33,7 +33,7 @@ function Entity:init(stats, x, y)
     moveXY = {},
     flinch = {},
     ko = {}
-  }    
+  }
   self.subdir = ''
   self.entityName = self.baseStats['entityName']
   self.x=x
@@ -87,7 +87,7 @@ function Entity.copyStats(stats)
   return copy
 end;
 
--- ACCESSORS
+-- ACCESSORS (only write an accessor if it simplifies access to data)
 
 function Entity:getPos() --> {int, int}
   return {['x'] = self.x, ['y'] = self.y}
@@ -105,18 +105,6 @@ function Entity:getMaxHealth() --> int
   return self.baseStats['hp']
 end;
 
-function Entity:getStats() --> table
-  return self.baseStats
-end;
-
-function Entity:getBattleStats() --> table
-  return self.battleStats
-end;
-
-function Entity:getSkills() --> table
-  return self.skillList
-end;
-
 function Entity:isAlive() --> bool
   return self.battleStats['hp'] > 0
 end;
@@ -125,24 +113,6 @@ end;
 
 function Entity:modifyBattleStat(stat_name, amount) --> void
   self.battleStats[stat_name] = math.ceil(self.battleStats[stat_name] * (amount * self.statUpScaler))
-end;
-
-function Entity:setPos(x, y) --> void
-  self.x = x
-  self.y = y
-end;
-
-function Entity:setDXDY(dx, dy) --> void
-  self.dX = dx
-  self.dY = dy
-end;
-
-function Entity:setSubdir(subdir)
-  self.subdir = subdir
-end;
-
-function Entity:setMovementState(state) --> void
-  self.movementState = state
 end;
 
 function Entity:heal(amount) --> void

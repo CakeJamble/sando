@@ -27,7 +27,6 @@ function character_select:init()
   keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
 end;
 
-
 function character_select:enter()
   index = 0
   spriteRow = 0
@@ -192,6 +191,7 @@ function character_select:statsToString(stats)
 end;
 
 function character_select:draw()
+  push:start()
   love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10, OFFSET * (GRID_LENGTH + 1) + 10)
   love.graphics.draw(bakePortrait, SELECT_START, SELECT_START)
   love.graphics.draw(marcoPortrait, SELECT_START + OFFSET, SELECT_START)
@@ -199,6 +199,7 @@ function character_select:draw()
   love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
   love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
   love.graphics.print(statPreview, 300, 100)
+  push:finish()
 end;
 
 return character_select
