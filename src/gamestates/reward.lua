@@ -8,88 +8,63 @@ require('util.consumable_pool')
 local reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
-function reward:init(rewards, team)
-  rareToolChance = 0.2
-  rareEquipChance = 0.2
-  rareConsumableChance = 0.2
-  rareChanceDelta = 0.2
-  uncommonToolChance = 0.3
-  uncommonEquipChance = 0.3
-  uncommonConsumableChance = 0.3
-  uncommonChanceDelta = 0.3
-  numRewardItems = 3
-  toolRewardPool = GetToolPool()
-  consumableRewardPool = GetConsumablePool()
-  equipRewardPool = GetEquipmentPool()
+function reward:init()
+  self.toolPools = GetToolPool()
+  self.rareChanceDelta = 0.2
+  self.uncommonChanceDelta = 0.3
+  self.numFloorsWithoutUncommon = 0
+  self.numFloorsWithoutRare = 0
 end;
 
 -- Each time the Reward state is entered, given that we are not coming from a combat state,
   -- the reward state expects 2 integers for the amount of EXP rewarded from the fight, and
   -- the amount of money rewarded from the fight.
-function reward:enter(previous, team, combatType, rewardExp, rewardMoney)
+function reward:enter(previous, rewards)
+  self.combatState = previous
   if previous == states['combat'] then
-    -- Check number of survivors
-    livingTeamMembers = 0
-    for member in team.members do
-      if member:isAlive() then
-        livingTeamMembers = livingTeamMembers + 1
-      end
+    self.lootRewardOptions = {}
+    local reward
+    -- for now, just do 1 tool reward per enemy defeated
+    for i=1,#rewards do
+      reward = self:getToolReward(rewards[i].loot)
+      table.insert(self.lootRewardOptions, reward)
     end
-    
-    -- divvy up exp between the survivors
-    expPerCharacter = rewardExp / livingTeamMembers
-    
-    for _,member in pairs(team) do
-      member:gainExp(expPerCharacter)
-    end
-    
-    team:setMoney(rewardMoney)
-    
-    if combatType == 'elite' then
-      -- gives a tool as a bonus reward
-      rewardItems = reward:generateEliteRewards()
+
+    for i=1,#self.lootRewardOptions do
+      print(self.lootRewardOptions[i])
     end
   end
 end;
 
-function reward:generateEliteRewards()  --> table
-  rewardChoices = {}
-  local chance = love.math.random()
-  table.insert(rewardChoices, reward:getToolReward(chance))
-  table.insert(rewardChoices, reward:getEquipReward(chance))
-  
-  -- pseudorandomly select a third reward that can be a tool, equip, or consumable
-  if chance < 0.3 then
-    table.insert(rewardChoices, reward:getConsumbaleReward(chance))
-  elseif chance < 0.6 then
-    table.insert(rewardChoices, reward:getToolReward(chance))
-  else
-    table.insert(rewardChoices, reward:getEquipReward(chance))
-  end
-  
-  return rewardChoices
-end;
-  
-  -- Selects a random tool reward of an appropriate rarity
-  -- updates all rarity chances accordingly
-function reward:getToolReward(chance) --> Tool
+-- Selects a random tool reward of an appropriate rarity
+-- updates all rarity chances accordingly
+function reward:getToolReward(rewardDistribution) --> Tool
   local toolReward
-  if rareToolChance >= chance then
-    -- reset the rare chance and add rare tool to reward pool
-    rareToolChance = 0.2
-    toolReward = reward.SelectRandomReward('tool', 'rare')
-  elseif uncommonToolChance >= chance then
-    rareToolChance = math.min(rareToolChance + rareChanceDelta, 1.0)
-    uncommonToolChance = uncommonChanceDelta
-    toolReward = reward.SelectRandomReward('tool', 'uncommon')
-  else
-    rareToolChance = math.min(rareToolChance + rareChanceDelta, 1.0)
-    uncommonToolChance = math.min(uncommonToolChance + uncommonChanceDelta, 1.0)
-    toolReward = reward.SelectRandomReward('tool', 'common')
+  local trueChance
+  local i
+
+  -- Rare chance
+  trueChance = rewardDistribution.rare + (self.numFloorsWithoutRare * self.rareChanceDelta)
+  if love.math.random() < trueChance then
+    i = love.math.random(1, #self.toolPools.rare)
+    numFloorsWithoutRare = 0
+    numFloorsWithoutUncommon = 0
+    return self.toolPools.rare[i]
   end
 
-  return toolReward
-  
+  -- Uncommon chance
+  trueChance = rewardDistribution.uncommon + (self.numFloorsWithoutUncommon * self.uncommonChanceDelta)
+  if love.math.random() < trueChance then
+    i = love.math.random(1, #self.toolPools.uncommon)
+    numFloorsWithoutUncommon = 0
+    return self.toolPools.uncommon[i]
+  end
+
+  self.numFloorsWithoutUncommon = self.numFloorsWithoutUncommon + 1
+  self.numFloorsWithoutRare = self.numFloorsWithoutRare + 1
+
+  i = love.math.random(1, #self.toolPools.common)
+  return self.toolPools.common[i]
 end;
 
 -- Selects an equipment reward of an appropriate rarity and modifies all rarity
@@ -157,6 +132,18 @@ function reward.SelectRandomReward(rewardType, pool)
   end
 
   return result
+end;
+
+function reward:draw()
+  self.combatState:draw()
+
+    -- love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
+    -- love.graphics.rectangle("fill", 0, 0, 100, 100)
+
+    -- love.graphics.setColor(1, 1, 1)
+    love.graphics.print("Victory! You earned:", 100, 100)
+    love.graphics.print("Gold: " .. 10, 100, 130)
+    love.graphics.print("Press Enter to continue", 100, 180)
 end;
 
 return reward

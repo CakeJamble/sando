@@ -45,11 +45,6 @@ function OffenseState:setSkill(skillObj)
   self.damage = self.damage + self.skill.skill.damage
 end;
 
-function OffenseState:setTargetXY(x, y)
-  self.targetX = x
-  self.targetY = y
-end;
-
 function OffenseState:resolveProc(proc)
   local skillDict = self.skill:getSkillDict()
   if skillDict['qte_bonus_type'] == 'proc' then
@@ -84,10 +79,6 @@ function OffenseState:dealDamage()
     print("dealing damage to " .. self.target.entityName)
     self.target:takeDamage(self.damage)
   end
-end;
-
-function OffenseState:setBattleStats(battleStats)
-  self.battleStats = battleStats
 end;
 
 function OffenseState:applyBonus()

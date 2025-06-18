@@ -26,6 +26,7 @@ Character = Class{__includes = Entity,
   -- preconditions: stats dict and skills dict
   -- postconditions: Creates a valid character
 function Character:init(stats, actionButton)
+  self.type = 'character'
   Entity.init(self, stats, Character.xPos, Character.yPos)
   self.actionButton = actionButton
   self.basic = stats.skillList[1]
@@ -73,10 +74,10 @@ function Character:setTargets(characterMembers, enemyMembers)
   self.actionUI:setTargets(characterMembers, enemyMembers)
 end;
 
-  --[[ Gains exp, leveling up when applicable
-        - preconditions: an amount of exp to gain
-        - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
-            Continues this until self.experience is less that self.experienceRequired ]]
+--[[ Gains exp, leveling up when applicable
+      - preconditions: an amount of exp to gain
+      - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
+          Continues this until self.experience is less that self.experienceRequired ]]
 function Character:gainExp(amount)
   self.totalExp = self.totalExp + amount
   self.experience = self.experience + amount
@@ -91,9 +92,9 @@ function Character:gainExp(amount)
   end
 end;
 
-  -- Gets the required exp for the next level
-    -- preconditions: none
-    -- postconditions: updates self.experiencedRequired based on polynomial scaling
+-- Gets the required exp for the next level
+  -- preconditions: none
+  -- postconditions: updates self.experiencedRequired based on polynomial scaling
 function Character:getRequiredExperience() --> int
   local result = 0
   if self.level < 3 then

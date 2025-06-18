@@ -28,11 +28,9 @@ function TurnManager:init(characterTeam, enemyTeam)
         if e:getHealth() == 0 then
           table.insert(koEntities, e)
           -- get rewards from enemies and store them for end of combat
-          if e.actionUI == nil then
+          if e.type == 'enemy' then
             local reward = e:knockOut()
-            if reward then
-              table.insert(self.rewards, reward)
-            end
+            table.insert(self.rewards, reward)
           end
         end
       end
@@ -61,6 +59,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- Check Win/Loss Conditions
       if self.enemyTeam:isWipedOut() then
         print('end combat')
+        Gamestate.switch(states['reward'], self.rewards)
         return
       end
       if self.characterTeam:isWipedOut() then

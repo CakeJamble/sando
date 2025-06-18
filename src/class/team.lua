@@ -52,13 +52,6 @@ function Team:printMembers()
   return result
 end;
 
-function Team:sortBySpeed()
-  table.sort(self.members, function(a, b)
-      return a.battleStats.speed < b.battleStats.speed
-    end
-    )
-end;
-
 function Team:update(dt)
   for i=1,#self.members do
     self.members[i]:update(dt)

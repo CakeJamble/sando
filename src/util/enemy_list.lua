@@ -89,6 +89,10 @@ local enemyTable = {
     defense=10,
     speed=5,
     luck=10,
+    rewardsDistribution = {
+      uncommon = 0.4,
+      rare = 0.2
+    },
     experienceReward = 10,
     moneyReward = 8,
     skillList = getLineSkills()

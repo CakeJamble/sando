@@ -16,15 +16,6 @@ function MovementState:init(x, y)
   self.state = 'idle'
 end;
 
-function MovementState:getPosition()
-  return self.x, self.y
-end
-
-function MovementState:setPosition(x, y)
-  self.x = x
-  self.y = y
-end;
-
 function MovementState:moveTowards(tX, tY, isEnemy)
   self.state = 'move'
   print('tX', tX, 'tY', tY)

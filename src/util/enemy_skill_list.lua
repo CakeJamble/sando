@@ -206,7 +206,6 @@ function getLineSkills()
   local skills = {}
   for i=1,#lineSkills do
     skills[i] = Skill(lineSkills[i], 80, 80)
-    print(skills[i].skillName)
   end
   return skills
 end;

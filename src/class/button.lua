@@ -20,22 +20,9 @@ function Button:init(x, y, layer, path)
     self.isRotatingLeft = false
 end;
 
-function Button:getButton()
-    return self.button
-end;
-
-function Button:getPos()
-    return {self.x, self.y}
-end;
-
 function Button:setTargetPos(tX, speedMul)
     self.tX = tX
     self.dX = Button.BASE_DX * speedMul
-end;
-
-function Button:setPos(x, y)
-    self.x = x
-    self.y = y
 end;
 
 function Button:isRotatingRight()

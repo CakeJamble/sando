@@ -21,17 +21,17 @@ function DefenseState:init(actionButton, baseDefense)
   self.badInputPenalty = 0
 end;
 
-function DefenseState:setActionButton(newButton)
-  self.actionButton = newButton
-end;
+-- function DefenseState:setActionButton(newButton)
+--   self.actionButton = newButton
+-- end;
 
-function DefenseState:setDefense(defense)
-  self.defense = defense
-end
+-- function DefenseState:setDefense(defense)
+--   self.defense = defense
+-- end
 
-function DefenseState:setIncomingSkill(skill)
-  self.incomingSkill = skill
-end;
+-- function DefenseState:setIncomingSkill(skill)
+--   self.incomingSkill = skill
+-- end;
 
 function DefenseState:startFrameWindow()
   self.isWindowActive = true

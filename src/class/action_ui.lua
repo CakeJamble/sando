@@ -73,14 +73,14 @@ function ActionUI:unset()
   self.isFocused = false
 end;
 
-function ActionUI:getTargetPos()
-  return self.targets[self.targetType][self.tIndex]:getPos()
-end;
+-- function ActionUI:getTargetPos()
+--   return self.targets[self.targetType][self.tIndex]:getPos()
+-- end;
 
 -- Returns a table containing the position of the top left of the center icon in (x,y) coords
-function ActionUI:getPos() --> table
-  return {self.x, self.y}
-end;
+-- function ActionUI:getPos() --> table
+--   return {self.x, self.y}
+-- end;
 
 function ActionUI:keypressed(key) --> void
   if self.active then
