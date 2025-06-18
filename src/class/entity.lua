@@ -63,9 +63,22 @@ end;
 
 function Entity:setTargets(characterMembers, enemyMembers)
   self.targets = {
-    ['characters'] = characterMembers,
-    ['enemies'] = enemyMembers
+    ['characters'] = {},
+    ['enemies'] = {}
   }
+
+  for i=1,#characterMembers do
+    if characterMembers[i]:isAlive() then
+      table.insert(self.targets.characters, characterMembers[i])
+    end
+  end
+
+  for i=1,#enemyMembers do
+    if enemyMembers[i]:isAlive() then
+      table.insert(self.targets.enemies, enemyMembers[i])
+    end
+  end
+  
   print('targets set for ', self.entityName)
 end;
 
@@ -121,8 +134,6 @@ end;
 
 function Entity:takeDamage(amount) --> void
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
-  if self.battleStats["hp"] == 0 then
-  end
 end;
 
 -- Called after setting current_stats HP to reflect damage taken during battle

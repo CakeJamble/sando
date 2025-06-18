@@ -12,7 +12,7 @@ function CharacterTeam:init(characters, numMembers)
 end;
 
 -- Distributes exp of equal amount to each living player
-function Team:distributeExperience(amount)
+function CharacterTeam:distributeExperience(amount)
   for _,member in pairs(self.members) do
     if member:isAlive() then  member:gainExp(amount) end
   end
@@ -22,13 +22,18 @@ end;
 --   return self.money
 -- end;
 
-function Team:increaseMoney(amount)
+function CharacterTeam:increaseMoney(amount)
   self.money = self.money + amount
 end;
 
--- function CharacterTeam:getInventory()
---   return self.inventory
--- end;
+function CharacterTeam:startDefense(incomingSkill)
+  for _,character in pairs(self.members) do
+    if character:isAlive() then
+      character.defenseState:setup(incomingSkill)
+      character.state = 'defense'
+    end
+  end
+end;
 
 function CharacterTeam:keypressed(key)
   for i=1, #self.members do

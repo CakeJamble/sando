@@ -49,12 +49,8 @@ function TurnManager:init(characterTeam, enemyTeam)
         table.remove(self.turnQueue, removeIndices[i])
       end
 
-      for i=1,#self.turnQueue do
-        print(self.turnQueue[i].entityName)
-      end
-
       self.enemyTeam:removeMembers(koEntities)
-      self.characterTeam:removeMembers(koEntities)
+      -- self.characterTeam:removeMembers(koEntities)
 
       -- Check Win/Loss Conditions
       if self.enemyTeam:isWipedOut() then
@@ -72,6 +68,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- Reset frame counters for animations for all entities
       for _,e in pairs(self.turnQueue) do
         e.offenseState:reset()
+        if e.type == 'character' then
+          e.defenseState:reset()
+        end
       end
 
       self.activeEntity:startTurn()
@@ -119,6 +118,13 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.offenseState.x = x
       self.activeEntity.offenseState.y = y
       self.activeEntity.offenseState.target = self.activeEntity.target
+
+      if self.activeEntity.target.type == 'character' then
+        -- put all characters in defense state since the user has to figure out who the target(s) are
+        self.characterTeam:startDefense(self.activeEntity.offenseState.skill)
+        self.activeEntity.target.state = 'defense'
+      end
+
       self.activeEntity.offenseState.skill.sound:play()
     end
   );

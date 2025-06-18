@@ -68,6 +68,17 @@ function Character:endTurn()
   self.actionUI:unset()
 end;
 
+function Character:takeDamage(amount)
+  if self.defenseState.bonusApplied then
+    self.battleStats.defense = self.battleStats.defense + self.defenseState.blockMod
+  end
+  Entity.takeDamage(self, amount)
+
+  if self.defenseState.bonusApplied then
+    self.battleStats.defense = self.battleStats.defense - self.defenseState.blockMod
+  end
+end;
+
 function Character:setTargets(characterMembers, enemyMembers)
   print('setting targets for ', self.entityName)
   Entity.setTargets(self, characterMembers, enemyMembers)
@@ -185,6 +196,8 @@ end;
 function Character:draw()
   if self.state == 'offense' then
     self.offenseState:draw()
+  elseif self.state == 'defense' then
+    self.defenseState:draw()
   else 
     Entity.draw(self)
     self.actionUI:draw()

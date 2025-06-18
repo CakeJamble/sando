@@ -7,7 +7,7 @@ Signal = require "libs.hump.signal"
 push = require "libs.push"
 local gameWidth, gameHeight = 640, 360
 local windowWidth, windowHeight = love.window.getDesktopDimensions()
-windowWidth, windowHeight = windowWidth * 0.7, windowHeight * 0.7 
+windowWidth, windowHeight = windowWidth * 0.9, windowHeight * 0.9 
 push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
 
 states = {

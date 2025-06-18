@@ -60,6 +60,18 @@ function combat:init()
   --     end
   --   end
   -- );
+    Signal.register('NextTurn',
+    function()
+      local curr = 0
+      local total = 0
+      for i=1, #self.characterTeam.members do
+        curr = self.characterTeam.members[i].battleStats.hp
+        total = self.characterTeam.members[i].baseStats.hp
+        self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ": " .. curr .. " / " .. total
+      end
+
+    end
+  )
 end;
 
 function combat:enter(previous)
@@ -104,7 +116,6 @@ function combat:generateEnemyTeam()
   end
   
   return EnemyTeam(enemyList, #enemyNameList)
-
 end;
 
 --[[ Prototype for generating the encounters

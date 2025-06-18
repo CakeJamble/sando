@@ -104,9 +104,11 @@ function OffenseState:keypressed(key)
 end;
 
 function OffenseState:gamepadpressed(joystick, button)
-  if key == self.actionButton and self.badInputPenalty > 0 and self.isWindowActive and not self.bonusApplied then
+  if button == self.actionButton and self.badInputPenalty == 0 and (self.frameWindow[1] <= self.frameCount and self.frameWindow[2] > self.frameCount) and not self.bonusApplied then
+    print('QTE Window is between frame ' .. self.frameWindow[1] .. ' and ' .. self.frameWindow[2])
+    print('Action Button pressed on frame ' .. self.frameCount)  
     self:applyBonus()
-  elseif key == self.actionButton and not self.isWindowActive then
+  elseif button == self.actionButton and not self.isWindowActive then
     self:updateBadInputPenalty(true)
   end
 end;
