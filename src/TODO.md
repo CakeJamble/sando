@@ -2,6 +2,32 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 06/16/2025
+
+Haven't been updating the TODO because I've been refactoring UI and a lot of small tasks pop up as I do other fixes. Good progress all around though learning about UI libraries and grid systems. This TODO will just be a wrapup of some stuff I've changed the last week.
+
+### TODO
+
+- [x] UI Widget Library Implemented (LUIS)
+- [x] Fix Screen Size Changes
+- [x] Main Menu UI Buttons
+- [x] Main Menu Layout
+- [x] Character Select UI Buttons
+- [x] Character Select Flow Container
+- [ ] UI Components
+	1. Combat Vitals Container
+	2. Avatar
+	3. HP Display
+	4. FP Display
+	5. BP Display
+	6. Money Display
+	7. EXP Display
+- [ ] Add instructions to skills for QTEs
+
+### Reflection
+
+There's some good stuff here, but the UI is still really sloppy. I want to get it working as a base prototype with the functionality, then I can polish it up.
+
 ## 06/08/2025
 
 ### TODO

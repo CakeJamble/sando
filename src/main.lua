@@ -1,9 +1,15 @@
+-- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
-require("class.entity")
-require("class.character")
-luis = require("libs.luis.init")("libs/luis/widgets")
 Camera = require "libs.hump.camera"
 Signal = require "libs.hump.signal"
+
+-- Push globals (Screen Size)
+push = require "libs.push"
+local gameWidth, gameHeight = 640, 360
+local windowWidth, windowHeight = love.window.getDesktopDimensions()
+windowWidth, windowHeight = windowWidth * 0.7, windowHeight * 0.7 
+push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
+
 states = {
   main_menu         = require 'gamestates.main_menu',
   character_select  = require 'gamestates.character_select',
@@ -18,34 +24,9 @@ function love.load()
   font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
   love.graphics.setFont(font)
   camera = Camera()
-  Gamestate.registerEvents()
-  Gamestate.switch(states['main_menu'])
-
-  -- Setup for LUIS
-  luis.initJoysticks()
-  if luis.activeJoysticks then
-    for id,joystick in pairs(luis.activeJoysticks) do
-      print(string.format("Gamepad #%d: %s", id, joystick:getName()))
-    end
-  end
-  -- Base resolution
-  luis.baseWidth = 800
-  luis.baseHeight = 600
-  -- Set a 12x9 grid for a 16:9 aspect ratio
-  luis.setGridSize(love.graphics.getWidth() / 12)
-  -- Window Mode
-  love.window.setMode(luis.baseWidth, luis.baseHeight, { resizable=true })
+    Gamestate.registerEvents()
+    Gamestate.switch(states['main_menu'])
 end;
-
--- Required callbacks for gamepad support
-function love.joystickadded(joystick)
-    luis.initJoysticks()
-end
-
-function love.joystickremoved(joystick)
-    luis.removeJoystick(joystick)
-end
-
 
 -- for live console output during program execution
 io.stdout:setvbuf('no')

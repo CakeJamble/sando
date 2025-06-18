@@ -19,11 +19,6 @@ function TurnManager:init(characterTeam, enemyTeam)
   set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
   and start their turn. After starting it, increment the turnIndex for the next combatant. ]]
     function ()
-      self:sortWaitingCombatants()
-      self.activeEntity = self.turnQueue[self.turnIndex]
-      self.activeEntity:startTurn()
-      self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
-      self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
       local koEntities = {}
 
       -- loop over combatants, and register those who need to be removed from combat
@@ -34,11 +29,12 @@ function TurnManager:init(characterTeam, enemyTeam)
           table.insert(koEntities, e)
 
           -- get rewards from enemies and store them for end of combat
-          local reward = e:knockOut()
-          if reward then
-            table.insert(self.rewards, reward)
+          if e.actionUI == nil then
+            local reward = e:knockOut()
+            if reward then
+              table.insert(self.rewards, reward)
+            end
           end
-
         end
       end
       self.enemyTeam:removeMembers(koEntities)
@@ -52,6 +48,15 @@ function TurnManager:init(characterTeam, enemyTeam)
       if self.characterTeam:isWipedOut() then
         print('you lose')
       end
+      self:sortWaitingCombatants()
+      self.activeEntity = self.turnQueue[self.turnIndex]
+      self.activeEntity:startTurn()
+      self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
+      if self.activeEntity.actionUI == nil then
+        self.activeEntity:setupOffense()
+      end
+      self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
+      
     end
   );
 

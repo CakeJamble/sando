@@ -33,7 +33,7 @@ function Entity:init(stats, x, y)
     moveXY = {},
     flinch = {},
     ko = {}
-  }    
+  }
   self.subdir = ''
   self.entityName = self.baseStats['entityName']
   self.x=x

@@ -126,7 +126,7 @@ function ActionUI:keypressed(key) --> void
        -- stand ins for confirm/cancel button input 
       elseif key == 'z' then
         if self.activeButton == self.soloButton then
-          self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
+          self.selectedSkill = self.activeButton.selectedSkill
           self.uiState = 'targeting'
           Signal.emit('SkillSelected', self.selectedSkill)
         else
@@ -222,7 +222,9 @@ function ActionUI:gamepadpressed(joystick, button) --> void
        -- stand ins for confirm/cancel button input 
       elseif button == 'a' then
         if self.activeButton == self.soloButton then
+          self.selectedSkill = self.activeButton.selectedSkill
           self.uiState = 'targeting'
+          Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
         end
@@ -238,6 +240,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
       if button == 'a' then
         self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
         self.uiState = 'targeting'
+        Signal.emit('SkillSelected', self.selectedSkill)
       elseif button == 'b' then
         if self.activeButton == self.soloButton then
           self.uiState = 'actionSelect'
@@ -255,8 +258,8 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         elseif button == 'dpright' or button == 'dpdown' then
           self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
         elseif button == 'a' then 
+          Signal.emit('TargetConfirm', self.targetType, self.tIndex)
           self.uiState = 'moving'
-          -- Signal.emit('MoveToEnemy', self.targets[self.tIndex])
         elseif button == 'b' then
           self.tIndex = 1
           if self.activeButton == self.soloButton then

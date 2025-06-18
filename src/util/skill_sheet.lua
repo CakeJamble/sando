@@ -1,5 +1,6 @@
 --! file: skill_sheet
 require('class.skill')
+
 local marco_skills = {
   {
     skill_name = 'Basic Attack',
@@ -18,6 +19,7 @@ local marco_skills = {
     qte_bonus_type = 'damage',
     qte_bonus = 1,
     description = 'Deals physical damage to a single target twice',
+    instructions = 'Press A just before landing the attack!',
     unlock = nil,
     sound_path = 'asset/audio/entities/character/marco/basic.wav'
   },

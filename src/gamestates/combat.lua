@@ -19,19 +19,16 @@ local BAKE_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'bake_portrait.png'
 local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
 local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
+local COMBAT_UI_PATH = 'asset/sprites/combat/'
+local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
+local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
 
 function combat:init()
-  -- Base resolution
-  -- Set a 12x9 grid for a 16:9 aspect ratio
-  luis.setGridSize(love.graphics.getWidth() / 12)
-  -- Combat UI Elements
-  luis.newLayer("CombatUI")
-
-  -- QTE Input UI Container
-  -- self.qteUIContainer = luis.newFlexContainer(20, 10, 1, 5)
-  
-  
   self.background = love.graphics.newImage(TEMP_BG)
+  self.combatTeamUI = love.graphics.newImage(COMBAT_TEAM_UI_PATH)
+  self.hpHolder1 = love.graphics.newImage(HP_HOLDER)
+  self.hpHolder2 = love.graphics.newImage(HP_HOLDER)
+
   self.cursorX = 0
   self.cursorY = 0
   self.rewardExp = 0
@@ -63,8 +60,6 @@ function combat:init()
   --     end
   --   end
   -- );
-
-  luis.enableLayer('CombatUI')
 end;
 
 function combat:enter(previous)
@@ -75,17 +70,13 @@ function combat:enter(previous)
   self.rewardMoney = 0
 
   -- Character Team Health Bars, stats, etc, at top of screen
-  local bakeAvatar = luis.newIcon(BAKE_PORTRAIT_PATH, 0.5, 1, 1)
-  local marcoAvatar = luis.newIcon(MARCO_PORTRAIT_PATH, 0.5, 1.5, 1)
-  luis.insertElement('CombatUI', bakeAvatar)
-  luis.insertElement('CombatUI', marcoAvatar)
   self.characterTeamHP = {}
   local curr = {}
   local total = {}
   for i=1, #self.characterTeam.members do
     curr = self.characterTeam.members[i].battleStats.hp
     total = self.characterTeam.members[i].baseStats.hp
-    self.characterTeamHP[i] = curr .. ' / ' .. total
+    self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
   end
   
   -- Log & Generate the floor's encounter in encounteredPools
@@ -167,16 +158,18 @@ function combat:update(dt)
 end;
 
 function combat:draw()
+  push:start()
   camera:attach()
-  love.graphics.draw(self.background, 0, 0, 0, 1.75, 2.5)
+  love.graphics.draw(self.background, 0, 0, 0, 1, 1.2)
+  love.graphics.draw(self.combatTeamUI, 0, 0, 0, 1, 0.75)
+  love.graphics.draw(self.hpHolder1, 10, 10, 0, 1, 0.75)
+  love.graphics.draw(self.hpHolder2, 10, 50, 0, 1, 0.75)
+  love.graphics.print(self.characterTeamHP[1], 20, 6)
+  love.graphics.print(self.characterTeamHP[2], 20, 46)
   self.characterTeam:draw()
   self.enemyTeam:draw()
   camera:detach()
-
-  -- love.graphics.print(self.characterTeamHP[1], 650, 100)
-  love.graphics.print(self.characterTeamHP[1], 10, 0)
-  love.graphics.print(self.characterTeamHP[2], 650, 175)
-  luis.draw()
+  push:finish()
 end;
   
 return combat
