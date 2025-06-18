@@ -98,7 +98,8 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
       print('target name is ' .. self.activeEntity.target.entityName)
       local targetPos = self.activeEntity.target:getPos()
-      self.activeEntity.movementState:moveTowards(targetPos.x, targetPos.y, true)
+      local isEnemy = targetType == 'enemies'
+      self.activeEntity.movementState:moveTowards(targetPos.x, targetPos.y, isEnemy)
       self.activeEntity.state = 'move'
     end
   );

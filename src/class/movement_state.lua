@@ -29,7 +29,13 @@ function MovementState:moveTowards(tX, tY, isEnemy)
   self.state = 'move'
   print('tX', tX, 'tY', tY)
   self.isEnemy = isEnemy
-  self.targetX = tX - MovementState.SPRITE_SPACE
+
+  -- enemies stop to right of character, characters stop to left of enemy
+  local offset = MovementState.SPRITE_SPACE
+  if not isEnemy then
+    offset = -1 * offset
+  end
+  self.targetX = tX - offset
   self.targetY = tY
 end;
 
