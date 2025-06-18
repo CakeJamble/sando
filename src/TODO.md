@@ -2,6 +2,28 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 06/18/2025
+
+Missed another TODO update yesterday because I was so knee deep in GUI stuff I lost track of tracking my progress. Some things I realized:
+
+- I don't need a UI Library for everything
+- ImGUI is a good idea to implement for balancing and testing combat
+
+### TODO
+
+This TODO will include items I forgot to add from yesterday (06/17/2025)
+
+- [x] Remove unused getters & setters. Focus on using these only when they simplify the interface to accessing data of a class
+- [x] Bugfix: Enemies going past characters when it's their turn
+- [x] Bugfix: Turn ending early before attack is registered in offense states
+- [x] Cleanup: Move responsibility of offense state reset to the offense state
+- [x] Refactor: Undo implementation of LUIS ImGUI for now, reverting back to custom rollout for Main Menu, Character Select, and Combat gamestates
+- [x] Bugfix: Screen size scaling issues -> just lock it using the push library
+- [x] Rudimentary HP display (non-functioning)
+- [x] Create rewards gamestate that follows combat
+- [x] Refactor: Enemies have rarity distributions for rewards
+- [x] Add fetching of rewards (just tools for now) based on new reward distributions of enemies
+
 ## 06/16/2025
 
 Haven't been updating the TODO because I've been refactoring UI and a lot of small tasks pop up as I do other fixes. Good progress all around though learning about UI libraries and grid systems. This TODO will just be a wrapup of some stuff I've changed the last week.
