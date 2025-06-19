@@ -24,7 +24,7 @@ Character = Class{__includes = Entity,
 
 -- Character constructor
   -- preconditions: stats dict and skills dict
-  -- postconditions: Creates a valid character
+  -- postconditions: Creates a valid characters
 function Character:init(stats, actionButton)
   self.type = 'character'
   Entity.init(self, stats, Character.xPos, Character.yPos)
@@ -52,9 +52,10 @@ function Character:init(stats, actionButton)
 
   --! TODO: Consider moving these to base class if all entities have an offense and defense state. Separate the QTE elements from them if so.
   self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
-  self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'], self.actionIcons)
+  self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'])
+  self:setDefenseAnimations()
   self.actionUI = ActionUI()
-  self.selectedSkill = nil
+  -- self.selectedSkill = nil
   self.equips = {}
 end;
 
@@ -66,6 +67,21 @@ end
 function Character:endTurn()
   Entity.endTurn(self)
   self.actionUI:unset()
+end;
+
+function Character:setDefenseAnimations()
+  local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'
+  local block = path .. 'block.png'
+  local dodge = path .. 'dodge.png'
+  block = love.graphics.newImage(block)
+  dodge = love.graphics.newImage(dodge)
+
+  local animations = {
+    blockAnimation = self:populateFrames(block),
+    dodgeAnimation = self:populateFrames(dodge),
+    idleAnimation = self.movementAnimations.idle
+  }
+  self.defenseState.animations = animations
 end;
 
 function Character:takeDamage(amount)

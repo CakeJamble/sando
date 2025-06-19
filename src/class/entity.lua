@@ -51,6 +51,7 @@ function Entity:init(stats, x, y)
   self.turnFinish = false
   self.state = 'idle'
   self.movementState = MovementState(self.x, self.y)
+  self.selectedSkill = nil
 end;
 
 function Entity:startTurn()
@@ -164,7 +165,7 @@ function Entity:setAnimations(subdir)
 --  Entity:populateFrames(self, self.movementAnimations.ko, self.spriteSheets.ko, self.durations.ko)
 end;
 
-function Entity:populateFrames(image, spriteSheet, duration)
+function Entity:populateFrames(image, duration)
   local animation = {}
   animation.spriteSheet = image
   animation.quads = {}
@@ -202,22 +203,22 @@ end;
 function Entity:draw() --> void    
     -- Placeholder for drawing the state or any visual representation
     -- walk, jump, idle
-  local state = self.movementState.state
+  -- local state = self.movementState.state
   local spriteNum
   local animation
-  if state == 'idle' then
+  if self.state == 'idle' then
     animation = self.movementAnimations.idle
     -- spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
     -- love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
-  elseif state == 'move' or 'moveback' then
+  elseif self.state == 'move' or 'moveback' then
     animation = self.movementAnimations.moveX
-  elseif state == 'moveY' then
+  elseif self.state == 'moveY' then
     -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
-  elseif state == 'moveXY' then
+  elseif self.state == 'moveXY' then
     -- love.graphics.draw(self.spriteSheets.moveXY, self.movementAnimations.moveXY[math.floor(self.currentFrame)], self.x, self.y)
-  elseif state == 'flinch' then
+  elseif self.state == 'flinch' then
     -- love.graphics.draw(self.spriteSheets.flinch, self.movementAnimations.flinch[math.floor(self.currentFrame)], self.x, self.y) 
-  elseif state == 'ko' then
+  elseif self.state == 'ko' then
     -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
   else
     print("logical error in determining movement state of entity. state is", state)

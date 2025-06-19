@@ -134,11 +134,5 @@ end;
 
 
 function OffenseState:draw()
-  if self.isWindowActive then
-    love.graphics.draw(self.actionIcons.depressed, OffenseState.ACTION_ICON_X, OffenseState.ACTION_ICON_Y)
-  else
-    love.graphics.draw(self.actionIcons.raised, OffenseState.ACTION_ICON_X, OffenseState.ACTION_ICON_Y)
-  end
-  
   self.skill:draw(self.x, self.y)
 end;
