@@ -76,8 +76,13 @@ function TurnManager:init(characterTeam, enemyTeam)
 
       self.activeEntity:startTurn()
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
-      if self.activeEntity.actionUI == nil then
+      if self.activeEntity.type == 'enemy' then
         self.activeEntity:setupOffense()
+        for _,e in pairs(self.turnQueue) do
+          if e.type == 'character' then
+            e.state = 'defense'
+          end
+        end
       end
       self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
       
@@ -98,6 +103,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('target name is ' .. self.activeEntity.target.entityName)
       local targetPos = self.activeEntity.target:getPos()
       local isEnemy = targetType == 'enemies'
+      if self.activeEntity.type == 'enemy' then
+        self.characterTeam:startDefense(self.activeEntity.offenseState.skill)
+      end
       self.activeEntity.movementState:moveTowards(targetPos.x, targetPos.y, isEnemy)
       self.activeEntity.state = 'move'
     end
@@ -119,13 +127,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.offenseState.x = x
       self.activeEntity.offenseState.y = y
       self.activeEntity.offenseState.target = self.activeEntity.target
-
-      if self.activeEntity.target.type == 'character' then
-        -- put all characters in defense state since the user has to figure out who the target(s) are
-        self.characterTeam:startDefense(self.activeEntity.offenseState.skill)
-        self.activeEntity.target.state = 'defense'
+      if self.activeEntity.type == 'enemy' then
+        self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
       end
-
       self.activeEntity.offenseState.skill.sound:play()
     end
   );

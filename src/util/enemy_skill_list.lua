@@ -179,7 +179,7 @@ local lineSkills = {
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
     duration = 60,
-    qte_window = {45, 55},
+    qte_window = {5, 59},
     sound_path = 'asset/audio/entities/character/marco/basic.wav'
   },
 

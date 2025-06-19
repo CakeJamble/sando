@@ -114,10 +114,7 @@ function OffenseState:gamepadpressed(joystick, button)
 end;
 
 function OffenseState:update(dt)
-  if self.isComplete then 
-    print('Turn is finished')
-    return 
-  end
+  if self.isComplete then return end
   if not self.skill then return end
 
   self.frameCount = self.frameCount + 1

@@ -34,7 +34,7 @@ end;
 
 function EnemyOffenseState:dealDamage()
 	if self.target then
-		print('dealing damage to ' .. self.target.entityName)
+		print('dealing ' .. self.damage  .. ' damage to ' .. self.target.entityName)
 		self.target:takeDamage(self.damage)
 	end
 end;

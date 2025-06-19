@@ -13,7 +13,7 @@ function DefenseState:init(x, y, actionButton, baseDefense)
   self.blockWindow = nil
   self.isDodgeable = false
   self.isProjectile = false
-  self.stance = 'block'
+  self.stance = 'idle'
 
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
@@ -27,6 +27,10 @@ function DefenseState:init(x, y, actionButton, baseDefense)
   self.blockNumFrames = 30
   self.jumpNumFrames = 40
   self.animations = nil
+  self.blockTime = 20
+  self.timer = 0
+  self.isEnemyAttacking = false
+  self.canBlock = false
 end;
 
 function DefenseState:setup(incomingSkill)
@@ -35,7 +39,7 @@ function DefenseState:setup(incomingSkill)
   self.isProjectile = incomingSkill.is_projectile
   
   -- TODO will need to round this out and maybe refactor skill implementations
-  if incomingSkill.damage_type == 'physical' then
+  if incomingSkill.skill.damage_type == 'physical' then
     self.blockMod = 1
   else
     self.blockMod = 0 -- placeholder for handling other types of damage
@@ -47,6 +51,7 @@ function DefenseState:reset()
   self.actionButtonPressed = false
   self.badInputPenalty = 0
   self.bonusApplied = false
+  self.stance = 'idle'
 end;
 
 function DefenseState:startFrameWindow()
@@ -65,33 +70,39 @@ function DefenseState:updateBadInputPenalty(applyPenalty)
 end;
 
 function DefenseState:applyBonus()
-  if self.stance == 'block' then
-    self.defense = self.defense + self.blockBonus
-    print('Bonus applied! Defense is now ' .. self.defense)
-  end
   self.bonusApplied = true
 end;
 
 function DefenseState:keypressed(key)
-  if key == self.actionButton and self.stance == 'block' and self.badInputPenalty == 0 and (self.blockWindow[1] <= self.frameCount and self.blockWindow[2] > self.frameCount) and not self.bonusApplied then
+  if key == 'rshift' or key == 'lshift' then
+    self.canBlock = true
+  end
+
+  if key == 'z' and self.canBlock and self.badInputPenalty == 0 and (self.blockWindow[1] <= self.frameCount and self.blockWindow[2] > self.frameCount) and not self.bonusApplied then
     print('Block/Dodge window is between frame ' .. self.blockWindow[1] .. ' and ' .. self.blockWindow[2])
     print('Action Button pressed on frame ' .. self.frameCount)
     self:applyBonus()
   elseif key == self.actionButton and not self.isWindowActive then    -- cannot dodge or block when you flub an input, penalty must expire before action (but you can switch states)
-    self:updateBadInputPenalty(true)
+    -- self:updateBadInputPenalty(true)
+  end
+end;
+
+function DefenseState:keyreleased(key)
+  if key == 'rshift' or key =='lshift' then
+    self.canBlock = false
   end
 end;
 
 function DefenseState:gamepadpressed(joystick, button)
   if button == 'leftshoulder' or button == 'rightshoulder' then
-    self.stance = 'block'
+    self.canBlock = true
   end
   if button == self.actionButton and self.badInputPenalty == 0 and (self.blockWindow[1] <= self.frameCount and self.blockWindow[2] > self.frameCount) and not self.bonusApplied then
     print('Block/Dodge window is between frame ' .. self.blockWindow[1] .. ' and ' .. self.blockWindow[2])
     print('Action Button pressed on frame ' .. self.frameCount)
     self:applyBonus()
   elseif button == self.actionButton and not self.isWindowActive then
-    self:updateBadInputPenalty(true)
+    -- self:updateBadInputPenalty(true)
   end
 end;
 
@@ -102,7 +113,9 @@ function DefenseState:gamepadreleased(joystick, button)
 end;
 
 function DefenseState:update(dt)
-  self.frameCount = self.frameCount + 1
+  if self.isEnemyAttacking then
+    self.frameCount = self.frameCount + 1
+  end
   self:updateBadInputPenalty(false)
 end;
 

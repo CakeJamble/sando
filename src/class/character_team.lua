@@ -30,7 +30,6 @@ function CharacterTeam:startDefense(incomingSkill)
   for _,character in pairs(self.members) do
     if character:isAlive() then
       character.defenseState:setup(incomingSkill)
-      character.state = 'defense'
     end
   end
 end;
