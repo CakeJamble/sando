@@ -141,13 +141,13 @@ end;
 function reward:draw()
   self.combatState:draw()
 
-    love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
-    love.graphics.rectangle("fill", self.wOffset, self.hOffset, self.windowWidth, self.windowHeight)
+  love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
+  love.graphics.rectangle("fill", self.wOffset, self.hOffset, self.windowWidth, self.windowHeight)
 
-    love.graphics.setColor(1, 1, 1)
-    love.graphics.print("Victory! You earned:", 100, 100)
-    love.graphics.print("Gold: " .. 10, 100, 130)
-    love.graphics.print("Press Enter to continue", 100, 180)
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.print("Victory! You earned:", 100, 100)
+  love.graphics.print("Gold: " .. 10, 100, 130)
+  love.graphics.print("Press Enter to continue", 100, 180)
 end;
 
 return reward

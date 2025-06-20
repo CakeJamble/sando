@@ -93,7 +93,4 @@ end;
 
 function Button:draw()
     love.graphics.draw(self.button, self.x, self.y, 0, self.scaleFactor, self.scaleFactor)
-    if self.displaySkillList then
-      love.graphics.rectangle('fill', self.x + 150, self.y, 50, 20)
-    end
 end;
