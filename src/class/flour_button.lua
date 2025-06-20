@@ -15,7 +15,7 @@ function FlourButton:init(x, y, layer, skillList)
   self.skillListDisplay = self:populateSkillPreviews()
   self.previewPos = {
     x = self.flourSkillTableOptions.container.x, 
-  y = self.flourSkillTableOptions.container.y}
+    y = self.flourSkillTableOptions.container.y}
   self.previewOffset = self.flourSkillTableOptions.container.height / 2 --centered
 
     
@@ -73,7 +73,7 @@ function FlourButton:populateFlourSkills()
     mode = 'fill',
     x = self.x + 150,
     y = self.y,
-    width = 200,
+    width = 100,
     height = 125
   }
 
@@ -145,37 +145,32 @@ function FlourButton:validateSkillCosts(currentFP)
     self.pickableSkillIndices[i] = (self.skillList[i].cost < currentFP)
   end
 end;
---[[
+
+
 function FlourButton:keypressed(key)
-  if key == 'down' then
-    self.skillIndex = math.max(1, (self.skillIndex + 1) % #self.skillList)
-  elseif key == 'up' then
-    if self.skillIndex > 1 then self.skillIndex = self.skillIndex - 1 else self.skillIndex = #self.skillList end
-  elseif key == 'z' then
-    if self.pickableSkillIndices then
-      -- TODO: Switch to active state with Character:offenseState
+  if key == 'down' or key == 'right' then 
+    self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
+  elseif key == 'up' or key == 'left' then
+    if self.skillIndex <= 1 then
+      self.skillIndex = #self.skillListDisplay
     else
-      -- show some message that you don't have enough FP
-      print('error - cost exceeds fp')  -- STUB
+      self.skillIndex = self.skillIndex - 1
     end
   end
+  print(self.skillIndex) 
 end;
-]]
+
+
 function FlourButton:draw()
   Button.draw(self)
   if self.displaySkillList then
     self:drawFlourSkillsContainer()
     self:drawFlourSkills()
-    -- for i=1,#self.skillList do
-    --   if self.pickableSkillLists[i] then
-    --     -- Print skill as usual
-    --     -- love.graphics.print(self.skillString, self.x, self.y + i * self.textOffset)
-    --   else
-    --     -- Print skill with a disabled text font (TODO)
-    --     love.graphics.print(self.skillString, self.x, self.y + i * self.textOffset)
-    --   end
-    -- end
-    
-    -- draw cursor @ offset based on position & self.skillIndex
+
+    -- draw cursor
+    love.graphics.setColor(0, 0, 1)
+    love.graphics.rectangle('line', self.previewPos.x,
+      self.previewPos.y + ((self.skillIndex - 1) * self.flourSkillTableOptions.container.height), 100, 25)
+    love.graphics.setColor(1, 1, 1)
   end
 end;

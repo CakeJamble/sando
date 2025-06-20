@@ -123,21 +123,23 @@ function ActionUI:keypressed(key) --> void
         else -- the activeButton is either flourButton or duoButton
           self.uiState = 'submenuing'
           self.activeButton.displaySkillList = true
+          self.activeButton:keypressed(key)
         end
       end
     elseif self.uiState == 'submenuing' then
-      if key == 'z' then
-        self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
-        self.uiState = 'targeting'
-        Signal.emit('SkillSelected', self.selectedSkill)
-      elseif key == 'x' then
-        if self.activeButton == self.soloButton then
-          self.uiState = 'actionSelect'
-        else  -- self.uiState == 'submenuing'
-          self.uiState = 'actionSelect'
-          self.activeButton.displaySkillList = false
-        end
-      end
+      self.activeButton:keypressed(key)
+      -- if key == 'z' then
+      --   self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
+      --   self.uiState = 'targeting'
+      --   Signal.emit('SkillSelected', self.selectedSkill)
+      -- elseif key == 'x' then
+      --   if self.activeButton == self.soloButton then
+      --     self.uiState = 'actionSelect'
+      --   else  -- self.uiState == 'submenuing'
+      --     self.uiState = 'actionSelect'
+      --     self.activeButton.displaySkillList = false
+      --   end
+      -- end
 
     elseif self.uiState == 'targeting' then
       if self.selectedSkill.targetType == 'single' then
