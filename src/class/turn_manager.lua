@@ -21,17 +21,15 @@ function TurnManager:init(characterTeam, enemyTeam)
     function ()
       local koEntities = {}
 
-      -- loop over combatants, and register those who need to be removed from combat
+      -- loop over combatants, and register enemies who need to be removed from combat
       for i=1, #self.turnQueue do
         local e = self.turnQueue[i]
         print(e.entityName .. ' HP: ' .. e:getHealth())
-        if e:getHealth() == 0 then
+        if e:getHealth() == 0 and e.type == 'enemy' then
           table.insert(koEntities, e)
           -- get rewards from enemies and store them for end of combat
-          if e.type == 'enemy' then
-            local reward = e:knockOut()
-            table.insert(self.rewards, reward)
-          end
+          local reward = e:knockOut()
+          table.insert(self.rewards, reward)
         end
       end
 
@@ -62,7 +60,12 @@ function TurnManager:init(characterTeam, enemyTeam)
         print('you lose')
         return
       end
+
       self:sortWaitingCombatants()
+
+      while(not self.turnQueue[self.turnIndex]:isAlive()) do
+        self.turnIndex = self.turnIndex + 1
+      end
       self.activeEntity = self.turnQueue[self.turnIndex]
 
       -- Reset frame counters for animations for all entities
@@ -79,8 +82,8 @@ function TurnManager:init(characterTeam, enemyTeam)
       if self.activeEntity.actionUI == nil then
         self.activeEntity:setupOffense()
       end
-      self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
-      
+
+      self.turnIndex = (self.turnIndex % #self.turnQueue) + 1      
     end
   );
 
