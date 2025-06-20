@@ -78,7 +78,7 @@ function FlourButton:populateFlourSkills()
   }
 
   -- Create separators (lines or images)
-  local textSpacing = result.container.height / 5
+  local textSpacing = result.container.height / 10
   local x, y = result.container.x, result.container.y
   local width, height = result.container.width, result.container.height
   for i=2,#self.skillList do
