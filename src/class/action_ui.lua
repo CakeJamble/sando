@@ -73,15 +73,6 @@ function ActionUI:unset()
   self.isFocused = false
 end;
 
--- function ActionUI:getTargetPos()
---   return self.targets[self.targetType][self.tIndex]:getPos()
--- end;
-
--- Returns a table containing the position of the top left of the center icon in (x,y) coords
--- function ActionUI:getPos() --> table
---   return {self.x, self.y}
--- end;
-
 function ActionUI:keypressed(key) --> void
   if self.active then
     if self.uiState == 'actionSelect' then
@@ -129,30 +120,26 @@ function ActionUI:keypressed(key) --> void
           self.selectedSkill = self.activeButton.selectedSkill
           self.uiState = 'targeting'
           Signal.emit('SkillSelected', self.selectedSkill)
-        else
+        else -- the activeButton is either flourButton or duoButton
           self.uiState = 'submenuing'
+          self.activeButton.displaySkillList = true
+          self.activeButton:keypressed(key)
         end
       end
-    elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
-      if self.activeButton ~= self.soloButton then
-        self.activeButton.displaySkillList = true
-      else
-        self.flourButton.displaySkillList = false
-        self.duoButton.displaySkillList = false
-      end
-
-      if key == 'z' then
-        self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
-        self.uiState = 'targeting'
-        Signal.emit('SkillSelected', self.selectedSkill)
-      elseif key == 'x' then
-        if self.activeButton == self.soloButton then
-          self.uiState = 'actionSelect'
-        else  -- self.uiState == 'submenuing'
-          self.uiState = 'actionSelect'
-          self.activeButton.displaySkillList = false
-        end
-      end
+    elseif self.uiState == 'submenuing' then
+      self.activeButton:keypressed(key)
+      -- if key == 'z' then
+      --   self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
+      --   self.uiState = 'targeting'
+      --   Signal.emit('SkillSelected', self.selectedSkill)
+      -- elseif key == 'x' then
+      --   if self.activeButton == self.soloButton then
+      --     self.uiState = 'actionSelect'
+      --   else  -- self.uiState == 'submenuing'
+      --     self.uiState = 'actionSelect'
+      --     self.activeButton.displaySkillList = false
+      --   end
+      -- end
 
     elseif self.uiState == 'targeting' then
       if self.selectedSkill.targetType == 'single' then

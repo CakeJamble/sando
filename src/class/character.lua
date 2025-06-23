@@ -55,7 +55,6 @@ function Character:init(stats, actionButton)
   self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'])
   self:setDefenseAnimations()
   self.actionUI = ActionUI()
-  -- self.selectedSkill = nil
   self.equips = {}
 end;
 
