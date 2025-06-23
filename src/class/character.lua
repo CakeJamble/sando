@@ -86,10 +86,13 @@ end;
 
 function Character:takeDamage(amount)
   if self.defenseState.bonusApplied then
-    amount = amount - self.defenseState.blockMod
+    self.battleStats.defense = self.battleStats.defense + self.defenseState.blockMod
   end
-  print(self.entityName .. ' will take ' .. amount .. ' damage')
   Entity.takeDamage(self, amount)
+
+  if self.defenseState.bonusApplied then
+    self.battleStats.defense = self.battleStats.defense - self.defenseState.blockMod
+  end
 end;
 
 function Character:setTargets(characterMembers, enemyMembers)
