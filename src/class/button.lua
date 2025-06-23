@@ -18,6 +18,9 @@ function Button:init(x, y, layer, path)
     self.displaySkillList = false
     self.isRotatingRight = false
     self.isRotatingLeft = false
+    self.description = ''
+    self.descriptionPos = {x = 200, y = 80}
+
 end;
 
 function Button:setTargetPos(tX, speedMul)

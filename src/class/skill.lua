@@ -13,6 +13,7 @@ function Skill:init(skillDict, width, height)
   self.skillName = skillDict['skill_name']
   self.cost = skillDict['cost']
   self.description = skillDict['description']
+  self.instructions = skillDict['instructions']
   self.targetType = skillDict['target_type']
   self.animation = Skill:newAnimation(love.graphics.newImage(self.skill.sprite_path), width, height, 1)
   self.qte_bonus = skillDict['qte_bonus']
@@ -30,10 +31,6 @@ function Skill:init(skillDict, width, height)
   self.sound = love.audio.newSource(sound_path, "static")
   self.sound:setVolume(0.8)
 end;
-
--- function Skill:getSkillDict()
---   return self.skill
--- end;
 
   -- Create and return a new animation
     -- preconditions: A love.graphics.newImage object, the width, height, and duration (number of frames)

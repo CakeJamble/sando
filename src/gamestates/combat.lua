@@ -10,7 +10,6 @@ require('util.stat_sheet')
 require('class.input.command_manager')
 require('class.turn_manager')
 
-
 local combat = {}
 local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
@@ -69,7 +68,6 @@ function combat:init()
         total = self.characterTeam.members[i].baseStats.hp
         self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ": " .. curr .. " / " .. total
       end
-
     end
   )
 end;

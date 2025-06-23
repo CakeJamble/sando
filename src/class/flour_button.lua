@@ -17,6 +17,7 @@ function FlourButton:init(x, y, layer, skillList)
     x = self.flourSkillTableOptions.container.x, 
     y = self.flourSkillTableOptions.container.y}
   self.previewOffset = self.flourSkillTableOptions.container.height / 2 --centered
+  self.description = 'Consume FP to use a powerful skill'
 
     
   Signal.register('SpinUIWheelLeft', 
@@ -156,8 +157,7 @@ function FlourButton:keypressed(key)
     else
       self.skillIndex = self.skillIndex - 1
     end
-  end
-  print(self.skillIndex) 
+  end 
 end;
 
 

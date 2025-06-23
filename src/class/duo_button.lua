@@ -10,6 +10,7 @@ function DuoButton:init(x, y, layer, skillList)
     -- self.skillListCursor = love.graphics.newImage(path/to/image)
     self.selectedSkill = nil
     self.displaySkillList = false
+    self.description = 'Consume BP to use a powerful teamup skill'
     
   Signal.register('SpinUIWheelLeft', 
     function(before, x)

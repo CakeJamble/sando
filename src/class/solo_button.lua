@@ -10,6 +10,7 @@ function SoloButton:init(x, y, layer, basicAttack)
   self.selectedSkill = basicAttack
   self.scaleFactor = 1
   self.active = false
+  self.description = 'Attack with a basic attack'
   
   Signal.register('SpinUIWheelLeft', 
     function(before, x)
@@ -58,3 +59,4 @@ end;
 function SoloButton:keypressed(key)
     -- TODO
 end;
+
