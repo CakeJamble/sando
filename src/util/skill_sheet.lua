@@ -1,5 +1,9 @@
 --! file: skill_sheet
-require('class.skill')
+
+local skillTypes = {
+  'BUTTON_PRESS',
+  'STICK_MOVE',
+}
 
 local marco_skills = {
   {
@@ -111,6 +115,9 @@ local key_skills = {
   }
 }
 
+function getSkillTypes()
+  return skillTypes
+end;
   
 function get_marco_skills() 
   local marcoSkills = {}

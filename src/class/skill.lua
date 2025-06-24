@@ -17,6 +17,8 @@ function Skill:init(skillDict, width, height)
   self.targetType = skillDict['target_type']
   self.animation = Skill:newAnimation(love.graphics.newImage(self.skill.sprite_path), width, height, 1)
   self.qte_bonus = skillDict['qte_bonus']
+  self.qteType = skillDict['qte_type']
+  self.partners = skillDict.partners
   projectiles = {}
   self.frameCount = 0
   self.duration = skillDict.duration
