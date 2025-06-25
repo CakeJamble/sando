@@ -12,7 +12,7 @@ function QTE:init()
 
 	self.currQTEFrame = 0
 	self.currFeedbackFrame = 0
-	self.numFeedbackFrames = 30
+	self.numFeedbackFrames = 45
 	self.showPrompt = false
 	self.countQTEFrames = false
 	self.countFeedbackFrames = false

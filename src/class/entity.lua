@@ -52,6 +52,13 @@ function Entity:init(stats, x, y)
   self.state = 'idle'
   self.movementState = MovementState(self.x, self.y)
   self.selectedSkill = nil
+
+  self.numFramesDmg = 60
+  self.currDmgFrame = 0
+  self.amount = 0
+  self.countFrames = false
+  self.dmgDisplayOffset = 0
+  self.dmgDisplayScale = 1
 end;
 
 function Entity:startTurn()
@@ -88,6 +95,7 @@ function Entity:endTurn()
   self.isFocused = false
   self.hasUsedAction = false
   self.turnFinish = false
+  self.amount = 0
 
   print('ending turn for ', self.entityName)
 end;
@@ -134,6 +142,8 @@ function Entity:heal(amount) --> void
 end;
 
 function Entity:takeDamage(amount) --> void
+  self.amount = math.max(0, amount - self.battleStats['defense'])
+  self.countFrames = true
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
 end;
 
@@ -197,6 +207,12 @@ function Entity:update(dt) --> void
   if animation.currentTime >= animation.duration then 
     animation.currentTime = animation.currentTime - animation.duration
   end
+
+  if self.hasUsedAction then
+    self.currDmgFrame = self.currDmgFrame + 1
+    self.dmgDisplayScale = self.dmgDisplayScale - 0.05
+    self.dmgDisplayOffset = self.dmgDisplayOffset + 0.25
+  end
 end;
 
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
@@ -222,6 +238,11 @@ function Entity:draw() --> void
     -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
   else
     print("logical error in determining movement state of entity. state is", state)
+  end
+  if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
+    love.graphics.setColor(0,0,0)
+    love.graphics.print(self.amount, self.x, self.y-self.dmgDisplayOffset, 0, self.dmgDisplayScale, self.dmgDisplayScale)
+    love.graphics.setColor(1,1,1)
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1)

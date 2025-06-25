@@ -31,6 +31,14 @@ function DefenseState:init(x, y, actionButton, baseDefense)
   self.timer = 0
   self.isEnemyAttacking = false
   self.canBlock = false
+
+  self.greatText = love.graphics.newImage('asset/sprites/combat/qte/feedback/great.png')
+  self.greatPos = {
+    x = self.x + 25,
+    y = self.y - 25
+  }
+  self.feedbackFrameCount = 0
+  self.numFeedbackFrames = 45
 end;
 
 function DefenseState:setup(incomingSkill)
@@ -47,11 +55,13 @@ function DefenseState:setup(incomingSkill)
 end;
 
 function DefenseState:reset()
+  print('resetting defense state')
   self.isWindowActive = false
   self.actionButtonPressed = false
   self.badInputPenalty = 0
   self.bonusApplied = false
   self.stance = 'idle'
+  self.feedbackFrameCount = 0
 end;
 
 function DefenseState:startFrameWindow()
@@ -63,7 +73,6 @@ end;
 function DefenseState:updateBadInputPenalty(applyPenalty)
   if applyPenalty then
     self.badInputPenalty = self.badInputPenalty + 20
-    print('applied penalty for missed input timing')
   elseif self.badInputPenalty > 0 then
     self.badInputPenalty = self.badInputPenalty - 1
   end
@@ -71,6 +80,7 @@ end;
 
 function DefenseState:applyBonus()
   self.bonusApplied = true
+  print('defense bonus applied')
 end;
 
 function DefenseState:keypressed(key)
@@ -117,6 +127,10 @@ function DefenseState:update(dt)
     self.frameCount = self.frameCount + 1
   end
   self:updateBadInputPenalty(false)
+
+  if self.bonusApplied then
+    self.feedbackFrameCount = self.feedbackFrameCount + 1
+  end
 end;
 
 function DefenseState:draw()
@@ -129,6 +143,10 @@ function DefenseState:draw()
     animation = self.animations.dodgeAnimation
   else
     animation = self.animations.idleAnimation
+  end
+
+  if self.bonusApplied and self.feedbackFrameCount < self.numFeedbackFrames then
+    love.graphics.draw(self.greatText, self.greatPos.x, self.greatPos.y)
   end
 
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1

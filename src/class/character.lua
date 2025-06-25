@@ -86,6 +86,7 @@ end;
 function Character:takeDamage(amount)
   if self.defenseState.bonusApplied then
     self.battleStats.defense = self.battleStats.defense + self.defenseState.blockMod
+    print(self.battleStats.defense)
   end
   Entity.takeDamage(self, amount)
 

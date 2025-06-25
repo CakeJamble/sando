@@ -91,18 +91,16 @@ function sbpQTE:update(dt)
 	if self.currFeedbackFrame > self.numFeedbackFrames then
 		self.showGreatText = false
 	end
-
 end;
 
 function sbpQTE:draw()
 	if self.showPrompt and self.frameWindow then
-		love.graphics.draw(self.actionButtonQTE, self.instructionsPos.x, self.instructionsPos.y)
-	end
-	if self.qteSuccess and self.currFeedbackFrame <= self.numFeedbackFrames then
-		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)
+		love.graphics.draw(self.actionButtonQTE, self.instructionsPos.x, self.instructionsPos.y, 0, 0.75, 0.75)
 	end
 	if self.instructions ~= nil then
+		love.graphics.setColor(0, 0, 0)
 		love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
+		love.graphics.setColor(1, 1, 1)
 	end
 	if self.showGreatText then
 		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)

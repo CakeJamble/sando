@@ -128,18 +128,6 @@ function ActionUI:keypressed(key) --> void
       end
     elseif self.uiState == 'submenuing' then
       self.activeButton:keypressed(key)
-      -- if key == 'z' then
-      --   self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
-      --   self.uiState = 'targeting'
-      --   Signal.emit('SkillSelected', self.selectedSkill)
-      -- elseif key == 'x' then
-      --   if self.activeButton == self.soloButton then
-      --     self.uiState = 'actionSelect'
-      --   else  -- self.uiState == 'submenuing'
-      --     self.uiState = 'actionSelect'
-      --     self.activeButton.displaySkillList = false
-      --   end
-      -- end
 
     elseif self.uiState == 'targeting' then
       if self.selectedSkill.targetType == 'single' then
@@ -299,7 +287,9 @@ function ActionUI:draw()
       for i=1,#self.buttons do
         self.buttons[i]:draw()
       end
+      love.graphics.setColor(0, 0, 0)
       love.graphics.print(self.activeButton.description, self.activeButton.descriptionPos.x, self.activeButton.descriptionPos.y)
+      love.graphics.setColor(1, 1, 1)
     end
   end
 end;
