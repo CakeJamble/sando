@@ -177,6 +177,7 @@ function combat:draw()
   love.graphics.print(self.characterTeamHP[2], 20, 46)
   self.characterTeam:draw()
   self.enemyTeam:draw()
+  self.turnManager:draw()
   camera:detach()
   push:finish()
 end;

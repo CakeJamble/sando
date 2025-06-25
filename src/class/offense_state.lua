@@ -82,6 +82,7 @@ function OffenseState:dealDamage()
 end;
 
 function OffenseState:applyBonus()
+  Signal.emit('QTESuccess')
   self.damage = self.damage + self.bonus
   self.bonusApplied = true
   print('bonus applied! Damage is now ' .. self.damage)

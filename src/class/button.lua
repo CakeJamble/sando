@@ -19,7 +19,7 @@ function Button:init(x, y, layer, path)
     self.isRotatingRight = false
     self.isRotatingLeft = false
     self.description = ''
-    self.descriptionPos = {x = 200, y = 80}
+    self.descriptionPos = {x = 200, y = 300}
 
 end;
 

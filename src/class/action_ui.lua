@@ -156,6 +156,7 @@ function ActionUI:keypressed(key) --> void
           self.tIndex = 1
           if self.activeButton == self.soloButton then
             self.uiState = 'actionSelect'
+            Signal.emit('SkillDeselected')
           else
             self.uiState = 'submenuing'
           end

@@ -1,5 +1,5 @@
 --! filename: turn manager
-
+require('class.qte_manager')
 Class = require('libs.hump.class')
 TurnManager = Class{}
 
@@ -13,12 +13,14 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.activeEntity = nil
   self.turnSpentQueue = {}
   self.rewards = {}
+  self.qteManager = QTEManager()
 
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
   set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
   and start their turn. After starting it, increment the turnIndex for the next combatant. ]]
     function ()
+      self.qteManager:reset()
       local koEntities = {}
 
       -- loop over combatants, and register enemies who need to be removed from combat
@@ -48,7 +50,6 @@ function TurnManager:init(characterTeam, enemyTeam)
       end
 
       self.enemyTeam:removeMembers(koEntities)
-      -- self.characterTeam:removeMembers(koEntities)
 
       -- Check Win/Loss Conditions
       if self.enemyTeam:isWipedOut() then
@@ -94,7 +95,15 @@ function TurnManager:init(characterTeam, enemyTeam)
 
   Signal.register('SkillSelected',
     function(skill)
+      print('Setting up QTE Manager for selected skill')
+      self.qteManager:setQTE(skill, self.activeEntity)
       self.activeEntity.offenseState:setSkill(skill)
+    end
+  );
+
+  Signal.register('SkillDeselected',
+    function ()
+      self.qteManager:reset()
     end
   );
 
@@ -108,6 +117,8 @@ function TurnManager:init(characterTeam, enemyTeam)
       local isEnemy = targetType == 'enemies'
       if self.activeEntity.type == 'enemy' then
         self.characterTeam:startDefense(self.activeEntity.offenseState.skill)
+      else
+        self.qteManager.activeQTE.showPrompt = true
       end
       self.activeEntity.movementState:moveTowards(targetPos.x, targetPos.y, isEnemy)
       self.activeEntity.state = 'move'
@@ -129,6 +140,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.state = 'offense'
       self.activeEntity.offenseState.x = x
       self.activeEntity.offenseState.y = y
+      self.qteManager.activeQTE.feedbackPos.x = x - 25
+      self.qteManager.activeQTE.feedbackPos.y = y - 25
+      self.qteManager.activeQTE.countQTEFrames = true
       self.activeEntity.offenseState.target = self.activeEntity.target
       if self.activeEntity.type == 'enemy' then
         self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
@@ -162,6 +176,7 @@ function TurnManager:update(dt)
   for _,entity in pairs(self.turnQueue) do
     entity:update(dt)
   end
+  self.qteManager:update(dt)
 end;
 
 function TurnManager:gamepadpressed(joystick, button)
@@ -192,4 +207,8 @@ function TurnManager:sortWaitingCombatants()
     self.turnQueue[j] = waitingCombatants[i]
     i = i+1
   end
+end;
+
+function TurnManager:draw()
+  self.qteManager:draw()
 end;
