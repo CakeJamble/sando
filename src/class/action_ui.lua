@@ -215,28 +215,31 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
+          self.activeButton.displaySkillList = true
+          self.activeButton:gamepadpressed(joystick, button)
         end
       end
     elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
-      if self.activeButton ~= self.soloButton then
-        self.activeButton.displaySkillList = true
-      else
-        self.flourButton.displaySkillList = false
-        self.duoButton.displaySkillList = false
-      end
+      self.activeButton:gamepadpressed(joystick, button)
+      -- if self.activeButton ~= self.soloButton then
+      --   self.activeButton.displaySkillList = true
+      -- else
+      --   self.flourButton.displaySkillList = false
+      --   self.duoButton.displaySkillList = false
+      -- end
   
-      if button == 'a' then
-        self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
-        self.uiState = 'targeting'
-        Signal.emit('SkillSelected', self.selectedSkill)
-      elseif button == 'b' then
-        if self.activeButton == self.soloButton then
-          self.uiState = 'actionSelect'
-        else  -- self.uiState == 'submenuing'
-          self.uiState = 'actionSelect'
-          self.activeButton.displaySkillList = false
-        end
-      end
+      -- if button == 'a' then
+      --   self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
+      --   self.uiState = 'targeting'
+      --   Signal.emit('SkillSelected', self.selectedSkill)
+      -- elseif button == 'b' then
+      --   if self.activeButton == self.soloButton then
+      --     self.uiState = 'actionSelect'
+      --   else  -- self.uiState == 'submenuing'
+      --     self.uiState = 'actionSelect'
+      --     self.activeButton.displaySkillList = false
+      --   end
+      -- end
   
     elseif self.uiState == 'targeting' then
       if self.selectedSkill.targetType == 'single' then
@@ -252,6 +255,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.tIndex = 1
           if self.activeButton == self.soloButton then
             self.uiState = 'actionSelect'
+            Signal.emit('SkillDeselected')
           else
             self.uiState = 'submenuing'
           end

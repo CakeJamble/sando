@@ -140,9 +140,11 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.state = 'offense'
       self.activeEntity.offenseState.x = x
       self.activeEntity.offenseState.y = y
-      self.qteManager.activeQTE.feedbackPos.x = x - 25
-      self.qteManager.activeQTE.feedbackPos.y = y - 25
-      self.qteManager.activeQTE.countQTEFrames = true
+      if self.activeEntity.type == 'character' then
+        self.qteManager.activeQTE.feedbackPos.x = x - 25
+        self.qteManager.activeQTE.feedbackPos.y = y - 25
+        self.qteManager.activeQTE.countQTEFrames = true
+      end
       self.activeEntity.offenseState.target = self.activeEntity.target
       if self.activeEntity.type == 'enemy' then
         self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true

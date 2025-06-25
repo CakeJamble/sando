@@ -56,7 +56,7 @@ function SoloButton:init(x, y, layer, basicAttack)
   );
 end;
 
-function SoloButton:keypressed(key)
-    -- TODO
-end;
+-- function SoloButton:keypressed(key)
+--     -- TODO
+-- end;
 

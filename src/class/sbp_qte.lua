@@ -12,7 +12,6 @@ function sbpQTE:init()
 	self.type = 'sbp'
 	self.pos = {x = nil, y = nil}
 	self.offset = 10
-	self.actionButton = actionButton
 	self.instructions = nil
 	self.frameWindow = nil
 
@@ -75,6 +74,7 @@ function sbpQTE:setFeedback(isSuccess)
 end;
 
 function sbpQTE:reset()
+	QTE.reset(self)
 	self.showGreatText = false
 	self.actionButton = nil
 end;

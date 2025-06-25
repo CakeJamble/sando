@@ -160,6 +160,17 @@ function FlourButton:keypressed(key)
   end 
 end;
 
+function FlourButton:gamepadpressed(joystick, button)
+  if key == 'dpdown' or key == 'dpright' then
+    self.skillIndex = (self.skillIndex % self.skillListDisplay) + 1
+  elseif key == 'dpup' or key == 'dpleft' then
+    if self.skillIndex <= 1 then
+      self.skillIndex = #self.skillListDisplay
+    else
+      self.skillIndex = self.skillIndex - 1
+    end
+  end
+end;
 
 function FlourButton:draw()
   Button.draw(self)

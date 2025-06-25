@@ -61,12 +61,13 @@ local bake_skills = {
     attack_type = 'solo',
     partners = nil,
     sprite_path = 'asset/sprites/entities/character/bake/basic.png',
-    duration = 60,
-    qte_window = 25,
-    qte_type = "BUTTON_PRESS",
+    duration = 70,
+    qte_window = {45, 65},
+    qte_type = "SINGLE_BUTTON_PRESS",
     qte_bonus_type = 'damage',
     qte_bonus = 1,
     description = "Deals physical damage to a single target once",
+    instructions = '',
     unlock = nil,
     sound_path = 'asset/audio/entities/character/marco/basic.wav'
   }

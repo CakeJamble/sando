@@ -157,7 +157,7 @@ function character_select:indicesToCharacters()
       bake = Character(get_bake_stats(), 'a')
       characterList[i] = bake
     elseif selectedTeamIndices[i] == 1 then
-      marco = Character(get_marco_stats(), 'z')
+      marco = Character(get_marco_stats(), 'b')
       characterList[i] = marco
     elseif selectedTeamIndices[i] == 2 then
       maria = Character(get_maria_stats(), 'x')
