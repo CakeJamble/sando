@@ -72,7 +72,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- Reset frame counters for animations for all entities
       for _,e in pairs(self.turnQueue) do
         e.offenseState:reset()
-        e.countFrames = false
+        e:resetDmgDisplay()
         e.state = 'idle'
         if e.type == 'character' then
           e.defenseState:reset()

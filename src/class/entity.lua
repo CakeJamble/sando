@@ -57,7 +57,8 @@ function Entity:init(stats, x, y)
   self.currDmgFrame = 0
   self.amount = 0
   self.countFrames = false
-  self.dmgDisplayOffset = 0
+  self.dmgDisplayOffsetX = 0
+  self.dmgDisplayOffsetY = 0
   self.dmgDisplayScale = 1
 end;
 
@@ -88,6 +89,15 @@ function Entity:setTargets(characterMembers, enemyMembers)
   end
   
   print('targets set for ', self.entityName)
+end;
+
+function Entity:resetDmgDisplay()
+  self.amount = 0
+  self.countFrames = false
+  self.currDmgFrame = 0
+  self.dmgDisplayOffsetX = 0
+  self.dmgDisplayOffsetY = 0
+  self.dmgDisplayScale = 1
 end;
 
 
@@ -208,10 +218,12 @@ function Entity:update(dt) --> void
     animation.currentTime = animation.currentTime - animation.duration
   end
 
-  if self.hasUsedAction then
+  if self.countFrames then
     self.currDmgFrame = self.currDmgFrame + 1
-    self.dmgDisplayScale = self.dmgDisplayScale - 0.05
-    self.dmgDisplayOffset = self.dmgDisplayOffset + 0.25
+    self.dmgDisplayScale = self.dmgDisplayScale - 0.01
+    self.dmgDisplayOffsetX = math.cos(self.currDmgFrame * 0.25)
+    self.dmgDisplayOffsetY = self.dmgDisplayOffsetY + 0.1
+
   end
 end;
 
@@ -241,7 +253,7 @@ function Entity:draw() --> void
   end
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0)
-    love.graphics.print(self.amount, self.x, self.y-self.dmgDisplayOffset, 0, self.dmgDisplayScale, self.dmgDisplayScale)
+    love.graphics.print(self.amount, self.x + self.dmgDisplayOffsetX, self.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
     love.graphics.setColor(1,1,1)
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
