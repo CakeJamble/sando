@@ -1,5 +1,5 @@
 --! filename: flour button
-require('class.button')
+require('class.ui.button')
 Class = require 'libs.hump.class'
 FlourButton = Class{__includes = Button}
 

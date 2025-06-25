@@ -1,10 +1,10 @@
 --! filename: Enemy
 require ("util.stat_sheet")
 require("util.skill_sheet")
-require("class.entity")
+require("class.entities.entity")
 require("util.enemy_list")
 require("util.enemy_skill_list")
-require('class.enemy_offense_state')
+require('class.entities.enemy_offense_state')
 
 Class = require "libs.hump.class"
 Enemy = Class{__includes = Entity, 

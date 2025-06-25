@@ -85,7 +85,7 @@ local enemyTable = {
     width=80,height=80,
     hp=11,
     cr=2,
-    attack=10,
+    attack=3,
     defense=1,
     speed=5,
     luck=10,

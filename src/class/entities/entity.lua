@@ -1,11 +1,11 @@
 --! file: entity.lua
-require('class.skill')
+require('class.qte.skill')
 require('util.stat_sheet')
 require('util.enemy_list')
 require('util.skill_sheet')
 require('util.enemy_skill_list')
 require('util.animation_frame_counts')
-require('class.movement_state')
+require('class.entities.movement_state')
 
 Class = require "libs.hump.class"
 Entity = Class{}

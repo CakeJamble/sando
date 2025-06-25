@@ -1,5 +1,5 @@
 --! filename: enemy_offense_state
-require('class.offense_state')
+require('class.entities.offense_state')
 
 Class = require 'libs.hump.class'
 EnemyOffenseState = Class{}	-- there should be a base class for this now

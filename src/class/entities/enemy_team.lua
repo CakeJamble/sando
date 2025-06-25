@@ -1,6 +1,6 @@
 --! filename: enemy team
-require('class.team')
-require('class.enemy')
+require('class.entities.team')
+require('class.entities.enemy')
 
 Class = require 'libs.hump.class'
 EnemyTeam = Class{__includes = Team}

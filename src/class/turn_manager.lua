@@ -1,5 +1,5 @@
 --! filename: turn manager
-require('class.qte_manager')
+require('class.qte.qte_manager')
 Class = require('libs.hump.class')
 TurnManager = Class{}
 

@@ -1,7 +1,7 @@
 --! filename: combat_ui
-require('class.solo_button')
-require('class.flour_button')
-require('class.duo_button')
+require('class.ui.solo_button')
+require('class.ui.flour_button')
+require('class.ui.duo_button')
 require('util.globals')
 
 Class = require 'libs.hump.class'

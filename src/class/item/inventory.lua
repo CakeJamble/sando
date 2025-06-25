@@ -9,7 +9,7 @@
     to manage that functionality.
 ]]
 
-require('class.gear')
+require('class.item.gear')
 
 Class = require 'libs.hump.class'
 Inventory = Class{}

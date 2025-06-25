@@ -1,5 +1,5 @@
 --! filename: gear
-require("class.equip")
+require("class.item.equip")
 
 Class = require 'libs.hump.class'
 Gear = Class{}

@@ -1,5 +1,5 @@
 --! filename: skill
-require('class.projectile')
+require('class.qte.projectile')
 
 Class = require 'libs.hump.class'
 Skill = Class{}

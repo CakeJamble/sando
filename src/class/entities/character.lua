@@ -6,11 +6,11 @@
 ]]
 require("util.skill_sheet")
 require("util.stat_sheet")
-require("class.entity")
-require("class.offense_state")
-require("class.defense_state")
-require("class.action_ui")
-require("class.gear")
+require("class.entities.entity")
+require("class.entities.offense_state")
+require("class.entities.defense_state")
+require("class.ui.action_ui")
+require("class.item.gear")
 
 
 Class = require "libs.hump.class"
@@ -214,6 +214,7 @@ function Character:draw()
     self.offenseState:draw()
   elseif self.state == 'defense' then
     self.defenseState:draw()
+    Entity.draw(self)
   else 
     Entity.draw(self)
     self.actionUI:draw()

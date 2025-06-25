@@ -1,8 +1,8 @@
 --! file: gamestates/character_select
-require("class.character_team")
+require("class.entities.character_team")
 require("util.globals")
 require("util.stat_sheet")
-require("class.character")
+require("class.entities.character")
 
 local character_select = {}
 

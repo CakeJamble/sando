@@ -1,5 +1,5 @@
 --! filename: team
-require("class.entity")
+require("class.entities.entity")
 
 Class = require 'libs.hump.class'
 Team = Class{}

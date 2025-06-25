@@ -1,9 +1,9 @@
 --! file: encounter_generator
 require('util.enemy_list')
-require('class.entity')
-require('class.enemy')
-require('class.character_team')
-require('class.enemy_team')
+require('class.entities.entity')
+require('class.entities.enemy')
+require('class.entities.character_team')
+require('class.entities.enemy_team')
 
 testPool = { 
   {'Line', 'Line'}, 

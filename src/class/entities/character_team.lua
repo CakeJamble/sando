@@ -1,7 +1,7 @@
 --! filename: character team
-require('class.team')
-require('class.inventory')
-require('class.character')
+require('class.entities.team')
+require('class.item.inventory')
+require('class.entities.character')
 
 Class = require 'libs.hump.class'
 CharacterTeam = Class{__includes = Team}

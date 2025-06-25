@@ -1,5 +1,5 @@
 --! filename: dup button
-require('class.button')
+require('class.ui.button')
 Class = require('libs.hump.class')
 DuoButton = Class{__includes = Button}
 
