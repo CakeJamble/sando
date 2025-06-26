@@ -9,3 +9,11 @@ function Tool:init(toolDict)
 	self.flavorText = toolDict.flavorText
 	self.rarity = toolDict.rarity
 end;
+
+function Tool:update(dt)
+	--do
+end;
+
+function Tool:draw()
+	--do
+end;

@@ -37,7 +37,8 @@ function QTEManager:setQTE(skill, character)
 		self.activeQTE = self.qteTable.sbp
 	elseif skillType == 'STICK_MOVE' then
 	    --do
-	else
+	elseif skillType == 'MULTI_BUTTON_PRESS' then
+		--do
 	end
 end;
 
