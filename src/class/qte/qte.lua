@@ -1,7 +1,10 @@
 --! filename: skill_ui.lua
 
 Class = require 'libs.hump.class'
-QTE = Class{}
+QTE = Class{
+	feedbackDir = 'asset/sprites/combat/qte/feedback/',
+	inputDir = 'asset/sprites/input_icons/'
+}
 
 function QTE:init()
 	self.type = ''

@@ -16,15 +16,12 @@ function sbpQTE:init()
 	self.frameWindow = nil
 
 	-- face buttons
-	local buttonDir = 'asset/sprites/input_icons/face_buttons/'
-	self.buttons = self:loadButtonImages(buttonDir)
+	self.buttons = self:loadButtonImages(QTE.inputDir .. 'face_buttons/')
 	self.actionButton = nil
 	self.actionButtonQTE = nil
 
 	-- qte feedback
-	local qteFeedbackDir = 'asset/sprites/combat/qte/feedback/'
-	local greatQTE = qteFeedbackDir .. 'great.png'
-	self.greatText = love.graphics.newImage(greatQTE)
+	self.greatText = love.graphics.newImage(QTE.feedbackDir .. 'great.png')
 	self.showGreatText = false
 end;
 
