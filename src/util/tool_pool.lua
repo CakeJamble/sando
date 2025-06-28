@@ -581,45 +581,45 @@ local toolPool =
     },
     shop = {
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Recipe Book',
+            description = 'Team members gain EXP even when they are KOd',
+            flavorText = 'Full of drawings and messy handwriting',
             rarity = 'shop'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Baking Soda',
+            description = 'Taking damage has a chance to remove burn',
+            flavorText = 'Expired',
             rarity = 'shop'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Cinnamon Roll Center',
+            description = 'On pickup, choose a character. They dodge multihit attacks automatically.',
+            flavorText = 'It spins unceasingly, observing the enemy',
             rarity = 'shop'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Coffee Tamper',
+            description = 'On pickup, a random character gains an additional skill slot',
+            flavorText = 'Packs tightly, with even pressure across the surface of the portafilter',
             rarity = 'shop'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Ambiguous Furniture',
+            description = 'Increase base chance of item rarities',
+            flavorText = 'A popular item for completionists',
             rarity = 'shop'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Shiny Pyramid',
+            description = 'On pickup, shuffe the skill pools of all team members',
+            flavorText = 'The paralysis of choice',
             rarity = 'shop'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Forgotten Placeholder',
+            description = 'Escaping enemies become vulnerable',
+            flavorText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
             rarity = 'shop'
         },
     }
