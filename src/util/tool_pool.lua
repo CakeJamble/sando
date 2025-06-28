@@ -189,56 +189,56 @@ local toolPool =
             description = 'Take half damage from recoil',
             flavorText = 'Cool to the touch',
             rarity = 'common',
-            proc = ''
+            proc = 'OnAttack'
         },
         {
             toolName = 'Bansho Fan',
             description = 'Enemies spread statuses to adjacent enemies on defeat',
             flavorText = 'A single swing wiped out a great fire, along with the castle that was burning',
             rarity = 'common',
-            proc = ''
+            proc = 'OnKO'
         },
         {
             toolName = 'Land Cucumber',
             description = 'On defeating a character, attacking enemies take damage equal to damage they dealt',
             flavorText = 'Like a cornered mouse',
             rarity = 'common',
-            proc = ''
+            proc = 'OnDefeat'
         },
         {
             toolName = 'Display Loaf',
             description = 'Attacks with a base power under 5 deal extra damage',
             flavorText = 'The crumb structure reveals the fine attention paid to the details in the baking process',
             rarity = 'common',
-            proc = ''
+            proc = 'OnAttack'
         },
         {
             toolName = 'Bread Board',
             description = 'Paralysis has no effect on speed',
             flavorText = 'Why was this here?',
             rarity = 'common',
-            proc = ''
+            proc = 'OnDebuffed'
         },
         {
             toolName = 'LOVE',
             description = 'Gain an additional small amount of gold at the end of each battle for each surviving team member',
             flavorText = 'We take care of our own here',
             rarity = 'common',
-            proc = ''
+            proc = 'OnEndBattle'
         },
         {
             toolName = 'Blindfold of the Unburdened',
-            description = 'Characters without equipment or accessories have higher crit chance and speed',
+            description = 'At the start of battle, characters without equipment or accessories have higher crit chance and speed',
             flavorText = 'See without eyes',
             rarity = 'common',
-            proc = ''
+            proc = 'OnStartBattle'
         },
         {
             toolName = 'Pita',
             description = 'A random team member starts each battle with burn',
             flavorText = 'Take the evil you know over the evils you don\'t',
             rarity = 'common',
-            proc = ''
+            proc = 'OnStartTurn'
         },
     },
 
@@ -248,161 +248,161 @@ local toolPool =
             description = 'Level ups double the FP restored',
             flavorText = 'If the phone dies, all the recipes go with it',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnLevelUp'
         },
         {
             toolName = 'Face Roller',
             description = 'Blocking physical attacks nullifies status effect procs',
             flavorText = 'Keeping up the streak enhances dough structure',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnBlock'
         },
         {
             toolName = 'Sunscreen',
             description = 'You can no longer be burned',
             flavorText = 'PA+++++',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnDebuffed'
         },
         {
             toolName = 'Mini Whiteboard',
             description = 'Enemy intents are visible',
             flavorText = 'It\'s full of percentages',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnNextTurn'
         },
         {
             toolName = 'Coffee Mug',
-            description = 'You can carry 2 more consumables',
+            description = 'On pickup, gain 2 consumable slots',
             flavorText = 'A milky blob remains where a shakily drawn tulip once existed',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Milk Pitcher',
             description = 'Using a consumable increases you Max HP slightly',
             flavorText = 'It chirps with the sound of milk being stretched',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnConsumableUse'
         },
         {
             toolName = 'Meat Press',
             description = 'Deal more damage to vulnerable enemies',
             flavorText = 'It\'s just a small cast iron pan',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnAttack'
         },
         {
             toolName = 'Mummified Grapes',
             description = 'Summoned enemies start weakened',
             flavorText = 'Raisins?',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnSummon'
         },
         {
             toolName = 'Soft Water',
             description = 'On pickup, cleanse all curses',
             flavorText = 'The good stuff. Only for the dough, not for us',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Coffee Puck',
             description = 'Get 3 random consumables',
             flavorText = 'Rock solid, showing signs of overextraction',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Thermometer',
             description = 'At the start of battle, inflict vulnerable on all enemies',
             flavorText = 'For tracking, and giving up on tracking, fermentation',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnStartBattle'
         },
         {
             toolName = 'Crushed Can',
             description = 'Gain additional money at the end of combat',
             flavorText = 'Hi! Me 5¢ ;P',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnEndBattle'
         },
         {
             toolName = 'Pizza Spire',
             description = 'Swapping party members restores a small amount of FP',
             flavorText = 'One of our chefs left to slay this, but never returned',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnSwapMembers'
         },
         {
             toolName = 'Portafilter',
             description = 'An additional consumable is found after every battle',
             flavorText = 'Massive, thick, heavy, and far too rough',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnEndBattle'
         },
         {
             toolName = 'Preserved Pastry',
             description = 'Basic Attacks deal more damage when FP is below 25%',
             flavorText = 'Made with Ancient Grains',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnAttack'
         },
         {
             toolName = 'Potted Plant',
             description = 'You get a free luck roll on every level up',
             flavorText = 'It\'s plastic, but the mental health benefits are undeniable',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnLevelUp'
         },
         {
             toolName = 'Desecrated Idol',
             description = 'On pickup, lose half your money and convert this into a Refurbished Idol',
             flavorText = 'It is sealed in what appears to be wax',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Shutter Key',
-            description = 'Heal slightly between battles',
+            description = 'Heal slightly at the beginning of battles',
             flavorText = 'Unlocks a place to cool off between shifts',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnStartBattle'
         },
         {
             toolName = 'Parking Permit',
             description = 'Cannot be stunned',
             flavorText = 'Valid only in Lot 4, except on cloudy Thursdays after 5pm',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnDebuffed'
         },
         {
             toolName = 'Cat Teaser',
             description = 'On Level Up, roll an additional bonus for Speed',
             flavorText = 'More feathers is more fun',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnLevelUp'
         },
         {
             toolName = 'Points Card',
             description = 'Insufficient FP for a skill is supplemented by using HP',
             flavorText = 'It\'s warm to the touch',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnTargetConfirm'
         },
         {
             toolName = 'Folded Filter',
             description = 'On consumable use, lower a random stat one stage and then raise a different stat two stages',
             flavorText = 'Great coffee requires sacrifices',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnConsumableUse'
         },
         {
             toolName = 'Stolen Rug',
             description = 'The first shop item you purchase is free, then all prices are raised by 1.5x in that shop',
             flavorText = 'The rug was not for sale',
             rarity = 'uncommon',
-            proc = ''
+            proc = 'OnPurchase'
         },
     },
 
@@ -412,140 +412,140 @@ local toolPool =
             description = 'Doubles Crit Chance for skills with crit bonuses',
             flavorText = 'Delicate, elegant, egg-washed',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnQTESuccess'
         },
         {
             toolName = 'Floury Marker',
             description = 'Removing a curse also heals a small amount of HP',
             flavorText = 'It\'s caked in flour, but still writes just fine',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnCurseCleanse'
         },
         {
             toolName = 'Double Helix',
             description = 'Adds +1 to multihit attacks',
             flavorText = 'One strand short of a beautiful braid. The first strand-like tool',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnSkillSelected'
         },
         {
             toolName = 'To-Go Bag',
             description = 'You gain slightly more EXP from battles',
             flavorText = 'The name is illegible',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnEndBattle'
         },
         {
             toolName = 'Proofer',
             description = 'Elites have less Base HP',
             flavorText = 'It\'s warm and humid inside, the dough is relaxing',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnStartBattle'
         },
         {
             toolName = 'Picnic Basket',
             description = 'On pickup, rest',
             flavorText = 'There are crumbs on it from last time, they look edible',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Croissant Flakes',
             description = 'Consumables are slightly more effective',
             flavorText = 'Saving them for later',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnConsumableUse'
         },
         {
             toolName = 'Scraper',
             description = 'Adds +40% to crit bonuses',
             flavorText = 'Never leave home without it',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnQTESuccess'
         },
         {
             toolName = 'Everything Seasoning',
             description = 'On pickup, copy a skill of any character to another character',
             flavorText = 'A beautiful dress for a perfect bagel',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Motherly Doll',
             description = 'You cannot be KOd during your turn',
             flavorText = 'You can do this better than mama',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnStartTurn'
         },
         {
             toolName = 'Deck of Cards',
             description = 'At the start of your turn, shuffle the FP costs of all skills',
             flavorText = 'It\'s full of jokers',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnStartTurn'
         },
         {
             toolName = 'Loaf Loader',
             description = 'In pickup, one character can learn any skill',
             flavorText = 'The bread shinkanse',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Pot of Ghee',
             description = 'Buffs are more effective',
             flavorText = 'Clarity',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnTargetConfirm'
         },
         {
             toolName = 'Work Shoes',
             description = 'Grants immunity to start of turn hazards',
             flavorText = 'The secure feeling of non-slip shoes fills you with determination',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnStartTurn'
         },
         {
             toolName = 'Canvas Tote',
             description = 'Gain an additional accessory slot',
             flavorText = 'Simple but effective',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Cold Brew Pitcher',
             description = '+5% Crit chance whenever you gain speed',
             flavorText = 'It\'s just a pitcher, but it\'s been called on for greater purposes',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnBuff'
         },
         {
             toolName = 'Memory Foam Mattress',
             description = 'Healing skills are more effective',
             flavorText = 'This is my hole! It was made for me!',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnTargetConfirm'
         },
         {
             toolName = 'Whetstone',
             description = 'Restore a small amount of FP when an enemy raises their stats',
             flavorText = 'Caught them monologuing',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnBuff'
         },
         {
             toolName = 'Sticky Notes',
             description = 'On team member KO, the enemy\'s stats are all decreased by one stage',
             flavorText = 'It\'s full of logins and passwords',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnDefeat'
         },
         {
             toolName = 'Tardy Treat',
-            description = 'Slow a random teammate for 2 turns, then boost all of their stats one stage',
+            description = 'At the start of battle, slow a random teammate for 2 turns, then boost all of their stats one stage on turn 3',
             flavorText = 'You were late, but you did the right thing',
             rarity = 'rare',
-            proc = ''
+            proc = 'OnStartBattle'
         },
     },
 
@@ -555,7 +555,7 @@ local toolPool =
             description = 'Enemies in the next 3 encounters have 1 HP',
             flavorText = 'Good prep pays off',
             rarity = 'event',
-            proc = ''
+            proc = 'OnStartBattle'
         },
         {
             toolName = 'Electric Kettle',
@@ -569,77 +569,77 @@ local toolPool =
             description = 'On selling an equipment, a random equipment becomes more effective',
             flavorText = 'It hungers',
             rarity = 'event',
-            proc = ''
+            proc = 'OnEquipSell'
         },
         {
             toolName = 'Azzi Manuscript',
             description = 'You are more likely to find uncommon and rare accessories',
             flavorText = 'A survival guide for the pixel world',
             rarity = 'event',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Tassajara Bread Book',
             description = 'You are more likely to find uncommon and rare equipment',
             flavorText = 'The pages are worn and well-loved',
             rarity = 'event',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Levain of Theseus',
             description = 'Summoned enemies spawn with addiitonal health, but reward more EXP and money',
             flavorText = 'Is this the same levain that it was last week?',
             rarity = 'event',
-            proc = ''
+            proc = 'OnSummon'
         },
         {
             toolName = 'Puff\'s Codex',
             description = 'The first consumable you use each battle goes off twice',
             flavorText = 'A cookbook from a distant kingdom that loves mushrooms',
             rarity = 'event',
-            proc = ''
+            proc = 'OnConsumableUse'
         },
         {
             toolName = 'Massage Gun',
             description = 'Speed modifiers also affect critical chance',
             flavorText = 'Revitalizes muscles to the strength of the First Generation',
             rarity = 'event',
-            proc = ''
+            proc = 'OnBuff'
         },
         {
             toolName = 'Shoe Charm',
             description = 'Attacks have an cosmetic affect added',
             flavorText = 'So cute!',
             rarity = 'event',
-            proc = ''
+            proc = 'OnAttack'
         },
         {
             toolName = 'Test Oracle',
             description = 'You quack at the start of battle, reducing stats randomly across enemies',
             flavorText = 'It cannot speak, but when you ask for help, you receive the guidance you were seeking',
             rarity = 'event',
-            proc = ''
+            proc = 'OnStartBattle'
         },
         {
             toolName = 'Lin\'s Insurance',
             description = 'On stats being lowered, gain a small amount of money',
             flavorText = 'Who would have thought we would need fire insurance in a bakery?',
             rarity = 'event',
-            proc = ''
+            proc = 'OnDebuffed'
         },
         {
             toolName = 'Lin\'s Ledger',
             description = 'When a stat is lowered, raise a random stat of another teammate',
             flavorText = 'A skilled baker can even cook the books',
             rarity = 'event',
-            proc = ''
+            proc = 'OnDebuffed'
         },
         {
             toolName = 'Vampire Fangs',
             description = 'Set Max HP to 50%. Attacks lifesteal for 25% of damage dealt',
             flavorText = 'Makes it harder to eat bread',
             rarity = 'event',
-            proc = ''
+            proc = 'OnPickup'
         }
 
     },
@@ -649,49 +649,49 @@ local toolPool =
             description = 'Team members gain EXP even when they are KOd',
             flavorText = 'Full of drawings and messy handwriting',
             rarity = 'shop',
-            proc = ''
+            proc = 'OnEndBattle'
         },
         {
             toolName = 'Baking Soda',
             description = 'Taking damage has a chance to remove burn',
             flavorText = 'Expired',
             rarity = 'shop',
-            proc = ''
+            proc = 'OnDamaged'
         },
         {
             toolName = 'Cinnamon Roll Center',
             description = 'On pickup, choose a character. They dodge multihit attacks automatically.',
             flavorText = 'It spins unceasingly, observing the enemy',
             rarity = 'shop',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Coffee Tamper',
             description = 'On pickup, a random character gains an additional skill slot',
             flavorText = 'Packs tightly, with even pressure across the surface of the portafilter',
             rarity = 'shop',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Ambiguous Furniture',
             description = 'Increase base chance of item rarities',
             flavorText = 'A popular item for completionists',
             rarity = 'shop',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Shiny Pyramid',
             description = 'On pickup, shuffe the skill pools of all team members',
             flavorText = 'The paralysis of choice',
             rarity = 'shop',
-            proc = ''
+            proc = 'OnPickup'
         },
         {
             toolName = 'Forgotten Placeholder',
             description = 'Escaping enemies become vulnerable',
             flavorText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
             rarity = 'shop',
-            proc = ''
+            proc = 'OnEscape'
         },
     }
 }

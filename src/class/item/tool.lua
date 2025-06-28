@@ -8,6 +8,7 @@ function Tool:init(toolDict)
 	self.description = toolDict.description
 	self.flavorText = toolDict.flavorText
 	self.rarity = toolDict.rarity
+	self.procCondition = toolDict.proc
 end;
 
 function Tool:update(dt)
