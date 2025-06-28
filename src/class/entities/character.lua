@@ -42,9 +42,6 @@ function Character:init(stats, actionButton)
   self.currentDP = stats.dp
   self.setSkill = nil
 
-  -- temp for testing
-  -- self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '_outline.png')
-  -- self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_' .. actionButton .. '.png')
   self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_b_outline.png')
   self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_b.png')
 

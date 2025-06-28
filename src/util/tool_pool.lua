@@ -7,7 +7,7 @@ local toolPool =
             toolName = 'Half Muffin',
             description = 'On pickup, increase all members\' HP by 8%',
             flavorText = 'Microwaved to perfection',
-            rarity = 'common'
+            rarity = 'common',
             proc = 'OnPickup'
         },
         {
@@ -65,6 +65,7 @@ local toolPool =
             flavorText = 'Every boule deserves a viking funeral',
             rarity = 'common',
             proc = 'OnPickup'
+        },
         {
             toolName = 'Hard Water',
             description = 'On level up, roll a bonus stat reward',

@@ -2,6 +2,31 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 06/28/2025
+
+Been steadily working, but still missing the TODO updates. Need to really work on this and make sure I am tracking progress so I don't burn out.
+
+### Progress Made
+
+1. Added UI visual feedback (still image) for landing a successful block or attack for SBP.
+2. Basic architecture designed for the different QTE hierarchy
+3. Tool Pools are defined as full dictionaries that can be used to instantiate tool objects, rather than just strings.
+
+### Reflection
+
+These were pretty big steps towards making it feel like a real game. There's not that much further that I can go before I run up against the wall of not having enough assets to test new features, so I will eventually need to get my butt back on Aseprite. I think it might also soon be time to decide if I am going to keep this public or not.
+
+### TODO
+ 
+These TODO items are bigger tasks that will need to be split up into actionable items, but they serve as a good starting point to think about for next week.
+
+- [ ] Tool Class Implementation
+- [ ] Tool Asset Development
+- [ ] Defense State Dodging or Jumping
+- [ ] Projectiles
+- [ ] Collision
+
+
 ## 06/18/2025
 
 Missed another TODO update yesterday because I was so knee deep in GUI stuff I lost track of tracking my progress. Some things I realized:

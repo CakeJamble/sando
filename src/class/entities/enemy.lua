@@ -42,22 +42,6 @@ function Enemy:knockOut()
   return reward
 end;
 
--- function Enemy:randPickLoot(lootPool)
---   if not lootPool then return end
---   local lootType = lootPool[math.random(1, #lootPool)]
---   local lootIndex = lootType[math.random(1, #lootPool.lootType)]
---   local lootDict = lootPool.lootType[lootIndex]
---   local loot = {}
---   if lootType == 'gear' then
---     loot = Gear(lootDict)
---   elseif lootType == 'consumable' then
---     loot = Consumable(lootDict)
---   else -- lootType == 'tool'
---     loot = Tool(lootDict)
---   end
---   return loot
--- end;
-
 function Enemy:update(dt)
   Entity.update(self, dt)
   if self.state == 'offense' then
