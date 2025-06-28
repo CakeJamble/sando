@@ -236,147 +236,141 @@ local toolPool =
 
     uncommon = {
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Charging Cable',
+            description = 'Level ups double the FP restored',
+            flavorText = 'If the phone dies, all the recipes go with it',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Face Roller',
+            description = 'Blocking physical attacks nullifies status effect procs',
+            flavorText = 'Keeping up the streak enhances dough structure',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Sunscreen',
+            description = 'You can no longer be burned',
+            flavorText = 'PA+++++',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Mini Whiteboard',
+            description = 'Enemy intents are visible',
+            flavorText = 'It\'s full of percentages',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Coffee Mug',
+            description = 'You can carry 2 more consumables',
+            flavorText = 'A milky blob remains where a shakily drawn tulip once existed',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Milk Pitcher',
+            description = 'Using a consumable increases you Max HP slightly',
+            flavorText = 'It chirps with the sound of milk being stretched',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Meat Press',
+            description = 'Deal more damage to vulnerable enemies',
+            flavorText = 'It\'s just a small cast iron pan',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Mummified Grapes',
+            description = 'Summoned enemies start weakened',
+            flavorText = 'Raisins?',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Soft Water',
+            description = 'On pickup, cleanse all curses',
+            flavorText = 'The good stuff. Only for the dough, not for us',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Coffee Puck',
+            description = 'Get 3 random consumables',
+            flavorText = 'Rock solid, showing signs of overextraction',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Thermometer',
+            description = 'At the start of battle, inflict vulnerable on all enemies',
+            flavorText = 'For tracking, and giving up on tracking, fermentation',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Crushed Can',
+            description = 'Gain additional money at the end of combat',
+            flavorText = 'Hi! Me 5¢ ;P',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Pizza Spire',
+            description = 'Swapping party members restores a small amount of FP',
+            flavorText = 'One of our chefs left to slay this, but never returned',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Portafilter',
+            description = 'An additional consumable is found after every battle',
+            flavorText = 'Massive, thick, heavy, and far too rough',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Preserved Pastry',
+            description = 'Basic Attacks deal more damage when FP is below 25%',
+            flavorText = 'Made with Ancient Grains',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Potted Plant',
+            description = 'You get a free luck roll on every level up',
+            flavorText = 'It\'s plastic, but the mental health benefits are undeniable',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Desecrated Idol',
+            description = 'On pickup, lose half your money and convert this into a Refurbished Idol',
+            flavorText = 'It is sealed in what appears to be wax',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Shutter Key',
+            description = 'Heal slightly between battles',
+            flavorText = 'Unlocks a place to cool off between shifts',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Parking Permit',
+            description = 'Cannot be stunned',
+            flavorText = 'Valid only in Lot 4, except on cloudy Thursdays after 5pm',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Cat Teaser',
+            description = 'On Level Up, roll an additional bonus for Speed',
+            flavorText = 'More feathers is more fun',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Points Card',
+            description = 'Insufficient FP for a skill is supplemented by using HP',
+            flavorText = 'It\'s warm to the touch',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Folded Filter',
+            description = 'On consumable use, lower a random stat one stage and then raise a different stat two stages',
+            flavorText = 'Great coffee requires sacrifices',
             rarity = 'uncommon'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
-            rarity = 'uncommon'
-        },
-        {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Stolen Rug',
+            description = 'The first shop item you purchase is free, then all prices are raised by 1.5x in that shop',
+            flavorText = 'The rug was not for sale',
             rarity = 'uncommon'
         },
     },
