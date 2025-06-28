@@ -23,6 +23,14 @@ function Enemy:init(enemyName, enemyType)
   Enemy.yPos = Enemy.yPos + 150
 end;
 
+function Enemy:startTurn(hazards)
+  Entity.startTurn(self)
+
+  for i,hazard in pairs(hazards.enemyHazards) do
+    hazard:proc(self)
+  end
+end;
+
 function Enemy:setupOffense()
   -- pick a random skill
   local skillIndex = love.math.random(1, #self.skillList)

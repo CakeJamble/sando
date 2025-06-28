@@ -1,7 +1,12 @@
+--! filename: globals
+
+-- global variables
 SEED = math.randomseed(math.random(1, math.huge))
 
 CHARACTER_TEAM = {}
+turnCounter = 1
 
+-- global functions
 function saveCharacterTeam(team)
   CHARACTER_TEAM = team
   -- writeTableToJSON(team)

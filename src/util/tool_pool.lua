@@ -110,7 +110,7 @@ local toolPool =
         },
         {
             toolName = 'Dairy Pills',
-            description = 'Cures lactose intolerance at the start of every turn',
+            description = 'Cures lactose intolerance at the start of your turn',
             flavorText = 'I\'m so bloated',
             rarity = 'common',
             proc = 'OnStartTurn'
@@ -166,7 +166,7 @@ local toolPool =
         },
         {
             toolName = 'Dress Shirt',
-            description = 'Every 3 turns, the first character goes twice',
+            description = 'Every 3 turns, the team members have a slight chance to extra damage',
             flavorText = 'Lets you make a first impression twice!',
             rarity = 'common',
             proc = 'OnStartTurn'
@@ -239,7 +239,7 @@ local toolPool =
             description = 'A random team member starts each battle with burn',
             flavorText = 'Take the evil you know over the evils you don\'t',
             rarity = 'common',
-            proc = 'OnStartTurn'
+            proc = 'OnStartBattle'
         },
     },
 
@@ -270,7 +270,7 @@ local toolPool =
             description = 'Enemy intents are visible',
             flavorText = 'It\'s full of percentages',
             rarity = 'uncommon',
-            proc = 'OnNextTurn'
+            proc = 'OnStartTurn'
         },
         {
             toolName = 'Coffee Mug',
@@ -563,7 +563,7 @@ local toolPool =
             description = 'On entering a shop, restore a moderate amount of HP',
             flavorText = 'DO NOT run this when the dish washer is going',
             rarity = 'event',
-            proc = ''
+            proc = 'OnEnterShop'
         },
         {
             toolName = 'Necronominom',

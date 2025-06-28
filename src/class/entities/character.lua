@@ -52,11 +52,18 @@ function Character:init(stats, actionButton)
   self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'])
   self:setDefenseAnimations()
   self.actionUI = ActionUI()
+  self.cannotLose = false
   self.equips = {}
 end;
 
-function Character:startTurn()
+function Character:startTurn(hazards)
   Entity.startTurn(self)
+  Signal.emit('OnStartTurn', self)
+
+  for i,hazard in pairs(hazards.characterHazards) do
+    hazard:proc(self)
+  end
+  
   self.actionUI:set(self)
 end
 
@@ -85,10 +92,24 @@ function Character:takeDamage(amount)
     self.battleStats.defense = self.battleStats.defense + self.defenseState.blockMod
     print(self.battleStats.defense)
   end
+
   Entity.takeDamage(self, amount)
+  
+  -- For Status Effect that prevents KO on own turn
+  if self.cannotLose and self.isFocused then
+    self.battleStats['hp'] = math.max(1, self.battleStats['hp'])
+  end
 
   if self.defenseState.bonusApplied then
     self.battleStats.defense = self.battleStats.defense - self.defenseState.blockMod
+  end
+end;
+
+function Character:takeDamagePierce(amount)
+  Entity.takeDamagePierce(amount)
+  -- For Status Effect that prevents KO on own turn
+  if self.cannotLose and self.isFocused then
+    self.battleStats['hp'] = math.max(1, self.battleStats['hp'])
   end
 end;
 

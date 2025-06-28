@@ -60,6 +60,8 @@ function Entity:init(stats, x, y)
   self.dmgDisplayOffsetX = 0
   self.dmgDisplayOffsetY = 0
   self.dmgDisplayScale = 1
+
+  self.ignoreHazards = false
 end;
 
 function Entity:startTurn()
@@ -156,6 +158,10 @@ function Entity:takeDamage(amount) --> void
   self.countFrames = true
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
 end;
+
+function Entity:takeDamagePierce(amount) --> void
+  self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
+end
 
 -- Called after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void

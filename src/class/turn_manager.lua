@@ -1,5 +1,6 @@
 --! filename: turn manager
 require('class.qte.qte_manager')
+require('util.globals')
 Class = require('libs.hump.class')
 TurnManager = Class{}
 
@@ -14,12 +15,20 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.turnSpentQueue = {}
   self.rewards = {}
   self.qteManager = QTEManager()
+  self.combatHazards = {
+    characterHazards = {},
+    enemyHazards = {}
+  }
 
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
   set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
   and start their turn. After starting it, increment the turnIndex for the next combatant. ]]
     function ()
+      if self.turnIndex = 1 then
+        turnCounter = turnCounter + 1
+      end
+
       self.qteManager:reset()
       local koEntities = {}
 
@@ -79,7 +88,7 @@ function TurnManager:init(characterTeam, enemyTeam)
         end
       end
 
-      self.activeEntity:startTurn()
+      self.activeEntity:startTurn(self.combatHazards)
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
       if self.activeEntity.type == 'enemy' then
         self.activeEntity:setupOffense()
@@ -151,6 +160,16 @@ function TurnManager:init(characterTeam, enemyTeam)
         self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
       end
       self.activeEntity.offenseState.skill.sound:play()
+    end
+  );
+
+  Signal.register('PlacedHazards',
+    function(entityType, hazard)
+      if entityType = 'character' then
+        table.insert(self.combatHazards.enemyHazards, hazard)
+      else
+        table.insert(self.combatHazards.characterHazards, hazard)
+      end
     end
   );
 end;
