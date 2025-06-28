@@ -377,200 +377,206 @@ local toolPool =
 
     rare = {
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Pastry Brush',
+            description = 'Doubles Crit Chance for skills with crit bonuses',
+            flavorText = 'Delicate, elegant, egg-washed',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Floury Marker',
+            description = 'Removing a curse also heals a small amount of HP',
+            flavorText = 'It\'s caked in flour, but still writes just fine',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Double Helix',
+            description = 'Adds +1 to multihit attacks',
+            flavorText = 'One strand short of a beautiful braid. The first strand-like tool',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'To-Go Bag',
+            description = 'You gain slightly more EXP from battles',
+            flavorText = 'The name is illegible',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Proofer',
+            description = 'Elites have less Base HP',
+            flavorText = 'It\'s warm and humid inside, the dough is relaxing',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Picnic Basket',
+            description = 'On pickup, rest',
+            flavorText = 'There are crumbs on it from last time, they look edible',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Croissant Flakes',
+            description = 'Consumables are slightly more effective',
+            flavorText = 'Saving them for later',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Scraper',
+            description = 'Adds +40% to crit bonuses',
+            flavorText = 'Never leave home without it',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Everything Seasoning',
+            description = 'On pickup, copy a skill of any character to another character',
+            flavorText = 'A beautiful dress for a perfect bagel',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Motherly Doll',
+            description = 'You cannot be KOd during your turn',
+            flavorText = 'You can do this better than mama',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Deck of Cards',
+            description = 'At the start of your turn, shuffle the FP costs of all skills',
+            flavorText = 'It\'s full of jokers',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Loaf Loader',
+            description = 'In pickup, one character can learn any skill',
+            flavorText = 'The bread shinkanse',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Pot of Ghee',
+            description = 'Buffs are more effective',
+            flavorText = 'Clarity',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Work Shoes',
+            description = 'Grants immunity to start of turn hazards',
+            flavorText = 'The secure feeling of non-slip shoes fills you with determination',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Canvas Tote',
+            description = 'Gain an additional accessory slot',
+            flavorText = 'Simple but effective',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Cold Brew Pitcher',
+            description = '+5% Crit chance whenever you gain speed',
+            flavorText = 'It\'s just a pitcher, but it\'s been called on for greater purposes',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Memory Foam Mattress',
+            description = 'Healing skills are more effective',
+            flavorText = 'This is my hole! It was made for me!',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Whetstone',
+            description = 'Restore a small amount of FP when an enemy raises their stats',
+            flavorText = 'Caught them monologuing',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Sticky Notes',
+            description = 'On team member KO, the enemy\'s stats are all decreased by one stage',
+            flavorText = 'It\'s full of logins and passwords',
             rarity = 'rare'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
-            rarity = 'rare'
-        },
-        {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Tardy Treat',
+            description = 'Slow a random teammate for 2 turns, then boost all of their stats one stage',
+            flavorText = 'You were late, but you did the right thing',
             rarity = 'rare'
         },
     },
 
     event = {
         {
-            toolName = '',
-            description = '',
+            toolName = 'Meat Grinder',
+            description = 'Enemies in the next 3 encounters have 1 HP',
             flavorText = '',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Electric Kettle',
+            description = 'On entering a shop, restore a moderate amount of HP',
+            flavorText = 'DO NOT run this when the dish washer is going',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Necronominom',
+            description = 'On selling an equipment, a random equipment becomes more effective',
+            flavorText = 'It hungers',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Azzi Manuscript',
+            description = 'You are more likely to find uncommon and rare accessories',
+            flavorText = 'A survival guide for the pixel world',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Tassajara Bread Book',
+            description = 'You are more likely to find uncommon and rare equipment',
+            flavorText = 'The pages are worn and well-loved',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Levain of Theseus',
+            description = 'Summoned enemies spawn with addiitonal health, but reward more EXP and money',
+            flavorText = 'Is this the same levain that it was last week?',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Puff\'s Codex',
+            description = 'The first consumable you use each battle goes off twice',
+            flavorText = 'A cookbook from a distant kingdom that loves mushrooms',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Massage Gun',
+            description = 'Speed modifiers also affect critical chance',
+            flavorText = 'Revitalizes muscles to the strength of the First Generation',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Shoe Charm',
+            description = 'Attacks have an cosmetic affect added',
+            flavorText = 'So cute!',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Test Oracle',
+            description = 'You quack at the start of battle, reducing stats randomly across enemies',
+            flavorText = 'It cannot speak, but when you ask for help, you receive the guidance you were seeking',
             rarity = 'event'
         },
         {
-            toolName = '',
-            description = '',
-            flavorText = '',
+            toolName = 'Lin\'s Insurance',
+            description = 'On stats being lowered, gain a small amount of money',
+            flavorText = 'Who would have thought we would need fire insurance in a bakery?',
             rarity = 'event'
         },
+        {
+            toolName = 'Lin\'s Ledger',
+            description = 'When a stat is lowered, raise a random stat of another teammate',
+            flavorText = 'A skilled baker can even cook the books',
+            rarity = 'event'
+        },
+        {
+            toolName = 'Vampire Fangs',
+            description = 'Set Max HP to 50%. Attacks lifesteal for 25% of damage dealt',
+            flavorText = 'Makes it harder to eat bread',
+            rarity = 'event'
+        }
 
     },
     shop = {
