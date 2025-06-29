@@ -54,8 +54,7 @@ function combat:init()
   -- Signal.register('MoveBack',
   --   function()
   --     if camera.scale > 1 then
-  --       camera:zoom(0.6666)
-  --       self.lockCamera = false
+  --       camera.scale = 1
   --     end
   --   end
   -- );

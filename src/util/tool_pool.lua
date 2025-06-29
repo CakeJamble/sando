@@ -55,7 +55,11 @@ local toolPool =
             description = 'Further reduces damage blocked by guarding by a small amount',
             flavorText = 'For the baker with nothing left to give',
             rarity = 'common',
-            proc = 'OnDamaged'
+            proc =  function(character)
+                        if character.defenseState.bonusApplied then -- if signal if emitted in defense state, we don't need this check
+                            character.blockMod = character.blockMod + 1
+                        end
+                    end
         },
         {
             toolName = 'Water Bottle',
@@ -104,7 +108,9 @@ local toolPool =
             description = 'On level up, roll a bonus stat reward',
             flavorText = 'Good ole tap water',
             rarity = 'common',
-            proc = 'OnLevelUp'
+            proc =  function(character)
+                        Character.statRollsOnLevel = Character.statRollsOnLevel + 1
+                    end;
         },
         {
             toolName = 'Ancient Interface',
@@ -233,14 +239,24 @@ local toolPool =
             description = 'Grounded enemies have a small chance to have their attack lowered after attacking',
             flavorText = 'Non-slip shoes required',
             rarity = 'common',
-            proc = 'OnDamaged'
+            proc =  function(enemy)
+                        local chance = 0.25
+                        if love.math.random() <= chance then
+                            enemy:takeDamagePierce(2)
+                        end
+                    end
         },
         {
+            -- idea: change to on learning a new skill?
             toolName = 'Dragonscale Ring',
             description = 'Take half damage from recoil',
             flavorText = 'Cool to the touch',
             rarity = 'common',
-            proc = 'OnAttack'
+            proc =  function(skill)
+                        -- check if skill has recoil
+                        -- if skill has recoil, then halve recoil amount
+                        -- reset recoil damage after
+                    end
         },
         {
             toolName = 'Bansho Fan',

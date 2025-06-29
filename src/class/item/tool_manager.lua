@@ -7,6 +7,10 @@ function ToolManager:init(characterTeam)
 	self.toolList = {}
 	self.startTurnToolList = {}
 	self.pickupToolList = {}
+	self.onAttackList = {}
+	self.onDefendList = {}
+	self.onEnemyAttackList = {}
+	self.onLevelList = {}
 	self.characterTeam = characterTeam
 
 	Signal.register('OnStartTurn',
@@ -25,13 +29,35 @@ function ToolManager:init(characterTeam)
 		end
 	)
 
-	Signal.register('OnDamaged',
-		function()
-			-- body
+	Signal.register('OnAttack',
+		function(skill)
+			for i,tool in pairs(self.onAttackList) do
+				tool.proc(skill)
+			end
 		end
 	)
 
-	Signal.register('OnLevelUp')
+	Signal.register('OnDefend',
+		function(character)
+			for i,tool in pairs(self.onDamagedToolList) do
+				tool.proc(character)
+		end
+	)
+
+	Signal.register('OnEnemyAttack',
+		function(enemy)
+			for i,tool in pairs(self.onEnemyAttackList)) do
+				tool.proc(enemy)
+			end
+		end
+	)
+
+	Signal.register('OnLevelUp',
+		function(character)
+			for i,tool in pairs(self.onLevelList) do
+				tool.proc(character)
+		end
+	)
 end;
 
 --[[Present the prompt for the player to choose which character they will apply the buff to.

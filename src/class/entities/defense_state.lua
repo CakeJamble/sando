@@ -62,6 +62,7 @@ function DefenseState:reset()
   self.bonusApplied = false
   self.stance = 'idle'
   self.feedbackFrameCount = 0
+  self.blockMod = nil
 end;
 
 function DefenseState:startFrameWindow()

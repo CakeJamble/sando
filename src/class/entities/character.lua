@@ -20,6 +20,7 @@ Character = Class{__includes = Entity,
   yPos = 110,
   xPos = 50,
   ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
+  statRollsOnLevel = 1
 }
 
 -- Character constructor
