@@ -12,7 +12,7 @@ local toolPool =
                         for _,member in pairs(characterTeam.members) do
                             member.baseStats['hp'] = member.baseStats['hp'] + (math.ceil(0.08 * member.baseStats['hp']))
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Strainer',
@@ -23,7 +23,7 @@ local toolPool =
                         for _,member in pairs(characterTeam.members) do
                             member.baseStats['defense'] = member.baseStats['defense'] + 1
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Energy Drink',
@@ -32,7 +32,7 @@ local toolPool =
             rarity = 'common',
             proc =  function(characterTeam)
                         -- signal for choosing a character to go first
-                    end;
+                    end
         },
         {
             toolName = 'Smart Watch',
@@ -48,7 +48,7 @@ local toolPool =
             rarity = 'common',
             proc =  function(characterTeam)
                         -- signal for choosing character and move
-                    end;
+                    end
         },
         {
             toolName = 'Splatter Guard',
@@ -66,7 +66,7 @@ local toolPool =
                         for _,member in pairs(characterTeam.members) do
                             member:heal(999)
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Piping Bag',
@@ -81,7 +81,7 @@ local toolPool =
                                 end
                             end
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Banneton',
@@ -97,7 +97,7 @@ local toolPool =
                                 end
                             end
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Hard Water',
@@ -136,7 +136,7 @@ local toolPool =
                         for _,member in pairs(characterTeam.members) do
                             member.skillList[1].skill.damage = member.skillList[1].skill.damage + 5
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Decroded Mitts',
@@ -156,7 +156,7 @@ local toolPool =
                                 table.remove(character.debuffs, i)
                             end
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Dough Hook',
@@ -216,7 +216,7 @@ local toolPool =
                         if turnCount % 3 == 0 and love.math.random() >= 0.7 then
                             character:modifyBattleStat('defense', 1)
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Calendar',
@@ -324,7 +324,7 @@ local toolPool =
                         for _,target in pairs(character.targets) do
                             target.showIntents = true
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Coffee Mug',
@@ -333,7 +333,7 @@ local toolPool =
             rarity = 'uncommon',
             proc =  function(characterTeam)
                         characterTeam.inventory.numConsumableSlots = characterTeam.inventory.numConsumableSlots + 2
-                    end;
+                    end
         },
         {
             toolName = 'Milk Pitcher',
@@ -365,7 +365,7 @@ local toolPool =
                         for _,member in pairs(characterTeam.members) do
                             member:cleanse()
                         end
-                    end;
+                    end
         },
         {
             toolName = 'Coffee Puck',
@@ -376,7 +376,7 @@ local toolPool =
                         -- generate 3 random consumables
                         -- spawn window/interface to display them
                         -- have player take all/some/none
-                    end;
+                    end
         },
         {
             toolName = 'Thermometer',
@@ -430,7 +430,7 @@ local toolPool =
                         -- need to figure out how to insert into the list from here
                         -- table.insert(self.pickupToolList, PickupTool(Refurbished Idol dictionary))
                         -- Signal.emit('OnPickup', refurbishedIdol)
-                    end;
+                    end
         },
         {
             toolName = 'Shutter Key',
@@ -519,7 +519,8 @@ local toolPool =
             rarity = 'rare',
             proc =  function(characterTeam)
                         characterTeam:rest()
-                    end;
+                    end
+        },
         {
             toolName = 'Croissant Flakes',
             description = 'Consumables are slightly more effective',
@@ -544,7 +545,7 @@ local toolPool =
                         -- choose character to receive skill
                         -- paste skill
                         -- remove preexisting skill if slot is full
-                    end;
+                    end
         },
         {
             toolName = 'Motherly Doll',
@@ -571,7 +572,7 @@ local toolPool =
                             end
                         end
                         character.skillList = skillList
-                    end;
+                    end
         },
         {
             toolName = 'Loaf Loader',
@@ -583,7 +584,7 @@ local toolPool =
                         -- choose skill
                         -- paste skill
                         -- remove preexisting skill if slot is full
-                    end;
+                    end
         },
         {
             toolName = 'Pot of Ghee',
@@ -599,7 +600,7 @@ local toolPool =
             rarity = 'rare',
             proc =  function(character)
                         character.ignoreHazards = true
-                    end;
+                    end
         },
         {
             toolName = 'Canvas Tote',
@@ -609,7 +610,7 @@ local toolPool =
             proc =  function(characterTeam)
                         -- choose a character
                         -- add accessory slot to one character
-                    end;
+                    end
         },
         {
             toolName = 'Cold Brew Pitcher',
@@ -677,7 +678,7 @@ local toolPool =
             rarity = 'event',
             proc =  function(characterTeam)
                         -- increase base uncommon and rare chance for accessories
-                    end;
+                    end
         },
         {
             toolName = 'Tassajara Bread Book',
@@ -686,7 +687,7 @@ local toolPool =
             rarity = 'event',
             proc =  function(characterTeam)
                         -- increase base uncommon and rare chance for equipment
-                    end;
+                    end
         },
         {
             toolName = 'Levain of Theseus',
@@ -745,7 +746,7 @@ local toolPool =
             proc =  function(characterTeam)
                         -- choose character
                         -- give vampirism effect
-                    end;
+                    end
         }
 
     },
@@ -772,7 +773,7 @@ local toolPool =
             proc =  function(characterTeam)
                         -- choose character
                         -- give dodgeMultihit ability
-                    end;
+                    end
         },
         {
             toolName = 'Coffee Tamper',
@@ -782,7 +783,7 @@ local toolPool =
             proc =  function(characterTeam)
                         local i = love.math.random(1, #characterTeam.members)
                         -- increase number of skill slots by 1
-                    end;
+                    end
         },
         {
             toolName = 'Ambiguous Furniture',
@@ -791,7 +792,7 @@ local toolPool =
             rarity = 'shop',
             proc =  function(characterTeam)
                         -- increase base chance of item rarities
-                    end;
+                    end
         },
         {
             toolName = 'Shiny Pyramid',
@@ -801,7 +802,7 @@ local toolPool =
             proc =  function(characterTeam)
                         -- shuffle skill pools of all team members
                             -- swap entire pools, or skills all swapped individually at random?
-                    end;
+                    end
         },
         {
             toolName = 'Forgotten Placeholder',

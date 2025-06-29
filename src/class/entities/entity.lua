@@ -60,6 +60,7 @@ function Entity:init(stats, x, y)
   self.dmgDisplayOffsetX = 0
   self.dmgDisplayOffsetY = 0
   self.dmgDisplayScale = 1
+  self.opacity = 0
 
   self.ignoreHazards = false
 end;
@@ -100,6 +101,7 @@ function Entity:resetDmgDisplay()
   self.dmgDisplayOffsetX = 0
   self.dmgDisplayOffsetY = 0
   self.dmgDisplayScale = 1
+  self.opacity = 0
 end;
 
 
@@ -229,7 +231,7 @@ function Entity:update(dt) --> void
     self.dmgDisplayScale = self.dmgDisplayScale - 0.01
     self.dmgDisplayOffsetX = math.cos(self.currDmgFrame * 0.25)
     self.dmgDisplayOffsetY = self.dmgDisplayOffsetY + 0.1
-
+    self.opacity = self.opacity + 0.05
   end
 end;
 
@@ -258,9 +260,9 @@ function Entity:draw() --> void
     print("logical error in determining movement state of entity. state is", state)
   end
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(0,0,0, 1 - self.opacity)
     love.graphics.print(self.amount, self.x + self.dmgDisplayOffsetX, self.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(1,1,1, 1)
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1)

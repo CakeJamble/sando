@@ -25,7 +25,7 @@ function TurnManager:init(characterTeam, enemyTeam)
   set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
   and start their turn. After starting it, increment the turnIndex for the next combatant. ]]
     function ()
-      if self.turnIndex = 1 then
+      if self.turnIndex == 1 then
         turnCounter = turnCounter + 1
       end
 
@@ -165,7 +165,7 @@ function TurnManager:init(characterTeam, enemyTeam)
 
   Signal.register('PlacedHazards',
     function(entityType, hazard)
-      if entityType = 'character' then
+      if entityType == 'character' then
         table.insert(self.combatHazards.enemyHazards, hazard)
       else
         table.insert(self.combatHazards.characterHazards, hazard)
