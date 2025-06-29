@@ -113,6 +113,11 @@ function Character:takeDamagePierce(amount)
   end
 end;
 
+function Character:cleanse()
+  -- cleanse all curses
+  -- play cleanse animation
+end;
+
 function Character:setTargets(characterMembers, enemyMembers)
   print('setting targets for ', self.entityName)
   Entity.setTargets(self, characterMembers, enemyMembers)

@@ -487,7 +487,7 @@ local toolPool =
         },
         {
             toolName = 'Loaf Loader',
-            description = 'In pickup, one character can learn any skill',
+            description = 'On pickup, one character can learn any skill',
             flavorText = 'The bread shinkanse',
             rarity = 'rare',
             proc = 'OnPickup'

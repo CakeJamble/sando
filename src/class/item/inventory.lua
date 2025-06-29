@@ -18,6 +18,9 @@ function Inventory:init(members)
     self.gears = {} -- Character and Gear
     self.tools = {}
     self.consumables = {}
+    self.numConsumableSlots = 3
+    self.numEquipSlots = 2
+    self.numAccessories = 2
     self.money = {}
     self.displaySellOption = false
 end
