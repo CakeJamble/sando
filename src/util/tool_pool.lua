@@ -8,21 +8,31 @@ local toolPool =
             description = 'On pickup, increase all members\' HP by 8%',
             flavorText = 'Microwaved to perfection',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        for _,member in pairs(characterTeam.members) do
+                            member.baseStats['hp'] = member.baseStats['hp'] + (math.ceil(0.08 * member.baseStats['hp']))
+                        end
+                    end;
         },
         {
             toolName = 'Strainer',
             description = 'On pickup, increase all member\'s defense by 1',
             flavorText = 'No clumps',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        for _,member in pairs(characterTeam.members) do
+                            member.baseStats['defense'] = member.baseStats['defense'] + 1
+                        end
+                    end;
         },
         {
             toolName = 'Energy Drink',
             description = 'On pickup, assigned character has a 50% chance to take their turn first',
             flavorText = 'For the baker with nothing left to give',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- signal for choosing a character to go first
+                    end;
         },
         {
             toolName = 'Smart Watch',
@@ -36,7 +46,9 @@ local toolPool =
             description = 'On pickup, enchant a move of one character with healing',
             flavorText = 'It\'s close to hatching',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- signal for choosing character and move
+                    end;
         },
         {
             toolName = 'Splatter Guard',
@@ -50,21 +62,42 @@ local toolPool =
             description = 'On pickup, heal all members and status conditions',
             flavorText = 'Why is it always empty',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        for _,member in pairs(characterTeam.members) do
+                            member:heal(999)
+                        end
+                    end;
         },
         {
             toolName = 'Piping Bag',
             description = 'On pickup, all current Flour Skill costs are reduced by 1 FP',
             flavorText = 'CUSTARD',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        for _,member in pairs(characterTeam.members) do
+                            for i,skill in ipairs(member.skillList) do
+                                if i ~= 1 then
+                                    skill.cost = math.min(0, skill.cost - 1)
+                                end
+                            end
+                        end
+                    end;
         },
         {
             toolName = 'Banneton',
             description = 'On pickup, increase FP for all current Flower Skills by 1, and increase their effectiveness',
             flavorText = 'Every boule deserves a viking funeral',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        for _,member in pairs(characterTeam.members) do
+                            for i,skill in ipairs(member.skillList) do
+                                if i ~= 1 then
+                                    skill.cost = skill.cost + 1
+                                    -- TODO: increase effectiveness somehow?
+                                end
+                            end
+                        end
+                    end;
         },
         {
             toolName = 'Hard Water',
@@ -99,7 +132,11 @@ local toolPool =
             description = 'Basic attacks deal more damage',
             flavorText = 'revise',
             rarity = 'common',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        for _,member in pairs(characterTeam.members) do
+                            member.skillList[1].skill.damage = member.skillList[1].skill.damage + 5
+                        end
+                    end;
         },
         {
             toolName = 'Decroded Mitts',
@@ -113,7 +150,13 @@ local toolPool =
             description = 'Cures lactose intolerance at the start of your turn',
             flavorText = 'I\'m so bloated',
             rarity = 'common',
-            proc = 'OnStartTurn'
+            proc =  function(character)
+                        for i,debuff in ipairs(character.debuffs) do
+                            if debuff.name == 'Lactose Intolerance' then
+                                table.remove(character.debuffs, i)
+                            end
+                        end
+                    end;
         },
         {
             toolName = 'Dough Hook',
@@ -169,14 +212,21 @@ local toolPool =
             description = 'Every 3 turns, the team members have a slight chance to extra damage',
             flavorText = 'Lets you make a first impression twice!',
             rarity = 'common',
-            proc = 'OnStartTurn'
+            proc =  function(character)
+                        if turnCount % 3 == 0 and love.math.random() >= 0.7 then
+                            character:modifyBattleStat('defense', 1)
+                        end
+                    end;
         },
         {
             toolName = 'Calendar',
             description = 'Start of turn, lose 1 HP every turn and deal 4 damage to all enemies',
             flavorText = 'Closed on Mondays and Tuesdays',
             rarity = 'common',
-            proc = 'OnStartTurn'
+            proc =  function(character)
+                        character:takeDamagePierce(1)
+                        character.targets:takeDamagePierce(4)
+                    end
         },
         {
             toolName = 'Grease of Ruin',
@@ -270,14 +320,20 @@ local toolPool =
             description = 'Enemy intents are visible',
             flavorText = 'It\'s full of percentages',
             rarity = 'uncommon',
-            proc = 'OnStartTurn'
+            proc =  function(character)
+                        for _,target in pairs(character.targets) do
+                            target.showIntents = true
+                        end
+                    end;
         },
         {
             toolName = 'Coffee Mug',
             description = 'On pickup, gain 2 consumable slots',
             flavorText = 'A milky blob remains where a shakily drawn tulip once existed',
             rarity = 'uncommon',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        characterTeam.inventory.numConsumableSlots = characterTeam.inventory.numConsumableSlots + 2
+                    end;
         },
         {
             toolName = 'Milk Pitcher',
@@ -305,14 +361,22 @@ local toolPool =
             description = 'On pickup, cleanse all curses',
             flavorText = 'The good stuff. Only for the dough, not for us',
             rarity = 'uncommon',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        for _,member in pairs(characterTeam.members) do
+                            member:cleanse()
+                        end
+                    end;
         },
         {
             toolName = 'Coffee Puck',
             description = 'Get 3 random consumables',
             flavorText = 'Rock solid, showing signs of overextraction',
             rarity = 'uncommon',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- generate 3 random consumables
+                        -- spawn window/interface to display them
+                        -- have player take all/some/none
+                    end;
         },
         {
             toolName = 'Thermometer',
@@ -361,7 +425,12 @@ local toolPool =
             description = 'On pickup, lose half your money and convert this into a Refurbished Idol',
             flavorText = 'It is sealed in what appears to be wax',
             rarity = 'uncommon',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        characterTeam.inventory:spend(math.floor(self.characterTeam.inventory.money / 2))
+                        -- need to figure out how to insert into the list from here
+                        -- table.insert(self.pickupToolList, PickupTool(Refurbished Idol dictionary))
+                        -- Signal.emit('OnPickup', refurbishedIdol)
+                    end;
         },
         {
             toolName = 'Shutter Key',
@@ -448,8 +517,9 @@ local toolPool =
             description = 'On pickup, rest',
             flavorText = 'There are crumbs on it from last time, they look edible',
             rarity = 'rare',
-            proc = 'OnPickup'
-        },
+            proc =  function(characterTeam)
+                        characterTeam:rest()
+                    end;
         {
             toolName = 'Croissant Flakes',
             description = 'Consumables are slightly more effective',
@@ -469,28 +539,51 @@ local toolPool =
             description = 'On pickup, copy a skill of any character to another character',
             flavorText = 'A beautiful dress for a perfect bagel',
             rarity = 'rare',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- get skill from a character
+                        -- choose character to receive skill
+                        -- paste skill
+                        -- remove preexisting skill if slot is full
+                    end;
         },
         {
             toolName = 'Motherly Doll',
             description = 'You cannot be KOd during your turn',
             flavorText = 'You can do this better than mama',
             rarity = 'rare',
-            proc = 'OnStartTurn'
+            proc =  function(character)
+                        character.cannotLose = true
+                    end
         },
         {
             toolName = 'Deck of Cards',
             description = 'At the start of your turn, shuffle the FP costs of all skills',
             flavorText = 'It\'s full of jokers',
             rarity = 'rare',
-            proc = 'OnStartTurn'
+            proc =  function(character)
+                        local skillList = character.skillList
+                        for i,skill in ipairs(skillList) do
+                            if i > 1 then -- don't change basic skill
+                                local j = love.math.random(1, #character.skillList)
+                                local cost = character.skillList[j].cost
+                                skillList[i].cost = cost
+                                table.remove(character.skillList, k)
+                            end
+                        end
+                        character.skillList = skillList
+                    end;
         },
         {
             toolName = 'Loaf Loader',
             description = 'On pickup, one character can learn any skill',
             flavorText = 'The bread shinkanse',
             rarity = 'rare',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- choose character
+                        -- choose skill
+                        -- paste skill
+                        -- remove preexisting skill if slot is full
+                    end;
         },
         {
             toolName = 'Pot of Ghee',
@@ -504,14 +597,19 @@ local toolPool =
             description = 'Grants immunity to start of turn hazards',
             flavorText = 'The secure feeling of non-slip shoes fills you with determination',
             rarity = 'rare',
-            proc = 'OnStartTurn'
+            proc =  function(character)
+                        character.ignoreHazards = true
+                    end;
         },
         {
             toolName = 'Canvas Tote',
             description = 'Gain an additional accessory slot',
             flavorText = 'Simple but effective',
             rarity = 'rare',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- choose a character
+                        -- add accessory slot to one character
+                    end;
         },
         {
             toolName = 'Cold Brew Pitcher',
@@ -577,14 +675,18 @@ local toolPool =
             description = 'You are more likely to find uncommon and rare accessories',
             flavorText = 'A survival guide for the pixel world',
             rarity = 'event',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- increase base uncommon and rare chance for accessories
+                    end;
         },
         {
             toolName = 'Tassajara Bread Book',
             description = 'You are more likely to find uncommon and rare equipment',
             flavorText = 'The pages are worn and well-loved',
             rarity = 'event',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- increase base uncommon and rare chance for equipment
+                    end;
         },
         {
             toolName = 'Levain of Theseus',
@@ -640,7 +742,10 @@ local toolPool =
             description = 'Set Max HP to 50%. Attacks lifesteal for 25% of damage dealt',
             flavorText = 'Makes it harder to eat bread',
             rarity = 'event',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- choose character
+                        -- give vampirism effect
+                    end;
         }
 
     },
@@ -664,28 +769,39 @@ local toolPool =
             description = 'On pickup, choose a character. They dodge multihit attacks automatically.',
             flavorText = 'It spins unceasingly, observing the enemy',
             rarity = 'shop',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- choose character
+                        -- give dodgeMultihit ability
+                    end;
         },
         {
             toolName = 'Coffee Tamper',
             description = 'On pickup, a random character gains an additional skill slot',
             flavorText = 'Packs tightly, with even pressure across the surface of the portafilter',
             rarity = 'shop',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        local i = love.math.random(1, #characterTeam.members)
+                        -- increase number of skill slots by 1
+                    end;
         },
         {
             toolName = 'Ambiguous Furniture',
             description = 'Increase base chance of item rarities',
             flavorText = 'A popular item for completionists',
             rarity = 'shop',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- increase base chance of item rarities
+                    end;
         },
         {
             toolName = 'Shiny Pyramid',
             description = 'On pickup, shuffe the skill pools of all team members',
             flavorText = 'The paralysis of choice',
             rarity = 'shop',
-            proc = 'OnPickup'
+            proc =  function(characterTeam)
+                        -- shuffle skill pools of all team members
+                            -- swap entire pools, or skills all swapped individually at random?
+                    end;
         },
         {
             toolName = 'Forgotten Placeholder',
