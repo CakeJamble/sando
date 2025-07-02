@@ -2,6 +2,40 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/01/2025
+
+Pivoting over to Skill development since that's honestly what is most important in getting this game progressing.
+
+### QTEs
+
+- [x] Design Timed MBP
+- [x] Design Rhythym MBP 1
+- [x] Design Rhythym MBP 2
+- [x] Design Move Stick
+- [x] Design Hold SBP
+- [x] Design Hold Stick
+- [x] Design Random SBP
+
+### Reflection
+
+Not my most productive day. Need to get back into the flow and get the creative ideas flowing. I'm not exactly sure how to do this without the animations being made yet, but I think I can do some simple placeholder art for the Action Command Prompts with the Flour Skills this week. None of these are terribly challenging to implement either, at least, I hope not! Famous last words.
+
+
+## 06/30/2025
+
+More steady work on Tools and Inventory
+
+- [x] Basic inventory sturcture with UI display for tools (rectangles and text ok)
+- [ ] Adding & Removing Items
+- [ ] Tool Asset Development
+- [ ] Get and display info about tools
+
+## 06/29/2025
+
+My birthday :)
+
+Mostly small progress made on implementing the functors for each tool in its respective dictionary when proc'd by an event signal in the tool manager class. I expect this to continue for a couple more days, then I will need to move on to the next piece of gear/equipment etc. until the inventory class is ready to be tested. It might be better to build the inventory class first so that individual pieces can be tested as they are developed.
+
 ## 06/28/2025
 
 Been steadily working, but still missing the TODO updates. Need to really work on this and make sure I am tracking progress so I don't burn out.
@@ -20,9 +54,9 @@ These were pretty big steps towards making it feel like a real game. There's not
  
 These TODO items are bigger tasks that will need to be split up into actionable items, but they serve as a good starting point to think about for next week.
 
-- [ ] Tool Class Implementation
+- [x] Tool Class Implementation
 - [ ] Tool Asset Development
-- [ ] Defense State Dodging or Jumping
+- [x] Defense State Dodging or Jumping
 - [ ] Projectiles
 - [ ] Collision
 

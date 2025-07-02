@@ -11,6 +11,7 @@ Skill = Class{}
 function Skill:init(skillDict, width, height)
   self.skill = skillDict
   self.skillName = skillDict['skill_name']
+  self.damage = skillDict['damage']
   self.cost = skillDict['cost']
   self.description = skillDict['description']
   self.instructions = skillDict['instructions']
@@ -32,6 +33,11 @@ function Skill:init(skillDict, width, height)
   local sound_path = skillDict.sound_path
   self.sound = love.audio.newSource(sound_path, "static")
   self.sound:setVolume(0.8)
+end;
+
+function Skill:reset()
+  self.damage = self.skill['damage']
+  self.qte_bonus = self.skill['qte_bonus']
 end;
 
   -- Create and return a new animation

@@ -143,7 +143,7 @@ end;
 
 function combat:keypressed(key)
   if key == 'p' then
-    Gamestate.push(states['pause'], self.characterTeam)
+    Gamestate.push(states['pause'], self.characterTeam.inventory)
   else
     self.characterTeam:keypressed(key)
   end

@@ -5,7 +5,7 @@ function pause:initialize()
     -- TODO
 end;
 
-function pause:enter(previous, team)
+function pause:enter(previous, inventory)
     --[[
         TODO: set up pause menu (class? yea probably easiest to make it a class)
         inventory
@@ -16,7 +16,7 @@ function pause:enter(previous, team)
         settings
         exit
     ]]
-    tabs = {
+    self.tabs = {
         'inventory',
         'team',
         'settings',
@@ -26,7 +26,7 @@ function pause:enter(previous, team)
     self.menuSprite = love.graphics.newImage('asset/sprites/pause/menu.png')
     self.menuCursor = love.graphics.newImage('asset/sprites/pause/cursor.png')
     
-    self.teamInventory = team:getInventory()
+    self.inventory = inventory
 end;
 
 function pause:keypressed(key)
@@ -39,8 +39,11 @@ function pause:update(dt)
 end;
 
 function pause:draw()
-    love.graphics.draw(self.menuSprite, 0, 0)
-    love.graphics.draw(self.menuCursor, 0, 0)
+    push:start()
+    -- love.graphics.draw(self.menuSprite, 0, 0)
+    -- love.graphics.draw(self.menuCursor, 0, 0)
+    self.inventory:draw()
+    push:finish()
 end;
 
 return pause

@@ -4,11 +4,8 @@ Class = require 'libs.hump.class'
 Tool = Class{}
 
 function Tool:init(toolDict)
-	self.name = toolDict.toolName
-	self.description = toolDict.description
-	self.flavorText = toolDict.flavorText
-	self.rarity = toolDict.rarity
-	self.procCondition = toolDict.proc
+	self.dict = toolDict
+	-- self.sprite = love.graphics.newImage() ...
 end;
 
 function Tool:update(dt)

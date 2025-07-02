@@ -6,12 +6,14 @@ ToolManager = Class{}
 function ToolManager:init(characterTeam)
 	self.toolList = {}
 	self.startTurnToolList = {}
+	self.onStartBattleList = {}
 	self.pickupToolList = {}
 	self.onAttackList = {}
 	self.onDefendList = {}
 	self.onEnemyAttackList = {}
 	self.onLevelList = {}
 	self.characterTeam = characterTeam
+	self.enemyTeam = nil
 
 	Signal.register('OnStartTurn',
 		-- Proc the effects of Turn Start Tools
@@ -29,6 +31,14 @@ function ToolManager:init(characterTeam)
 		end
 	)
 
+	Signal.register('OnStartBattle',
+		function()
+			for i,tool in ipairs(#self.onStartBattleList) do
+				tool.proc(self.characterTeam, self.enemyTeam)
+			end
+		end
+	)
+
 	Signal.register('OnAttack',
 		function(skill)
 			for i,tool in pairs(self.onAttackList) do
@@ -41,13 +51,22 @@ function ToolManager:init(characterTeam)
 		function(character)
 			for i,tool in pairs(self.onDamagedToolList) do
 				tool.proc(character)
+			end
 		end
 	)
 
 	Signal.register('OnEnemyAttack',
 		function(enemy)
-			for i,tool in pairs(self.onEnemyAttackList)) do
+			for i,tool in pairs(self.onEnemyAttackList) do
 				tool.proc(enemy)
+			end
+		end
+	)
+
+	Signal.register('OnKO',
+		function()
+			for i,tool in pairs(self.onKOList) do
+				tool.proc(self.characterTeam, self.enemyTeam)
 			end
 		end
 	)
@@ -56,8 +75,41 @@ function ToolManager:init(characterTeam)
 		function(character)
 			for i,tool in pairs(self.onLevelList) do
 				tool.proc(character)
+			end
 		end
 	)
+
+	Signal.register('OnPurchase',
+		function(characterTeam)
+			for i,tool in pairs(self.onPurchaseList) do
+				-- do
+			end
+		end
+	)
+
+	Signal.register('OnEquipSell',
+		function(equip)
+			for i,tool in pairs(self.onEquipSellList) do
+				tool.proc(equip, self.characterTeam)
+			end
+		end
+	)
+
+	Signal.register('OnAccSell',
+		function(accessory)
+			for i,tool in pairs(self.onAccSellList) do
+				tool.proc(accessory, self.characterTeam.inventory)
+			end
+		end
+	)
+end;
+
+function ToolManager:set(enemyTeam)
+	self.enemyTeam = enemyTeam
+end;
+
+function ToolManager:reset()
+	self.enemyTeam  = nil
 end;
 
 --[[Present the prompt for the player to choose which character they will apply the buff to.

@@ -8,6 +8,8 @@ local toolPool =
             description = 'On pickup, increase all members\' HP by 8%',
             flavorText = 'Microwaved to perfection',
             rarity = 'common',
+            path = '',
+            procType = 'OnPickup',
             proc =  function(characterTeam)
                         for _,member in pairs(characterTeam.members) do
                             member.baseStats['hp'] = member.baseStats['hp'] + (math.ceil(0.08 * member.baseStats['hp']))
@@ -117,7 +119,10 @@ local toolPool =
             description = 'Your first attack each battle always gets the QTE bonus',
             flavorText = 'There\'s a satisfying clack to the keys',
             rarity = 'common',
-            proc = 'OnAttack'
+            proc =  function(enemy)
+                        -- check if turn counter == 1
+                        -- grant QTE bonus
+                    end
         },
         {
             toolName = 'Misshapen Beignet',
@@ -131,7 +136,11 @@ local toolPool =
             description = 'Slow enemies at the start of battle',
             flavorText = 'The kitchen can\'t move when the sink is full',
             rarity = 'common',
-            proc = 'OnStartBattle'
+            proc =  function(enemyTeam, characterTeam)
+                        for i,enemy in ipairs(enemyTeam) do
+                            -- apply slow
+                        end
+                    end
         },
         {
             toolName = 'Fake Mustache',
@@ -149,7 +158,9 @@ local toolPool =
             description = 'You cannot be debuffed during your turn',
             flavorText = 'Heat has worn away the fingertips',
             rarity = 'common',
-            proc = 'OnAttack'
+            proc =  function(skill)
+                        -- need some way to grant status invul during attack
+                    end
         },
         {
             toolName = 'Dairy Pills',
@@ -169,35 +180,48 @@ local toolPool =
             description = 'Increase damage for each empty or cursed skill slot',
             flavorText = 'It starts with a good mix',
             rarity = 'common',
-            proc = 'OnAttack'
+            proc =  function(skill)
+                        -- need some way to get the number of open slots
+                        local numFreeSlots = 3 -- for example
+                        local bonus = 2
+                        skill.damage = skill.damage + (bonus * numFreeSlots)
+                        -- make sure skill is reset after turn
+                    end
         },
         {
             toolName = 'Basque Cheesecake',
             description = 'Gain additional EXP when defeating burnt enemies',
             flavorText = 'It\'s not burnt! Okay, it is burnt, but it\'s supposed to look like that.',
             rarity = 'common',
-            proc = 'OnKO'
+            proc =  function(characterTeam, enemyTeam)
+                        -- need specific dying enemy for this one to add exp
+                    end
+
         },
         {
             toolName = 'Refurbished Idol',
             description = 'Gain additional money from enemies, equal to your level',
             flavorText = 'Their beauty was a spark that started an ancient war',
             rarity = 'common',
-            proc = 'OnKO'
+            proc = 'OnKO'   -- need specific dying enemy for this one to add money
         },
         {
             toolName = 'Water Cup',
             description = 'Restore a small amount of FP when you sell equipment',
             flavorText = 'Someone filled it with soda',
             rarity = 'common',
-            proc = 'OnEquipSell'
+            proc =  function(equip, characterTeam)
+                        -- restore slight amount of fp
+                    end
         },
         {
             toolName = 'Bottomless Fries',
             description = 'Restore a small amount of HP when purchasing an item',
             flavorText = 'It takes way too long for this to get refilled',
             rarity = 'common',
-            proc = 'OnPurchase'
+            proc = function(characterTeam)
+                        -- restore slight amount of hp
+                    end
         },
         {
             toolName = 'Tip Jar',
