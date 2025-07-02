@@ -19,6 +19,7 @@ Pivoting over to Skill development since that's honestly what is most important 
 ### Reflection
 
 Not my most productive day. Need to get back into the flow and get the creative ideas flowing. I'm not exactly sure how to do this without the animations being made yet, but I think I can do some simple placeholder art for the Action Command Prompts with the Flour Skills this week. None of these are terribly challenging to implement either, at least, I hope not! Famous last words.
+I realized that I was losing steam because I was getting lost trying to think of how all the different QTEs would work, when I haven't even properly visualized them yet.
 
 
 ## 06/30/2025
