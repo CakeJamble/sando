@@ -95,6 +95,10 @@ function TurnManager:init(characterTeam, enemyTeam)
         for _,e in pairs(self.turnQueue) do
           if e.type == 'character' then
             e.state = 'defense'
+
+            -- correcting bug with defense state being initialized improperly
+            e.defenseState.x = e.pos.x
+            e.defenseState.y = e.pos.y
           end
         end
       end

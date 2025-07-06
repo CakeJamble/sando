@@ -61,7 +61,10 @@ function Character:init(stats, actionButton)
   Signal.register('OnStartCombat',
     function()
       Timer.tween(1, self.pos,{x = Character.xPos})
-      Timer.after(1, function() self.oPos.x = self.pos.x; self.oPos.y = self.pos.y end)
+      Timer.after(1, function() 
+        self.oPos.x = self.pos.x
+        self.oPos.y = self.pos.y
+      end)
     end
   )
 end;
@@ -247,7 +250,6 @@ function Character:draw()
     self.offenseState:draw()
   elseif self.state == 'defense' then
     self.defenseState:draw()
-    Entity.draw(self)
   else 
     Entity.draw(self)
     self.actionUI:draw()
