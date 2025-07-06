@@ -8,7 +8,9 @@ require('util.animation_frame_counts')
 require('class.entities.movement_state')
 
 Class = require "libs.hump.class"
-Entity = Class{}
+Entity = Class{
+  movementTime = 2
+}
 
   -- Entity constructor
     -- preconditions: defined stats and skills tables
@@ -36,13 +38,18 @@ function Entity:init(stats, x, y)
   }
   self.subdir = ''
   self.entityName = self.baseStats['entityName']
-  self.x=x
-  self.y=y
+
+  self.pos = {x = x, y = y}
+  self.tPos = {x = 0, y = 0}
+  self.oPos = {x = self.pos.x, y = self.pos.y}
+  
+  -- self.x=x
+  -- self.y=y
   self.dX=0
   self.dY=0
   self.frameWidth = self.battleStats['width']      -- width of sprite (or width for a single frame of animation for this character)
   self.frameHeight = self.battleStats['height']    -- height of sprite (or height for a single frame of animation for this character)
-  self.movementState = MovementState(self.x, self.y, self.frameHeight)
+  self.movementState = MovementState(self.pos.x, self.pos.y, self.frameHeight)
   self.currentFrame = 1
   self.isFocused = false
   self.targets = {}
@@ -50,7 +57,7 @@ function Entity:init(stats, x, y)
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'idle'
-  self.movementState = MovementState(self.x, self.y)
+  self.movementState = MovementState(self.pos.x, self.pos.y)
   self.selectedSkill = nil
 
   self.numFramesDmg = 60
@@ -63,6 +70,7 @@ function Entity:init(stats, x, y)
   self.opacity = 0
 
   self.ignoreHazards = false
+  self.moveBackTimerStarted = false
 end;
 
 function Entity:startTurn()
@@ -94,6 +102,19 @@ function Entity:setTargets(characterMembers, enemyMembers)
   print('targets set for ', self.entityName)
 end;
 
+function Entity:goToTarget(space)
+  self.tPos = {x = self.target.pos.x + space, y = self.target.pos.y}
+  Timer.tween(Entity.movementTime, self.pos, {x=self.tPos.x, y = self.tPos.y})
+
+  local function onComplete()
+    Signal.emit('Attack', self.pos.x, self.pos.y)
+  end
+  
+  Timer.after(Entity.movementTime, onComplete)
+end;
+
+
+
 function Entity:resetDmgDisplay()
   self.amount = 0
   self.countFrames = false
@@ -110,6 +131,8 @@ function Entity:endTurn()
   self.hasUsedAction = false
   self.turnFinish = false
   self.amount = 0
+  self.state = 'idle'
+  self.moveBackTimerStarted = false
 
   print('ending turn for ', self.entityName)
 end;
@@ -126,7 +149,7 @@ end;
 -- ACCESSORS (only write an accessor if it simplifies access to data)
 
 function Entity:getPos() --> {int, int}
-  return {['x'] = self.x, ['y'] = self.y}
+  return self.pos
 end;
 
 function Entity:getSpeed() --> int
@@ -212,6 +235,13 @@ function Entity:populateFrames(image, duration)
 end;
 
 function Entity:update(dt) --> void
+  Timer.update(dt)
+
+  -- print(self.pos.x, self.tPos.x)
+  -- if self.pos.x == self.tPos.x and self.pos.y == self.tPos.y then
+  --   Signal.emit('Attack', self.pos.x, self.pos.y)
+  -- end
+
   local state = self.movementState.state
   local animation
   if state == 'idle' then
@@ -261,9 +291,9 @@ function Entity:draw() --> void
   end
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)
-    love.graphics.print(self.amount, self.x + self.dmgDisplayOffsetX, self.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
+    love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
     love.graphics.setColor(1,1,1, 1)
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1)
+  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, 0, 1)
 end;

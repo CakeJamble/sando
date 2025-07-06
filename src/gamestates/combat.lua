@@ -93,6 +93,7 @@ function combat:enter(previous)
   
   -- Add Characters and Enemies to Turn Manager
   self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+  Signal.emit('OnStartCombat')
   Signal.emit('NextTurn')
 end;
 
@@ -158,6 +159,7 @@ function combat:gamepadpressed(joystick, button)
 end;
 
 function combat:update(dt)
+  Timer.update(dt)
   self.turnManager:update(dt)
   if self.lockCamera then
     local cameraTarget = self.turnManager.activeEntity

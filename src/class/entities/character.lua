@@ -19,6 +19,7 @@ Character = Class{__includes = Entity,
   -- For testing
   yPos = 110,
   xPos = 50,
+  xCombatStart = -20,
   ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
   statRollsOnLevel = 1
 }
@@ -28,7 +29,7 @@ Character = Class{__includes = Entity,
   -- postconditions: Creates a valid characters
 function Character:init(stats, actionButton)
   self.type = 'character'
-  Entity.init(self, stats, Character.xPos, Character.yPos)
+  Entity.init(self, stats, Character.xCombatStart, Character.yPos)
   self.actionButton = actionButton
   self.basic = stats.skillList[1]
   self.currentSkills = stats.skillList
@@ -49,12 +50,20 @@ function Character:init(stats, actionButton)
   self.actionIcons = {['raised'] = self.actionIcon, ['depressed'] = self.actionIconDepressed}
 
   --! TODO: Consider moving these to base class if all entities have an offense and defense state. Separate the QTE elements from them if so.
-  self.offenseState = OffenseState(self.x, self.y, actionButton, self.battleStats, self.actionIcons)
-  self.defenseState = DefenseState(self.x, self.y, actionButton, self.battleStats['defense'])
+  self.offenseState = OffenseState(self.pos.x, self.pos.y, actionButton, self.battleStats, self.actionIcons)
+  self.defenseState = DefenseState(self.pos.x, self.pos.y, actionButton, self.battleStats['defense'])
   self:setDefenseAnimations()
   self.actionUI = ActionUI()
   self.cannotLose = false
   self.equips = {}
+
+
+  Signal.register('OnStartCombat',
+    function()
+      Timer.tween(1, self.pos,{x = Character.xPos})
+      Timer.after(1, function() self.oPos.x = self.pos.x; self.oPos.y = self.pos.y end)
+    end
+  )
 end;
 
 function Character:startTurn(hazards)
@@ -64,13 +73,17 @@ function Character:startTurn(hazards)
   for i,hazard in pairs(hazards.characterHazards) do
     hazard:proc(self)
   end
-  
-  self.actionUI:set(self)
+  Timer.after(1, function()
+    self.actionUI:set(self)
+  end
+  )
+  -- self.actionUI:set(self)
 end
 
 function Character:endTurn()
   Entity.endTurn(self)
   self.actionUI:unset()
+  -- self.timerStarted = false
 end;
 
 function Character:setDefenseAnimations()
@@ -206,6 +219,7 @@ function Character:gamepadpressed(joystick, button)
 end;
     
 function Character:update(dt)
+  -- Timer.update(dt)
   Entity.update(self, dt)
   self.actionUI:update(dt)
 
@@ -219,17 +233,12 @@ function Character:update(dt)
     end
   elseif self.state == 'defense' then
     self.defenseState:update(dt)
-  elseif self.state == 'move' or self.state == 'moveback'then
-    if not self.turnFinish then 
-      self.movementState:update(dt)
-      self.x = self.movementState.x
-      self.y = self.movementState.y
-      if self.isFocused and self.movementState.state == 'idle' and self.hasUsedAction then
-        -- Emit Signal for the TurnManager to start next turn
-        Character.endTurn(self)
-        Signal.emit('NextTurn')
-      end
-    end
+  elseif self.state == 'moveback' and self.moveBackTimerStarted == false then
+    Timer.after(2, function()
+      self:endTurn()
+      Signal.emit('NextTurn')
+    end)
+    self.moveBackTimerStarted = true
   end
 end;
 

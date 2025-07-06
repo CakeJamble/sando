@@ -17,6 +17,7 @@ function QTEManager:init(characterTeam)
 			self.activeQTE:setFeedback(true)
 		end
 	)
+	self.skill = nil
 end;
 
 function QTEManager:reset()
@@ -27,6 +28,7 @@ function QTEManager:reset()
 end;
 
 function QTEManager:setQTE(skill, character)
+	self.skill = skill
 	local qteType = skill.qteType
 	if qteType == 'SINGLE_BUTTON_PRESS' then
 		print(character.actionButton)

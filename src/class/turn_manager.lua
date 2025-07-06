@@ -123,23 +123,24 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
       print('target name is ' .. self.activeEntity.target.entityName)
-      local targetPos = self.activeEntity.target:getPos()
+      local space
       local isEnemy = targetType == 'enemies'
       if self.activeEntity.type == 'enemy' then
         self.characterTeam:startDefense(self.activeEntity.offenseState.skill)
+        space = 96
       else
         self.qteManager.activeQTE.showPrompt = true
+        space = -96
       end
-      self.activeEntity.movementState:moveTowards(targetPos.x, targetPos.y, isEnemy)
-      self.activeEntity.state = 'move'
+      self.activeEntity:goToTarget(space)
     end
   );
 
   Signal.register('MoveBack',
     -- Signal that is triggered after finishing an attack, as part of ending turn
     function()
+      Timer.tween(2, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
       self.activeEntity.state = 'moveback'
-      self.activeEntity.movementState:moveBack()
     end
   );
 
@@ -199,6 +200,10 @@ function TurnManager:update(dt)
     entity:update(dt)
   end
   self.qteManager:update(dt)
+
+  if self.activeEntity.pos == self.activeEntity.tPos then
+    Signal.emit('Attack', self.activeEntity.pos.x, self.activeEntity.pos.y)
+  end
 end;
 
 function TurnManager:gamepadpressed(joystick, button)

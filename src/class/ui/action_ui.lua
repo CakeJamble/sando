@@ -25,7 +25,7 @@ function ActionUI:init()
   self.numTargets = nil
   self.uiState  = nil--= 'actionSelect'
   self.iconSpacer = ActionUI.ICON_SPACER
-  
+
   -- skill list and buttons
   self.skillList = nil
   self.selectedSkill = nil
@@ -48,8 +48,8 @@ function ActionUI:setTargets(characterMembers, enemyMembers)
 end;
 
 function ActionUI:set(charRef)
-  self.x = charRef.x + ActionUI.X_OFFSET
-  self.y = charRef.y + ActionUI.Y_OFFSET
+  self.x = charRef.pos.x + ActionUI.X_OFFSET
+  self.y = charRef.pos.y + ActionUI.Y_OFFSET
   self.skillList = charRef.skillList
   self.soloButton = SoloButton(self.x, self.y, 1, self.skillList[1])
   self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, 2, self.skillList)
@@ -282,7 +282,7 @@ function ActionUI:draw()
       -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
     if self.uiState == 'targeting' then
       local target = self.targets[self.targetType][self.tIndex]
-      love.graphics.draw(self.targetCursor, target.x + ActionUI.X_OFFSET, target.y + ActionUI.Y_OFFSET)
+      love.graphics.draw(self.targetCursor, target.pos.x + ActionUI.X_OFFSET, target.pos.y + ActionUI.Y_OFFSET)
     elseif self.uiState ~= 'moving' then
       for i=1,#self.buttons do
         self.buttons[i]:draw()
