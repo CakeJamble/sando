@@ -151,10 +151,9 @@ function combat:keypressed(key)
 end;
 
 function combat:gamepadpressed(joystick, button)
-    --[[
-  if key == pause key then
+  if button == 'start' then
     Gamestate.push(states['pause'])
-  ]]
+  end
   self.characterTeam:gamepadpressed(joystick, button)
 end;
 
