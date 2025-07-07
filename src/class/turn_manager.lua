@@ -165,6 +165,7 @@ function TurnManager:init(characterTeam, enemyTeam)
         self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
       end
       self.activeEntity.offenseState.skill.sound:play()
+      print(world:getRect(self.activeEntity))
     end
   );
 
@@ -202,6 +203,7 @@ end;
 function TurnManager:update(dt)
   for _,entity in pairs(self.turnQueue) do
     entity:update(dt)
+    world:update(entity, entity.pos.x, entity.pos.y)
   end
   self.qteManager:update(dt)
 

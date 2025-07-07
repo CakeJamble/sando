@@ -70,6 +70,13 @@ function Entity:init(stats, x, y)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
+
+  Signal.register('OnStartCombat', 
+    function()
+      -- add colliders for character to world
+      world:add(self, self.pos.x,self.pos.y, self.frameWidth,self.frameHeight)
+    end
+  )
 end;
 
 function Entity:startTurn()

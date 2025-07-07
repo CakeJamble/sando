@@ -60,6 +60,7 @@ function Character:init(stats, actionButton)
 
   Signal.register('OnStartCombat',
     function()
+      -- move characters into place and set positions to return to after turn ends
       Timer.tween(1, self.pos,{x = Character.xPos})
       Timer.after(1, function() 
         self.oPos.x = self.pos.x

@@ -19,7 +19,7 @@ function Enemy:init(enemyName, enemyType)
   self.moneyReward = self.baseStats['moneyReward']
   self.lootReward = self.baseStats.rewardsDistribution
   self.selectedSkill = nil
-  self.offenseState = EnemyOffenseState(self.x, self.y, self.battleStats)
+  self.offenseState = EnemyOffenseState(self.pos.x, self.pos.y, self.battleStats)
   Enemy.yPos = Enemy.yPos + 150
 end;
 
