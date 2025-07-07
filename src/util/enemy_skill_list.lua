@@ -197,7 +197,18 @@ local lineSkills = {
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
     duration = 120,
     qte_window = nil,
-    sound_path = 'asset/audio/entities/character/marco/basic.wav'
+    sound_path = 'asset/audio/entities/character/marco/basic.wav',
+-- general idea for contact skills? change tween functions as needed?
+    -- thing = function(pos, oPos, target, skillStartPos, goalPos, tweenDuration, skillDuration)
+    --   -- move into position for initiating skill, then charge
+    --   Timer.tween(tweenDuration, pos, skillStartPos)
+    --   Timer.after(tweenDuration, function()
+    --     Timer.tween(skillDuration, pos, {x = goalPos.x, y = goalPos.y})
+    --   end)
+    --   Timer.after(tweenDuration + skillDuration, function()
+    --     Timer.tween(tweenDuration, pos, oPos)
+    --   end)
+    -- end
   }
 
 }

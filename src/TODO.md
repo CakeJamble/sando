@@ -7,8 +7,12 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 ### TODO
 
 - [x] Add collision boxes to entities in combat
-- [ ] Add jumping to characters, moving collision boxes alongside them
+- [x] Add jumping to characters, moving collision boxes alongside them
 - [ ] Collision detection during enemy attacks
+
+### Reflection
+
+This is the beginning of another large refactor. I need to shift the development of the skill system from a basic signal based communication system, similar to Pokemon, towards the intended solution. The reactive turn based combat system will be based on collision detection, since the defense of characters will be closer to the Mario & Luigi series, while the offense system will be closer to the Paper Mario series. I have some basic designs set up to reference, but it seems like this will be a lot more work to develop and test new skills. I will need to reflect further to see if there are any better ways to organize this new system.
 
 ## 07/01/2025
 
