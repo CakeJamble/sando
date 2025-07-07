@@ -222,7 +222,6 @@ function Character:gamepadpressed(joystick, button)
 end;
     
 function Character:update(dt)
-  -- Timer.update(dt)
   Entity.update(self, dt)
   self.actionUI:update(dt)
 

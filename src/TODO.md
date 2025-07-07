@@ -2,6 +2,14 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/07/2025
+
+### TODO
+
+- [x] Add collision boxes to entities in combat
+- [ ] Add jumping to characters, moving collision boxes alongside them
+- [ ] Collision detection during enemy attacks
+
 ## 07/01/2025
 
 Pivoting over to Skill development since that's honestly what is most important in getting this game progressing.

@@ -175,13 +175,30 @@ local lineSkills = {
     proc = nil,
     partners = nil,
     sprite_path = nil,
-    is_dodgeable = true,
+    is_dodgeable = false,
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
     duration = 60,
     qte_window = {5, 59},
     sound_path = 'asset/audio/entities/character/marco/basic.wav'
   },
+  {
+    skill_name = 'Charge',
+    damage = 0,
+    damage_type = 'physical',
+    attack_type = 'solo',
+    target_type = 'single',
+    effects = nil,
+    proc = nil,
+    partners = nil,
+    sprite_path = nil,
+    is_dodgeable = true,
+    is_projectile = false,
+    sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
+    duration = 120,
+    qte_window = nil,
+    sound_path = 'asset/audio/entities/character/marco/basic.wav'
+  }
 
 }
 

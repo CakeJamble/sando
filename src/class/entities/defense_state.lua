@@ -6,14 +6,14 @@ Class = require 'libs.hump.class'
 DefenseState = Class{}
 
 function DefenseState:init(x, y, actionButton, baseDefense)
-  self.x = x
-  self.y = y
+  self.pos = {x = x, y = y}
+  self.jumpHeight = 100
   self.defense = baseDefense
   self.blockMod = nil
   self.blockWindow = nil
   self.isDodgeable = false
   self.isProjectile = false
-  self.stance = 'idle'
+  self.stance = 'dodge'
 
   -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
@@ -34,8 +34,8 @@ function DefenseState:init(x, y, actionButton, baseDefense)
 
   self.greatText = love.graphics.newImage('asset/sprites/combat/qte/feedback/great.png')
   self.greatPos = {
-    x = self.x + 25,
-    y = self.y - 25
+    x = self.pos.x + 25,
+    y = self.pos.y - 25
   }
   self.feedbackFrameCount = 0
   self.numFeedbackFrames = 45
@@ -108,12 +108,16 @@ function DefenseState:gamepadpressed(joystick, button)
   if button == 'leftshoulder' or button == 'rightshoulder' then
     self.canBlock = true
   end
-  if button == self.actionButton and self.badInputPenalty == 0 and (self.blockWindow[1] <= self.frameCount and self.blockWindow[2] > self.frameCount) and not self.bonusApplied then
-    print('Block/Dodge window is between frame ' .. self.blockWindow[1] .. ' and ' .. self.blockWindow[2])
-    print('Action Button pressed on frame ' .. self.frameCount)
-    self:applyBonus()
-  elseif button == self.actionButton and not self.isWindowActive then
-    -- self:updateBadInputPenalty(true)
+  -- if button == self.actionButton and self.badInputPenalty == 0 and (self.blockWindow[1] <= self.frameCount and self.blockWindow[2] > self.frameCount) and not self.bonusApplied then
+  --   print('Block/Dodge window is between frame ' .. self.blockWindow[1] .. ' and ' .. self.blockWindow[2])
+  --   print('Action Button pressed on frame ' .. self.frameCount)
+  --   self:applyBonus()
+  -- elseif button == self.actionButton and not self.isWindowActive then
+  --   -- self:updateBadInputPenalty(true)
+  -- end
+
+  if button == self.actionButton then
+    self:jump()
   end
 end;
 
@@ -121,6 +125,13 @@ function DefenseState:gamepadreleased(joystick, button)
   if button == 'rightshoulder' or button == 'leftshoulder' then
     self.stance = 'dodge'
   end
+end;
+
+function DefenseState:jump()
+  self.handle = Timer.tween(1, self.pos, {x = self.pos.x, y = self.pos.y - self.jumpHeight})
+  Timer.after(1, function()
+    Timer.tween(0.5, self.pos, {y = self.pos.y + self.jumpHeight})
+  end)
 end;
 
 function DefenseState:update(dt)
@@ -151,6 +162,6 @@ function DefenseState:draw()
   end
 
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1)
+  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, 0, 1)
 end;
 

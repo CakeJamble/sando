@@ -97,8 +97,8 @@ function TurnManager:init(characterTeam, enemyTeam)
             e.state = 'defense'
 
             -- correcting bug with defense state being initialized improperly
-            e.defenseState.x = e.pos.x
-            e.defenseState.y = e.pos.y
+            e.defenseState.pos.x = e.pos.x
+            e.defenseState.pos.y = e.pos.y
           end
         end
       end
@@ -209,12 +209,6 @@ function TurnManager:update(dt)
 
   if self.activeEntity.pos == self.activeEntity.tPos then
     Signal.emit('Attack', self.activeEntity.pos.x, self.activeEntity.pos.y)
-  end
-end;
-
-function TurnManager:gamepadpressed(joystick, button)
-  for i=1,#self.turnQueue do
-    self.turnQueue[i]:gamepadpressed(joystick, button)
   end
 end;
 
