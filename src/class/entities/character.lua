@@ -86,7 +86,6 @@ end
 function Character:endTurn()
   Entity.endTurn(self)
   self.actionUI:unset()
-  -- self.timerStarted = false
 end;
 
 function Character:setDefenseAnimations()
