@@ -164,8 +164,8 @@ function TurnManager:init(characterTeam, enemyTeam)
       if self.activeEntity.type == 'enemy' then
         self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
       end
-      self.activeEntity.offenseState.skill.sound:play()
-      print(world:getRect(self.activeEntity))
+      -- self.activeEntity.skill.DO_THING(args it needs to do skill)
+      -- self.activeEntity.offenseState.skill.sound:play()
     end
   );
 
