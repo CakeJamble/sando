@@ -44,21 +44,7 @@ function combat:init()
     self.encounteredPools[i] = {}
   end
   
-  -- -- Register Signals
-  -- Signal.register('TargetConfirm',
-  -- function(_, _)
-  --   camera:zoom(1.5)
-  --   self.lockCamera = true
-  -- end
-  -- );
-  -- Signal.register('MoveBack',
-  --   function()
-  --     if camera.scale > 1 then
-  --       camera.scale = 1
-  --     end
-  --   end
-  -- );
-    Signal.register('NextTurn',
+  Signal.register('NextTurn',
     function()
       local curr = 0
       local total = 0
@@ -92,9 +78,12 @@ function combat:enter(previous)
   self.enemyTeam = combat:generateEncounter()
   
   -- Add Characters and Enemies to Turn Manager
-  self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+
   Signal.emit('OnStartCombat')
-  Signal.emit('NextTurn')
+  Timer.after(1, function()
+    self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+    Signal.emit('NextTurn')
+  end)
 end;
 
 function combat:generateEncounter() --> EnemyTeam
@@ -158,12 +147,14 @@ function combat:gamepadpressed(joystick, button)
 end;
 
 function combat:update(dt)
-  Timer.update(dt)
-  self.turnManager:update(dt)
+  if self.turnManager then
+    self.turnManager:update(dt)
+  end
   if self.lockCamera then
     local cameraTarget = self.turnManager.activeEntity
     camera:lockWindow(cameraTarget.x, cameraTarget.y, 0, cameraTarget.x + 100, 0, cameraTarget.y + 100)
   end
+  Timer.update(dt)
 end;
 
 function combat:draw()
@@ -177,7 +168,9 @@ function combat:draw()
   love.graphics.print(self.characterTeamHP[2], 20, 46)
   self.characterTeam:draw()
   self.enemyTeam:draw()
-  self.turnManager:draw()
+  if self.turnManager then
+    self.turnManager:draw()
+  end
   camera:detach()
   push:finish()
 end;

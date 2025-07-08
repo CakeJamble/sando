@@ -18,7 +18,6 @@ function Enemy:init(enemyName, enemyType)
   self.expReward = self.baseStats['experienceReward']
   self.moneyReward = self.baseStats['moneyReward']
   self.lootReward = self.baseStats.rewardsDistribution
-  self.selectedSkill = nil
   self.offenseState = EnemyOffenseState(self.pos.x, self.pos.y, self.battleStats)
   Enemy.yPos = Enemy.yPos + 150
 end;
@@ -34,11 +33,11 @@ end;
 function Enemy:setupOffense()
   -- pick a random skill
   local skillIndex = love.math.random(1, #self.skillList)
-  self.selectedSkill = self.skillList[skillIndex]
-  self.offenseState:setSkill(self.selectedSkill)
+  self.skill = self.skillList[skillIndex]
 
   -- pick a random target
   local tIndex = love.math.random(1, #self.targets.characters)
+  self.target = self.targets.characters[tIndex]
   Signal.emit('TargetConfirm', 'characters', tIndex)
 end;
 
@@ -53,12 +52,12 @@ end;
 function Enemy:update(dt)
   Entity.update(self, dt)
   if self.state == 'offense' then
-    self.offenseState:update(dt)
-    if self.offenseState.frameCount > self.offenseState.animFrameLength then
-      self.state = 'move'
-      self.hasUsedAction = true
-      Signal.emit('MoveBack')
-    end
+    -- self.offenseState:update(dt)
+    -- if self.offenseState.frameCount > self.offenseState.animFrameLength then
+    --   self.state = 'move'
+    --   self.hasUsedAction = true
+    --   Signal.emit('MoveBack')
+    -- end
   elseif self.state == 'move' or self.state == 'moveback' then
     if not self.turnFinish then
       self.movementState:update(dt)

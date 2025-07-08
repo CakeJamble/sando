@@ -109,20 +109,6 @@ function Entity:setTargets(characterMembers, enemyMembers)
   print('targets set for ', self.entityName)
 end;
 
--- replaced with goToStagingPosition()
--- function Entity:goToTarget(space)
---   self.tPos = {x = self.target.pos.x + space, y = self.target.pos.y}
---   Timer.tween(Entity.movementTime, self.pos, {x=self.tPos.x, y = self.tPos.y})
-
---   local function onComplete()
---     Signal.emit('Attack', self.pos.x, self.pos.y)
---   end
-  
---   Timer.after(Entity.movementTime, onComplete)
--- end;
-
-
-
 function Entity:resetDmgDisplay()
   self.amount = 0
   self.countFrames = false
@@ -178,13 +164,13 @@ function Entity:isAlive() --> bool
 end;
 
 function Entity:getSkillStagingTime()
-  return self.skill.stagingTime
+  return self.skill.dict.stagingTime
 end;
 
 -- MUTATORS
 
 function Entity:goToStagingPosition()
-  self.skill:stagingTween(self.pos)
+  self.skill:stagingTween(self.pos, self.target.pos)
 end;
 
 function Entity:modifyBattleStat(stat_name, amount) --> void
@@ -252,13 +238,6 @@ function Entity:populateFrames(image, duration)
 end;
 
 function Entity:update(dt) --> void
-  Timer.update(dt)
-
-  -- print(self.pos.x, self.tPos.x)
-  -- if self.pos.x == self.tPos.x and self.pos.y == self.tPos.y then
-  --   Signal.emit('Attack', self.pos.x, self.pos.y)
-  -- end
-
   local state = self.movementState.state
   local animation
   if state == 'idle' then

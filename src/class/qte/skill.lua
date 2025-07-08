@@ -9,14 +9,15 @@ Skill = Class{}
     -- preconditions: A table of a single Character skill
     -- postconditions: A Skill with an animation appended to the skill dict
 function Skill:init(skillDict, width, height)
-  self.skill = skillDict
+  self.dict = skillDict
+  self.proc = skillDict.proc
   self.skillName = skillDict['skill_name']
   self.damage = skillDict['damage']
   self.cost = skillDict['cost']
   self.description = skillDict['description']
   self.instructions = skillDict['instructions']
   self.targetType = skillDict['target_type']
-  self.animation = Skill:newAnimation(love.graphics.newImage(self.skill.sprite_path), width, height, 1)
+  self.animation = self:newAnimation(love.graphics.newImage(skillDict.sprite_path), width, height, 1)
   self.qte_bonus = skillDict['qte_bonus']
   self.qteType = skillDict['qte_type']
   self.partners = skillDict.partners
@@ -27,8 +28,8 @@ function Skill:init(skillDict, width, height)
   self.projectileCount = 0
   self.projectileRate = skillDict['projectile_rate']
   self.projectileCountLimit = skillDict['projectile_count']
-  if(self.skill.damage_type == 'projectile') then
-    self.projectileAnimation = Skill:newAnimation(self.skill['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
+  if(skillDict.damage_type == 'projectile') then
+    self.projectileAnimation = Skill:newAnimation(skillDict['projectile_path'], self.skill['projectile_width'], self.skill['projectile_height'], self.skill['duration'])
   end
   local sound_path = skillDict.sound_path
   self.sound = love.audio.newSource(sound_path, "static")
@@ -36,13 +37,20 @@ function Skill:init(skillDict, width, height)
 end;
 
 function Skill:reset()
-  self.damage = self.skill['damage']
-  self.qte_bonus = self.skill['qte_bonus']
+  self.damage = self.dict['damage']
+  self.qte_bonus = self.dict['qte_bonus']
 end;
 
-function Skill:stagingTween(startingPos)
-  Timer.tween(self.stagingTime, startingPos, self.stagingPos, self.stagingFunction)
-  Timer.after(self.stagingTime, function() Signal.emit('Attack', self.stagingPos) end)
+function Skill:stagingTween(startingPos, targetPos)
+  local stagingPos = {x = 0, y = 0}
+  if self.dict.stagingPos == 'near' then
+    stagingPos.x = targetPos.x + 90
+    stagingPos.y = targetPos.y
+  end
+
+  print('Tweening for active entity to use ' .. self.dict.skill_name)
+  Timer.tween(self.dict.stagingTime, startingPos, {x = stagingPos.x, y = stagingPos.y})
+  Timer.after(self.dict.stagingTime, function() Signal.emit('Attack', self.stagingPos) end)
 end;
 
   -- Create and return a new animation

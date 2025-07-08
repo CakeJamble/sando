@@ -61,7 +61,7 @@ function Character:init(stats, actionButton)
   Signal.register('OnStartCombat',
     function()
       -- move characters into place and set positions to return to after turn ends
-      Timer.tween(1, self.pos,{x = Character.xPos})
+      Timer.tween(0.5, self.pos,{x = Character.xPos})
       Timer.after(1, function() 
         self.oPos.x = self.pos.x
         self.oPos.y = self.pos.y
@@ -135,8 +135,6 @@ function Character:cleanse()
   -- play cleanse animation
 end;
 
-function Character:goToStagingPosition()
-  Entity
 
 function Character:setTargets(characterMembers, enemyMembers)
   print('setting targets for ', self.entityName)

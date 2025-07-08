@@ -109,10 +109,9 @@ function TurnManager:init(characterTeam, enemyTeam)
 
   Signal.register('SkillSelected',
     function(skill)
-      print('Setting up QTE Manager for selected skill')
+      print('Setting up QTE Manager for selected skill: ' .. skill.dict.skill_name)
       self.qteManager:setQTE(skill, self.activeEntity)
       self.activeEntity.skill = skill
-      self.activeEntity.offenseState:setSkill(skill) -- necessary?
     end
   );
 
@@ -134,22 +133,19 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity:goToStagingPosition()
       local t = self.activeEntity:getSkillStagingTime()
 
-      -- Once in position, begin attacking
-      Timer.after(t, function()
-        self.activeEntity.offenseState.target = self.activeEntity.target
-        if self.activeEntity.type == 'character' then
-          self.qteManager.activeQTE.showPrompt = true
-          self.qteManager.activeQTE.feedbackPos.x = x - 25
-          self.qteManager.activeQTE.feedbackPos.y = y - 25
-          self.qteManager.countQTEFrames = true
-          -- QTE Interaction (consider how offense state needs to interact here)
-          self.qteManager.activeQTE:proc()
-        else -- self.activeEntity.type == 'enemy'
-          self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
-        end
-        -- Attack begins here
-        self.activeEntity.skill:proc()
-      end)
+      -- Once in position, initialize QTE UI Components
+      -- Timer.after(t, function()
+      --   self.activeEntity.offenseState.target = self.activeEntity.target
+      --   if self.activeEntity.type == 'character' then
+      --     self.qteManager.activeQTE.showPrompt = true
+      --     self.qteManager.activeQTE.feedbackPos.x = x - 25
+      --     self.qteManager.activeQTE.feedbackPos.y = y - 25
+      --     self.qteManager.countQTEFrames = true
+
+      --     -- Begin QTE here
+      --     self.qteManager.activeQTE:proc()
+      --   end
+      -- end)
     end
   );
 
@@ -164,21 +160,10 @@ function TurnManager:init(characterTeam, enemyTeam)
 
   Signal.register('Attack',
     -- Sets offense state of entity to a valid state to perform attacks
-    function(x, y)
-      self.activeEntity.state = 'offense'
-      self.activeEntity.offenseState.x = x
-      self.activeEntity.offenseState.y = y
-      if self.activeEntity.type == 'character' then
-        self.qteManager.activeQTE.feedbackPos.x = x - 25
-        self.qteManager.activeQTE.feedbackPos.y = y - 25
-        self.qteManager.activeQTE.countQTEFrames = true
-      end
-      self.activeEntity.offenseState.target = self.activeEntity.target
-      if self.activeEntity.type == 'enemy' then
-        self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
-      end
-      -- self.activeEntity.skill.DO_THING(args it needs to do skill)
-      -- self.activeEntity.offenseState.skill.sound:play()
+    function()
+      self.activeEntity.skill.proc(
+        self.activeEntity, self.activeEntity.skill.duration, self.activeEntity.pos
+      )
     end
   );
 

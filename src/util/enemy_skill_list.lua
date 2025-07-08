@@ -165,23 +165,23 @@ local croissantSkills = {
 }
 
 local lineSkills = {
-  {
-    skill_name = 'Basic Attack',
-    damage = 0,
-    damage_type = 'physical',
-    attack_type = 'solo',
-    target_type = 'single',
-    effects = nil,
-    proc = nil,
-    partners = nil,
-    sprite_path = nil,
-    is_dodgeable = false,
-    is_projectile = false,
-    sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
-    duration = 60,
-    qte_window = {5, 59},
-    sound_path = 'asset/audio/entities/character/marco/basic.wav'
-  },
+  -- {
+  --   skill_name = 'Basic Attack',
+  --   damage = 0,
+  --   damage_type = 'physical',
+  --   attack_type = 'solo',
+  --   target_type = 'single',
+  --   effects = nil,
+  --   proc = nil,
+  --   partners = nil,
+  --   sprite_path = nil,
+  --   is_dodgeable = false,
+  --   is_projectile = false,
+  --   sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
+  --   duration = 60,
+  --   qte_window = {5, 59},
+  --   sound_path = 'asset/audio/entities/character/marco/basic.wav'
+  -- },
   {
     skill_name = 'Charge',
     damage = 0,
@@ -195,22 +195,23 @@ local lineSkills = {
     is_dodgeable = true,
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
-    duration = 120,
+    duration = 60,
     qte_window = nil,
+    stagingTime = 1.5,
+    stagingPos = 'near',
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
--- general idea for contact skills? change tween functions as needed?
-    -- thing = function(pos, oPos, target, skillStartPos, goalPos, tweenDuration, skillDuration)
-    --   -- move into position for initiating skill, then charge
-    --   Timer.tween(tweenDuration, pos, skillStartPos)
-    --   Timer.after(tweenDuration, function()
-    --     Timer.tween(skillDuration, pos, {x = goalPos.x, y = goalPos.y})
-    --   end)
-    --   Timer.after(tweenDuration + skillDuration, function()
-    --     Timer.tween(tweenDuration, pos, oPos)
-    --   end)
-    -- end
-  }
+    proc =  function(entity, duration, startingPos)
+              -- Charge from right to left, through the target
+              local targetPos = entity.target.pos
+              local goalX, goalY = targetPos.x, targetPos.y
+              Timer.tween(duration, entity.pos, {x = goalX, y = goalY})
 
+              -- Return to starting position
+              Timer.after(duration, function()
+                Timer.tween(1, entity.pos, {x = startingPos.x, y = startingPos.y})
+              end)
+            end
+  }
 }
 
 

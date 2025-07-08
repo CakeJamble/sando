@@ -41,7 +41,6 @@ function MovementState:applyGravity(dt)
 end;
 
 function MovementState:update(dt)
-  Timer.update(dt)
   if self.state == 'move' and self.pos == self.targetPos then
     Signal.emit('Attack', self.x, self.y)
   end

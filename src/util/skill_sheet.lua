@@ -46,8 +46,6 @@ local marco_skills = {
     description = 'Phase behind enemy, dealing physical damage. Higher chance for crititical strike.',
     unlock = nil,
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
-    proc = function(entity)
-      
   }
 }
 
