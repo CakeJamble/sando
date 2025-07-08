@@ -19,6 +19,7 @@ function TurnManager:init(characterTeam, enemyTeam)
     characterHazards = {},
     enemyHazards = {}
   }
+  self.setupDelay = 0.75
 
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
@@ -134,18 +135,17 @@ function TurnManager:init(characterTeam, enemyTeam)
       local t = self.activeEntity:getSkillStagingTime()
 
       -- Once in position, initialize QTE UI Components
-      -- Timer.after(t, function()
-      --   self.activeEntity.offenseState.target = self.activeEntity.target
-      --   if self.activeEntity.type == 'character' then
-      --     self.qteManager.activeQTE.showPrompt = true
-      --     self.qteManager.activeQTE.feedbackPos.x = x - 25
-      --     self.qteManager.activeQTE.feedbackPos.y = y - 25
-      --     self.qteManager.countQTEFrames = true
+      if self.activeEntity.type == 'character' then
+        Timer.after(t, function()
+            self.qteManager.activeQTE.showPrompt = true
+            self.qteManager.activeQTE.feedbackPos.x = x - 25
+            self.qteManager.activeQTE.feedbackPos.y = y - 25
+            self.qteManager.countQTEFrames = true
 
-      --     -- Begin QTE here
-      --     self.qteManager.activeQTE:proc()
-      --   end
-      -- end)
+            -- Begin QTE here
+            self.qteManager.activeQTE:proc()
+        end)
+      end
     end
   );
 
@@ -161,9 +161,13 @@ function TurnManager:init(characterTeam, enemyTeam)
   Signal.register('Attack',
     -- Sets offense state of entity to a valid state to perform attacks
     function()
-      self.activeEntity.skill.proc(
-        self.activeEntity, self.activeEntity.skill.duration, self.activeEntity.pos
-      )
+      -- slight delay to give player time to recognize what is happening
+      Timer.after(self.setupDelay, function()
+        self.activeEntity.skill.proc(
+          self.activeEntity, self.activeEntity.skill.duration,
+          self.activeEntity.pos, self.activeEntity.oPos
+        )
+      end)
     end
   );
 

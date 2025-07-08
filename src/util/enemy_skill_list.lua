@@ -195,20 +195,19 @@ local lineSkills = {
     is_dodgeable = true,
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
-    duration = 60,
+    duration = 1,
     qte_window = nil,
-    stagingTime = 1.5,
+    stagingTime = 1,
     stagingPos = 'near',
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
-    proc =  function(entity, duration, startingPos)
+    proc =  function(entity, duration, startingPos, oPos)
               -- Charge from right to left, through the target
-              local targetPos = entity.target.pos
-              local goalX, goalY = targetPos.x, targetPos.y
+              local goalX, goalY = entity.target.pos.x, entity.target.pos.y
               Timer.tween(duration, entity.pos, {x = goalX, y = goalY})
 
               -- Return to starting position
               Timer.after(duration, function()
-                Timer.tween(1, entity.pos, {x = startingPos.x, y = startingPos.y})
+                Timer.tween(1, entity.pos, {x = oPos.x, y = oPos.y})
               end)
             end
   }
