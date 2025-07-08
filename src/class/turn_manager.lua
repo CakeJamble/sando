@@ -111,13 +111,15 @@ function TurnManager:init(characterTeam, enemyTeam)
     function(skill)
       print('Setting up QTE Manager for selected skill')
       self.qteManager:setQTE(skill, self.activeEntity)
-      self.activeEntity.offenseState:setSkill(skill)
+      self.activeEntity.skill = skill
+      self.activeEntity.offenseState:setSkill(skill) -- necessary?
     end
   );
 
   Signal.register('SkillDeselected',
     function ()
       self.qteManager:reset()
+      self.activeEntity.skill = nil
     end
   );
 
@@ -127,6 +129,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
       print('target name is ' .. self.activeEntity.target.entityName)
+      
+      -- move to appropriate position based on the skill type (contact, range, etc)
+      self.activeEntity:goToStagingPosition()
       local space
       local isEnemy = targetType == 'enemies'
       if self.activeEntity.type == 'enemy' then

@@ -20,6 +20,7 @@ function Entity:init(stats, x, y)
   self.battleStats = Entity.copyStats(stats)
   self.statUpScaler = 1.25
   self.skillList = stats['skillList']
+  self.skill = nil
   self.spriteSheets = {
     idle = {},
     moveX = {},
@@ -139,6 +140,7 @@ function Entity:endTurn()
   self.amount = 0
   self.state = 'idle'
   self.moveBackTimerStarted = false
+  self.skill = nil
 
   print('ending turn for ', self.entityName)
 end;
@@ -175,6 +177,10 @@ function Entity:isAlive() --> bool
 end;
 
 -- MUTATORS
+
+function Entity:goToStagingPosition()
+  self.skill:stagingTween(self.pos)
+end;
 
 function Entity:modifyBattleStat(stat_name, amount) --> void
   self.battleStats[stat_name] = math.ceil(self.battleStats[stat_name] * (amount * self.statUpScaler))

@@ -25,7 +25,7 @@ local marco_skills = {
     description = 'Deals physical damage to a single target twice',
     instructions = 'Press A just before landing the attack!',
     unlock = nil,
-    sound_path = 'asset/audio/entities/character/marco/basic.wav'
+    sound_path = 'asset/audio/entities/character/marco/basic.wav',
   },
 
   {
@@ -45,7 +45,9 @@ local marco_skills = {
     qte_bonus = 1,
     description = 'Phase behind enemy, dealing physical damage. Higher chance for crititical strike.',
     unlock = nil,
-    sound_path = 'asset/audio/entities/character/marco/basic.wav'
+    sound_path = 'asset/audio/entities/character/marco/basic.wav',
+    proc = function(entity)
+      
   }
 }
 

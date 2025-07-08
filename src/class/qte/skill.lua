@@ -40,6 +40,11 @@ function Skill:reset()
   self.qte_bonus = self.skill['qte_bonus']
 end;
 
+function Skill:stagingTween(startingPos)
+  Timer.tween(self.stagingTime, startingPos, self.stagingPos, self.stagingFunction)
+  Timer.after(self.stagingTime, function() Signal.emit('Attack', self.stagingPos) end)
+end;
+
   -- Create and return a new animation
     -- preconditions: A love.graphics.newImage object, the width, height, and duration (number of frames)
     -- postconditions: Returns an animation using a table of quads from a spritesheet

@@ -4,6 +4,14 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ## 07/07/2025
 
+Need to figure out how to refactor the skills so that I can cleanly add in collision detection to contact moves and projectile moves. Should the skill class be split up into an inheritence hierarchy? Or is it enough to have the skills decoupled from the QTEs? I think I will try to latter option first and evaluate from there on how difficult it will be to scale the development of new scales, since that will be the primary concern, unless I immediately notice performance bottlenecks.
+
+### TODO
+
+- [ ] Refactor skills to use collision detection
+
+## 07/07/2025
+
 ### TODO
 
 - [x] Add collision boxes to entities in combat
