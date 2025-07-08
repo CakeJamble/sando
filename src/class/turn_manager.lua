@@ -132,16 +132,24 @@ function TurnManager:init(characterTeam, enemyTeam)
       
       -- move to appropriate position based on the skill type (contact, range, etc)
       self.activeEntity:goToStagingPosition()
-      local space
-      local isEnemy = targetType == 'enemies'
-      if self.activeEntity.type == 'enemy' then
-        self.characterTeam:startDefense(self.activeEntity.offenseState.skill)
-        space = 96
-      else
-        self.qteManager.activeQTE.showPrompt = true
-        space = -96
-      end
-      self.activeEntity:goToTarget(space)
+      local t = self.activeEntity:getSkillStagingTime()
+
+      -- Once in position, begin attacking
+      Timer.after(t, function()
+        self.activeEntity.offenseState.target = self.activeEntity.target
+        if self.activeEntity.type == 'character' then
+          self.qteManager.activeQTE.showPrompt = true
+          self.qteManager.activeQTE.feedbackPos.x = x - 25
+          self.qteManager.activeQTE.feedbackPos.y = y - 25
+          self.qteManager.countQTEFrames = true
+          -- QTE Interaction (consider how offense state needs to interact here)
+          self.qteManager.activeQTE:proc()
+        else -- self.activeEntity.type == 'enemy'
+          self.activeEntity.offenseState.target.defenseState.isEnemyAttacking = true
+        end
+        -- Attack begins here
+        self.activeEntity.skill:proc()
+      end)
     end
   );
 

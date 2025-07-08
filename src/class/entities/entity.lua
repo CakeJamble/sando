@@ -109,16 +109,17 @@ function Entity:setTargets(characterMembers, enemyMembers)
   print('targets set for ', self.entityName)
 end;
 
-function Entity:goToTarget(space)
-  self.tPos = {x = self.target.pos.x + space, y = self.target.pos.y}
-  Timer.tween(Entity.movementTime, self.pos, {x=self.tPos.x, y = self.tPos.y})
+-- replaced with goToStagingPosition()
+-- function Entity:goToTarget(space)
+--   self.tPos = {x = self.target.pos.x + space, y = self.target.pos.y}
+--   Timer.tween(Entity.movementTime, self.pos, {x=self.tPos.x, y = self.tPos.y})
 
-  local function onComplete()
-    Signal.emit('Attack', self.pos.x, self.pos.y)
-  end
+--   local function onComplete()
+--     Signal.emit('Attack', self.pos.x, self.pos.y)
+--   end
   
-  Timer.after(Entity.movementTime, onComplete)
-end;
+--   Timer.after(Entity.movementTime, onComplete)
+-- end;
 
 
 
@@ -174,6 +175,10 @@ end;
 
 function Entity:isAlive() --> bool
   return self.battleStats['hp'] > 0
+end;
+
+function Entity:getSkillStagingTime()
+  return self.skill.stagingTime
 end;
 
 -- MUTATORS

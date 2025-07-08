@@ -135,6 +135,9 @@ function Character:cleanse()
   -- play cleanse animation
 end;
 
+function Character:goToStagingPosition()
+  Entity
+
 function Character:setTargets(characterMembers, enemyMembers)
   print('setting targets for ', self.entityName)
   Entity.setTargets(self, characterMembers, enemyMembers)
