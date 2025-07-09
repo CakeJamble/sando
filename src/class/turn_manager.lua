@@ -28,6 +28,8 @@ function TurnManager:init(characterTeam, enemyTeam)
     function ()
       if self.turnIndex == 1 then
         turnCounter = turnCounter + 1
+      else
+        self.activeEntity:endTurn()
       end
 
       self.qteManager:reset()
@@ -145,15 +147,20 @@ function TurnManager:init(characterTeam, enemyTeam)
             -- Begin QTE here
             self.qteManager.activeQTE:proc()
         end)
+      else -- go straight into attack
+        Timer.after(t, function() Signal.emit('Attack') end)
       end
     end
   );
 
   Signal.register('MoveBack',
     -- Signal that is triggered after finishing an attack, as part of ending turn
-    function()
-      Timer.tween(2, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
-      self.activeEntity.state = 'moveback'
+    function(delay)
+      Timer.after(delay, function()
+        self.activeEntity:goToStagingPosition(0.5)    
+        Timer.tween(0.5, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
+        Timer.after(0.75, function() Signal.emit('NextTurn') end)
+      end)
     end
   );
 
@@ -164,7 +171,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- slight delay to give player time to recognize what is happening
       Timer.after(self.setupDelay, function()
         self.activeEntity.skill.proc(
-          self.activeEntity, self.activeEntity.skill.duration,
+          self.activeEntity.target.pos, self.activeEntity.skill.duration,
           self.activeEntity.pos, self.activeEntity.oPos
         )
       end)

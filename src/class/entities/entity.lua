@@ -169,8 +169,17 @@ end;
 
 -- MUTATORS
 
-function Entity:goToStagingPosition()
-  self.skill:stagingTween(self.pos, self.target.pos)
+function Entity:goToStagingPosition(t)
+  local stagingPos = {x=0,y=0}
+  if self.skill.dict.stagingPos == 'near' then
+    stagingPos.x = self.target.pos.x + 90
+    stagingPos.y = self.target.pos.y
+  end
+  print('Tweening for active entity to use ' .. self.skill.dict.skill_name)
+  if t == nil then
+    t = self.skill.dict.stagingTime
+  end
+  Timer.tween(t, self.pos, {x = stagingPos.x, y = stagingPos.y})
 end;
 
 function Entity:modifyBattleStat(stat_name, amount) --> void

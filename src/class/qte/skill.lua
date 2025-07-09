@@ -41,18 +41,6 @@ function Skill:reset()
   self.qte_bonus = self.dict['qte_bonus']
 end;
 
-function Skill:stagingTween(startingPos, targetPos)
-  local stagingPos = {x = 0, y = 0}
-  if self.dict.stagingPos == 'near' then
-    stagingPos.x = targetPos.x + 90
-    stagingPos.y = targetPos.y
-  end
-
-  print('Tweening for active entity to use ' .. self.dict.skill_name)
-  Timer.tween(self.dict.stagingTime, startingPos, {x = stagingPos.x, y = stagingPos.y})
-  Timer.after(self.dict.stagingTime, function() Signal.emit('Attack', self.stagingPos) end)
-end;
-
   -- Create and return a new animation
     -- preconditions: A love.graphics.newImage object, the width, height, and duration (number of frames)
     -- postconditions: Returns an animation using a table of quads from a spritesheet

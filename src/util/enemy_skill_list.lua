@@ -1,5 +1,5 @@
 --! filename: Enemy Skill List
-
+local delayPostAttack = 0.5
 local baguetteSkills = {
   {
     skill_name = 'Basic Attack',
@@ -195,20 +195,29 @@ local lineSkills = {
     is_dodgeable = true,
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
-    duration = 1,
+    duration = 0.5,
     qte_window = nil,
     stagingTime = 1,
     stagingPos = 'near',
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
-    proc =  function(entity, duration, startingPos, oPos)
+    proc =  function(targetPos, duration, startingPos, oPos)
               -- Charge from right to left, through the target
-              local goalX, goalY = entity.target.pos.x, entity.target.pos.y
-              Timer.tween(duration, entity.pos, {x = goalX, y = goalY})
+              local goalX, goalY = targetPos.x, targetPos.y
+              local stagingPos = {x = startingPos.x, y = startingPos.y}
+              Timer.tween(duration, startingPos, {x = goalX - 80, y = goalY})
+
+              -- Return to staging position
+              Timer.after(duration, function()
+                Timer.tween(duration, startingPos, {x = stagingPos.x, y = stagingPos.y})
+              end)
 
               -- Return to starting position
-              Timer.after(duration, function()
-                Timer.tween(1, entity.pos, {x = oPos.x, y = oPos.y})
-              end)
+              local delay = 2 * duration + delayPostAttack
+              Signal.emit('MoveBack', delay)
+              -- Timer.after(2 * duration + delayPostAttack, function()
+              --   Timer.tween(0.5, startingPos, {x = oPos.x, y = oPos.y})
+              --   Timer.after(0.5, function() Signal.emit('NextTurn') end)
+              -- end)
             end
   }
 }
