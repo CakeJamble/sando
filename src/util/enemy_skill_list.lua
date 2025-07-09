@@ -214,10 +214,6 @@ local lineSkills = {
               -- Return to starting position
               local delay = 2 * duration + delayPostAttack
               Signal.emit('MoveBack', delay)
-              -- Timer.after(2 * duration + delayPostAttack, function()
-              --   Timer.tween(0.5, startingPos, {x = oPos.x, y = oPos.y})
-              --   Timer.after(0.5, function() Signal.emit('NextTurn') end)
-              -- end)
             end
   }
 }
