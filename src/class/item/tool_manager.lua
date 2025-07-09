@@ -16,7 +16,6 @@ function ToolManager:init(characterTeam)
 	self.enemyTeam = nil
 
 	Signal.register('OnStartTurn',
-		-- Proc the effects of Turn Start Tools
 		function(character)
 			for i,tool in pairs(self.startTurnToolList) do
 				tool.proc(character)

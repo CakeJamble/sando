@@ -23,10 +23,9 @@ function ActionUI:init()
   self.y = nil
   self.actionButton = nil
   self.numTargets = nil
-  self.uiState  = nil--= 'actionSelect'
+  self.uiState  = nil
   self.iconSpacer = ActionUI.ICON_SPACER
 
-  -- skill list and buttons
   self.skillList = nil
   self.selectedSkill = nil
   self.soloButton = nil

@@ -18,7 +18,6 @@ function OffenseState:init(x, y, actionButton, battleStats, actionIcons) --inclu
   self.bonus = nil
   self.actionIcons = actionIcons
   
-  -- Data used for calculating timed input conditions and bonuses
   self.actionButton = actionButton
   self.frameCount = 0
   self.frameWindow = 0

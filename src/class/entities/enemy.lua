@@ -31,11 +31,9 @@ function Enemy:startTurn(hazards)
 end;
 
 function Enemy:setupOffense()
-  -- pick a random skill
   local skillIndex = love.math.random(1, #self.skillList)
   self.skill = self.skillList[skillIndex]
 
-  -- pick a random target
   local tIndex = love.math.random(1, #self.targets.characters)
   self.target = self.targets.characters[tIndex]
   Signal.emit('TargetConfirm', 'characters', tIndex)
@@ -47,34 +45,4 @@ function Enemy:knockOut()
   reward.money = self.moneyReward
   reward.loot = self.lootReward
   return reward
-end;
-
-function Enemy:update(dt)
-  Entity.update(self, dt)
-  if self.state == 'offense' then
-    -- self.offenseState:update(dt)
-    -- if self.offenseState.frameCount > self.offenseState.animFrameLength then
-    --   self.state = 'move'
-    --   self.hasUsedAction = true
-    --   Signal.emit('MoveBack')
-    -- end
-  elseif self.state == 'move' or self.state == 'moveback' then
-    if not self.turnFinish then
-      self.movementState:update(dt)
-      self.x = self.movementState.x
-      self.y = self.movementState.y
-      if self.isFocused and self.movementState.state == 'idle' and self.hasUsedAction then
-        self:endTurn()
-        Signal.emit('NextTurn')
-      end
-    end
-  end
-end;
-
-function Enemy:draw()
-  if self.state == 'offense' then
-    self.offenseState:draw()
-  else
-    Entity.draw(self)
-  end
 end;

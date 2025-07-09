@@ -39,7 +39,6 @@ function combat:init()
   self.encounteredPools = {}
   self.floorNumber = 1
 
-  -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
     self.encounteredPools[i] = {}
   end
@@ -64,7 +63,6 @@ function combat:enter(previous)
   self.rewardExp = 0
   self.rewardMoney = 0
 
-  -- Character Team Health Bars, stats, etc, at top of screen
   self.characterTeamHP = {}
   local curr = {}
   local total = {}
@@ -74,13 +72,11 @@ function combat:enter(previous)
     self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
   end
   
-  -- Log & Generate the floor's encounter in encounteredPools
   self.enemyTeam = combat:generateEncounter()
-  
-  -- Add Characters and Enemies to Turn Manager
 
   Signal.emit('OnStartCombat')
-  Timer.after(1, function()
+
+  Timer.after(Character.combatStartEnterDuration, function()
     self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
     Signal.emit('NextTurn')
   end)
@@ -96,7 +92,6 @@ function combat:generateEnemyTeam()
   local enemyList = {}
   local enemyNameList = combat:getEnemyNames()
 
-  -- Populate list for EnemyTeam ctor
   for i=1,#enemyNameList do
     local enemy = Enemy(enemyNameList[i], "Enemy")
     enemyList[i] = enemy

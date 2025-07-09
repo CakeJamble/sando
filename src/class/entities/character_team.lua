@@ -11,16 +11,11 @@ function CharacterTeam:init(characters, numMembers)
     self.inventory = Inventory(self.members)
 end;
 
--- Distributes exp of equal amount to each living player
 function CharacterTeam:distributeExperience(amount)
   for _,member in pairs(self.members) do
     if member:isAlive() then  member:gainExp(amount) end
   end
 end;
-
--- function Team:getMoney()
---   return self.money
--- end;
 
 function CharacterTeam:increaseMoney(amount)
   self.money = self.money + amount

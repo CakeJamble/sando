@@ -201,7 +201,7 @@ local lineSkills = {
     stagingPos = 'near',
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
     proc =  function(targetPos, duration, startingPos, oPos)
-              -- Charge from right to left, through the target
+              -- Charge from right to left, through the target at linear speed
               local goalX, goalY = targetPos.x, targetPos.y
               local stagingPos = {x = startingPos.x, y = startingPos.y}
               Timer.tween(duration, startingPos, {x = goalX - 80, y = goalY})

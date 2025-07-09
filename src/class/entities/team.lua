@@ -4,14 +4,12 @@ require("class.entities.entity")
 Class = require 'libs.hump.class'
 Team = Class{}
 
-  -- Team constructor
 function Team:init(entities, numMembers)
   self.members = entities
   self.membersIndex = 1
   self.money = 0
 end;
 
-  -- Adds a member to the instance variable self.members list
 function Team:addMember(entity) --> void
   self.numMembers = self.numMembers + 1
   self.members[self.numMembers] = entity

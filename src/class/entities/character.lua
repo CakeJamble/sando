@@ -21,7 +21,8 @@ Character = Class{__includes = Entity,
   xPos = 50,
   xCombatStart = -20,
   ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
-  statRollsOnLevel = 1
+  statRollsOnLevel = 1,
+  combatStartEnterDuration = 0.5
 }
 
 -- Character constructor
@@ -56,15 +57,18 @@ function Character:init(stats, actionButton)
   self.actionUI = ActionUI()
   self.cannotLose = false
   self.equips = {}
+  self.combatStartEnterDuration = Character.combatStartEnterDuration
+  Character.combatStartEnterDuration = Character.combatStartEnterDuration + 0.1
 
 
   Signal.register('OnStartCombat',
     function()
-      -- move characters into place and set positions to return to after turn ends
-      Timer.tween(0.5, self.pos,{x = Character.xPos})
-      Timer.after(1, function() 
+      Timer.tween(self.combatStartEnterDuration, self.pos,{x = Character.xPos})
+      Timer.after(self.combatStartEnterDuration, function()
         self.oPos.x = self.pos.x
         self.oPos.y = self.pos.y
+        self.defenseState.pos.x = self.pos.x
+        self.defenseState.pos.y = self.pos.y
       end)
     end
   )

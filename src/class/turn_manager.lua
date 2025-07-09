@@ -41,7 +41,6 @@ function TurnManager:init(characterTeam, enemyTeam)
         print(e.entityName .. ' HP: ' .. e:getHealth())
         if e:getHealth() == 0 and e.type == 'enemy' then
           table.insert(koEntities, e)
-          -- get rewards from enemies and store them for end of combat
           local reward = e:knockOut()
           table.insert(self.rewards, reward)
         end
@@ -98,10 +97,6 @@ function TurnManager:init(characterTeam, enemyTeam)
         for _,e in pairs(self.turnQueue) do
           if e.type == 'character' then
             e.state = 'defense'
-
-            -- correcting bug with defense state being initialized improperly
-            e.defenseState.pos.x = e.pos.x
-            e.defenseState.pos.y = e.pos.y
           end
         end
       end
@@ -126,13 +121,11 @@ function TurnManager:init(characterTeam, enemyTeam)
   );
 
   Signal.register('TargetConfirm',
-    -- Set target for active entity, get their position, and begin moving towards it
     function(targetType, tIndex)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
       print('target name is ' .. self.activeEntity.target.entityName)
       
-      -- move to appropriate position based on the skill type (contact, range, etc)
       self.activeEntity:goToStagingPosition()
       local t = self.activeEntity:getSkillStagingTime()
 
@@ -144,7 +137,6 @@ function TurnManager:init(characterTeam, enemyTeam)
             self.qteManager.activeQTE.feedbackPos.y = y - 25
             self.qteManager.countQTEFrames = true
 
-            -- Begin QTE here
             self.qteManager.activeQTE:proc()
         end)
       else -- go straight into attack
@@ -154,21 +146,20 @@ function TurnManager:init(characterTeam, enemyTeam)
   );
 
   Signal.register('MoveBack',
-    -- Signal that is triggered after finishing an attack, as part of ending turn
     function(delay)
       Timer.after(delay, function()
-        self.activeEntity:goToStagingPosition(0.5)    
-        Timer.tween(0.5, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
-        Timer.after(0.75, function() Signal.emit('NextTurn') end)
+        local travelTime = 0.5
+        local additionalBufferTime = 0.25
+        self.activeEntity:goToStagingPosition(travelTime)    
+        Timer.tween(travelTime, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
+        Timer.after(travelTime + additionalBufferTime, function() Signal.emit('NextTurn') end)
       end)
     end
   );
 
 
   Signal.register('Attack',
-    -- Sets offense state of entity to a valid state to perform attacks
     function()
-      -- slight delay to give player time to recognize what is happening
       Timer.after(self.setupDelay, function()
         self.activeEntity.skill.proc(
           self.activeEntity.target.pos, self.activeEntity.skill.duration,
@@ -189,19 +180,14 @@ function TurnManager:init(characterTeam, enemyTeam)
   );
 end;
 
--- Uses character and enemy teams to make a single turn queue
 function TurnManager:populateTurnQueue()
   local turnQueue = {}
   local characterMembers = self.characterTeam.members
   local enemyMembers = self.enemyTeam.members
   
-  -- Add characters to turn queue
   for i=1,#characterMembers do
     table.insert(turnQueue, characterMembers[i])
-    -- self.commandManager:addListener(self.characterTeam.members[i])
   end
-
-  -- Add enemies to turn queue
   for i=1,#enemyMembers do
     table.insert(turnQueue, enemyMembers[i])
   end
@@ -221,7 +207,6 @@ function TurnManager:update(dt)
   end
 end;
 
--- Sorting algorithm for start of combat
 function TurnManager:sortQueue(t)
   table.sort(t,
     function(entity1, entity2)

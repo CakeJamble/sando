@@ -44,8 +44,6 @@ function Entity:init(stats, x, y)
   self.tPos = {x = 0, y = 0}
   self.oPos = {x = self.pos.x, y = self.pos.y}
   
-  -- self.x=x
-  -- self.y=y
   self.dX=0
   self.dY=0
   self.frameWidth = self.battleStats['width']      -- width of sprite (or width for a single frame of animation for this character)
@@ -74,7 +72,6 @@ function Entity:init(stats, x, y)
 
   Signal.register('OnStartCombat', 
     function()
-      -- add colliders for character to world
       world:add(self, self.pos.x,self.pos.y, self.frameWidth,self.frameHeight)
     end
   )
