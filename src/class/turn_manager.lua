@@ -151,8 +151,6 @@ function TurnManager:init(characterTeam, enemyTeam)
         local travelTime = 0.5
         local additionalBufferTime = 0.25
         self.activeEntity:goToStagingPosition(travelTime)
-        -- Timer.tween(travelTime, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
-        -- Timer.after(travelTime + additionalBufferTime, function() Signal.emit('NextTurn') end)
       end)
     end
   );
