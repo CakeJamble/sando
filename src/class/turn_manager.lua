@@ -125,7 +125,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
       print('target name is ' .. self.activeEntity.target.entityName)
-      
+
       self.activeEntity:goToStagingPosition()
       local t = self.activeEntity:getSkillStagingTime()
 
@@ -150,9 +150,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       Timer.after(delay, function()
         local travelTime = 0.5
         local additionalBufferTime = 0.25
-        self.activeEntity:goToStagingPosition(travelTime)    
-        Timer.tween(travelTime, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
-        Timer.after(travelTime + additionalBufferTime, function() Signal.emit('NextTurn') end)
+        self.activeEntity:goToStagingPosition(travelTime)
+        -- Timer.tween(travelTime, self.activeEntity.pos, {x = self.activeEntity.oPos.x, y = self.activeEntity.oPos.y})
+        -- Timer.after(travelTime + additionalBufferTime, function() Signal.emit('NextTurn') end)
       end)
     end
   );
@@ -198,7 +198,7 @@ end;
 function TurnManager:update(dt)
   for _,entity in pairs(self.turnQueue) do
     entity:update(dt)
-    world:update(entity, entity.pos.x, entity.pos.y)
+    -- world:update(entity.collider, entity.pos.x, entity.pos.y)
   end
   self.qteManager:update(dt)
 

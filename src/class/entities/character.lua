@@ -22,7 +22,7 @@ Character = Class{__includes = Entity,
   xCombatStart = -20,
   ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
   statRollsOnLevel = 1,
-  combatStartEnterDuration = 0.5
+  combatStartEnterDuration = 0.75
 }
 
 -- Character constructor
@@ -63,13 +63,14 @@ function Character:init(stats, actionButton)
 
   Signal.register('OnStartCombat',
     function()
-      Timer.tween(self.combatStartEnterDuration, self.pos,{x = Character.xPos})
-      Timer.after(self.combatStartEnterDuration, function()
-        self.oPos.x = self.pos.x
-        self.oPos.y = self.pos.y
-        self.defenseState.pos.x = self.pos.x
-        self.defenseState.pos.y = self.pos.y
-      end)
+      flux.to(self.pos, self.combatStartEnterDuration, {x = Character.xPos})
+        :oncomplete(function()
+          self.oPos.x = self.pos.x
+          self.oPos.y = self.pos.y
+          self.defenseState.pos.x = self.pos.x
+          self.defenseState.pos.y = self.pos.y
+          print('updated starting positions')
+        end)
     end
   )
 end;

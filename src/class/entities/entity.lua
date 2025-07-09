@@ -69,10 +69,13 @@ function Entity:init(stats, x, y)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
+  self.collider = {name = self.entityName .. 'Collider'}
+  world:add(self.collider, self.pos.x, self.pos.y, self.frameWidth, self.frameHeight)
+
 
   Signal.register('OnStartCombat', 
     function()
-      world:add(self, self.pos.x,self.pos.y, self.frameWidth,self.frameHeight)
+      -- world:add(self, self.pos.x,self.pos.y, self.frameWidth,self.frameHeight)
     end
   )
 end;
@@ -176,7 +179,8 @@ function Entity:goToStagingPosition(t)
   if t == nil then
     t = self.skill.dict.stagingTime
   end
-  Timer.tween(t, self.pos, {x = stagingPos.x, y = stagingPos.y})
+  -- Timer.tween(t, self.pos, {x = stagingPos.x, y = stagingPos.y})
+  flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
 end;
 
 function Entity:modifyBattleStat(stat_name, amount) --> void
@@ -272,6 +276,10 @@ function Entity:draw() --> void
     -- Placeholder for drawing the state or any visual representation
     -- walk, jump, idle
   -- local state = self.movementState.state
+  love.graphics.setColor(0, 0, 0, 0.4)
+  love.graphics.ellipse("fill", self.pos.x + (self.frameWidth / 2), self.pos.y + self.frameHeight, self.frameWidth / 5, self.frameHeight / 8)
+  love.graphics.setColor(1, 1, 1, 1)
+  
   local spriteNum
   local animation
   if self.state == 'idle' then

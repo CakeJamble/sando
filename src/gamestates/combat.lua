@@ -142,6 +142,7 @@ function combat:gamepadpressed(joystick, button)
 end;
 
 function combat:update(dt)
+  flux.update(dt)
   if self.turnManager then
     self.turnManager:update(dt)
   end

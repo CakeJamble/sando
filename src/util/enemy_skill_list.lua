@@ -200,24 +200,31 @@ local lineSkills = {
     stagingTime = 1,
     stagingPos = 'near',
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
-    proc =  function(targetPos, duration, startingPos, oPos)
+    proc =  function(targetPos, duration, startingPos, oPos) -- is this going to need a ref to the entity proc'ing the skill?
               -- Charge from right to left, through the target at linear speed
               local goalX, goalY = targetPos.x, targetPos.y
               local stagingPos = {x = startingPos.x, y = startingPos.y}
-              Timer.tween(duration, startingPos, {x = goalX - 80, y = goalY})
+              local delay = 0.5
+              local tweenType = 'linear'
 
-              -- Return to staging position
-              Timer.after(duration, function()
-                Timer.tween(duration, startingPos, {x = stagingPos.x, y = stagingPos.y})
-              end)
-
-              -- Return to starting position
-              local delay = 2 * duration + delayPostAttack
-              Signal.emit('MoveBack', delay)
+              flux.to(startingPos, duration, {x = goalX - 80, y = goalY}):ease('linear')
+                :oncomplete(function() tweenToStagingPosThenStartingPos(startingPos, stagingPos, oPos, duration, delay, tweenType) end)
             end
   }
 }
 
+--[[ After a skill is completed, if the current position is different from the staging pos,
+  tween back to the staging pos. Then after a short delay, tween back to where
+  the skill user started the turn. Then return control to the skill being proc'd
+]]
+function tweenToStagingPosThenStartingPos(pos, stagingPos, oPos, duration, delay, tweenType)
+  print(oPos)
+  flux.to(pos, duration, {x = stagingPos.x, y = stagingPos.y}):after(
+    pos, duration, {x = oPos.x, y = oPos.y}):delay(delay):oncomplete(
+    function()
+      Signal.emit('NextTurn')
+    end)
+end
 
 function getButtlerSkills()
   return buttlerSkills

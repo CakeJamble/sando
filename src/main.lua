@@ -3,6 +3,7 @@ Gamestate = require "libs.hump.gamestate"
 Camera = require "libs.hump.camera"
 Signal = require "libs.hump.signal"
 Timer = require 'libs.hump.timer'
+flux = require 'libs.flux'
 bump = require 'libs.bump'
 world = bump.newWorld(50)
 
@@ -27,8 +28,8 @@ function love.load()
   font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
   love.graphics.setFont(font)
   camera = Camera()
-    Gamestate.registerEvents()
-    Gamestate.switch(states['main_menu'])
+  Gamestate.registerEvents()
+  Gamestate.switch(states['main_menu'])
 end;
 
 -- for live console output during program execution

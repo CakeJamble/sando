@@ -31,10 +31,9 @@ function main_menu:init()
     table.insert(self.mmButtons, love.graphics.newImage(buttonPaths[i]))
   end
   self.pos = {x = BUTTONS_START_X, y = 0}
-  Timer.tween(2, self.pos, {x = BUTTONS_START_X, y = BUTTONS_START_Y}, 'in-bounce')
-  Timer.after(2, function()
-    self.bounceFinished = true
-  end)
+  local duration = 2
+  flux.to(self.pos, duration, {x = BUTTONS_START_X, y = BUTTONS_START_Y}):ease('bouncein')
+    :oncomplete(function() self.bounceFinished = true end)
 end;
 
 function main_menu:keypressed(key)
@@ -96,6 +95,7 @@ function main_menu:set_down()
 end;
 
 function main_menu:update(dt)
+  flux.update(dt)
   Timer.update(dt)
 end;
 
