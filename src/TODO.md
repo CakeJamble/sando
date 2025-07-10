@@ -13,11 +13,10 @@ Today wasn't as productive because I spent a lot of time reading and thinking ab
 ### TODO
 
 - [x] Import `flux` into my dependencies
-- [ ] Test a simple tween using `flux`
-- [ ] Review the diagrams from Figma to make sure I know where I need to hotswap the library uses
-	- ex. Add hitbox scaling when dodging/jumping (chain the scaling with `flux:onupdate()`
-- [ ] Write a barebones collision detection library
-- [ ] In Figma, sketch out a hierarchy of abstracting tweening interfaces using `flux.group()`
+- [x] Test a simple tween using `flux`
+- [x] Review the diagrams from Figma to make sure I know where I need to hotswap the library uses
+- [x] Swap out `hump.timer.tween` for `flux`
+- [x] Write a barebones collision detection library
 
 ### Notes on `flux`
 
