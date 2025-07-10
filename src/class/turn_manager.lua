@@ -74,18 +74,26 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.tPos.y = self.activeEntity.target.oPos.y
       print('target name is ' .. self.activeEntity.target.entityName)
 
-      self.activeEntity:goToStagingPosition()
+      local customTweenTime = nil
+      local displacement = 0
+      if self.activeEntity.type == 'character' then
+        displacement = -120
+      else
+        displacement = 120
+      end
+      self.activeEntity:goToStagingPosition(customTweenTime, displacement)
       local t = self.activeEntity:getSkillStagingTime()
 
       -- Once in position, initialize QTE UI Components
       if self.activeEntity.type == 'character' then
         Timer.after(t, function()
             self.qteManager.activeQTE.showPrompt = true
-            self.qteManager.activeQTE.feedbackPos.x = x - 25
-            self.qteManager.activeQTE.feedbackPos.y = y - 25
+            self.qteManager.activeQTE.feedbackPos.x = self.activeEntity.pos.x - 25
+            self.qteManager.activeQTE.feedbackPos.y = self.activeEntity.pos.y - 25
             self.qteManager.countQTEFrames = true
 
-            self.qteManager.activeQTE:proc()
+            -- self.qteManager.activeQTE:proc()
+            Signal.emit('Attack')
         end)
       else -- go straight into attack
         Timer.after(t, function() Signal.emit('Attack') end)

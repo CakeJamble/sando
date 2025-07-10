@@ -1,4 +1,12 @@
 --! file: skill_sheet
+local Collision = require 'libs.collision'
+function tweenToStagingPosThenStartingPos(pos, stagingPos, oPos, duration, delay, tweenType)
+  flux.to(pos, duration, {x = stagingPos.x, y = stagingPos.y}):after(
+    pos, duration, {x = oPos.x, y = oPos.y}):delay(delay):oncomplete(
+    function()
+      Signal.emit('NextTurn')
+    end)
+end
 
 local skillTypes = {
   'BUTTON_PRESS',
@@ -17,6 +25,8 @@ local marco_skills = {
     attack_type = 'solo',
     partners = nil,
     sprite_path = "asset/sprites/entities/character/marco/basic.png",
+    stagingTime = 1,
+    stagingPos = 'near',
     duration = 70,
     qte_window = {55, 65},
     qte_type = "SINGLE_BUTTON_PRESS",
@@ -26,6 +36,26 @@ local marco_skills = {
     instructions = 'Press A just before landing the attack!',
     unlock = nil,
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
+    proc = function(ref)
+      duration = 0.5
+      local goalX, goalY = ref.tPos.x, ref.tPos.y
+      local stagingPos = {x = ref.pos.x, y = ref.pos.y}
+      local delay = 0.5
+      local tweenType = 'linear'
+      local hasCollided = false
+      local damage = 0 + ref.battleStats['attack']
+
+      -- Attack by charging from left to right
+      flux.to(ref.pos, duration, {x = goalX + 80, y = goalY}):ease('linear')
+        :onupdate(function()
+          if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
+            print('collision detected')
+            ref.target:takeDamage(damage)
+            hasCollided = true
+          end
+        end)
+        :oncomplete(function() tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, duration, delay, tweenType) end)
+    end
   },
 
   {
@@ -46,6 +76,7 @@ local marco_skills = {
     description = 'Phase behind enemy, dealing physical damage. Higher chance for crititical strike.',
     unlock = nil,
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
+
   }
 }
 

@@ -20,6 +20,12 @@ function Enemy:init(enemyName, enemyType)
   self.lootReward = self.baseStats.rewardsDistribution
   self.offenseState = EnemyOffenseState(self.pos.x, self.pos.y, self.battleStats)
   Enemy.yPos = Enemy.yPos + 150
+
+  Signal.register('OnStartCombat',
+    function()
+      self.oPos.x = self.pos.x
+      self.oPos.y = self.pos.y
+    end)
 end;
 
 function Enemy:startTurn(hazards)

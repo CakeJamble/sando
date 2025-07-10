@@ -15,6 +15,7 @@ Need to deal with the reverberations of switching to collision based combat.
 - [ ] Refactor offense for Characters
 	- [ ] Skills
 	- [ ] Animation States
+	- [ ] QTE Manager & QTEs
 	- [ ] Offense States
 - [x] Cleanup `NextTurn` signal in `TurnManager` class
 

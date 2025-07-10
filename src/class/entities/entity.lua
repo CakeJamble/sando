@@ -168,10 +168,10 @@ end;
 
 -- MUTATORS
 
-function Entity:goToStagingPosition(t)
+function Entity:goToStagingPosition(t, displacement)
   local stagingPos = {x=0,y=0}
   if self.skill.dict.stagingPos == 'near' then
-    stagingPos.x = self.target.oPos.x + 120
+    stagingPos.x = self.target.oPos.x + displacement
     stagingPos.y = self.target.oPos.y
   end
   print('Tweening for active entity to use ' .. self.skill.dict.skill_name)
@@ -193,7 +193,6 @@ function Entity:takeDamage(amount) --> void
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
-  Signal.emit('OnDamageTaken', self.amount)
 end;
 
 function Entity:takeDamagePierce(amount) --> void
