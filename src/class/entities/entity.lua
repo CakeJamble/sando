@@ -40,7 +40,7 @@ function Entity:init(stats, x, y)
   self.subdir = ''
   self.entityName = self.baseStats['entityName']
 
-  self.pos = {x = x, y = y}
+  self.pos = {x = x, y = y, r = 0}
   self.tPos = {x = 0, y = 0}
   self.oPos = {x = self.pos.x, y = self.pos.y}
   
@@ -57,6 +57,7 @@ function Entity:init(stats, x, y)
   self.state = 'idle'
   self.movementState = MovementState(self.pos.x, self.pos.y)
   self.selectedSkill = nil
+  -- self.r = 0
 
   self.numFramesDmg = 60
   self.currDmgFrame = 0
@@ -305,5 +306,5 @@ function Entity:draw() --> void
     love.graphics.setColor(1,1,1, 1)
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, 0, 1)
+  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
 end;

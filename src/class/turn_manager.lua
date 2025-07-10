@@ -145,24 +145,21 @@ function TurnManager:init(characterTeam, enemyTeam)
     end
   );
 
-  Signal.register('MoveBack',
-    function(delay)
-      Timer.after(delay, function()
-        local travelTime = 0.5
-        local additionalBufferTime = 0.25
-        self.activeEntity:goToStagingPosition(travelTime)
-      end)
-    end
-  );
+  -- Signal.register('MoveBack',
+  --   function(delay)
+  --     Timer.after(delay, function()
+  --       local travelTime = 0.5
+  --       local additionalBufferTime = 0.25
+  --       self.activeEntity:goToStagingPosition(travelTime)
+  --     end)
+  --   end
+  -- );
 
 
   Signal.register('Attack',
     function()
       Timer.after(self.setupDelay, function()
-        self.activeEntity.skill.proc(
-          self.activeEntity.target.pos, self.activeEntity.skill.duration,
-          self.activeEntity.pos, self.activeEntity.oPos
-        )
+        self.activeEntity.skill.proc(self.activeEntity)
       end)
     end
   );
