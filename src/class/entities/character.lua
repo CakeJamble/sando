@@ -37,6 +37,7 @@ function Character:init(stats, actionButton)
   Entity.init(self, stats, Character.xCombatStart, Character.yPos)
   self.actionButton = actionButton
   self.basic = stats.skillList[1]
+  self.blockMod = 1
   self.currentSkills = stats.skillList
   self.chosenSkill = nil
   self.level = 1
@@ -115,8 +116,8 @@ function Character:setDefenseAnimations()
 end;
 
 function Character:takeDamage(amount)
-  if self.defenseState.bonusApplied then
-    self.battleStats.defense = self.battleStats.defense + self.defenseState.blockMod
+  if self.isGuarding then
+    self.battleStats.defense = self.battleStats.defense + self.blockMod
   end
 
   Entity.takeDamage(self, amount)
@@ -127,7 +128,7 @@ function Character:takeDamage(amount)
   end
 
   if self.defenseState.bonusApplied then
-    self.battleStats.defense = self.battleStats.defense - self.defenseState.blockMod
+    self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
 end;
 
