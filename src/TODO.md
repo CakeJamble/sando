@@ -2,7 +2,20 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
-## 07/08/2025
+## 07/10/2025
+
+Need to deal with the reverberations of switching to collision based combat.
+
+### TODO
+- [x] Add jumping
+- [x] Add jumping and guarding cooldowns
+- [x] Fix target setup by enemies using `target.oPos` instead of current position(s)
+- [ ] Refactor offense for Characters
+	- [ ] Skills
+	- [ ] Animation States
+	- [ ] Offense States
+
+## 07/08/2025 & 07/09/2025
 
 Today wasn't as productive because I spent a lot of time reading and thinking about how to integrate collision with tweening. I think I came to a good conclusion so I'm trying not to consider it wasted time. Today's studying will help improve tomorrow's coding.
 

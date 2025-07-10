@@ -55,9 +55,7 @@ function Entity:init(stats, x, y)
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'idle'
-  self.movementState = MovementState(self.pos.x, self.pos.y)
   self.selectedSkill = nil
-  -- self.r = 0
 
   self.numFramesDmg = 60
   self.currDmgFrame = 0
@@ -172,8 +170,8 @@ end;
 function Entity:goToStagingPosition(t)
   local stagingPos = {x=0,y=0}
   if self.skill.dict.stagingPos == 'near' then
-    stagingPos.x = self.target.pos.x + 120
-    stagingPos.y = self.target.pos.y
+    stagingPos.x = self.target.oPos.x + 120
+    stagingPos.y = self.target.oPos.y
   end
   print('Tweening for active entity to use ' .. self.skill.dict.skill_name)
   if t == nil then
@@ -250,11 +248,10 @@ end;
 function Entity:update(dt) --> void
   self.hitbox.x = self.pos.x
   self.hitbox.y = self.pos.y
-  local state = self.movementState.state
   local animation
-  if state == 'idle' then
+  if self.state == 'idle' then
     animation = self.movementAnimations.idle
-  elseif state == 'move' or 'moveback' then
+  elseif self.state == 'move' or 'moveback' then
     animation = self.movementAnimations.moveX
   end
   

@@ -201,7 +201,7 @@ local lineSkills = {
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
     proc =  function(ref) -- is this going to need a ref to the entity proc'ing the skill?
               local duration = 0.5
-              local goalX, goalY = ref.target.pos.x, ref.target.pos.y
+              local goalX, goalY = ref.tPos.x, ref.tPos.y
               local stagingPos = {x = ref.pos.x, y = ref.pos.y}
               local delay = 0.5
               local tweenType = 'linear'

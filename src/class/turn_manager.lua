@@ -87,6 +87,7 @@ function TurnManager:init(characterTeam, enemyTeam)
         e.state = 'idle'
         if e.type == 'character' then
           e.defenseState:reset()
+          e.state = 'defense'
         end
       end
 
@@ -123,6 +124,8 @@ function TurnManager:init(characterTeam, enemyTeam)
     function(targetType, tIndex)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
+      self.activeEntity.tPos.x = self.activeEntity.target.oPos.x
+      self.activeEntity.tPos.y = self.activeEntity.target.oPos.y
       print('target name is ' .. self.activeEntity.target.entityName)
 
       self.activeEntity:goToStagingPosition()

@@ -22,7 +22,11 @@ Character = Class{__includes = Entity,
   xCombatStart = -20,
   ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
   statRollsOnLevel = 1,
-  combatStartEnterDuration = 0.75
+  combatStartEnterDuration = 0.75,
+  guardActiveDur = 0.25,
+  guardCooldownDur = 0.75,
+  jumpDur = 0.5,
+  landingLag = 0.25
 }
 
 -- Character constructor
@@ -60,6 +64,10 @@ function Character:init(stats, actionButton)
   self.combatStartEnterDuration = Character.combatStartEnterDuration
   Character.combatStartEnterDuration = Character.combatStartEnterDuration + 0.1
 
+  self.isGuarding = false
+  self.canGuard = false
+  self.canJump = true
+  self.isJumping = false
 
   Signal.register('OnStartCombat',
     function()
@@ -67,9 +75,6 @@ function Character:init(stats, actionButton)
         :oncomplete(function()
           self.oPos.x = self.pos.x
           self.oPos.y = self.pos.y
-          self.defenseState.pos.x = self.pos.x
-          self.defenseState.pos.y = self.pos.y
-          print('updated starting positions')
         end)
     end
   )
@@ -198,6 +203,37 @@ function Character:applyGear()
   end
 end;
 
+-- Timers that revert Character to a state where they are no longer guarding after the duration ends
+-- then allows them to guard again after the cooldown passes
+function Character:beginGuard()
+  self.isGuarding = true
+  self.canJump = false  
+  self.canGuard = false -- for cooldown
+  Timer.after(Character.guardActiveDur, function()
+    self.isGuarding = false
+  end)
+
+  Timer.after(Character.guardCooldownDur, function()
+    self.canGuard = true
+  end)
+end;
+
+function Character:beginJump()
+  self.isJumping = true
+  self.canGuard = false
+  self.canJump = false
+
+  flux.to(self.pos, Character.jumpDur/2, {y = self.pos.y - self.frameHeight})
+    :after(self.pos, Character.jumpDur/2, {y = self.pos.y})
+    :oncomplete(
+      function()
+        self.isJumping = false
+        self.canGuard = false
+        self.canJump = true
+      end):delay(Character.landingLag)
+end;
+
+
 function Character:keypressed(key)
   if self.state == 'offense' then
     self.offenseState:keypressed(key)
@@ -216,7 +252,16 @@ function Character:gamepadpressed(joystick, button)
   if self.state == 'offense' then
     self.offenseState:gamepadpressed(joystick, button)
   elseif self.state == 'defense' then
-    self.defenseState:gamepadpressed(joystick, button)
+    if button == 'leftshoulder' then
+      self.canGuard = true
+    elseif button == self.actionButton then
+      if self.canGuard then
+        self:beginGuard()
+      elseif self.canJump then
+        self:beginJump()
+      end
+    end
+    -- self.defenseState:gamepadpressed(joystick, button)
   elseif self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
     if self.actionUI.uiState == 'targeting' then
@@ -224,6 +269,14 @@ function Character:gamepadpressed(joystick, button)
     end
   end
   -- if in movement state, does nothing
+end;
+
+function Character:gamepadreleased(joystick, button)
+  if self.state == 'defense' then
+    if button == 'leftshoulder' then
+      self.canGuard = false
+    end
+  end
 end;
     
 function Character:update(dt)
