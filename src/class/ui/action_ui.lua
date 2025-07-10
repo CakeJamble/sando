@@ -195,7 +195,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         self.uiState = 'rotating'
         
        -- stand ins for confirm/cancel button input 
-      elseif button == 'a' then
+      elseif button == self.actionButton then
         if self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill
           self.uiState = 'targeting'
@@ -235,7 +235,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.tIndex = math.max(1, self.tIndex - 1)
         elseif button == 'dpright' or button == 'dpdown' then
           self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
-        elseif button == 'a' then 
+        elseif button == self.actionButton then 
           Signal.emit('TargetConfirm', self.targetType, self.tIndex)
           self.uiState = 'moving'
         elseif button == 'b' then

@@ -16,6 +16,7 @@ Need to deal with the reverberations of switching to collision based combat.
 	- [ ] Skills
 	- [ ] Animation States
 	- [ ] Offense States
+- [x] Cleanup `NextTurn` signal in `TurnManager` class
 
 ## 07/08/2025 & 07/09/2025
 

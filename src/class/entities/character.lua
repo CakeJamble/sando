@@ -250,26 +250,23 @@ function Character:keypressed(key)
 end;
 
 function Character:gamepadpressed(joystick, button)
-  if self.state == 'offense' then
-    self.offenseState:gamepadpressed(joystick, button)
-  elseif self.state == 'defense' or self.state == 'idle' then
-    if button == 'leftshoulder' then
-      self.canGuard = true
-    elseif button == self.actionButton then
-      if self.canGuard then
-        self:beginGuard()
-      elseif self.canJump then
-        self:beginJump()
-      end
-    end
-    -- self.defenseState:gamepadpressed(joystick, button)
-  elseif self.actionUI.active then
+  if self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
-    if self.actionUI.uiState == 'targeting' then
-      Signal.emit('Targeting', self.targets)
+  else
+    self:checkGuardAndJump(button)
+  end
+end;
+
+function Character:checkGuardAndJump(button)
+  if button == 'leftshoulder' then
+    self.canGuard = true
+  elseif button == self.actionButton then
+    if self.canGuard then
+      self:beginGuard()
+    elseif self.canJump then
+      self:beginJump()
     end
   end
-  -- if in movement state, does nothing
 end;
 
 function Character:gamepadreleased(joystick, button)
