@@ -8,8 +8,10 @@ Need to deal with the reverberations of switching to collision based combat.
 
 ### TODO
 - [x] Add jumping
+- [x] Add guarding
 - [x] Add jumping and guarding cooldowns
 - [x] Fix target setup by enemies using `target.oPos` instead of current position(s)
+- [x] Add functionality to guard by modifying defense (without defense state)
 - [ ] Refactor offense for Characters
 	- [ ] Skills
 	- [ ] Animation States
