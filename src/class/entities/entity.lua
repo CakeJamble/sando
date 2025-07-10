@@ -70,15 +70,14 @@ function Entity:init(stats, x, y)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
-  self.collider = {name = self.entityName .. 'Collider'}
-  world:add(self.collider, self.pos.x, self.pos.y, self.frameWidth, self.frameHeight)
+  self.hitbox = {
+    x = self.pos.x,
+    y = self.pos.y,
+    w = self.frameWidth,
+    h = self.frameHeight
+  }
 
-
-  Signal.register('OnStartCombat', 
-    function()
-      -- world:add(self, self.pos.x,self.pos.y, self.frameWidth,self.frameHeight)
-    end
-  )
+  self.drawHitbox = true
 end;
 
 function Entity:startTurn()
@@ -173,14 +172,13 @@ end;
 function Entity:goToStagingPosition(t)
   local stagingPos = {x=0,y=0}
   if self.skill.dict.stagingPos == 'near' then
-    stagingPos.x = self.target.pos.x + 90
+    stagingPos.x = self.target.pos.x + 120
     stagingPos.y = self.target.pos.y
   end
   print('Tweening for active entity to use ' .. self.skill.dict.skill_name)
   if t == nil then
     t = self.skill.dict.stagingTime
   end
-  -- Timer.tween(t, self.pos, {x = stagingPos.x, y = stagingPos.y})
   flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
 end;
 
@@ -195,7 +193,8 @@ end;
 function Entity:takeDamage(amount) --> void
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
-  self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
+  self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
+  Signal.emit('OnDamageTaken', self.amount)
 end;
 
 function Entity:takeDamagePierce(amount) --> void
@@ -249,6 +248,8 @@ function Entity:populateFrames(image, duration)
 end;
 
 function Entity:update(dt) --> void
+  self.hitbox.x = self.pos.x
+  self.hitbox.y = self.pos.y
   local state = self.movementState.state
   local animation
   if state == 'idle' then
@@ -307,4 +308,10 @@ function Entity:draw() --> void
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
+
+  if self.drawHitbox then
+    love.graphics.setColor(1, 0, 0, 0.4)
+    love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
+    love.graphics.setColor(1, 1, 1)
+  end
 end;

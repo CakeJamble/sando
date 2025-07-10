@@ -145,17 +145,6 @@ function TurnManager:init(characterTeam, enemyTeam)
     end
   );
 
-  -- Signal.register('MoveBack',
-  --   function(delay)
-  --     Timer.after(delay, function()
-  --       local travelTime = 0.5
-  --       local additionalBufferTime = 0.25
-  --       self.activeEntity:goToStagingPosition(travelTime)
-  --     end)
-  --   end
-  -- );
-
-
   Signal.register('Attack',
     function()
       Timer.after(self.setupDelay, function()
@@ -193,13 +182,8 @@ end;
 function TurnManager:update(dt)
   for _,entity in pairs(self.turnQueue) do
     entity:update(dt)
-    -- world:update(entity.collider, entity.pos.x, entity.pos.y)
   end
   self.qteManager:update(dt)
-
-  if self.activeEntity.pos == self.activeEntity.tPos then
-    Signal.emit('Attack', self.activeEntity.pos.x, self.activeEntity.pos.y)
-  end
 end;
 
 function TurnManager:sortQueue(t)

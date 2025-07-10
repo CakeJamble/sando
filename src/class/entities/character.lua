@@ -112,9 +112,8 @@ end;
 function Character:takeDamage(amount)
   if self.defenseState.bonusApplied then
     self.battleStats.defense = self.battleStats.defense + self.defenseState.blockMod
-    print(self.battleStats.defense)
   end
-
+  
   Entity.takeDamage(self, amount)
   
   -- For Status Effect that prevents KO on own turn
@@ -251,12 +250,6 @@ function Character:update(dt)
 end;
 
 function Character:draw()
-  if self.state == 'offense' then
-    self.offenseState:draw()
-  elseif self.state == 'defense' then
-    self.defenseState:draw()
-  else 
-    Entity.draw(self)
-    self.actionUI:draw()
-  end
+  Entity.draw(self)
+  self.actionUI:draw()
 end;

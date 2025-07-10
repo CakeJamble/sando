@@ -27,7 +27,11 @@ function combat:init()
   self.combatTeamUI = love.graphics.newImage(COMBAT_TEAM_UI_PATH)
   self.hpHolder1 = love.graphics.newImage(HP_HOLDER)
   self.hpHolder2 = love.graphics.newImage(HP_HOLDER)
-
+  self.hpUIDims = {
+    x = 20,
+    y = 6,
+    offset = 40
+  }
   self.cursorX = 0
   self.cursorY = 0
   self.rewardExp = 0
@@ -42,16 +46,21 @@ function combat:init()
   for i=1,numFloors do
     self.encounteredPools[i] = {}
   end
+  self.targetedCharacterIndex = 1
   
-  Signal.register('NextTurn',
-    function()
-      local curr = 0
-      local total = 0
-      for i=1, #self.characterTeam.members do
-        curr = self.characterTeam.members[i].battleStats.hp
-        total = self.characterTeam.members[i].baseStats.hp
-        self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ": " .. curr .. " / " .. total
+  Signal.register('TargetConfirm',
+    function(targetType, tIndex)
+      if targetType == 'characters' then
+        self.targetedCharacterIndex = tIndex
       end
+    end
+  )
+  Signal.register('OnDamageTaken',
+    function(amount)
+      local t = 1
+      local delay = 0.25
+      local newHP = self.characterTeamHP[self.targetedCharacterIndex].currHP - amount
+      flux.to(self.characterTeamHP[self.targetedCharacterIndex], t, {currHP = newHP}):ease('linear'):delay(delay)
     end
   )
 end;
@@ -64,13 +73,15 @@ function combat:enter(previous)
   self.rewardMoney = 0
 
   self.characterTeamHP = {}
-  local curr = {}
-  local total = {}
-  for i=1, #self.characterTeam.members do
-    curr = self.characterTeam.members[i].battleStats.hp
-    total = self.characterTeam.members[i].baseStats.hp
-    self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
+
+  for i,entity in ipairs(self.characterTeam.members) do
+    table.insert(self.characterTeamHP,{
+      name = entity.entityName,
+      currHP = entity.battleStats.hp,
+      totalHP = entity.baseStats.hp
+    })
   end
+    -- self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
   
   self.enemyTeam = combat:generateEncounter()
 
@@ -160,8 +171,13 @@ function combat:draw()
   love.graphics.draw(self.combatTeamUI, 0, 0, 0, 1, 0.75)
   love.graphics.draw(self.hpHolder1, 10, 10, 0, 1, 0.75)
   love.graphics.draw(self.hpHolder2, 10, 50, 0, 1, 0.75)
-  love.graphics.print(self.characterTeamHP[1], 20, 6)
-  love.graphics.print(self.characterTeamHP[2], 20, 46)
+  for i,entity in ipairs(self.characterTeamHP) do
+    local text = entity.name .. ': ' .. math.ceil(entity.currHP) .. ' / ' .. entity.totalHP
+    love.graphics.print(text, self.hpUIDims.x, self.hpUIDims.y + ((i-1) * self.hpUIDims.offset))
+  end
+
+  -- love.graphics.print(self.characterTeamHP[1], 20, 6)
+  -- love.graphics.print(self.characterTeamHP[2], 20, 46)
   self.characterTeam:draw()
   self.enemyTeam:draw()
   if self.turnManager then
