@@ -169,15 +169,12 @@ function combat:draw()
   camera:attach()
   love.graphics.draw(self.background, 0, 0, 0, 1, 1.2)
   love.graphics.draw(self.combatTeamUI, 0, 0, 0, 1, 0.75)
-  love.graphics.draw(self.hpHolder1, 10, 10, 0, 1, 0.75)
-  love.graphics.draw(self.hpHolder2, 10, 50, 0, 1, 0.75)
+  -- love.graphics.draw(self.hpHolder1, 10, 10, 0, 1, 0.75)
+  -- love.graphics.draw(self.hpHolder2, 10, 50, 0, 1, 0.75)
   for i,entity in ipairs(self.characterTeamHP) do
     local text = entity.name .. ': ' .. math.ceil(entity.currHP) .. ' / ' .. entity.totalHP
     love.graphics.print(text, self.hpUIDims.x, self.hpUIDims.y + ((i-1) * self.hpUIDims.offset))
   end
-
-  -- love.graphics.print(self.characterTeamHP[1], 20, 6)
-  -- love.graphics.print(self.characterTeamHP[2], 20, 46)
   self.characterTeam:draw()
   self.enemyTeam:draw()
   if self.turnManager then
