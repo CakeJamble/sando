@@ -92,7 +92,7 @@ function Character:startTurn(hazards)
     self.actionUI:set(self)
   end
   )
-  -- self.actionUI:set(self)
+  self.actionUI:set(self)
 end
 
 function Character:endTurn()
@@ -252,7 +252,7 @@ end;
 function Character:gamepadpressed(joystick, button)
   if self.state == 'offense' then
     self.offenseState:gamepadpressed(joystick, button)
-  elseif self.state == 'defense' then
+  elseif self.state == 'defense' or self.state == 'idle' then
     if button == 'leftshoulder' then
       self.canGuard = true
     elseif button == self.actionButton then

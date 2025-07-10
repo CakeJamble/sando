@@ -33,75 +33,21 @@ function TurnManager:init(characterTeam, enemyTeam)
       end
 
       self.qteManager:reset()
-      local koEntities = {}
-
-      -- loop over combatants, and register enemies who need to be removed from combat
-      for i=1, #self.turnQueue do
-        local e = self.turnQueue[i]
-        print(e.entityName .. ' HP: ' .. e:getHealth())
-        if e:getHealth() == 0 and e.type == 'enemy' then
-          table.insert(koEntities, e)
-          local reward = e:knockOut()
-          table.insert(self.rewards, reward)
-        end
-      end
-
-      local removeIndices = {}
-      for i=1, #self.turnQueue do
-        for j=1, #koEntities do
-          if self.turnQueue[i] == koEntities[j] then
-            table.insert(removeIndices, i)
-          end
-        end
-      end
-
-      for i=1, #removeIndices do
-        print('removing ' .. self.turnQueue[removeIndices[i]].entityName .. ' from combat')
-        table.remove(self.turnQueue, removeIndices[i])
-      end
-
-      self.enemyTeam:removeMembers(koEntities)
-
-      -- Check Win/Loss Conditions
-      if self.enemyTeam:isWipedOut() then
-        print('end combat')
-        Gamestate.switch(states['reward'], self.rewards)
-        return
-      end
-      if self.characterTeam:isWipedOut() then
-        print('you lose')
-        return
-      end
-
+      self:removeKOs()
+      self:checkWinLossCons()
       self:sortWaitingCombatants()
 
+      -- skip over KO'd Characters (they don't get removed from queue bc they can be revived)
       while(not self.turnQueue[self.turnIndex]:isAlive()) do
         self.turnIndex = self.turnIndex + 1
       end
+
       self.activeEntity = self.turnQueue[self.turnIndex]
-
-      -- Reset frame counters for animations for all entities
-      for _,e in pairs(self.turnQueue) do
-        e.offenseState:reset()
-        e:resetDmgDisplay()
-        e.state = 'idle'
-        if e.type == 'character' then
-          e.defenseState:reset()
-          e.state = 'defense'
-        end
-      end
-
       self.activeEntity:startTurn(self.combatHazards)
       self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
-      if self.activeEntity.type == 'enemy' then
-        self.activeEntity:setupOffense()
-        for _,e in pairs(self.turnQueue) do
-          if e.type == 'character' then
-          end
-        end
-      end
+      self:entitiesReactToTurnStart()
 
-      self.turnIndex = (self.turnIndex % #self.turnQueue) + 1      
+      self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
     end
   );
 
@@ -179,6 +125,63 @@ function TurnManager:populateTurnQueue()
   end
 
   return turnQueue
+end;
+
+-- loop over combatants, and register enemies who need to be removed from combat
+function TurnManager:removeKOs()
+  local koEntities = {}
+  for i=1, #self.turnQueue do
+    local e = self.turnQueue[i]
+    print(e.entityName .. ' HP: ' .. e:getHealth())
+    if e:getHealth() == 0 and e.type == 'enemy' then
+      table.insert(koEntities, e)
+      local reward = e:knockOut()
+      table.insert(self.rewards, reward)
+    else  -- setup survivors for next turn
+      self.turnQueue[i].offenseState:reset()
+      self.turnQueue[i]:resetDmgDisplay()
+      self.turnQueue[i].state = 'idle'
+    end
+  end
+
+  local removeIndices = {}
+  for i=1, #self.turnQueue do
+    for j=1, #koEntities do
+      if self.turnQueue[i] == koEntities[j] then
+        table.insert(removeIndices, i)
+      end
+    end
+  end
+
+  for i=1, #removeIndices do
+    print('removing ' .. self.turnQueue[removeIndices[i]].entityName .. ' from combat')
+    table.remove(self.turnQueue, removeIndices[i])
+  end
+
+  self.enemyTeam:removeMembers(koEntities)
+end;
+
+function TurnManager:checkWinLossCons()
+  if self.enemyTeam:isWipedOut() then
+    print('end combat')
+    Gamestate.switch(states['reward'], self.rewards)
+    return
+  end
+  if self.characterTeam:isWipedOut() then
+    print('you lose')
+    return
+  end
+end;
+
+function TurnManager:entitiesReactToTurnStart()
+  if self.activeEntity.type == 'enemy' then
+    self.activeEntity:setupOffense()
+    for _,e in pairs(self.turnQueue) do
+      if e.type == 'character' then
+        e.state = 'defense'
+      end
+    end
+  end
 end;
 
 function TurnManager:update(dt)

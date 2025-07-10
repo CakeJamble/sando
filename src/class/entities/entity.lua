@@ -82,6 +82,7 @@ function Entity:startTurn()
   self.isFocused = true
   self.hasUsedAction = false
   self.turnFinish = false
+  self.state = 'offense'
 
   print('starting turn for ', self.entityName)
 end;
