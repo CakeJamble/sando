@@ -1,5 +1,9 @@
 --! file: skill_sheet
-require('class.skill')
+
+local skillTypes = {
+  'BUTTON_PRESS',
+  'STICK_MOVE',
+}
 
 local marco_skills = {
   {
@@ -15,13 +19,13 @@ local marco_skills = {
     sprite_path = "asset/sprites/entities/character/marco/basic.png",
     duration = 70,
     qte_window = {55, 65},
-    qte_type = "BUTTON_PRESS",
+    qte_type = "SINGLE_BUTTON_PRESS",
     qte_bonus_type = 'damage',
     qte_bonus = 1,
     description = 'Deals physical damage to a single target twice',
     instructions = 'Press A just before landing the attack!',
     unlock = nil,
-    sound_path = 'asset/audio/entities/character/marco/basic.wav'
+    sound_path = 'asset/audio/entities/character/marco/basic.wav',
   },
 
   {
@@ -41,8 +45,8 @@ local marco_skills = {
     qte_bonus = 1,
     description = 'Phase behind enemy, dealing physical damage. Higher chance for crititical strike.',
     unlock = nil,
-    sound_path = 'asset/audio/entities/character/marco/basic.wav'
-    }
+    sound_path = 'asset/audio/entities/character/marco/basic.wav',
+  }
 }
 
 local bake_skills = {
@@ -57,12 +61,13 @@ local bake_skills = {
     attack_type = 'solo',
     partners = nil,
     sprite_path = 'asset/sprites/entities/character/bake/basic.png',
-    duration = 60,
-    qte_window = 25,
-    qte_type = "BUTTON_PRESS",
+    duration = 70,
+    qte_window = {45, 65},
+    qte_type = "SINGLE_BUTTON_PRESS",
     qte_bonus_type = 'damage',
     qte_bonus = 1,
     description = "Deals physical damage to a single target once",
+    instructions = '',
     unlock = nil,
     sound_path = 'asset/audio/entities/character/marco/basic.wav'
   }
@@ -111,6 +116,9 @@ local key_skills = {
   }
 }
 
+function getSkillTypes()
+  return skillTypes
+end;
   
 function get_marco_skills() 
   local marcoSkills = {}

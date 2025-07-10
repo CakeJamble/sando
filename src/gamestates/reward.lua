@@ -1,6 +1,6 @@
 --! filename: reward
-require('class.character_team')
-require('class.character')
+require('class.entities.character_team')
+require('class.entities.character')
 require('util.tool_pool')
 require('util.equipment_pool')
 require('util.consumable_pool')
@@ -9,6 +9,10 @@ local reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
 function reward:init()
+  self.windowWidth, self.windowHeight = love.window.getDesktopDimensions()
+  self.windowWidth, self.windowHeight = self.windowWidth * 0.75, self.windowHeight * 0.75
+  self.wOffset, self.hOffset = self.windowWidth * 0.1, self.windowHeight * 0.1
+  
   self.toolPools = GetToolPool()
   self.rareChanceDelta = 0.2
   self.uncommonChanceDelta = 0.3
@@ -137,13 +141,13 @@ end;
 function reward:draw()
   self.combatState:draw()
 
-    -- love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
-    -- love.graphics.rectangle("fill", 0, 0, 100, 100)
+  love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
+  love.graphics.rectangle("fill", self.wOffset, self.hOffset, self.windowWidth, self.windowHeight)
 
-    -- love.graphics.setColor(1, 1, 1)
-    love.graphics.print("Victory! You earned:", 100, 100)
-    love.graphics.print("Gold: " .. 10, 100, 130)
-    love.graphics.print("Press Enter to continue", 100, 180)
+  love.graphics.setColor(1, 1, 1)
+  love.graphics.print("Victory! You earned:", 100, 100)
+  love.graphics.print("Gold: " .. 10, 100, 130)
+  love.graphics.print("Press Enter to continue", 100, 180)
 end;
 
 return reward

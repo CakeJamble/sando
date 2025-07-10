@@ -1,5 +1,5 @@
 --! filename: Enemy Skill List
-
+local delayPostAttack = 0.5
 local baguetteSkills = {
   {
     skill_name = 'Basic Attack',
@@ -165,8 +165,25 @@ local croissantSkills = {
 }
 
 local lineSkills = {
+  -- {
+  --   skill_name = 'Basic Attack',
+  --   damage = 0,
+  --   damage_type = 'physical',
+  --   attack_type = 'solo',
+  --   target_type = 'single',
+  --   effects = nil,
+  --   proc = nil,
+  --   partners = nil,
+  --   sprite_path = nil,
+  --   is_dodgeable = false,
+  --   is_projectile = false,
+  --   sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
+  --   duration = 60,
+  --   qte_window = {5, 59},
+  --   sound_path = 'asset/audio/entities/character/marco/basic.wav'
+  -- },
   {
-    skill_name = 'Basic Attack',
+    skill_name = 'Charge',
     damage = 0,
     damage_type = 'physical',
     attack_type = 'solo',
@@ -178,13 +195,35 @@ local lineSkills = {
     is_dodgeable = true,
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
-    duration = 60,
-    qte_window = 25,
-    sound_path = 'asset/audio/entities/character/marco/basic.wav'
-  },
-
+    duration = 0.5,
+    qte_window = nil,
+    stagingTime = 1,
+    stagingPos = 'near',
+    sound_path = 'asset/audio/entities/character/marco/basic.wav',
+    proc =  function(ref) -- is this going to need a ref to the entity proc'ing the skill?
+              -- Charge from right to left, through the target at linear speed
+              local duration = 0.5
+              local goalX, goalY = ref.target.pos.x, ref.target.pos.y
+              local stagingPos = {x = ref.pos.x, y = ref.pos.y}
+              local delay = 0.5
+              local tweenType = 'linear'
+              flux.to(ref.pos, duration, {x = goalX - 80, y = goalY}):ease('linear')
+                :oncomplete(function() tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, duration, delay, tweenType) end)
+            end
+  }
 }
 
+--[[ After a skill is completed, if the current position is different from the staging pos,
+  tween back to the staging pos. Then after a short delay, tween back to where
+  the skill user started the turn. Then return control to the turn manager
+]]
+function tweenToStagingPosThenStartingPos(pos, stagingPos, oPos, duration, delay, tweenType)
+  flux.to(pos, duration, {x = stagingPos.x, y = stagingPos.y}):after(
+    pos, duration, {x = oPos.x, y = oPos.y}):delay(delay):oncomplete(
+    function()
+      Signal.emit('NextTurn')
+    end)
+end
 
 function getButtlerSkills()
   return buttlerSkills

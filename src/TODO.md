@@ -2,6 +2,109 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/08/2025
+
+Today wasn't as productive because I spent a lot of time reading and thinking about how to integrate collision with tweening. I think I came to a good conclusion so I'm trying not to consider it wasted time. Today's studying will help improve tomorrow's coding.
+
+- I definitely don't need a physics library for collision detection. I think I should implement my own because I only need AABB (Axis-aligned bounding boxes) to check for collision between combat entities.
+- `hump.timer` has decent tweening functionality, but I need a little bit more complexity to solve my problems. Mainly, not having chained tweens, on complete, etc., available out of the box with `hump.timer` is going to slow me down when I start adding more skills. I think `flux` might be a better alternative.
+- If I implement my own AABB system, tailored specifically to this style of combat, I should be able to get away without gravity and velocity. This would mean that my combat system's flow can be scripted pretty quickly with tweening. I'm eager to see how this goes with `flux`, since it's going to simplify a lot of the manual implementations of movement that I was chaining together initially.
+
+### TODO
+
+- [x] Import `flux` into my dependencies
+- [x] Test a simple tween using `flux`
+- [x] Review the diagrams from Figma to make sure I know where I need to hotswap the library uses
+- [x] Swap out `hump.timer.tween` for `flux`
+- [x] Write a barebones collision detection library
+
+### Notes on `flux`
+
+- `flux` is only used for tweening, while `hump.timer` has some other functionality that seems useful. For example, since `flux` only tweens numerical values, I will need to occasionally use Timer to wait for certain things to be true (like initializing the turn manager after the combat setup is done)
+
+### Reflection
+Using `flux` was much easier than `hump.timer`. It was a good swap and didn't take longer than an hour to catch up with my progress from earlier this week. 
+
+## 07/07/2025
+
+Need to figure out how to refactor the skills so that I can cleanly add in collision detection to contact moves and projectile moves. Should the skill class be split up into an inheritence hierarchy? Or is it enough to have the skills decoupled from the QTEs? I think I will try to latter option first and evaluate from there on how difficult it will be to scale the development of new scales, since that will be the primary concern, unless I immediately notice performance bottlenecks.
+
+### TODO
+
+- [ ] Refactor skills to use collision detection
+
+## 07/07/2025
+
+### TODO
+
+- [x] Add collision boxes to entities in combat
+- [x] Add jumping to characters, moving collision boxes alongside them
+- [ ] Collision detection during enemy attacks
+
+### Reflection
+
+This is the beginning of another large refactor. I need to shift the development of the skill system from a basic signal based communication system, similar to Pokemon, towards the intended solution. The reactive turn based combat system will be based on collision detection, since the defense of characters will be closer to the Mario & Luigi series, while the offense system will be closer to the Paper Mario series. I have some basic designs set up to reference, but it seems like this will be a lot more work to develop and test new skills. I will need to reflect further to see if there are any better ways to organize this new system.
+
+## 07/01/2025
+
+Pivoting over to Skill development since that's honestly what is most important in getting this game progressing.
+
+### QTEs
+
+- [x] Design Timed MBP
+- [x] Design Rhythym MBP 1
+- [x] Design Rhythym MBP 2
+- [x] Design Move Stick
+- [x] Design Hold SBP
+- [x] Design Hold Stick
+- [x] Design Random SBP
+
+### Reflection
+
+Not my most productive day. Need to get back into the flow and get the creative ideas flowing. I'm not exactly sure how to do this without the animations being made yet, but I think I can do some simple placeholder art for the Action Command Prompts with the Flour Skills this week. None of these are terribly challenging to implement either, at least, I hope not! Famous last words.
+I realized that I was losing steam because I was getting lost trying to think of how all the different QTEs would work, when I haven't even properly visualized them yet.
+
+
+## 06/30/2025
+
+More steady work on Tools and Inventory
+
+- [x] Basic inventory sturcture with UI display for tools (rectangles and text ok)
+- [ ] Adding & Removing Items
+- [ ] Tool Asset Development
+- [ ] Get and display info about tools
+
+## 06/29/2025
+
+My birthday :)
+
+Mostly small progress made on implementing the functors for each tool in its respective dictionary when proc'd by an event signal in the tool manager class. I expect this to continue for a couple more days, then I will need to move on to the next piece of gear/equipment etc. until the inventory class is ready to be tested. It might be better to build the inventory class first so that individual pieces can be tested as they are developed.
+
+## 06/28/2025
+
+Been steadily working, but still missing the TODO updates. Need to really work on this and make sure I am tracking progress so I don't burn out.
+
+### Progress Made
+
+1. Added UI visual feedback (still image) for landing a successful block or attack for SBP.
+2. Basic architecture designed for the different QTE hierarchy
+3. Tool Pools are defined as full dictionaries that can be used to instantiate tool objects, rather than just strings.
+
+### Reflection
+
+These were pretty big steps towards making it feel like a real game. There's not that much further that I can go before I run up against the wall of not having enough assets to test new features, so I will eventually need to get my butt back on Aseprite. I think it might also soon be time to decide if I am going to keep this public or not.
+
+### TODO
+ 
+These TODO items are bigger tasks that will need to be split up into actionable items, but they serve as a good starting point to think about for next week.
+
+- [x] Tool Class Implementation
+- [ ] Tool Asset Development
+- [x] Defense State Dodging or Jumping
+- [ ] Projectiles
+- [ ] Collision
+
+
 ## 06/18/2025
 
 Missed another TODO update yesterday because I was so knee deep in GUI stuff I lost track of tracking my progress. Some things I realized:

@@ -25,39 +25,50 @@ function main_menu:init()
   self.background = love.graphics.newImage(TEMP_BG)
   self.cursor = love.graphics.newImage(CURSOR_PATH)
   self.cursorPos = {x = BUTTONS_START_X, y = BUTTONS_START_Y}
-
+  self.bounceFinished = false
   self.mmButtons = {}
   for i=1,#buttonPaths do
     table.insert(self.mmButtons, love.graphics.newImage(buttonPaths[i]))
   end
+  self.pos = {x = BUTTONS_START_X, y = 0}
+  local duration = 2
+  flux.to(self.pos, duration, {x = BUTTONS_START_X, y = BUTTONS_START_Y}):ease('bouncein')
+    :oncomplete(function() self.bounceFinished = true end)
 end;
 
 function main_menu:keypressed(key)
-  if key == 'up' or key == 'left' then
-    main_menu:set_up()
-  elseif key == 'down' or key == 'right' then
-    main_menu:set_down()
+  if self.bounceFinished then
+    if key == 'up' or key == 'left' then
+      main_menu:set_up()
+    elseif key == 'down' or key == 'right' then
+      main_menu:set_down()
+    end
   end
 end;
 
 function main_menu:keyreleased(key, code)
-  if key == 'z' then
-    main_menu:validate_selection()
+  if self.bounceFinished then
+    if key == 'z' then
+      main_menu:validate_selection()
+    end
   end
 end;
 
 function main_menu:gamepadpressed(joystick, button)
-  if button == 'dpup' or button == 'dpleft' then
-    main_menu:set_up()
-  elseif button == 'dpdown' or button == 'dpright' then
-    main_menu:set_down()
+  if self.bounceFinished then
+    if button == 'dpup' or button == 'dpleft' then
+      main_menu:set_up()
+    elseif button == 'dpdown' or button == 'dpright' then
+      main_menu:set_down()
+    end
   end
-  
 end;
 
 function main_menu:gamepadreleased(joystick, button)
-  if button == 'a' then
-    main_menu:validate_selection()
+  if self.bounceFinished then
+    if button == 'a' then
+      main_menu:validate_selection()
+    end
   end
 end;
 
@@ -83,13 +94,19 @@ function main_menu:set_down()
   
 end;
 
+function main_menu:update(dt)
+  flux.update(dt)
+  Timer.update(dt)
+end;
+
 function main_menu:draw()
   push:start()
   love.graphics.draw(self.background, 0, 0)
   for i=1,#self.mmButtons do
-    love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), BUTTONS_START_Y)
+    -- love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), BUTTONS_START_Y)
+    love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), self.pos.y)
   end
-  love.graphics.draw(self.cursor, self.cursorPos.x, self.cursorPos.y)
+  love.graphics.draw(self.cursor, self.cursorPos.x, self.pos.y)
   push:finish()
 end;
 

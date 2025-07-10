@@ -85,9 +85,9 @@ local enemyTable = {
     width=80,height=80,
     hp=11,
     cr=2,
-    attack=10,
-    defense=10,
-    speed=5,
+    attack=3,
+    defense=1,
+    speed=20,
     luck=10,
     rewardsDistribution = {
       uncommon = 0.4,

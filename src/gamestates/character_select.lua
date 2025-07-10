@@ -1,8 +1,8 @@
 --! file: gamestates/character_select
-require("class.character_team")
+require("class.entities.character_team")
 require("util.globals")
 require("util.stat_sheet")
-require("class.character")
+require("class.entities.character")
 
 local character_select = {}
 
@@ -18,13 +18,21 @@ local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
 local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
-
 function character_select:init()
   cursor = love.graphics.newImage(CURSOR_PATH)  
   bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
   marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
   mariaPortrait = love.graphics.newImage(MARIA_PORTRAIT_PATH)
   keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
+
+  self.instructions = 'Select your team members'
+  self.selectedContainerOptions = {
+    mode = 'line',
+    x = 450,
+    y = 200,
+    width = TEAM_CAP * OFFSET,
+    height = OFFSET
+  }
 end;
 
 function character_select:enter()
@@ -157,10 +165,10 @@ function character_select:indicesToCharacters()
       bake = Character(get_bake_stats(), 'a')
       characterList[i] = bake
     elseif selectedTeamIndices[i] == 1 then
-      marco = Character(get_marco_stats(), 'z')
+      marco = Character(get_marco_stats(), 'x')
       characterList[i] = marco
     elseif selectedTeamIndices[i] == 2 then
-      maria = Character(get_maria_stats(), 'x')
+      maria = Character(get_maria_stats(), 'b')
       characterList[i] = maria
     elseif selectedTeamIndices[i] == 3 then
       key = Character(get_key_stats(), 'y')
@@ -192,6 +200,7 @@ end;
 
 function character_select:draw()
   push:start()
+  -- Character Select Grid and Stats
   love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10, OFFSET * (GRID_LENGTH + 1) + 10)
   love.graphics.draw(bakePortrait, SELECT_START, SELECT_START)
   love.graphics.draw(marcoPortrait, SELECT_START + OFFSET, SELECT_START)
@@ -199,6 +208,16 @@ function character_select:draw()
   love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
   love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
   love.graphics.print(statPreview, 300, 100)
+
+  -- Instructions
+  love.graphics.print(self.instructions, 240, 20)
+
+  if teamCount < TEAM_CAP then
+    love.graphics.print('Choose ' .. TEAM_CAP - teamCount .. ' characters', 240, 50)
+  else
+    love.graphics.print('Press confirm to begin', 240, 50)
+  end
+  love.graphics.rectangle(self.selectedContainerOptions.mode, self.selectedContainerOptions.x, self.selectedContainerOptions.y, self.selectedContainerOptions.width, self.selectedContainerOptions.height)
   push:finish()
 end;
 

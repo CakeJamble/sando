@@ -1,15 +1,14 @@
 --! file: gamestates/combat
-require("class.enemy")
-require("class.action_ui")
+require("class.entities.enemy")
+require("class.ui.action_ui")
 require("util.encounter_pools")
 require('gamestates.character_select')
 require("util.globals")
-require('class.character_team')
-require('class.enemy_team')
+require('class.entities.character_team')
+require('class.entities.enemy_team')
 require('util.stat_sheet')
 require('class.input.command_manager')
 require('class.turn_manager')
-
 
 local combat = {}
 local numFloors = 50
@@ -40,26 +39,21 @@ function combat:init()
   self.encounteredPools = {}
   self.floorNumber = 1
 
-  -- init encounteredPools to keep track of all encounters across a run
   for i=1,numFloors do
     self.encounteredPools[i] = {}
   end
   
-  -- -- Register Signals
-  -- Signal.register('TargetConfirm',
-  -- function(_, _)
-  --   camera:zoom(1.5)
-  --   self.lockCamera = true
-  -- end
-  -- );
-  -- Signal.register('MoveBack',
-  --   function()
-  --     if camera.scale > 1 then
-  --       camera:zoom(0.6666)
-  --       self.lockCamera = false
-  --     end
-  --   end
-  -- );
+  Signal.register('NextTurn',
+    function()
+      local curr = 0
+      local total = 0
+      for i=1, #self.characterTeam.members do
+        curr = self.characterTeam.members[i].battleStats.hp
+        total = self.characterTeam.members[i].baseStats.hp
+        self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ": " .. curr .. " / " .. total
+      end
+    end
+  )
 end;
 
 function combat:enter(previous)
@@ -69,7 +63,6 @@ function combat:enter(previous)
   self.rewardExp = 0
   self.rewardMoney = 0
 
-  -- Character Team Health Bars, stats, etc, at top of screen
   self.characterTeamHP = {}
   local curr = {}
   local total = {}
@@ -79,12 +72,14 @@ function combat:enter(previous)
     self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
   end
   
-  -- Log & Generate the floor's encounter in encounteredPools
   self.enemyTeam = combat:generateEncounter()
-  
-  -- Add Characters and Enemies to Turn Manager
-  self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
-  Signal.emit('NextTurn')
+
+  Signal.emit('OnStartCombat')
+
+  Timer.after(Character.combatStartEnterDuration, function()
+    self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+    Signal.emit('NextTurn')
+  end)
 end;
 
 function combat:generateEncounter() --> EnemyTeam
@@ -97,14 +92,12 @@ function combat:generateEnemyTeam()
   local enemyList = {}
   local enemyNameList = combat:getEnemyNames()
 
-  -- Populate list for EnemyTeam ctor
   for i=1,#enemyNameList do
     local enemy = Enemy(enemyNameList[i], "Enemy")
     enemyList[i] = enemy
   end
   
   return EnemyTeam(enemyList, #enemyNameList)
-
 end;
 
 --[[ Prototype for generating the encounters
@@ -135,26 +128,29 @@ end;
 
 function combat:keypressed(key)
   if key == 'p' then
-    Gamestate.push(states['pause'], self.characterTeam)
+    Gamestate.push(states['pause'], self.characterTeam.inventory)
   else
     self.characterTeam:keypressed(key)
   end
 end;
 
 function combat:gamepadpressed(joystick, button)
-    --[[
-  if key == pause key then
+  if button == 'start' then
     Gamestate.push(states['pause'])
-  ]]
+  end
   self.characterTeam:gamepadpressed(joystick, button)
 end;
 
 function combat:update(dt)
-  self.turnManager:update(dt)
+  flux.update(dt)
+  if self.turnManager then
+    self.turnManager:update(dt)
+  end
   if self.lockCamera then
     local cameraTarget = self.turnManager.activeEntity
     camera:lockWindow(cameraTarget.x, cameraTarget.y, 0, cameraTarget.x + 100, 0, cameraTarget.y + 100)
   end
+  Timer.update(dt)
 end;
 
 function combat:draw()
@@ -168,6 +164,9 @@ function combat:draw()
   love.graphics.print(self.characterTeamHP[2], 20, 46)
   self.characterTeam:draw()
   self.enemyTeam:draw()
+  if self.turnManager then
+    self.turnManager:draw()
+  end
   camera:detach()
   push:finish()
 end;
