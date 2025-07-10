@@ -1,7 +1,6 @@
 --! filename: Enemy Skill List
 local Collision = require 'libs.collision'
 local delayPostAttack = 0.5
-local healthTickRate = 1.5
 local baguetteSkills = {
   {
     skill_name = 'Basic Attack',
@@ -191,9 +190,7 @@ local lineSkills = {
     attack_type = 'solo',
     target_type = 'single',
     effects = nil,
-    proc = nil,
     partners = nil,
-    sprite_path = nil,
     is_dodgeable = true,
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',

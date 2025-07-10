@@ -77,7 +77,7 @@ function Entity:init(stats, x, y)
     h = self.frameHeight
   }
 
-  self.drawHitbox = true
+  self.drawHitbox = false
 end;
 
 function Entity:startTurn()

@@ -96,7 +96,6 @@ function TurnManager:init(characterTeam, enemyTeam)
         self.activeEntity:setupOffense()
         for _,e in pairs(self.turnQueue) do
           if e.type == 'character' then
-            e.state = 'defense'
           end
         end
       end

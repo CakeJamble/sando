@@ -113,7 +113,7 @@ function Character:takeDamage(amount)
   if self.defenseState.bonusApplied then
     self.battleStats.defense = self.battleStats.defense + self.defenseState.blockMod
   end
-  
+
   Entity.takeDamage(self, amount)
   
   -- For Status Effect that prevents KO on own turn
@@ -229,24 +229,6 @@ end;
 function Character:update(dt)
   Entity.update(self, dt)
   self.actionUI:update(dt)
-
-  if self.state == 'offense' then
-    self.offenseState:update(dt)
-    if self.offenseState.frameCount > self.offenseState.animFrameLength then
-      self.state = 'move'
-      self.hasUsedAction = true
-      -- self.movementState:moveBack()
-      Signal.emit('MoveBack')
-    end
-  elseif self.state == 'defense' then
-    self.defenseState:update(dt)
-  elseif self.state == 'moveback' and self.moveBackTimerStarted == false then
-    Timer.after(2, function()
-      self:endTurn()
-      Signal.emit('NextTurn')
-    end)
-    self.moveBackTimerStarted = true
-  end
 end;
 
 function Character:draw()
