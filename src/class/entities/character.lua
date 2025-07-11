@@ -88,11 +88,10 @@ function Character:startTurn(hazards)
   for i,hazard in pairs(hazards.characterHazards) do
     hazard:proc(self)
   end
-  Timer.after(1, function()
+  Timer.after(0.5, function()
     self.actionUI:set(self)
   end
   )
-  self.actionUI:set(self)
 end
 
 function Character:endTurn()

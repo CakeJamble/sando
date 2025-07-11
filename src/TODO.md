@@ -13,8 +13,7 @@ Need to deal with the reverberations of switching to collision based combat.
 - [x] Fix target setup by enemies using `target.oPos` instead of current position(s)
 - [x] Add functionality to guard by modifying defense (without defense state)
 - [ ] Refactor offense for Characters
-	- [ ] Skills
-	- [ ] Animation States
+	- [x] Skills
 	- [ ] QTE Manager & QTEs
 	- [ ] Offense States
 - [x] Cleanup `NextTurn` signal in `TurnManager` class

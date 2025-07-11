@@ -87,13 +87,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- Once in position, initialize QTE UI Components
       if self.activeEntity.type == 'character' then
         Timer.after(t, function()
-            self.qteManager.activeQTE.showPrompt = true
-            self.qteManager.activeQTE.feedbackPos.x = self.activeEntity.pos.x - 25
-            self.qteManager.activeQTE.feedbackPos.y = self.activeEntity.pos.y - 25
-            self.qteManager.countQTEFrames = true
-
-            -- self.qteManager.activeQTE:proc()
-            Signal.emit('Attack')
+          self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton)
+          self.qteManager.activeQTE:setUI(self.activeEntity.pos)
+          self.qteManager.activeQTE:beginQTE()
         end)
       else -- go straight into attack
         Timer.after(t, function() Signal.emit('Attack') end)
@@ -103,6 +99,7 @@ function TurnManager:init(characterTeam, enemyTeam)
 
   Signal.register('Attack',
     function()
+      print('attacking')
       Timer.after(self.setupDelay, function()
         self.activeEntity.skill.proc(self.activeEntity)
       end)

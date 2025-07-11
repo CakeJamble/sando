@@ -149,7 +149,17 @@ function combat:gamepadpressed(joystick, button)
   if button == 'start' then
     Gamestate.push(states['pause'])
   end
+  if self.turnManager and self.turnManager.qteManager.activeQTE then
+    self.turnManager.qteManager:gamepadpressed(joystick, button)
+  else
   self.characterTeam:gamepadpressed(joystick, button)
+  end
+end;
+
+function combat:gamepadreleased(joystick, button)
+  if self.turnManager and self.turnManager.qteManager.activeQTE then
+    self.turnManager.qteManager:gamepadreleased(joystick, button)
+  end
 end;
 
 function combat:update(dt)
