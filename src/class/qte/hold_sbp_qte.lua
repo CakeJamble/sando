@@ -88,9 +88,11 @@ function HoldSBP:handleQTE()
 				flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 					:oncomplete(function()
 						self.qteComplete = true
-						print('Failed to end in time. Attacking now')
-						Signal.emit('Attack')
-						self.signalEmitted = true
+						if not self.signalEmitted then
+							print('Failed to end in time. Attacking now')
+							Signal.emit('Attack')
+							self.signalEmitted = true
+						end
 					end)
 			end)
 	end
@@ -98,12 +100,12 @@ end;
 
 function HoldSBP:setUI(entityPos)
 	-- self.showPrompt = true
-	self.feedbackPos.x = entityPos.x - 25
-	self.feedbackPos.y = entityPos.y - 25
-	self.buttonUIPos.x = entityPos.x - 130
-	self.buttonUIPos.y = entityPos.y - 40
-	self.progressBar.pos.x = entityPos.x - 200
-	self.progressBar.pos.y = entityPos.y - 25
+	self.buttonUIPos.x = entityPos.x + 100
+	self.buttonUIPos.y = entityPos.y + 100
+	self.progressBar.pos.x = entityPos.x + 25
+	self.progressBar.pos.y = entityPos.y + 115
+	self.feedbackPos.x = self.buttonUIPos.x + 25
+	self.feedbackPos.y = self.buttonUIPos.y - 25
 end;
 
 
@@ -140,7 +142,6 @@ function HoldSBP:gamepadreleased(joystick, button)
 			end
 		end
 		self.isActionButtonPressed = false
-		-- self.buttonUI = self.qteButton.raised
 	end
 end;
 
@@ -156,8 +157,9 @@ function HoldSBP:draw()
 	if not self.qteComplete then
 		self.progressBar:draw()
 	end
+
 	love.graphics.setColor(0, 0, 0)
-	love.graphics.circle('fill', self.buttonUIPos.x + 30, self.buttonUIPos.y + 30, 25)
+	love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 	love.graphics.setColor(1,1,1)
 	love.graphics.draw(self.buttonUI, self.buttonUIPos.x, self.buttonUIPos.y, 0, 0.5, 0.5)
 end;
