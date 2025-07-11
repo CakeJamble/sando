@@ -12,11 +12,14 @@ Need to deal with the reverberations of switching to collision based combat.
 - [x] Add jumping and guarding cooldowns
 - [x] Fix target setup by enemies using `target.oPos` instead of current position(s)
 - [x] Add functionality to guard by modifying defense (without defense state)
-- [ ] Refactor offense for Characters
+- [x] Refactor offense for Characters
 	- [x] Skills
-	- [ ] QTE Manager & QTEs
-	- [ ] Offense States
+	- [x] QTE Manager & QTEs
 - [x] Cleanup `NextTurn` signal in `TurnManager` class
+
+### Reflection
+
+Made some really good progress. Got some basic collision and got my first QTE implemented in this new system.
 
 ## 07/08/2025 & 07/09/2025
 

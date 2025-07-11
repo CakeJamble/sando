@@ -10,7 +10,7 @@ function QTE:init()
 	self.type = ''
 	self.instructions = nil
 	self.instructionsPos = {x = 200, y = 80}
-	self.feedbackPos = {x = 250, y = 90}
+	self.feedbackPos = {x = 250, y = 90, a = 1}
 	self.offset = 0
 
 	self.currQTEFrame = 0
