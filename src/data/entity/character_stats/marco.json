@@ -1,0 +1,11 @@
+{
+	"entityName": "Marco",
+	"width": 96, "height": 96,
+	"hp": 10,
+	"fp": 10,
+	"attack": 10,
+	"defense": 1,
+	"speed": 20,
+	"luck": 10,
+	"skillPool": ["basic_attack", "score"]
+}

@@ -1,0 +1,7 @@
+{
+	"name": "HoldSBP",
+	"progressBarPosition": [100, 300],
+	"startupWaitingDuration": 1,
+	"qteDuration": 2,
+	"feedbackFileNames": ["great.png"]
+}

@@ -1,0 +1,11 @@
+{
+	"entityName": "Bake",
+	"width": 64, "height": 64,
+	"hp": 10,
+	"fp": 10,
+	"attack": 10,
+	"defense": 2,
+	"speed": 10,
+	"luck": 10,
+	"skillPool": ["basic_attack"]
+}

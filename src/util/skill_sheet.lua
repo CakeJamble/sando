@@ -37,16 +37,14 @@ local marco_skills = {
     unlock = nil,
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
     proc = function(ref)
-      duration = 0.5
+      local skill = ref.skill
       local goalX, goalY = ref.tPos.x, ref.tPos.y
       local stagingPos = {x = ref.pos.x, y = ref.pos.y}
-      local delay = 0.5
-      local tweenType = 'linear'
       local hasCollided = false
       local damage = 0 + ref.battleStats['attack']
 
       -- Attack by charging from left to right
-      flux.to(ref.pos, duration, {x = goalX + 80, y = goalY}):ease('linear')
+      flux.to(ref.pos, skill.duration, {x = goalX + 80, y = goalY}):ease('linear')
         :onupdate(function()
           if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
             print('collision detected')

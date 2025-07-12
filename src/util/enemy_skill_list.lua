@@ -1,6 +1,6 @@
 --! filename: Enemy Skill List
 local Collision = require 'libs.collision'
-local delayPostAttack = 0.5
+
 local baguetteSkills = {
   {
     skill_name = 'Basic Attack',

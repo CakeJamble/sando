@@ -1,4 +1,4 @@
---! filename: skill_ui.lua
+--! filename: qte
 
 Class = require 'libs.hump.class'
 QTE = Class{
@@ -17,7 +17,7 @@ function QTE:init()
 	self.currFeedbackFrame = 0
 	self.numFeedbackFrames = 45
 	self.showPrompt = false
-	self.countQTEFrames = false
+	self.countQTEFrames = falsef
 	self.countFeedbackFrames = false
 end;
 

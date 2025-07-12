@@ -69,3 +69,12 @@ function sortLayers(T)
 		end
 	)
 end
+
+function tweenToStagingPosThenStartingPos(pos, stagingPos, oPos, duration, tweenType)
+  local delay = 0.5 -- time to wait between to & after
+  flux.to(pos, duration, {x = stagingPos.x, y = stagingPos.y}):after(
+    pos, duration, {x = oPos.x, y = oPos.y}):delay(delay):oncomplete(
+    function()
+      Signal.emit('NextTurn')
+    end)
+end
