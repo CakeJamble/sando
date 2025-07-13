@@ -2,7 +2,7 @@ require('util.globals')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 
-return function(ref)
+return function(ref, qteSuccess)
 	local skill = ref.skill
   local goalX, goalY = ref.tPos.x, ref.tPos.y
   local stagingPos = {x = ref.pos.x, y = ref.pos.y}
@@ -13,8 +13,7 @@ return function(ref)
   flux.to(ref.pos, skill.duration, {x = goalX - 80, y = goalY}):ease(skill.beginTweenType)
     :onupdate(function()
       if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
-        print('collision detected')
-        ref.target:takeDamage(damage)
+        ref:dealDamage(damage)
         hasCollided = true
       end
     end)

@@ -84,7 +84,6 @@ function Character:startTurn(hazards)
     hazard:proc(self)
   end
   Timer.after(0.5, function()
-    print(self.currentSkills)
     self.actionUI:set(self)
   end
   )
@@ -111,8 +110,10 @@ function Character:setDefenseAnimations()
 end;
 
 function Character:takeDamage(amount)
+  local bonusApplied = false
   if self.isGuarding then
     self.battleStats.defense = self.battleStats.defense + self.blockMod
+    bonusApplied = true
   end
 
   Entity.takeDamage(self, amount)
@@ -122,7 +123,7 @@ function Character:takeDamage(amount)
     self.battleStats['hp'] = math.max(1, self.battleStats['hp'])
   end
 
-  if self.defenseState.bonusApplied then
+  if bonusApplied then
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
 end;

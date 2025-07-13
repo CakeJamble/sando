@@ -83,7 +83,7 @@ function Entity:startTurn()
   self.turnFinish = false
   self.state = 'offense'
 
-  print('starting turn for ', self.entityName)
+  print('starting turn for ' .. self.entityName)
 end;
 
 function Entity:setTargets(characterMembers, enemyMembers)
@@ -104,7 +104,7 @@ function Entity:setTargets(characterMembers, enemyMembers)
     end
   end
   
-  print('targets set for ', self.entityName)
+  print('targets set for ' .. self.entityName)
 end;
 
 function Entity:resetDmgDisplay()

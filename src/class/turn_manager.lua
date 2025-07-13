@@ -34,20 +34,21 @@ function TurnManager:init(characterTeam, enemyTeam)
 
       self.qteManager:reset()
       self:removeKOs()
-      self:checkWinLossCons()
-      self:sortWaitingCombatants()
+      if not self:winLossConsMet() then
+        self:sortWaitingCombatants()
 
-      -- skip over KO'd Characters (they don't get removed from queue bc they can be revived)
-      while(not self.turnQueue[self.turnIndex]:isAlive()) do
-        self.turnIndex = self.turnIndex + 1
+        -- skip over KO'd Characters (they don't get removed from queue bc they can be revived)
+        while(not self.turnQueue[self.turnIndex]:isAlive()) do
+          self.turnIndex = self.turnIndex + 1
+        end
+
+        self.activeEntity = self.turnQueue[self.turnIndex]
+        self.activeEntity:startTurn(self.combatHazards)
+        self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
+        self:entitiesReactToTurnStart()
+
+        self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
       end
-
-      self.activeEntity = self.turnQueue[self.turnIndex]
-      self.activeEntity:startTurn(self.combatHazards)
-      self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
-      self:entitiesReactToTurnStart()
-
-      self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
     end
   );
 
@@ -74,35 +75,41 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.tPos.y = self.activeEntity.target.oPos.y
       print('target name is ' .. self.activeEntity.target.entityName)
 
-      local customTweenTime = nil
-      local displacement = 0
-      if self.activeEntity.type == 'character' then
-        displacement = -120
-      else
-        displacement = 120
-      end
-      self.activeEntity:goToStagingPosition(customTweenTime, displacement)
-      local t = self.activeEntity:getSkillStagingTime()
+      -- local displacement = 120
+      -- if self.activeEntity.type == 'character' then
+      --   displacement = -1 * displacement
+      -- end
 
-      -- Once in position, initialize QTE UI Components
+      -- Skill should control qte because some skills deal damage during QTE
+      -- self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
       if self.activeEntity.type == 'character' then
-        Timer.after(t, function()
-          self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton)
-          self.qteManager.activeQTE:setUI(self.activeEntity.pos)
-          self.qteManager.activeQTE:beginQTE()
-        end)
-      else -- go straight into attack
-        Timer.after(t, function() Signal.emit('Attack') end)
+        self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
+        self.qteManager.activeQTE:setUI(self.activeEntity.pos)
+        self.qteManager.activeQTE:beginQTE()
       end
+
+
+      -- self.activeEntity.skill.proc(self.activeEntity, self.qteManager, displacement)
+      -- self.activeEntity:goToStagingPosition(customTweenTime, displacement)
+      -- local t = self.activeEntity:getSkillStagingTime()
+
+      -- -- Once in position, initialize QTE UI Components
+      -- if self.activeEntity.type == 'character' then
+      --   Timer.after(t, function()
+      --     self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton)
+      --     self.qteManager.activeQTE:setUI(self.activeEntity.pos)
+      --     self.qteManager.activeQTE:beginQTE()
+      --   end)
+      -- else -- go straight into attack
+      --   Timer.after(t, function() Signal.emit('Attack') end)
+      -- end
     end
   );
 
   Signal.register('Attack',
-    function()
+    function(qteSuccess)
       print('attacking')
-      Timer.after(self.setupDelay, function()
-        self.activeEntity.skill.proc(self.activeEntity)
-      end)
+      self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
     end
   );
 
@@ -165,16 +172,20 @@ function TurnManager:removeKOs()
   self.enemyTeam:removeMembers(koEntities)
 end;
 
-function TurnManager:checkWinLossCons()
+function TurnManager:winLossConsMet()
+  local result = false
+  print('checking win loss cons')
   if self.enemyTeam:isWipedOut() then
     print('end combat')
     Gamestate.switch(states['reward'], self.rewards)
-    return
+    result = true
   end
   if self.characterTeam:isWipedOut() then
     print('you lose')
-    return
+    result = true
   end
+
+  return result
 end;
 
 function TurnManager:entitiesReactToTurnStart()

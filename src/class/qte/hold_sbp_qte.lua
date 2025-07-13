@@ -7,8 +7,9 @@ HoldSBP = Class{__includes = QTE}
 function HoldSBP:init()
 	-- progress bar
 	QTE.init(self)
+	self.skill = nil
 	self.qteComplete = false
-	local pbPos = {x = 100, y = 300}
+	local pbPos = {x = 100, y = 100}
 	self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100)
 	self.waitTween = nil
 	self.doneWaiting = false
@@ -62,6 +63,11 @@ function HoldSBP:update(dt)
 	if self.currFeedbackFrame > self.numFeedbackFrames then
 		self.showGreatText = false
 	end
+
+	if self.doneWaiting and not self.signalEmitted then
+		Signal.emit('Attack')
+		self.signalEmitted = true
+	end
 end;
 
 --[[
@@ -75,7 +81,10 @@ function HoldSBP:beginQTE()
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 		:oncomplete(function()
 				print('Failed to start in time. Attacking now.')
-				Signal.emit('Attack')
+				local qteSuccess = false
+				self.doneWaiting = true
+				self.qteComplete = true
+				self.instructions = nil
 		end)
 end;
 
@@ -98,7 +107,8 @@ function HoldSBP:handleQTE()
 						self.qteComplete = true
 						if not self.signalEmitted then
 							print('Failed to end in time. Attacking now')
-							Signal.emit('Attack')
+							local qteSuccess = false
+							-- Signal.emit('Attack', qteSuccess)
 							self.signalEmitted = true
 						end
 					end)
@@ -108,10 +118,12 @@ end;
 
 function HoldSBP:setUI(entityPos)
 	-- self.showPrompt = true
+	-- change to use positions that are in clear view with camera because characters are at different y positions,
+	-- so it sometimes appears over important UI elements
 	self.buttonUIPos.x = entityPos.x + 100
-	self.buttonUIPos.y = entityPos.y + 100
+	self.buttonUIPos.y = entityPos.y - 130
 	self.progressBar.pos.x = entityPos.x + 25
-	self.progressBar.pos.y = entityPos.y + 115
+	self.progressBar.pos.y = entityPos.y - 115
 	self.feedbackPos.x = self.buttonUIPos.x + 25
 	self.feedbackPos.y = self.buttonUIPos.y - 25
 end;
@@ -140,15 +152,18 @@ function HoldSBP:gamepadreleased(joystick, button)
 			if not self.progressBarComplete then
 				if not self.signalEmitted then
 					print('Ended too early. Attacking now')
-					Signal.emit('Attack')
-					self.signalEmitted = true
+					local qteSuccess = false
+					-- Signal.emit('Attack', qteSuccess)
+					-- self.signalEmitted = true
 				end
 			elseif not self.qteComplete then
 				print('Hold SBP QTE Success')
 				self.showGreatText = true
 				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
 				if not self.signalEmitted then
-					Signal.emit('Attack')
+					local qteSuccess = true
+					-- Signal.emit('Attack', qteSuccess)
+					Signal.emit('OnQTESuccess')
 					self.signalEmitted = true
 				end
 			end

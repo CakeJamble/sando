@@ -71,7 +71,7 @@ function QTEManager:reset()
 	end
 end;
 
-function QTEManager:setQTE(qteType, actionButton)
+function QTEManager:setQTE(qteType, actionButton, skill)
 	if qteType == 'SINGLE_BUTTON_PRESS' then
 		self.qteTable.sbp.actionButton = self.qteTable.sbp.buttons[actionButton]
 		self.qteTable.sbp.actionButtonQTE = self.qteTable.sbp.actionButton.raised

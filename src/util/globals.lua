@@ -78,3 +78,24 @@ function tweenToStagingPosThenStartingPos(pos, stagingPos, oPos, duration, tween
       Signal.emit('NextTurn')
     end)
 end
+
+-- current implementation doesn't account for flying attacks
+function calcSpacingFromTarget(tweenType, entityType)
+  local space = {x = 0, y = 0}
+  local isCharacter = entityType == 'character'
+  local baseSpace = 120
+  
+  if tweenType == 'near' then
+    space.x = baseSpace
+  elseif tween.type == 'mid' then
+    space.x = 2 * baseSpace
+  else -- tween.type == 'far'
+    space.x = 3 * baseSpace
+  end
+
+  if isCharacter then
+    space.x = -1 * space.x
+  end
+
+  return space
+end;
