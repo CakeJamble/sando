@@ -47,6 +47,10 @@ function HoldSBP:reset()
 	QTE.reset(self)
 	self.showGreatText = false
 	self.actionButton = nil
+	self.progressBar:reset()
+	self.waitForPlayer.curr = self.waitForPlayer.start
+	self.progressBarComplete = false
+	self.doneWaiting = false
 end;
 
 function HoldSBP:update(dt)

@@ -16,13 +16,17 @@ function ProgressBar:init(pos, width, height, min, max)
 		width = width,
 		height = height
 	}
-
+	self.meterStartingWidth = width * 0.05
 	self.meterOptions = {
 		color = {0, 1, 0},
 		mode = 'fill',
-		width = width * 0.05,
+		width = self.meterStartingWidth,
 		height = height * 0.95
 	}
+end;
+
+function ProgressBar:reset()
+	self.meterOptions.width = self.meterStartingWidth
 end;
 
 function ProgressBar:draw()
