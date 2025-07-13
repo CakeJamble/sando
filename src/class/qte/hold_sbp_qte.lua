@@ -116,16 +116,16 @@ function HoldSBP:handleQTE()
 	end
 end;
 
-function HoldSBP:setUI(entityPos)
+function HoldSBP:setUI(targetPos)
 	-- self.showPrompt = true
 	-- change to use positions that are in clear view with camera because characters are at different y positions,
 	-- so it sometimes appears over important UI elements
-	self.buttonUIPos.x = entityPos.x + 100
-	self.buttonUIPos.y = entityPos.y - 130
-	self.progressBar.pos.x = entityPos.x + 25
-	self.progressBar.pos.y = entityPos.y - 115
-	self.feedbackPos.x = self.buttonUIPos.x + 25
-	self.feedbackPos.y = self.buttonUIPos.y - 25
+	self.progressBar.pos.x = targetPos.x - 75
+	self.progressBar.pos.y = targetPos.y + 100
+	self.buttonUIPos.x = self.progressBar.pos.x + 75
+	self.buttonUIPos.y = self.progressBar.pos.y - 15
+	self.feedbackPos.x = targetPos.x + 25
+	self.feedbackPos.y = targetPos.y - 25
 end;
 
 

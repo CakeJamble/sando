@@ -84,7 +84,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
       if self.activeEntity.type == 'character' then
         self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
-        self.qteManager.activeQTE:setUI(self.activeEntity.pos)
+        self.qteManager.activeQTE:setUI(self.activeEntity.target.pos)
         self.qteManager.activeQTE:beginQTE()
       end
 
