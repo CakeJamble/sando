@@ -51,6 +51,10 @@ function HoldSBP:reset()
 	self.waitForPlayer.curr = self.waitForPlayer.start
 	self.progressBarComplete = false
 	self.doneWaiting = false
+	self.progressTween = nil
+	self.feedbackPos.a = 1
+	self.qteComplete = false
+	self.signalEmitted = false
 end;
 
 function HoldSBP:update(dt)
@@ -128,8 +132,9 @@ function HoldSBP:gamepadpressed(joystick, button)
 end;
 
 function HoldSBP:gamepadreleased(joystick, button)
-	if self.progressTween then
-		if button == self.actionButton then
+	if button == self.actionButton then
+		self.isActionButtonPressed = false
+		if self.progressTween then
 			print('stopping progress tween')
 			self.progressTween:stop()
 			if not self.progressBarComplete then
@@ -147,7 +152,6 @@ function HoldSBP:gamepadreleased(joystick, button)
 					self.signalEmitted = true
 				end
 			end
-			self.isActionButtonPressed = false
 		end
 	end
 end;

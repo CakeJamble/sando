@@ -1,9 +1,5 @@
 --! filename: Enemy
--- require ("util.stat_sheet")
--- require("util.skill_sheet")
 require("class.entities.entity")
--- require("util.enemy_list")
--- require("util.enemy_skill_list")
 require('class.entities.enemy_offense_state')
 
 Class = require "libs.hump.class"
@@ -45,8 +41,8 @@ function Enemy:setRewardsDistribution(rewardsDistribution)
 end;
 
 function Enemy:setupOffense()
-  local skillIndex = love.math.random(1, #self.skillList)
-  self.skill = self.skillList[skillIndex]
+  local skillIndex = love.math.random(1, #self.skillPool)
+  self.skill = self.skillPool[skillIndex]
 
   local tIndex = love.math.random(1, #self.targets.characters)
   self.target = self.targets.characters[tIndex]
