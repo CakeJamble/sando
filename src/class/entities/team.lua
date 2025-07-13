@@ -4,7 +4,7 @@ require("class.entities.entity")
 Class = require 'libs.hump.class'
 Team = Class{}
 
-function Team:init(entities, numMembers)
+function Team:init(entities)
   self.members = entities
   self.membersIndex = 1
   self.money = 0
@@ -42,12 +42,10 @@ function Team:isWipedOut() --> bool
 end;
 
 function Team:printMembers()
-  local result = ''
   for i=1,#self.members do
-    local entity = self.members[i]
-    result = result .. entity:getEntityName() .. ', '
+    print(self.members[i].entityName)
+    print('pos: ' .. 'x: ' .. self.members[1].pos.x, 'y: ' .. self.members[i].pos.y)
   end
-  return result
 end;
 
 function Team:update(dt)
@@ -57,7 +55,7 @@ function Team:update(dt)
 end;
 
 function Team:draw()
-  for i=1,#self.members do
-    self.members[i]:draw()
+  for i,member in pairs(self.members) do
+    member:draw()
   end
 end;

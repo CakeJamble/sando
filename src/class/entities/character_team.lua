@@ -6,8 +6,8 @@ require('class.entities.character')
 Class = require 'libs.hump.class'
 CharacterTeam = Class{__includes = Team}
 
-function CharacterTeam:init(characters, numMembers)
-    Team.init(self, characters, numMembers)
+function CharacterTeam:init(characters)
+    Team.init(self, characters)
     self.inventory = Inventory(self.members)
 end;
 
@@ -30,13 +30,13 @@ function CharacterTeam:startDefense(incomingSkill)
 end;
 
 function CharacterTeam:keypressed(key)
-  for i=1, #self.members do
-    self.members[i]:keypressed(key)
+  for i,member in pairs(self.members) do
+    member:keypressed(key)
   end
 end;
 
 function CharacterTeam:gamepadpressed(joystick, button)
-  for i=1, #self.members do
-      self.members[i]:gamepadpressed(joystick, button)
+  for i,member in pairs(self.members) do
+    member:gamepadpressed(joystick, button)
   end
 end;

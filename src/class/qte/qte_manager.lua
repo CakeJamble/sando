@@ -1,7 +1,7 @@
 --! filename: qte_manager
 require('class.qte.qte')
-require('class.qte.skill')
-require('util.skill_sheet')
+require('skills.skill')
+-- require('util.skill_sheet')
 require('class.qte.sbp_qte')
 require('class.qte.hold_sbp_qte')
 Class = require 'libs.hump.class'

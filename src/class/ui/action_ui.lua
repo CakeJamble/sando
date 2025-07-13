@@ -49,9 +49,9 @@ end;
 function ActionUI:set(charRef)
   self.x = charRef.pos.x + ActionUI.X_OFFSET
   self.y = charRef.pos.y + ActionUI.Y_OFFSET
-  self.skillList = charRef.skillList
-  self.soloButton = SoloButton(self.x, self.y, 1, self.skillList[1])
-  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, 2, self.skillList)
+  self.skillList = charRef.currentSkills
+  self.soloButton = SoloButton(self.x, self.y, 1, charRef.basic)
+  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, 2, charRef.currentSkills)
   self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, 3, self.skillList)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton}
   self.activeButton = self.soloButton

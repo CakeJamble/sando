@@ -4,8 +4,8 @@
   Used to create a character object, which consists of 
   a character's stats, skills, states, and gear.
 ]]
-require("util.skill_sheet")
-require("util.stat_sheet")
+-- require("util.skill_sheet")
+-- require("util.stat_sheet")
 require("class.entities.entity")
 require("class.entities.offense_state")
 require("class.entities.defense_state")
@@ -32,36 +32,31 @@ Character = Class{__includes = Entity,
 -- Character constructor
   -- preconditions: stats dict and skills dict
   -- postconditions: Creates a valid characters
-function Character:init(stats, actionButton)
+function Character:init(data, actionButton)
   self.type = 'character'
-  Entity.init(self, stats, Character.xCombatStart, Character.yPos)
+  Entity.init(self, data, Character.xCombatStart, Character.yPos)
   self.actionButton = actionButton
-  self.basic = stats.skillList[1]
+  -- self.basic = stats.skillList[1]
+  self.basic = data.basic
+  self.skillPool = data.skillPool
   self.blockMod = 1
-  self.currentSkills = stats.skillList
-  self.chosenSkill = nil
   self.level = 1
+  self.currentSkills = {}
+  self:updateSkills()
+
+
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
   Entity.setAnimations(self, 'character/')
   Character.yPos = Character.yPos + 150
-  self.currentFP = stats.fp
-  self.currentDP = stats.dp
-  self.setSkill = nil
+  -- self.currentFP = stats.fp
+  -- self.currentDP = stats.dp
 
-  self.actionIcon = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_b_outline.png')
-  self.actionIconDepressed = love.graphics.newImage(Character.ACTION_ICON_STEM .. 'xbox_button_color_b.png')
-
-  self.actionIcons = {['raised'] = self.actionIcon, ['depressed'] = self.actionIconDepressed}
-
-  --! TODO: Consider moving these to base class if all entities have an offense and defense state. Separate the QTE elements from them if so.
-  self.offenseState = OffenseState(self.pos.x, self.pos.y, actionButton, self.battleStats, self.actionIcons)
-  self.defenseState = DefenseState(self.pos.x, self.pos.y, actionButton, self.battleStats['defense'])
-  self:setDefenseAnimations()
   self.actionUI = ActionUI()
   self.cannotLose = false
   self.equips = {}
+  
   self.combatStartEnterDuration = Character.combatStartEnterDuration
   Character.combatStartEnterDuration = Character.combatStartEnterDuration + 0.1
 
@@ -89,6 +84,7 @@ function Character:startTurn(hazards)
     hazard:proc(self)
   end
   Timer.after(0.5, function()
+    print(self.currentSkills)
     self.actionUI:set(self)
   end
   )
@@ -187,11 +183,10 @@ end;
       - preconditions: none
       - postconditions: updates self.current_skills ]]
 function Character:updateSkills()
-  for i,skill in pairs(Entity:getSkills()) do
-    if self.level == skill['unlock'] then
-      table.insert(self.current_skills, skill)
-      local skillLearnedMsg = Entity:getEntityName() .. ' learned the ' .. skill['attack_type'] .. ' skill: ' .. skill['skill_name'] .. '!'
-      print(skillLearnedMsg)
+  for i,skill in pairs(self.skillPool) do
+    if self.level == skill.unlockedAtLvl then
+      table.insert(self.currentSkills, skill)
+      local skillLearnedMsg = self.entityName .. ' learned the skill: ' .. skill.name .. '!'
     end
   end
 end;

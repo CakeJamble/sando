@@ -53,8 +53,8 @@ function TurnManager:init(characterTeam, enemyTeam)
 
   Signal.register('SkillSelected',
     function(skill)
-      print('Setting up QTE Manager for selected skill: ' .. skill.dict.skill_name)
-      self.qteManager:setQTE(skill, self.activeEntity)
+      print('Setting up QTE Manager for selected skill: ' .. skill.name)
+      -- self.qteManager:setQTE(skill.qteType, self.activeEntity.actionButton)
       self.activeEntity.skill = skill
     end
   );
@@ -143,7 +143,6 @@ function TurnManager:removeKOs()
       local reward = e:knockOut()
       table.insert(self.rewards, reward)
     else  -- setup survivors for next turn
-      self.turnQueue[i].offenseState:reset()
       self.turnQueue[i]:resetDmgDisplay()
       self.turnQueue[i].state = 'idle'
     end

@@ -124,25 +124,27 @@ function HoldSBP:gamepadpressed(joystick, button)
 end;
 
 function HoldSBP:gamepadreleased(joystick, button)
-	if button == self.actionButton then
-		print('stopping progress tween')
-		self.progressTween:stop()
-		if not self.progressBarComplete then
-			if not self.signalEmitted then
-				print('Ended too early. Attacking now')
-				Signal.emit('Attack')
-				self.signalEmitted = true
+	if self.progressTween then
+		if button == self.actionButton then
+			print('stopping progress tween')
+			self.progressTween:stop()
+			if not self.progressBarComplete then
+				if not self.signalEmitted then
+					print('Ended too early. Attacking now')
+					Signal.emit('Attack')
+					self.signalEmitted = true
+				end
+			elseif not self.qteComplete then
+				print('Hold SBP QTE Success')
+				self.showGreatText = true
+				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
+				if not self.signalEmitted then
+					Signal.emit('Attack')
+					self.signalEmitted = true
+				end
 			end
-		elseif not self.qteComplete then
-			print('Hold SBP QTE Success')
-			self.showGreatText = true
-			flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
-			if not self.signalEmitted then
-				Signal.emit('Attack')
-				self.signalEmitted = true
-			end
+			self.isActionButtonPressed = false
 		end
-		self.isActionButtonPressed = false
 	end
 end;
 

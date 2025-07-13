@@ -1,13 +1,10 @@
 local json = require('libs.json')
 local loadSkill = require('util.skill_loader')
-local dataDir = 'data/entity/character_stats/'
+local dataDir = 'data/entity/enemy_stats/'
 
-local function loadCharacterData(entityName)
+local function loadEnemyData(entityName)
 	local raw = love.filesystem.read(dataDir .. entityName .. '.json')
 	local data = json.decode(raw)
-
-	local basicAttack = loadSkill(data.basic)
-	data.basic = basicAttack
 
 	local skillPool = {}
 	for i,skillName in ipairs(data.skillPool) do
@@ -19,4 +16,4 @@ local function loadCharacterData(entityName)
 	return data
 end
 
-return loadCharacterData
+return loadEnemyData

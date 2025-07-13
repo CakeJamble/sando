@@ -1,14 +1,15 @@
 --! file: gamestates/combat
 require("class.entities.enemy")
 require("class.ui.action_ui")
-require("util.encounter_pools")
+-- require("util.encounter_pools")
 require('gamestates.character_select')
 require("util.globals")
 require('class.entities.character_team')
 require('class.entities.enemy_team')
-require('util.stat_sheet')
+-- require('util.stat_sheet')
 require('class.input.command_manager')
 require('class.turn_manager')
+
 
 local combat = {}
 local numFloors = 50
@@ -21,7 +22,7 @@ local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 local COMBAT_UI_PATH = 'asset/sprites/combat/'
 local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
 local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
-
+local generateEncounter = require('util.encounter_generator')
 function combat:init()
   self.background = love.graphics.newImage(TEMP_BG)
   self.combatTeamUI = love.graphics.newImage(COMBAT_TEAM_UI_PATH)
@@ -83,7 +84,8 @@ function combat:enter(previous)
   end
     -- self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
   
-  self.enemyTeam = combat:generateEncounter()
+  -- self.enemyTeam = combat:generateEncounter()
+  self.enemyTeam = generateEncounter(self.floorNumber)
 
   Signal.emit('OnStartCombat')
 
@@ -91,50 +93,6 @@ function combat:enter(previous)
     self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
     Signal.emit('NextTurn')
   end)
-end;
-
-function combat:generateEncounter() --> EnemyTeam
-  local enemyTeam = combat:generateEnemyTeam()
-  -- combat:logCombat(enemyTeam)
-  return enemyTeam
-end;
-
-function combat:generateEnemyTeam()
-  local enemyList = {}
-  local enemyNameList = combat:getEnemyNames()
-
-  for i=1,#enemyNameList do
-    local enemy = Enemy(enemyNameList[i], "Enemy")
-    enemyList[i] = enemy
-  end
-  
-  return EnemyTeam(enemyList, #enemyNameList)
-end;
-
---[[ Prototype for generating the encounters
-Needs to be refactored once I have more enemies and skills developed and tuned
-]]
-function combat:getEnemyNames() --> void
-  local encounterIndex = 0
-  if self.floorNumber < 10 then
-    -- Weighted Randomly grab from Enemy Pool 1
-    encounterIndex = math.random(1, #enemyPool1)
-    -- self.encounteredPools[self.floorNum] = enemyPool1[encounter]
-    self.encounteredPools[self.floorNumber] = testPool[1]
-  elseif self.floorNumber == 10 then
-    -- Randomly grab from Boss Pool 1
-    encounterIndex = math.random(1, #bossPool1)
-    self.encounteredPools[self.floorNumber] = bossPool1[encounterIndex]
-  elseif self.floorNumber < 20 then
-    -- Weighted Randomly grab from Enemy Pool 2
-    encounterIndex = math.random(1, #enemyPool2)
-    self.encounteredPools[self.floorNumber] = enemyPool2[encounterIndex]
-  elseif self.floorNumber == 20 then
-    encounterIndex = math.random(1, #bossPool2)
-    self.encounteredPools[self.floorNumber] = bossPool2[encounterIndex]
-  end
-
-  return self.encounteredPools[self.floorNumber]
 end;
 
 function combat:keypressed(key)
@@ -152,7 +110,7 @@ function combat:gamepadpressed(joystick, button)
   if self.turnManager and self.turnManager.qteManager.activeQTE then
     self.turnManager.qteManager:gamepadpressed(joystick, button)
   else
-  self.characterTeam:gamepadpressed(joystick, button)
+    self.characterTeam:gamepadpressed(joystick, button)
   end
 end;
 

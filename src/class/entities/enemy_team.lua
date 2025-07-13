@@ -5,6 +5,6 @@ require('class.entities.enemy')
 Class = require 'libs.hump.class'
 EnemyTeam = Class{__includes = Team}
 
-function EnemyTeam:init(enemies, teamSize)
+function EnemyTeam:init(enemies)
   Team.init(self, enemies, teamSize)
 end;

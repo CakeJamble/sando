@@ -1,9 +1,9 @@
 --! filename: Enemy
-require ("util.stat_sheet")
-require("util.skill_sheet")
+-- require ("util.stat_sheet")
+-- require("util.skill_sheet")
 require("class.entities.entity")
-require("util.enemy_list")
-require("util.enemy_skill_list")
+-- require("util.enemy_list")
+-- require("util.enemy_skill_list")
 require('class.entities.enemy_offense_state')
 
 Class = require "libs.hump.class"
@@ -11,14 +11,15 @@ Enemy = Class{__includes = Entity,
   -- for testing
   xPos = 450, yPos = 110}
 
-function Enemy:init(enemyName, enemyType)
+function Enemy:init(data)
   self.type = 'enemy'
-  Entity.init(self, getStatsByName(enemyName, enemyType), Enemy.xPos, Enemy.yPos)
-  Entity.setAnimations(self, enemyType .. '/')
-  self.expReward = self.baseStats['experienceReward']
-  self.moneyReward = self.baseStats['moneyReward']
-  self.lootReward = self.baseStats.rewardsDistribution
-  self.offenseState = EnemyOffenseState(self.pos.x, self.pos.y, self.battleStats)
+  self.enemyType = data.enemyType
+  Entity.init(self, data, Enemy.xPos, Enemy.yPos)
+  local subdir = self.type .. '/' .. data.enemyType .. '/'
+  self:setAnimations(subdir)
+  self.expReward = data.experienceReward
+  self.moneyReward = data.moneyReward
+  self.lootReward = self:setRewardsDistribution(data.rewardsDistribution)
   Enemy.yPos = Enemy.yPos + 150
 
   Signal.register('OnStartCombat',
@@ -34,6 +35,13 @@ function Enemy:startTurn(hazards)
   for i,hazard in pairs(hazards.enemyHazards) do
     hazard:proc(self)
   end
+end;
+
+function Enemy:setRewardsDistribution(rewardsDistribution)
+  return {
+    uncommon = rewardsDistribution[1],
+    rare = rewardsDistribution[2]
+  }
 end;
 
 function Enemy:setupOffense()

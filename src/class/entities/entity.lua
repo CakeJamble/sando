@@ -1,11 +1,11 @@
 --! file: entity.lua
-require('class.qte.skill')
-require('util.stat_sheet')
-require('util.enemy_list')
-require('util.skill_sheet')
-require('util.enemy_skill_list')
-require('util.animation_frame_counts')
-require('class.entities.movement_state')
+require('skills.skill')
+-- require('util.stat_sheet')
+-- require('util.enemy_list')
+-- require('util.skill_sheet')
+-- require('util.enemy_skill_list')
+-- require('util.animation_frame_counts')
+-- require('class.entities.movement_state')
 
 Class = require "libs.hump.class"
 Entity = Class{
@@ -15,11 +15,12 @@ Entity = Class{
   -- Entity constructor
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
-function Entity:init(stats, x, y)
-  self.baseStats = Entity.copyStats(stats)
-  self.battleStats = Entity.copyStats(stats)
-  self.statUpScaler = 1.25
-  self.skillList = stats['skillList']
+function Entity:init(data, x, y)
+  self.entityName = data.entityName
+  self.baseStats = Entity.copyStats(data)
+  self.battleStats = Entity.copyStats(data)
+  self.basic = data.basic
+  self.skillPool = data.skillPool
   self.skill = nil
   self.spriteSheets = {
     idle = {},
@@ -37,17 +38,15 @@ function Entity:init(stats, x, y)
     flinch = {},
     ko = {}
   }
-  self.subdir = ''
-  self.entityName = self.baseStats['entityName']
 
   self.pos = {x = x, y = y, r = 0}
   self.tPos = {x = 0, y = 0}
-  self.oPos = {x = self.pos.x, y = self.pos.y}
+  self.oPos = {x = x, y = x}
   
-  self.dX=0
-  self.dY=0
-  self.frameWidth = self.battleStats['width']      -- width of sprite (or width for a single frame of animation for this character)
-  self.frameHeight = self.battleStats['height']    -- height of sprite (or height for a single frame of animation for this character)
+  -- self.dX=0
+  -- self.dY=0
+  self.frameWidth = data.width      -- width of sprite (or width for a single frame of animation for this character)
+  self.frameHeight = data.height    -- height of sprite (or height for a single frame of animation for this character)
   self.currentFrame = 1
   self.isFocused = false
   self.targets = {}
@@ -71,8 +70,8 @@ function Entity:init(stats, x, y)
   self.hitbox = {
     x = self.pos.x,
     y = self.pos.y,
-    w = self.frameWidth,
-    h = self.frameHeight
+    w = data.hbWidth,
+    h = data.hbHeight
   }
 
   self.drawHitbox = false
@@ -133,11 +132,15 @@ end;
 
 -- COPY
 function Entity.copyStats(stats)
-  local copy = {}
-  for k,v in pairs(stats) do
-    copy[k] = v
-  end
-  return copy
+  return {
+    hp = stats.hp,
+    fp = stats.fp,
+    attack = stats.attack,
+    defense = stats.defense,
+    speed = stats.speed,
+    luck = stats.luck,
+    growthRate = stats.growthRate
+  }
 end;
 
 -- ACCESSORS (only write an accessor if it simplifies access to data)
@@ -163,20 +166,20 @@ function Entity:isAlive() --> bool
 end;
 
 function Entity:getSkillStagingTime()
-  return self.skill.dict.stagingTime
+  return self.skill.stagingTime
 end;
 
 -- MUTATORS
 
 function Entity:goToStagingPosition(t, displacement)
   local stagingPos = {x=0,y=0}
-  if self.skill.dict.stagingPos == 'near' then
+  if self.skill.stagingType == 'near' then
     stagingPos.x = self.target.oPos.x + displacement
     stagingPos.y = self.target.oPos.y
   end
-  print('Tweening for active entity to use ' .. self.skill.dict.skill_name)
+  print('Tweening for active entity to use ' .. self.skill.name)
   if t == nil then
-    t = self.skill.dict.stagingTime
+    t = self.skill.stagingTime
   end
   flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
 end;
