@@ -57,6 +57,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('Setting up QTE Manager for selected skill: ' .. skill.name)
       -- self.qteManager:setQTE(skill.qteType, self.activeEntity.actionButton)
       self.activeEntity.skill = skill
+      self.activeEntity.actionUI.uiState = 'targeting'
     end
   );
 

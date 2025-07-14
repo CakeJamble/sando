@@ -36,7 +36,6 @@ function Character:init(data, actionButton)
   self.type = 'character'
   Entity.init(self, data, Character.xCombatStart, Character.yPos)
   self.actionButton = actionButton
-  -- self.basic = stats.skillList[1]
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.blockMod = 1
@@ -187,7 +186,6 @@ function Character:updateSkills()
   for i,skill in pairs(self.skillPool) do
     if self.level == skill.unlockedAtLvl then
       table.insert(self.currentSkills, skill)
-      local skillLearnedMsg = self.entityName .. ' learned the skill: ' .. skill.name .. '!'
     end
   end
 end;
