@@ -117,9 +117,6 @@ function HoldSBP:handleQTE()
 end;
 
 function HoldSBP:setUI(targetPos)
-	-- self.showPrompt = true
-	-- change to use positions that are in clear view with camera because characters are at different y positions,
-	-- so it sometimes appears over important UI elements
 	self.progressBar.pos.x = targetPos.x - 75
 	self.progressBar.pos.y = targetPos.y + 100
 	self.buttonUIPos.x = self.progressBar.pos.x + 75

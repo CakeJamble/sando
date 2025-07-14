@@ -87,9 +87,9 @@ function calcSpacingFromTarget(tweenType, entityType)
   
   if tweenType == 'near' then
     space.x = baseSpace
-  elseif tween.type == 'mid' then
+  elseif tweenType == 'mid' then
     space.x = 2 * baseSpace
-  else -- tween.type == 'far'
+  else -- tweenType == 'far'
     space.x = 3 * baseSpace
   end
 
