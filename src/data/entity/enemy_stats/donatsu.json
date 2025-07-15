@@ -1,0 +1,15 @@
+{
+  "entityName": "Donatsu",
+  "enemyType": "elite",
+  "width": 80, "height": 80,
+  "hbWidth": 80, "hbHeight": 80,
+  "hp": 11,
+  "attack": 3,
+  "defense": 1,
+  "speed": 1,
+  "luck": 10,
+  "rewardsDistribution": [0.4, 0.2],
+  "experienceReward": 10,
+  "moneyReward": 8,
+  "skillPool": ["charge"]
+}

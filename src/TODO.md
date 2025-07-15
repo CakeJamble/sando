@@ -21,6 +21,9 @@ Some things I've accomplished:
 It might be boring, but there's a decent amount of grunt work to do to get the new architecture rolling.
 
 - [ ] Move Character and Enemy stats into JSON files in the `data` directory
+	- [x] Characters
+	- [x] Enemies
+	- [ ] Encounter Pools
 - [ ] Move Skill data into JSON files in the `data` directory
 
 I expect this to take a while since it's a lot of back and forth, making new files and referencing old ones.
