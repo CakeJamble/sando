@@ -2,6 +2,20 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/15/2025
+
+I forgot to update the TODO again for a few days, despite making some major progress. I think that from here on, I really need to focus on keeping my work scoped into the tasks I'm assigning myself, or I could really burn out once I get frustrated.
+
+Some things I've accomplished:
+
+1. Really happy with the Data-Oriented Design overhaul to skills and characters. I'd like to try and do it with QTEs in the future so that this might be easier to open-source with less depenedencies.
+2. Implemented Hold Single-Button-Press QTE
+3. Fixed up the Hold Single-Button-Press QTE. It was pretty messy at first in the OOP design, but now the logic seems modular and the architecture is easier to follow
+4. Implemented the Mult-Button-Press QTE, with the layout of the Naruto Storm game jutsu QTE. The visuals leave a lot to be desired, but the logic is pretty good, and balancing it shouldn't be too bad either.
+5. Small QoL updates all over the place. I should have been tracking it better in the todo
+6. Projectile class
+7. Scone skill that uses the projectile with tweening and collision
+
 ## 07/10/2025
 
 Need to deal with the reverberations of switching to collision based combat.
