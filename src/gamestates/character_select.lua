@@ -1,8 +1,8 @@
 --! file: gamestates/character_select
 require("class.entities.character_team")
 require("util.globals")
-require("util.stat_sheet")
 require("class.entities.character")
+local loadCharacterData = require('util.character_loader')
 
 local character_select = {}
 
@@ -50,7 +50,7 @@ function character_select:enter()
     selectedTeamIndices[i] = {}
   end
 
-  statPreview = character_select:setStatPreview()
+  -- statPreview = character_select:setStatPreview()
   
 end;
 
@@ -66,7 +66,7 @@ function character_select:keypressed(key)
   elseif key == 'z' then
     character_select:validate_selection()
   end
-  statPreview = character_select:setStatPreview()
+  -- statPreview = character_select:setStatPreview()
 end;
   
 function character_select:gamepadpressed(joystick, button)
@@ -81,7 +81,7 @@ function character_select:gamepadpressed(joystick, button)
   elseif button == 'a' then
     character_select:validate_selection()
   end
-  statPreview = character_select:setStatPreview()
+  -- statPreview = character_select:setStatPreview()
 end;
 
 function character_select:set_right()
@@ -162,10 +162,12 @@ function character_select:indicesToCharacters()
   local characterList = {}
   for i=1,TEAM_CAP do
     if selectedTeamIndices[i] == 0 then
-      bake = Character(get_bake_stats(), 'a')
+      -- bake = Character(get_bake_stats(), 'a')
+      bake = Character(loadCharacterData('bake'), 'a')
       characterList[i] = bake
     elseif selectedTeamIndices[i] == 1 then
-      marco = Character(get_marco_stats(), 'x')
+      -- marco = Character(get_marco_stats(), 'x')
+      marco = Character(loadCharacterData('marco'), 'x')
       characterList[i] = marco
     elseif selectedTeamIndices[i] == 2 then
       maria = Character(get_maria_stats(), 'b')
@@ -207,7 +209,7 @@ function character_select:draw()
   love.graphics.draw(mariaPortrait, SELECT_START, SELECT_START + OFFSET)
   love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
   love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
-  love.graphics.print(statPreview, 300, 100)
+  -- love.graphics.print(statPreview, 300, 100)
 
   -- Instructions
   love.graphics.print(self.instructions, 240, 20)

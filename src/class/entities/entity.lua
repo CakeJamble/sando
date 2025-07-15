@@ -1,11 +1,11 @@
 --! file: entity.lua
-require('class.qte.skill')
-require('util.stat_sheet')
-require('util.enemy_list')
-require('util.skill_sheet')
-require('util.enemy_skill_list')
-require('util.animation_frame_counts')
-require('class.entities.movement_state')
+require('skills.skill')
+-- require('util.stat_sheet')
+-- require('util.enemy_list')
+-- require('util.skill_sheet')
+-- require('util.enemy_skill_list')
+-- require('util.animation_frame_counts')
+-- require('class.entities.movement_state')
 
 Class = require "libs.hump.class"
 Entity = Class{
@@ -15,12 +15,14 @@ Entity = Class{
   -- Entity constructor
     -- preconditions: defined stats and skills tables
     -- postconditions: Valid Entity object and added to global table of Entities
-function Entity:init(stats, x, y)
-  self.baseStats = Entity.copyStats(stats)
-  self.battleStats = Entity.copyStats(stats)
-  self.statUpScaler = 1.25
-  self.skillList = stats['skillList']
+function Entity:init(data, x, y)
+  self.entityName = data.entityName
+  self.baseStats = Entity.copyStats(data)
+  self.battleStats = Entity.copyStats(data)
+  self.basic = data.basic
+  self.skillPool = data.skillPool
   self.skill = nil
+  self.projectile = nil
   self.spriteSheets = {
     idle = {},
     moveX = {},
@@ -37,17 +39,15 @@ function Entity:init(stats, x, y)
     flinch = {},
     ko = {}
   }
-  self.subdir = ''
-  self.entityName = self.baseStats['entityName']
 
   self.pos = {x = x, y = y, r = 0}
   self.tPos = {x = 0, y = 0}
-  self.oPos = {x = self.pos.x, y = self.pos.y}
+  self.oPos = {x = x, y = x}
   
-  self.dX=0
-  self.dY=0
-  self.frameWidth = self.battleStats['width']      -- width of sprite (or width for a single frame of animation for this character)
-  self.frameHeight = self.battleStats['height']    -- height of sprite (or height for a single frame of animation for this character)
+  -- self.dX=0
+  -- self.dY=0
+  self.frameWidth = data.width      -- width of sprite (or width for a single frame of animation for this character)
+  self.frameHeight = data.height    -- height of sprite (or height for a single frame of animation for this character)
   self.currentFrame = 1
   self.isFocused = false
   self.targets = {}
@@ -55,9 +55,7 @@ function Entity:init(stats, x, y)
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'idle'
-  self.movementState = MovementState(self.pos.x, self.pos.y)
   self.selectedSkill = nil
-  -- self.r = 0
 
   self.numFramesDmg = 60
   self.currDmgFrame = 0
@@ -70,23 +68,23 @@ function Entity:init(stats, x, y)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
-  self.collider = {name = self.entityName .. 'Collider'}
-  world:add(self.collider, self.pos.x, self.pos.y, self.frameWidth, self.frameHeight)
+  self.hitbox = {
+    x = self.pos.x,
+    y = self.pos.y,
+    w = data.hbWidth,
+    h = data.hbHeight
+  }
 
-
-  Signal.register('OnStartCombat', 
-    function()
-      -- world:add(self, self.pos.x,self.pos.y, self.frameWidth,self.frameHeight)
-    end
-  )
+  self.drawHitbox = false
 end;
 
 function Entity:startTurn()
   self.isFocused = true
   self.hasUsedAction = false
   self.turnFinish = false
+  self.state = 'offense'
 
-  print('starting turn for ', self.entityName)
+  print('starting turn for ' .. self.entityName)
 end;
 
 function Entity:setTargets(characterMembers, enemyMembers)
@@ -107,7 +105,7 @@ function Entity:setTargets(characterMembers, enemyMembers)
     end
   end
   
-  print('targets set for ', self.entityName)
+  print('targets set for ' .. self.entityName)
 end;
 
 function Entity:resetDmgDisplay()
@@ -135,11 +133,15 @@ end;
 
 -- COPY
 function Entity.copyStats(stats)
-  local copy = {}
-  for k,v in pairs(stats) do
-    copy[k] = v
-  end
-  return copy
+  return {
+    hp = stats.hp,
+    fp = stats.fp,
+    attack = stats.attack,
+    defense = stats.defense,
+    speed = stats.speed,
+    luck = stats.luck,
+    growthRate = stats.growthRate
+  }
 end;
 
 -- ACCESSORS (only write an accessor if it simplifies access to data)
@@ -165,22 +167,21 @@ function Entity:isAlive() --> bool
 end;
 
 function Entity:getSkillStagingTime()
-  return self.skill.dict.stagingTime
+  return self.skill.stagingTime
 end;
 
 -- MUTATORS
 
-function Entity:goToStagingPosition(t)
+function Entity:goToStagingPosition(t, displacement)
   local stagingPos = {x=0,y=0}
-  if self.skill.dict.stagingPos == 'near' then
-    stagingPos.x = self.target.pos.x + 90
-    stagingPos.y = self.target.pos.y
+  if self.skill.stagingType == 'near' then
+    stagingPos.x = self.target.oPos.x + displacement
+    stagingPos.y = self.target.oPos.y
   end
-  print('Tweening for active entity to use ' .. self.skill.dict.skill_name)
+  print('Tweening for active entity to use ' .. self.skill.name)
   if t == nil then
-    t = self.skill.dict.stagingTime
+    t = self.skill.stagingTime
   end
-  -- Timer.tween(t, self.pos, {x = stagingPos.x, y = stagingPos.y})
   flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
 end;
 
@@ -195,7 +196,7 @@ end;
 function Entity:takeDamage(amount) --> void
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
-  self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - amount)
+  self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
 end;
 
 function Entity:takeDamagePierce(amount) --> void
@@ -249,11 +250,12 @@ function Entity:populateFrames(image, duration)
 end;
 
 function Entity:update(dt) --> void
-  local state = self.movementState.state
+  self.hitbox.x = self.pos.x
+  self.hitbox.y = self.pos.y
   local animation
-  if state == 'idle' then
+  if self.state == 'idle' then
     animation = self.movementAnimations.idle
-  elseif state == 'move' or 'moveback' then
+  elseif self.state == 'move' or 'moveback' then
     animation = self.movementAnimations.moveX
   end
   
@@ -307,4 +309,16 @@ function Entity:draw() --> void
   end
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
+
+  if self.drawHitbox then
+    love.graphics.setColor(1, 0, 0, 0.4)
+    love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
+    love.graphics.setColor(1, 1, 1)
+  end
+
+  if self.projectile then
+    love.graphics.setColor(1,0,0)
+    love.graphics.circle('fill', self.projectile.pos.x, self.projectile.pos.y, self.projectile.dims.r)
+    love.graphics.setColor(1,1,1)
+  end
 end;

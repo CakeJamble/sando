@@ -3,36 +3,38 @@ Class = require 'libs.hump.class'
 
 ProgressBar = Class{}
 
-function ProgressBar:init(pos, width, height, min, max, rate)
-	self.pos = pos 				-- pos = {x, y}
+function ProgressBar:init(pos, width, height, min, max, startingWidthScale)
+	self.pos = {
+		x = pos.x,
+		y = pos.y
+	} 				-- pos = {x, y}
 	self.min = min or 0
 	self.max = max or 1
-	self.rate = rate or 0.1
 
 	self.containerOptions = {
 		mode = 'line',
 		width = width,
 		height = height
 	}
+
+
+	self.meterStartingWidth = width * startingWidthScale
 	self.meterOptions = {
-		color = {0, 1, 0}
+		color = {0, 1, 0},
 		mode = 'fill',
-		width = width * 0.95,
+		width = self.meterStartingWidth,
 		height = height * 0.95
 	}
 end;
 
-function ProgressBar:update(dt)
-	self.meterOptions.width = math.max(self.min, self.curr - self.rate * dt)
-	if self.meterOptions.width < 0.3 * self.max then
-		self.meterOptions.color = {1, 0, 0} -- red
-	end
+function ProgressBar:reset()
+	self.meterOptions.width = self.meterStartingWidth
 end;
 
 function ProgressBar:draw()
-	love.graphics.rectangle(containerOptions.mode, pos.x, pos.y, containerOptions.width, containerOptions.height)
-	love.graphics.setColor(self.meterOptions.color[0], self.meterOptions.color[1], self.meterOptions.color[2])
-	love.graphics.rectangle(meterOptions.mode, self.pos.x, self.pos.y, self.meterOptions.width, self.meterOptions.height)
+	love.graphics.rectangle(self.containerOptions.mode, self.pos.x, self.pos.y, self.containerOptions.width, self.containerOptions.height)
+	love.graphics.setColor(self.meterOptions.color[1], self.meterOptions.color[2], self.meterOptions.color[3])
+	love.graphics.rectangle(self.meterOptions.mode, self.pos.x, self.pos.y, self.meterOptions.width, self.meterOptions.height)
 	love.graphics.setColor(1, 1, 1)
 end;
 

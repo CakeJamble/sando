@@ -134,34 +134,34 @@ function DefenseState:jump()
   end)
 end;
 
-function DefenseState:update(dt)
-  if self.isEnemyAttacking then
-    self.frameCount = self.frameCount + 1
-  end
-  self:updateBadInputPenalty(false)
+-- function DefenseState:update(dt)
+--   if self.isEnemyAttacking then
+--     self.frameCount = self.frameCount + 1
+--   end
+--   self:updateBadInputPenalty(false)
 
-  if self.bonusApplied then
-    self.feedbackFrameCount = self.feedbackFrameCount + 1
-  end
-end;
+--   if self.bonusApplied then
+--     self.feedbackFrameCount = self.feedbackFrameCount + 1
+--   end
+-- end;
 
-function DefenseState:draw()
-  local spriteNum
-  local animation
+-- function DefenseState:draw()
+--   local spriteNum
+--   local animation
 
-  if self.stance == 'block' then
-    animation = self.animations.blockAnimation
-  elseif self.stance =='dodge' then
-    animation = self.animations.dodgeAnimation
-  else
-    animation = self.animations.idleAnimation
-  end
+--   if self.stance == 'block' then
+--     animation = self.animations.blockAnimation
+--   elseif self.stance =='dodge' then
+--     animation = self.animations.dodgeAnimation
+--   else
+--     animation = self.animations.idleAnimation
+--   end
 
-  if self.bonusApplied and self.feedbackFrameCount < self.numFeedbackFrames then
-    love.graphics.draw(self.greatText, self.greatPos.x, self.greatPos.y)
-  end
+--   if self.bonusApplied and self.feedbackFrameCount < self.numFeedbackFrames then
+--     love.graphics.draw(self.greatText, self.greatPos.x, self.greatPos.y)
+--   end
 
-  spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, 0, 1)
-end;
+--   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+--   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, 0, 1)
+-- end;
 

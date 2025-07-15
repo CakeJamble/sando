@@ -49,9 +49,10 @@ end;
 function ActionUI:set(charRef)
   self.x = charRef.pos.x + ActionUI.X_OFFSET
   self.y = charRef.pos.y + ActionUI.Y_OFFSET
-  self.skillList = charRef.skillList
-  self.soloButton = SoloButton(self.x, self.y, 1, self.skillList[1])
-  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, 2, self.skillList)
+  self.skillList = charRef.currentSkills
+  self.actionButton = charRef.actionButton
+  self.soloButton = SoloButton(self.x, self.y, 1, charRef.basic)
+  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, 2, charRef.currentSkills, self.actionButton)
   self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, 3, self.skillList)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton}
   self.activeButton = self.soloButton
@@ -60,7 +61,7 @@ function ActionUI:set(charRef)
   self.uiState = 'actionSelect'
   
   -- consider removing after refactoring with Command Pattern
-  self.actionButton = charRef.actionButton
+
   self.selectedSkill = self.skillList[1]
   self.active = true
 end;
@@ -195,14 +196,14 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         self.uiState = 'rotating'
         
        -- stand ins for confirm/cancel button input 
-      elseif button == 'a' then
+      elseif button == self.actionButton then
         if self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill
           self.uiState = 'targeting'
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
-          self.activeButton.displaySkillList = true
+          -- self.activeButton.displaySkillList = true
           self.activeButton:gamepadpressed(joystick, button)
         end
       end
@@ -235,7 +236,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.tIndex = math.max(1, self.tIndex - 1)
         elseif button == 'dpright' or button == 'dpdown' then
           self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
-        elseif button == 'a' then 
+        elseif button == self.actionButton then 
           Signal.emit('TargetConfirm', self.targetType, self.tIndex)
           self.uiState = 'moving'
         elseif button == 'b' then

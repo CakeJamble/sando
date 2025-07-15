@@ -1,4 +1,4 @@
---! filename: skill_ui.lua
+--! filename: qte
 
 Class = require 'libs.hump.class'
 QTE = Class{
@@ -10,14 +10,14 @@ function QTE:init()
 	self.type = ''
 	self.instructions = nil
 	self.instructionsPos = {x = 200, y = 80}
-	self.feedbackPos = {x = 250, y = 90}
+	self.feedbackPos = {x = 250, y = 90, a = 1}
 	self.offset = 0
 
 	self.currQTEFrame = 0
 	self.currFeedbackFrame = 0
 	self.numFeedbackFrames = 45
 	self.showPrompt = false
-	self.countQTEFrames = false
+	self.countQTEFrames = falsef
 	self.countFeedbackFrames = false
 end;
 
@@ -27,6 +27,9 @@ function QTE:reset()
 	self.countQTEFrames = false
 	self.countFeedbackFrames = false
 	self.showPrompt = false
+end;
+
+function QTE:gamepadreleased(joystick, button)
 end;
 
 function QTE:update(dt)

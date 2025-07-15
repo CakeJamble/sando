@@ -2,7 +2,26 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
-## 07/08/2025
+## 07/10/2025
+
+Need to deal with the reverberations of switching to collision based combat.
+
+### TODO
+- [x] Add jumping
+- [x] Add guarding
+- [x] Add jumping and guarding cooldowns
+- [x] Fix target setup by enemies using `target.oPos` instead of current position(s)
+- [x] Add functionality to guard by modifying defense (without defense state)
+- [x] Refactor offense for Characters
+	- [x] Skills
+	- [x] QTE Manager & QTEs
+- [x] Cleanup `NextTurn` signal in `TurnManager` class
+
+### Reflection
+
+Made some really good progress. Got some basic collision and got my first QTE implemented in this new system.
+
+## 07/08/2025 & 07/09/2025
 
 Today wasn't as productive because I spent a lot of time reading and thinking about how to integrate collision with tweening. I think I came to a good conclusion so I'm trying not to consider it wasted time. Today's studying will help improve tomorrow's coding.
 

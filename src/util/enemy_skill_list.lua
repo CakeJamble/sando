@@ -1,5 +1,6 @@
 --! filename: Enemy Skill List
-local delayPostAttack = 0.5
+local Collision = require 'libs.collision'
+
 local baguetteSkills = {
   {
     skill_name = 'Basic Attack',
@@ -189,9 +190,7 @@ local lineSkills = {
     attack_type = 'solo',
     target_type = 'single',
     effects = nil,
-    proc = nil,
     partners = nil,
-    sprite_path = nil,
     is_dodgeable = true,
     is_projectile = false,
     sprite_path = 'asset/sprites/entities/Enemy/Line/basic.png',
@@ -201,13 +200,23 @@ local lineSkills = {
     stagingPos = 'near',
     sound_path = 'asset/audio/entities/character/marco/basic.wav',
     proc =  function(ref) -- is this going to need a ref to the entity proc'ing the skill?
-              -- Charge from right to left, through the target at linear speed
               local duration = 0.5
-              local goalX, goalY = ref.target.pos.x, ref.target.pos.y
+              local goalX, goalY = ref.tPos.x, ref.tPos.y
               local stagingPos = {x = ref.pos.x, y = ref.pos.y}
               local delay = 0.5
               local tweenType = 'linear'
+              local hasCollided = false
+              local damage = 0 + ref.battleStats['attack']
+
+              -- Attack by charging from right to left
               flux.to(ref.pos, duration, {x = goalX - 80, y = goalY}):ease('linear')
+                :onupdate(function()
+                  if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
+                    print('collision detected')
+                    ref.target:takeDamage(damage)
+                    hasCollided = true
+                  end
+                end)
                 :oncomplete(function() tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, duration, delay, tweenType) end)
             end
   }

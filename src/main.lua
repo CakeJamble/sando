@@ -4,8 +4,6 @@ Camera = require "libs.hump.camera"
 Signal = require "libs.hump.signal"
 Timer = require 'libs.hump.timer'
 flux = require 'libs.flux'
-bump = require 'libs.bump'
-world = bump.newWorld(50)
 
 -- Push globals (Screen Size)
 push = require "libs.push"

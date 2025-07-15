@@ -3,10 +3,11 @@ require('class.ui.button')
 Class = require 'libs.hump.class'
 FlourButton = Class{__includes = Button}
 
-function FlourButton:init(x, y, layer, skillList)
+function FlourButton:init(x, y, layer, skillList, actionButton)
   Button.init(self, x, y, layer, 'flour.png')
   self.skillList = skillList
   self.skillIndex = 1
+  self.actionButton = actionButton
   -- self.skillListHolder = love.graphics.newImage(path/to/image)
   -- self.skillListCursor = love.graphics.newImage(path/to/image)
   self.selectedSkill = nil
@@ -94,8 +95,8 @@ end;
 function FlourButton:populateSkillPreviews()
   local result = {}
   local preview = {}
-  for i=2,#self.skillList do
-    preview.name = self.skillList[i].skillName
+  for i=1,#self.skillList do
+    preview.name = self.skillList[i].name
     preview.cost = self.skillList[i].cost
     preview.description = self.skillList[i].description
     preview.targetType = self.skillList[i].targetType
@@ -161,13 +162,20 @@ function FlourButton:keypressed(key)
 end;
 
 function FlourButton:gamepadpressed(joystick, button)
-  if key == 'dpdown' or key == 'dpright' then
-    self.skillIndex = (self.skillIndex % self.skillListDisplay) + 1
-  elseif key == 'dpup' or key == 'dpleft' then
+  if button == 'dpdown' or button == 'dpright' then
+    self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
+  elseif button == 'dpup' or button == 'dpleft' then
     if self.skillIndex <= 1 then
       self.skillIndex = #self.skillListDisplay
     else
       self.skillIndex = self.skillIndex - 1
+    end
+  elseif button == self.actionButton then
+    if not self.displaySkillList then
+      self.displaySkillList = true
+    else
+      self.selectedSkill = self.skillList[self.skillIndex]
+      Signal.emit('SkillSelected', self.selectedSkill)
     end
   end
 end;
