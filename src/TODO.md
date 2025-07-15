@@ -16,6 +16,15 @@ Some things I've accomplished:
 6. Projectile class
 7. Scone skill that uses the projectile with tweening and collision
 
+### TODO
+
+It might be boring, but there's a decent amount of grunt work to do to get the new architecture rolling.
+
+- [ ] Move Character and Enemy stats into JSON files in the `data` directory
+- [ ] Move Skill data into JSON files in the `data` directory
+
+I expect this to take a while since it's a lot of back and forth, making new files and referencing old ones.
+
 ## 07/10/2025
 
 Need to deal with the reverberations of switching to collision based combat.
