@@ -26,7 +26,11 @@ It might be boring, but there's a decent amount of grunt work to do to get the n
 	- [x] Encounter Pools
 - [ ] Move Skill data into JSON files in the `data` directory
 
-I expect this to take a while since it's a lot of back and forth, making new files and referencing old ones.
+I expect this to take a while since it's a lot of back and forth, making new files and referencing old ones. 
+
+### Reflection
+
+I'm going to break down the last bullet point since it's actually an epic that requires a lot of changes since every data file for a skill has a corresponding source file that needs to be designed, implemented, tested, and balanced. It will also be more manageable for PRs to actually serve a purpose if I move these one at a time.
 
 ## 07/10/2025
 
