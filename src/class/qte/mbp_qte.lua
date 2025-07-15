@@ -101,7 +101,7 @@ function mbpQTE:handleQTE()
 end;
 
 function mbpQTE:gamepadpressed(joystick, button)
-	if button == self.inputSequence[self.buttonsIndex].val then
+	if not self.qteComplete and button == self.inputSequence[self.buttonsIndex].val then
 		self.alphas[self.buttonsIndex] = 0
 		self:moveInputSequenceDown()
 		if not self.doneWaiting then

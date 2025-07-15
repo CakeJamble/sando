@@ -197,18 +197,66 @@ function Character:applyGear()
   end
 end;
 
+
+function Character:keypressed(key)
+  -- if self.state == 'offense' then
+  --   self.offenseState:keypressed(key)
+  -- elseif self.state == 'defense' then
+  --   self.defenseState:keypressed(key)
+  -- elseif self.actionUI.active then
+  --   self.actionUI:keypressed(key)
+  --   if self.actionUI.uiState == 'targeting' then
+  --     Signal.emit('Targeting', self.targets)
+  --   end
+  -- end
+  -- if in movement state, does nothing
+end;
+
+function Character:gamepadpressed(joystick, button)
+  if self.actionUI.active then
+    self.actionUI:gamepadpressed(joystick, button)
+  else
+    self:checkGuardAndJump(button)
+  end
+end;
+
+function Character:gamepadreleased(joystick, button)
+  if self.state == 'defense' then
+    if button == 'leftshoulder' then
+      self.canGuard = false
+    end
+  end
+end;
+
+function Character:checkGuardAndJump(button)
+  if button == 'leftshoulder' then
+    self.canGuard = true
+  elseif button == self.actionButton then
+    if self.canGuard and self.state == 'defense' then
+      self:beginGuard()
+    elseif self.canJump then
+      self:beginJump()
+    end
+  end
+end;
+
 -- Timers that revert Character to a state where they are no longer guarding after the duration ends
 -- then allows them to guard again after the cooldown passes
 function Character:beginGuard()
   self.isGuarding = true
   self.canJump = false  
   self.canGuard = false -- for cooldown
+  -- print(self.entityName .. ' began guarding')
+
   Timer.after(Character.guardActiveDur, function()
     self.isGuarding = false
+    -- print(self.entityName .. ' ended guard')
   end)
 
   Timer.after(Character.guardCooldownDur, function()
     self.canGuard = true
+    self.canJump = true
+    -- print(self.entityName .. ' came off guard cooldown')
   end)
 end;
 
@@ -222,52 +270,9 @@ function Character:beginJump()
     :oncomplete(
       function()
         self.isJumping = false
-        self.canGuard = false
+        self.canGuard = true
         self.canJump = true
       end):delay(Character.landingLag)
-end;
-
-
-function Character:keypressed(key)
-  if self.state == 'offense' then
-    self.offenseState:keypressed(key)
-  elseif self.state == 'defense' then
-    self.defenseState:keypressed(key)
-  elseif self.actionUI.active then
-    self.actionUI:keypressed(key)
-    if self.actionUI.uiState == 'targeting' then
-      Signal.emit('Targeting', self.targets)
-    end
-  end
-  -- if in movement state, does nothing
-end;
-
-function Character:gamepadpressed(joystick, button)
-  if self.actionUI.active then
-    self.actionUI:gamepadpressed(joystick, button)
-  else
-    self:checkGuardAndJump(button)
-  end
-end;
-
-function Character:checkGuardAndJump(button)
-  if button == 'leftshoulder' then
-    self.canGuard = true
-  elseif button == self.actionButton then
-    if self.canGuard then
-      self:beginGuard()
-    elseif self.canJump then
-      self:beginJump()
-    end
-  end
-end;
-
-function Character:gamepadreleased(joystick, button)
-  if self.state == 'defense' then
-    if button == 'leftshoulder' then
-      self.canGuard = false
-    end
-  end
 end;
     
 function Character:update(dt)
