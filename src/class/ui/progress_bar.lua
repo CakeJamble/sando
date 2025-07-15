@@ -3,7 +3,7 @@ Class = require 'libs.hump.class'
 
 ProgressBar = Class{}
 
-function ProgressBar:init(pos, width, height, min, max)
+function ProgressBar:init(pos, width, height, min, max, startingWidthScale)
 	self.pos = {
 		x = pos.x,
 		y = pos.y
@@ -16,7 +16,9 @@ function ProgressBar:init(pos, width, height, min, max)
 		width = width,
 		height = height
 	}
-	self.meterStartingWidth = width * 0.05
+
+
+	self.meterStartingWidth = width * startingWidthScale
 	self.meterOptions = {
 		color = {0, 1, 0},
 		mode = 'fill',

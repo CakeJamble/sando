@@ -97,7 +97,6 @@ function FlourButton:populateSkillPreviews()
   local preview = {}
   for i=1,#self.skillList do
     preview.name = self.skillList[i].name
-    print(preview.name)
     preview.cost = self.skillList[i].cost
     preview.description = self.skillList[i].description
     preview.targetType = self.skillList[i].targetType

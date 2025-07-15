@@ -85,7 +85,7 @@ function TurnManager:init(characterTeam, enemyTeam)
       -- self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
       if self.activeEntity.type == 'character' then
         self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
-        self.qteManager.activeQTE:setUI(self.activeEntity.target.pos)
+        self.qteManager.activeQTE:setUI(self.activeEntity)
         self.qteManager.activeQTE:beginQTE()
       else
         Signal.emit('Attack')
@@ -109,6 +109,18 @@ function TurnManager:init(characterTeam, enemyTeam)
       end
     end
   );
+
+  Signal.register('ProjectileMade', 
+    function(projectile)
+      self.activeEntity.projectile = projectile
+    end
+  )
+  Signal.register('DespawnProjectile',
+    function() 
+      self.activeEntity.projectile = nil 
+      print('Projectile destroyed')
+    end
+  )
 end;
 
 function TurnManager:populateTurnQueue()

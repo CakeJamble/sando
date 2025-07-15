@@ -10,7 +10,7 @@
 	"soundPath": "asset/audio/entities/character/marco/basic.wav",
 	"duration": 2,
 	"stagingTime": 1,
-	"stagingType": "mid",
+	"stagingType": "far",
 	"qteType": "MULTI_BUTTON_PRESS",
 	"qteBonus": ["damage"],
 	"description": "Deals physical damage to a single target.",

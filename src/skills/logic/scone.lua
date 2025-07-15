@@ -12,23 +12,27 @@ return function(ref, qteManager)
     x = ref.tPos.x,
     y = ref.tPos.y}
 
-  local spaceFromTarget = calcSpacingFromTarget(skill.stagingType, ref.type)
-  stagingPos.x = stagingPos.x + spaceFromTarget.x
-  stagingPos.y = stagingPos.y + spaceFromTarget.y
+  local sconeFlyingTime = 0.8
 
   -- Move from starting position to staging position before changing to animation assoc with skill use
-  flux.to(ref.pos, qteManager.activeQTE.stagingTime, {x = stagingPos.x, y = stagingPos.y})
-    :oncomplete(function()
+  -- flux.to(ref.pos, skill.duration, {x = stagingPos.x, y = stagingPos.y})
+    -- :oncomplete(function()
+  Timer.after(skill.duration, function()
       -- Create a Scone Projectile
-      local scone = Scone(ref.pos.x + 15, ref.pos.y + 5)
-      -- Tween the scone projectile through the target
-      flux.to(scone.pos, skill.duration, {x = goalX, y = goalY}):ease(skill.beginTweenType)
-        :onupdate(function()
-          if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
-            ref.target:takeDamage(damage)
-            hasCollided = true
-          end
-        end)
+    local scone = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2))
+    local sconeFlyingType = ''
+    Signal.emit('ProjectileMade', scone)
+    -- Tween the scone projectile through the target
+    flux.to(scone.pos, sconeFlyingTime, {x = goalX, y = goalY + (ref.target.hitbox.h / 2)}):ease(skill.beginTweenType)
+      :onupdate(function()
+        scone:update()
+        if not hasCollided and Collision.rectsOverlap(scone.hitbox, ref.target.hitbox) then
+          ref.target:takeDamage(damage)
+          hasCollided = true
+          flux.to(scone.dims, 0.25, {r = 0}):ease('linear')
+            :oncomplete(function() Signal.emit('DespawnProjectile') end)
+        end
       end)
-        :oncomplete(function() tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, skill.duration, skill.returnTweenType) end)
+      :oncomplete(function() Signal.emit('NextTurn') end):delay(0.5)
+  end)
 end;

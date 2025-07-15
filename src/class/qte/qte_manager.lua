@@ -4,6 +4,7 @@ require('skills.skill')
 -- require('util.skill_sheet')
 require('class.qte.sbp_qte')
 require('class.qte.hold_sbp_qte')
+require('class.qte.mbp_qte')
 Class = require 'libs.hump.class'
 QTEManager = Class{}
 
@@ -11,7 +12,8 @@ function QTEManager:init(characterTeam)
 	self.buttons = self:loadButtonImages('asset/sprites/input_icons/face_buttons/')
 	self.qteTable = {
 		sbp = sbpQTE(),
-		holdSBP = HoldSBP()
+		holdSBP = HoldSBP(),
+		mbp = mbpQTE(),
 	}
 	
 	self.activeQTE = nil
@@ -49,6 +51,7 @@ function QTEManager:loadButtonImages(buttonDir)
 		x = {
 			raised = love.graphics.newImage(buttonPaths.xRaised),
 			pressed = love.graphics.newImage(buttonPaths.xPressed),
+			val = 'x'
 		},
 		y = {
 			raised = love.graphics.newImage(buttonPaths.yRaised),
@@ -81,7 +84,9 @@ function QTEManager:setQTE(qteType, actionButton, skill)
 	elseif qteType == 'STICK_MOVE' then
 	    --do
 	elseif qteType == 'MULTI_BUTTON_PRESS' then
-		--do
+		self.qteTable.mbp.buttons = self.buttons
+		self.qteTable.mbp:createInputSequence(self.buttons)
+		self.activeQTE = self.qteTable.mbp
 	elseif qteType == 'HOLD_SBP' then
 		self.qteTable.holdSBP.actionButton = actionButton
 		self.qteTable.holdSBP.qteButton = self.buttons[actionButton]

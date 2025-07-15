@@ -10,7 +10,7 @@ function HoldSBP:init()
 	self.skill = nil
 	self.qteComplete = false
 	local pbPos = {x = 100, y = 100}
-	self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100)
+	self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100, 0.05)
 	self.waitTween = nil
 	self.doneWaiting = false
 	self.progressTween = nil
@@ -44,6 +44,16 @@ function HoldSBP:setFeedback(isSuccess)
 	end
 end;
 
+function HoldSBP:setUI(activeEntity)
+	local targetPos = activeEntity.target.pos
+	self.progressBar.pos.x = targetPos.x - 75
+	self.progressBar.pos.y = targetPos.y + 100
+	self.buttonUIPos.x = self.progressBar.pos.x + 75
+	self.buttonUIPos.y = self.progressBar.pos.y - 15
+	self.feedbackPos.x = targetPos.x + 25
+	self.feedbackPos.y = targetPos.y - 25
+end;
+
 function HoldSBP:reset()
 	QTE.reset(self)
 	self.showGreatText = false
@@ -71,12 +81,9 @@ function HoldSBP:update(dt)
 end;
 
 --[[
-1. Wait a 2 seconds for player to press button
+1. Wait a x seconds for player to press button
 	1a. If they haven't pressed it, they fail the QTE
-2. After pressing, begin tweening progress bar
-3. Once progress bar is complete, wait 0.5 seconds for them to release button
-	3a. If they haven't released it, they fail the QTE
-4. Reward for doing qte?]]
+2. After pressing, cancel the waitTween ]]
 function HoldSBP:beginQTE()
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 		:oncomplete(function()
@@ -115,16 +122,6 @@ function HoldSBP:handleQTE()
 			end)
 	end
 end;
-
-function HoldSBP:setUI(targetPos)
-	self.progressBar.pos.x = targetPos.x - 75
-	self.progressBar.pos.y = targetPos.y + 100
-	self.buttonUIPos.x = self.progressBar.pos.x + 75
-	self.buttonUIPos.y = self.progressBar.pos.y - 15
-	self.feedbackPos.x = targetPos.x + 25
-	self.feedbackPos.y = targetPos.y - 25
-end;
-
 
 function HoldSBP:gamepadpressed(joystick, button)
 	if button == self.actionButton then

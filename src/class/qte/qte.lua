@@ -29,6 +29,9 @@ function QTE:reset()
 	self.showPrompt = false
 end;
 
+function QTE:gamepadreleased(joystick, button)
+end;
+
 function QTE:update(dt)
 	if self.countQTEFrames then
 		self.currQTEFrame = self.currQTEFrame + 1
