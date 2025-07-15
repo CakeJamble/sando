@@ -63,6 +63,9 @@ function Character:init(data, actionButton)
   self.canGuard = false
   self.canJump = true
   self.isJumping = false
+  self.landingLag = Character.landingLag
+  self.hasLCanceled = false
+  self.canLCancel = false
 
   Signal.register('OnStartCombat',
     function()
@@ -218,18 +221,25 @@ function Character:gamepadpressed(joystick, button)
   else
     self:checkGuardAndJump(button)
   end
+
+  -- L-Cancel
+  if button == 'leftshoulder' and self.canLCancel then
+    print('l-cancel success')
+    self.landingLag = self.landingLag / 2
+    self.hasLCanceled = true
+  end
 end;
 
 function Character:gamepadreleased(joystick, button)
   if self.state == 'defense' then
-    if button == 'leftshoulder' then
+    if button == 'rightshoulder' then
       self.canGuard = false
     end
   end
 end;
 
 function Character:checkGuardAndJump(button)
-  if button == 'leftshoulder' then
+  if button == 'rightshoulder' then
     self.canGuard = true
   elseif button == self.actionButton then
     if self.canGuard and self.state == 'defense' then
@@ -240,8 +250,6 @@ function Character:checkGuardAndJump(button)
   end
 end;
 
--- Timers that revert Character to a state where they are no longer guarding after the duration ends
--- then allows them to guard again after the cooldown passes
 function Character:beginGuard()
   self.isGuarding = true
   self.canJump = false  
@@ -265,14 +273,25 @@ function Character:beginJump()
   self.canGuard = false
   self.canJump = false
 
+  -- Goes up then down, then resets conditional checks for guard/jump
+  local landY = self.pos.y
   flux.to(self.pos, Character.jumpDur/2, {y = self.pos.y - self.frameHeight})
-    :after(self.pos, Character.jumpDur/2, {y = self.pos.y})
+    :after(self.pos, Character.jumpDur/2, {y = landY})
+    :onupdate(function()
+      if not self.hasLCanceled and landY <= self.pos.y + (self.frameHeight / 4) then
+        self.canLCancel = true
+        print('canLCancel')
+      end
+    end)
     :oncomplete(
       function()
         self.isJumping = false
         self.canGuard = true
         self.canJump = true
-      end):delay(Character.landingLag)
+        self.landingLag = Character.landingLag
+        self.canLCancel = false
+        self.hasLCanceled = false
+      end):delay(self.landingLag)
 end;
     
 function Character:update(dt)
