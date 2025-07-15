@@ -71,6 +71,7 @@ function ActionUI:unset()
   self.soloButton = nil; self.flourButton = nil; self.duoButton = nil;
   self.buttons = nil; self.activeButton = nil;
   self.isFocused = false
+  self.active = false
 end;
 
 function ActionUI:keypressed(key) --> void

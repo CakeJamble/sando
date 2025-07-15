@@ -1,15 +1,13 @@
 --! file: gamestates/combat
 require("class.entities.enemy")
 require("class.ui.action_ui")
--- require("util.encounter_pools")
 require('gamestates.character_select')
 require("util.globals")
 require('class.entities.character_team')
 require('class.entities.enemy_team')
--- require('util.stat_sheet')
 require('class.input.command_manager')
 require('class.turn_manager')
-
+local generateEncounter = require('util.encounter_generator')
 
 local combat = {}
 local numFloors = 50
@@ -22,7 +20,7 @@ local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 local COMBAT_UI_PATH = 'asset/sprites/combat/'
 local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
 local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
-local generateEncounter = require('util.encounter_generator')
+
 function combat:init()
   self.background = love.graphics.newImage(TEMP_BG)
   self.combatTeamUI = love.graphics.newImage(COMBAT_TEAM_UI_PATH)
@@ -84,7 +82,6 @@ function combat:enter(previous)
   end
     -- self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
   
-  -- self.enemyTeam = combat:generateEncounter()
   self.enemyTeam = generateEncounter(self.floorNumber)
 
   Signal.emit('OnStartCombat')
@@ -108,6 +105,7 @@ function combat:gamepadpressed(joystick, button)
     Gamestate.push(states['pause'])
   end
   if self.turnManager and self.turnManager.qteManager.activeQTE then
+    print('turn manager')
     self.turnManager.qteManager:gamepadpressed(joystick, button)
   else
     self.characterTeam:gamepadpressed(joystick, button)

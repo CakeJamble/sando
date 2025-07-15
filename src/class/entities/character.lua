@@ -43,7 +43,6 @@ function Character:init(data, actionButton)
   self.currentSkills = {}
   self:updateSkills()
 
-
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
@@ -239,12 +238,14 @@ function Character:gamepadreleased(joystick, button)
 end;
 
 function Character:checkGuardAndJump(button)
-  if button == 'rightshoulder' then
+  if button == 'rightshoulder' and not self.isJumping then
     self.canGuard = true
-  elseif button == self.actionButton then
-    if self.canGuard and self.state == 'defense' then
+  elseif button == self.actionButton then    
+    if self.canGuard then
+      print('gonna guard')
       self:beginGuard()
     elseif self.canJump then
+      print('gonna jump')
       self:beginJump()
     end
   end
@@ -286,11 +287,11 @@ function Character:beginJump()
     :oncomplete(
       function()
         self.isJumping = false
-        self.canGuard = true
         self.canJump = true
         self.landingLag = Character.landingLag
         self.canLCancel = false
         self.hasLCanceled = false
+        print('finished landing')
       end):delay(self.landingLag)
 end;
     
