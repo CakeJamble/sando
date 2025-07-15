@@ -64,13 +64,6 @@ function mbpQTE:createInputSequence(buttons)
 	end
 end;
 
-function mbpQTE:setFeedback(isSuccess)
-	if isSuccess then
-		self.showGreatText = true
-		self.countFeedbackFrames = true
-	end
-end;
-
 function mbpQTE:setUI(activeEntity)
 	local entityPos = activeEntity.pos
 	self.progressBar.pos.x = entityPos.x + 150
@@ -139,7 +132,14 @@ end;
 
 function mbpQTE:reset()
 	QTE.reset(self)
+	self.inputSequence = {}
+	self.buttonsIndex = 1
+	self.progressBar:reset()
 	self.showGreatText = false
+	self.doneWaiting = false
+	self.qteComplete = false
+	self.qteSuccess = false
+	self.signalEmitted = false
 	-- self.actionButton = nil
 end;
 
