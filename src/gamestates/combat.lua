@@ -105,6 +105,7 @@ function combat:gamepadpressed(joystick, button)
     Gamestate.push(states['pause'])
   end
   if self.turnManager and self.turnManager.qteManager.activeQTE then
+    print('turn manager')
     self.turnManager.qteManager:gamepadpressed(joystick, button)
   else
     self.characterTeam:gamepadpressed(joystick, button)

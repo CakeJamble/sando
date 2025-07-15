@@ -5,6 +5,7 @@ require('skills.skill')
 require('class.qte.sbp_qte')
 require('class.qte.hold_sbp_qte')
 require('class.qte.mbp_qte')
+require('class.qte.rand_sbp_qte')
 Class = require 'libs.hump.class'
 QTEManager = Class{}
 
@@ -14,6 +15,7 @@ function QTEManager:init(characterTeam)
 		sbp = sbpQTE(),
 		holdSBP = HoldSBP(),
 		mbp = mbpQTE(),
+		randSBP = randSBP()
 	}
 	
 	self.activeQTE = nil
@@ -23,6 +25,8 @@ function QTEManager:init(characterTeam)
 			self.activeQTE:setFeedback(true)
 		end
 	)
+
+	Signal.register('NextTurn', function() self.activeQTE = nil end)
 end;
 
 function QTEManager:loadButtonImages(buttonDir)
@@ -93,6 +97,12 @@ function QTEManager:setQTE(qteType, actionButton, skill)
 		self.qteTable.holdSBP.buttonUI = self.buttons[actionButton].raised
 		self.qteTable.holdSBP.instructions = "Hold " .. actionButton .. ' until the meter is filled!'
 		self.activeQTE = self.qteTable.holdSBP
+	elseif qteType == 'RAND_SBP' then
+		local buttons = {'a', 'b', 'x', 'y'}
+		local randIndex = buttons[love.math.random(1, #buttons)]
+		self.qteTable.randSBP.qteButton = self.buttons[randIndex]
+		self.qteTable.randSBP.button = self.buttons[randIndex].raised
+		self.activeQTE = self.qteTable.randSBP
 	end
 end;
 
