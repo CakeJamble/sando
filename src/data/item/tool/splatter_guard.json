@@ -1,0 +1,7 @@
+{
+	"name": "Splatter Guard",
+	"signal": "OnDamaged",
+	"description": "Further reduces damage blocked by guarding by a small amount",
+	"flavorText": "Protect yourself",
+	"rarity": "common"
+}

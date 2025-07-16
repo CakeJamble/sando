@@ -1,0 +1,7 @@
+{
+	"name": "Half Muffin",
+	"signal": "OnPickup",
+	"description": "On pickup, increase all member's HP by 8%",
+	"flavorText": "Microwaved to perfection",
+	"rarity": "common"
+}

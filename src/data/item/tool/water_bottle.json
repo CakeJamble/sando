@@ -1,0 +1,7 @@
+{
+	"name": "Water Bottle",
+	"signal": "OnConsumableUse",
+	"description": "Your consumable items are more effective",
+	"flavorText": "Why is it always empty",
+	"rarity": "common"
+}

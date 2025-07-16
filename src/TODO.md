@@ -2,6 +2,11 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/16/2025
+
+Continuing refactor. Today I think is a good time to start moving the tools and equipment to JSON files.
+
+
 ## 07/15/2025
 
 I forgot to update the TODO again for a few days, despite making some major progress. I think that from here on, I really need to focus on keeping my work scoped into the tasks I'm assigning myself, or I could really burn out once I get frustrated.
