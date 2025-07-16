@@ -24,9 +24,10 @@ It might be boring, but there's a decent amount of grunt work to do to get the n
 	- [x] Characters
 	- [x] Enemies
 	- [x] Encounter Pools
+- [x] Random Single Button Press QTE
 - [ ] Move Skill data into JSON files in the `data` directory
 
-I expect this to take a while since it's a lot of back and forth, making new files and referencing old ones. 
+I expect the last one to take a while since it's a lot of back and forth, making new files and referencing old ones. 
 
 ### Reflection
 
