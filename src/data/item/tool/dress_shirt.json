@@ -1,0 +1,7 @@
+{
+	"name": "Dress Shirt",
+	"signal": "OnStartTurn",
+	"description": "Enemies KO'd during the first 3 turns drop better rewards on average",
+	"flavorText": "The first impression is everything!",
+	"rarity": "common"
+}

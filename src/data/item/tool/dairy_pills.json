@@ -1,0 +1,7 @@
+{
+	"name": "Dairy Pills",
+	"signal": "OnStartTurn",
+	"description": "Cures lactose intolerance at the start of your turn",
+	"flavorText": "I feel so bloated right now.",
+	"rarity": "common"
+}

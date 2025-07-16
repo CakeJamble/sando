@@ -1,0 +1,7 @@
+{
+	"name": "Refurbished Idol",
+	"signal": "OnKO",
+	"description": "Gain additional money from enemies, equal to your level",
+	"flavorText": "Their beauty was a spark that started an ancient war.",
+	"rarity": "common"
+}

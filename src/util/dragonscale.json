@@ -1,0 +1,7 @@
+{
+	"name": "Dragonscale",
+	"signal": "OnRecoil",
+	"description": "Take less damage from recoil",
+	"flavorText": "The kitchen can't move when the sink is full.",
+	"rarity": "common"
+}

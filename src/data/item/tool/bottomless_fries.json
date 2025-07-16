@@ -1,0 +1,7 @@
+{
+	"name": "Bottomless Fries",
+	"signal": "OnPurchase",
+	"description": "Slightly restore HP when you purchase an item.",
+	"flavorText": "It takes way too long to refill this.",
+	"rarity": "common"
+}

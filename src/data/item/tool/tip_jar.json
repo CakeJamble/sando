@@ -1,0 +1,7 @@
+{
+	"name": "Tip Jar",
+	"signal": "OnSellAccessory",
+	"description": "Selling accessory nets slightly more money",
+	"flavorText": "Tips go in, money comes out. Can you explain that?",
+	"rarity": "common"
+}

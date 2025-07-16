@@ -1,0 +1,7 @@
+{
+	"name": "Fake Mustache",
+	"signal": "OnAttack",
+	"description": "Basic attacks deal more damage",
+	"flavorText": "Gender affirming",
+	"rarity": "common"
+}

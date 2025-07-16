@@ -1,0 +1,7 @@
+{
+	"name": "Display Loaf",
+	"signal": "OnAttack",
+	"description": "Round up damage to 5",
+	"flavorText": "The crumb structure reveals fine attention paid to the details.",
+	"rarity": "common"
+}

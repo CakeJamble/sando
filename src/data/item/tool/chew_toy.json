@@ -1,0 +1,7 @@
+{
+	"name": "Chew Toy",
+	"signal": "OnStartBattle",
+	"description": "Weaken enemies at the start of battle",
+	"flavorText": "Well-loved.",
+	"rarity": "common"
+}
