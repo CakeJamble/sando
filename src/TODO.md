@@ -6,6 +6,9 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 Continuing refactor. Today I think is a good time to start moving the tools and equipment to JSON files.
 
+- [ ] Move tool data to json files
+- [ ] Implement QTE for tapping stick left to charge qte (like the Slap attack)
+
 
 ## 07/15/2025
 

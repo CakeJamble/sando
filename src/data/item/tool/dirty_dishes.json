@@ -1,0 +1,7 @@
+{
+	"name": "Dirty Dishes",
+	"signal": "OnStartBattle",
+	"description": "Slow enemies at the start of battle",
+	"flavorText": "The kitchen can't move when the sink is full.",
+	"rarity": "common"
+}
