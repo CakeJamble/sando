@@ -1,0 +1,7 @@
+{
+	"name": "Electric Kettle",
+	"signal": "OnEnterShop",
+	"description": "Restore some HP when you enter a shop",
+	"flavorText": "DO NOT turn this on when the dish washer is running",
+	"rarity": "event"
+}

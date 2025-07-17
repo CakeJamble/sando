@@ -2,6 +2,17 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/17/2025
+
+After doing some of the legwork yesterday, I realized that it is probably a good idea to implement a debug menu using imGUI so that I can test things during combat. That will be the first thing I do after finishing moving the rest of the tools to json files. I finished off yesterday with the common tools. I'm switching priorities here because I think I have a great idea for improving replayability in a novel way. The current roadmap of Sando had you traversing through a randomized series of zones, and the zones were different from each other visually and by the types of enemies you face. I think it would be so cool if the zone also applied a mechanical change the way you play. For example, you enter a zone, and the antagonist applies an effect to the zone that makes it so that health ticks down on a tween, similar to Earthbound. And in the next zone, you add another layer to the mechanics, like a turn-based system where in Pokemon where you can swap out who is taking damage.
+
+### TODO
+
+- [x] Finish up moving tool data to json files
+- [ ] Read over the documentation for imGUI in Love2d
+- [ ] Implement an extremely simple debug menu that changes the drawHitbox variable in combat between `true` and `false`
+- [ ] Create a prioritized list of features for the debug menu (Necessary, High Priority, Nice to Have)
+
 ## 07/16/2025
 
 Continuing refactor. Today I think is a good time to start moving the tools and equipment to JSON files.

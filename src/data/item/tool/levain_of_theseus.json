@@ -1,0 +1,7 @@
+{
+	"name": "Levain of Theseus",
+	"signal": "OnSummon",
+	"description": "Summoned enemies spawn with additional health, but reward more EXP",
+	"flavorText": "Is this the same levain it was last week?",
+	"rarity": "event"
+}

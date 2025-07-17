@@ -1,0 +1,7 @@
+{
+	"name": "Everything Seasoning",
+	"signal": "OnPickup",
+	"description": "On pickup, copy a skill of any character to another character",
+	"flavorText": "A beautiful dress for the perfect bagel.",
+	"rarity": "rare"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Hoiro",
+	"signal": "OnStartBattle",
+	"description": "Elites start with slightly less HP",
+	"flavorText": "It's warm and humid inside. The dough has relaxed.",
+	"rarity": "rare"
+}

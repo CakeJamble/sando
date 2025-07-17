@@ -1,0 +1,7 @@
+{
+	"name": "Tassa's Book",
+	"signal": "OnPickup",
+	"description": "You are more likely to find uncommon and rare equipment",
+	"flavorText": "The pages are worn and well-loved.",
+	"rarity": "event"
+}

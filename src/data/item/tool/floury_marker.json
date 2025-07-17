@@ -1,0 +1,7 @@
+{
+	"name": "Floury Marker",
+	"signal": "OnCurseCleanse",
+	"description": "Removing a curse slightly increases Max HP",
+	"flavorText": "It's caked in flour, but still writes just fine.",
+	"rarity": "rare"
+}

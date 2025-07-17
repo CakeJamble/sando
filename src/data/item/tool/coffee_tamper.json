@@ -1,0 +1,7 @@
+{
+	"name": "Coffee Tamper",
+	"signal": "OnPickup",
+	"description": "A random character gains an additional skill slot",
+	"flavorText": "Packs tightly, with even pressure across the surface.",
+	"rarity": "shop"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Baking Soda",
+	"signal": "OnAttacked",
+	"description": "Taking damage has a chance to remove a debuff",
+	"flavorText": "Expired.",
+	"rarity": "shop"
+}

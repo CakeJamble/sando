@@ -1,0 +1,7 @@
+{
+	"name": "Croissant Flakes",
+	"signal": "OnTargetConfirm",
+	"description": "Using skills has a small chance to refund the FP spent",
+	"flavorText": "Saving them for later.",
+	"rarity": "rare"
+}

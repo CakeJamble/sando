@@ -1,0 +1,7 @@
+{
+	"name": "Tardy Treat",
+	"signal": "OnStartBattle",
+	"description": "Start battles slowed, but boost your stats on turn 3.",
+	"flavorText": "You were late, but you did the right thing.",
+	"rarity": "rare"
+}

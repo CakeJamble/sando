@@ -1,0 +1,7 @@
+{
+	"name": "Face Roller",
+	"signal": "OnBlock",
+	"description": "Blocking physical attacks nullifies status effects",
+	"flavorText": "Keeping up the streak.",
+	"rarity": "uncommon"
+}

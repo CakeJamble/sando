@@ -1,0 +1,7 @@
+{
+	"name": "Azzi Manuscript",
+	"signal": "OnPickup",
+	"description": "You are more likely to find uncommon and rare accessories",
+	"flavorText": "A survival guide for a pixelated world.",
+	"rarity": "event"
+}

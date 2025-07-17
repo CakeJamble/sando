@@ -1,0 +1,7 @@
+{
+	"name": "Work Shoes",
+	"signal": "OnStartTurn",
+	"description": "Grants immunity to start of turn hazards",
+	"flavorText": "The secure feeling of non-slip shoes fills you with determination.",
+	"rarity": "rare"
+}

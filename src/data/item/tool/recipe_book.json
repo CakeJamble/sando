@@ -1,0 +1,7 @@
+{
+	"name": "Recipe Book",
+	"signal": "OnEndCombat",
+	"description": "Fainted team members are still rewarded EXP",
+	"flavorText": "The handwriting is messy.",
+	"rarity": "shop"
+}

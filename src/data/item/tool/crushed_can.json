@@ -1,0 +1,7 @@
+{
+	"name": "Crushed Can",
+	"signal": "OnEndCombat",
+	"description": "Gain additionaly money at the end of combat",
+	"flavorText": "Hi! Me 5¢ ;P",
+	"rarity": "uncommon"
+}

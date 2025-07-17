@@ -1,0 +1,7 @@
+{
+	"name": "Memory Foam Mattress",
+	"signal": "OnTargetConfirm",
+	"description": "Healing skills are slightly more effective",
+	"flavorText": "This is my hole! It was made for me!",
+	"rarity": "rare"
+}

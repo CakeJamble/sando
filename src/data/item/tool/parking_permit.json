@@ -1,0 +1,7 @@
+{
+	"name": "Parking Permit",
+	"signal": "OnPickup",
+	"description": "You can no longer be stunned",
+	"flavorText": "Valid only in Zone 4, except on cloudy Thursdays after 5 PM.",
+	"rarity": "uncommon"
+}

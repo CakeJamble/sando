@@ -1,0 +1,7 @@
+{
+	"name": "Pastry Brush",
+	"signal": "OnQTESuccess",
+	"description": "Double crit chance for skills with crit bonuses",
+	"flavorText": "Delicate, elegant, egg-washed.",
+	"rarity": "rare"
+}

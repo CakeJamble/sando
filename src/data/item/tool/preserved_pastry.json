@@ -1,0 +1,7 @@
+{
+	"name": "Preserved Pastry",
+	"signal": "OnAttack",
+	"description": "Deal more damage when FP is low",
+	"flavorText": "Made with ancient grains.",
+	"rarity": "uncommon"
+}

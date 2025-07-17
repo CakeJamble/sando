@@ -1,0 +1,7 @@
+{
+	"name": "Mummified Grapes",
+	"signal": "OnSummon",
+	"description": "Summoned enemies start weakened",
+	"flavorText": "There should be a word for these.",
+	"rarity": "uncommon"
+}

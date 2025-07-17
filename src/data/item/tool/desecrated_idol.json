@@ -1,0 +1,7 @@
+{
+	"name": "Desecrated Idol",
+	"signal": "OnPickup",
+	"description": "On pickup, lose half your money and convert this into a Refurbished Idol",
+	"flavorText": "Sealed in wax.",
+	"rarity": "uncommon"
+}

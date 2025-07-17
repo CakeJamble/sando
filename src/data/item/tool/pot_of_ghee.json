@@ -1,0 +1,7 @@
+{
+	"name": "Pot of Ghee",
+	"signal": "OnTargetConfirm",
+	"description": "Buffs are slightly more effective",
+	"flavorText": "Clarity.",
+	"rarity": "rare"
+}

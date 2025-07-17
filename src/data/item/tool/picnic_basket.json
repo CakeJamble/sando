@@ -1,0 +1,7 @@
+{
+	"name": "Picnic Basket",
+	"signal": "OnPickup",
+	"description": "On pickup, rest.",
+	"flavorText": "yay <3",
+	"rarity": "rare"
+}
