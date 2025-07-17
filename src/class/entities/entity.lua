@@ -9,7 +9,8 @@ require('skills.skill')
 
 Class = require "libs.hump.class"
 Entity = Class{
-  movementTime = 2
+  movementTime = 2,
+  drawHitboxes = false
 }
 
   -- Entity constructor
@@ -74,8 +75,6 @@ function Entity:init(data, x, y)
     w = data.hbWidth,
     h = data.hbHeight
   }
-
-  self.drawHitbox = false
 end;
 
 function Entity:startTurn()
@@ -310,7 +309,7 @@ function Entity:draw() --> void
   spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
 
-  if self.drawHitbox then
+  if Entity.drawHitboxes then
     love.graphics.setColor(1, 0, 0, 0.4)
     love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)

@@ -1,7 +1,6 @@
 --! filename: reward
 require('class.entities.character_team')
 require('class.entities.character')
-require('util.tool_pool')
 require('util.equipment_pool')
 require('util.consumable_pool')
 
