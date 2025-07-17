@@ -11,7 +11,7 @@ After doing some of the legwork yesterday, I realized that it is probably a good
 - [x] Finish up moving tool data to json files
 - [x] Read over the documentation for imGUI in Love2d
 - [x] Implement an extremely simple debug menu that changes the drawHitbox variable in combat between `true` and `false`
-- [ ] Create a prioritized list of features for the debug menu (Necessary, High Priority, Nice to Have)
+- [ ] 
 
 ## 07/16/2025
 
