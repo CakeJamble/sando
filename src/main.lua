@@ -23,7 +23,7 @@ states = {
 }
 
 function love.load()
-  font = love.graphics.newFont('asset/zai-seagull-felt-tip-pen.regular.otf', 20)
+  font = love.graphics.newFont('asset/thin_sans.ttf')
   love.graphics.setFont(font)
   camera = Camera()
   Gamestate.registerEvents()

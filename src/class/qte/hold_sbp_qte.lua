@@ -167,7 +167,7 @@ end;
 
 function HoldSBP:draw()
 	if self.showGreatText then
-		love.graphics.setColor(1,1,1,self.feedbackPos.a)
+		love.graphics.setColor(1,1,1, self.feedbackPos.a)
 		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)
 		love.graphics.setColor(1,1,1,1)
 	end
@@ -178,9 +178,9 @@ function HoldSBP:draw()
 	end
 	if not self.qteComplete then
 		self.progressBar:draw()
-		love.graphics.setColor(0, 0, 0)
+		-- love.graphics.setColor(0, 0, 0)
 		love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 		love.graphics.setColor(1,1,1)
-		love.graphics.draw(self.buttonUI, self.buttonUIPos.x, self.buttonUIPos.y, 0, 0.5, 0.5)
+		love.graphics.draw(self.buttonUI, self.buttonUIPos.x + 16, self.buttonUIPos.y + 16)
 	end
 end;

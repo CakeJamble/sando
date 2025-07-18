@@ -4,16 +4,30 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ## 07/18/2025
 
-I tend to run out of steam around 3 or so. I think I need to restructure how I tackle tasks so that I can work a bit longer. Yesterday I lost focus because 
+I tend to run out of steam around 3 or so. I think I need to restructure how I tackle tasks so that I can work a bit longer. I would love to figure out joystick input because it seems like everyone gravitates to using that over the d-pad instinctually.
 
 ### TODO
 
-- [ ] Baton library? Review it and see if it's a good fit for this game
-- [ ] Load in new assets for controller UI
+- [x] Baton library? Review it and see if it's a good fit for this game
+- [x] Review Command Pattern. Is it a good fit for this game?
+- [x] Load in new assets for controller UI
+- [ ] Collision System 
+	- [ ] dodging
+	- [ ] guarding
+- [ ] Controller Config? -> Eventually want to display buttons based on controller
 - [ ] Tap Left QTE implementation
-- [ ] Review Command Pattern. Is it a good fit for this game?
 - [ ] Controller layouts.
 - [ ] Start looking up how to implement a save/load system.
+
+### Reflection
+
+I forgot about the collision system! I never finished it!!! Back to work. A little overwhelmed by the issue caused by setting the screen resolution the way I did. I should go back and look at Mario & Luigi to get the size of sprites down so that I don't feel this way about refactoring hitbox data.
+
+Baton actually doesn't seem like a great fit here. While I really like the idea of having different controller layouts, it looks like it is intended to be most useful in movement systems. But my game is more focused on menu navigation. I'll come back to this later.
+
+Also, there's so much to think about right now, I really need to narrow the scope of the stuff I'm working on each day. This TODO had a good amount of stuff but it felt so unrelated to each other. I should be focusing on progress of developing mechanics.
+
+The assets I bought recently are a little small. I'm not sure how I'm gonna be able to use them without blowing them up and making them look kind of distorted
 
 ## 07/17/2025
 
