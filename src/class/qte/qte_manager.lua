@@ -1,7 +1,5 @@
 --! filename: qte_manager
 require('class.qte.qte')
-require('skills.skill')
--- require('util.skill_sheet')
 require('class.qte.sbp_qte')
 require('class.qte.hold_sbp_qte')
 require('class.qte.mbp_qte')

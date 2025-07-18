@@ -2,6 +2,19 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/18/2025
+
+I tend to run out of steam around 3 or so. I think I need to restructure how I tackle tasks so that I can work a bit longer. Yesterday I lost focus because 
+
+### TODO
+
+- [ ] Baton library? Review it and see if it's a good fit for this game
+- [ ] Load in new assets for controller UI
+- [ ] Tap Left QTE implementation
+- [ ] Review Command Pattern. Is it a good fit for this game?
+- [ ] Controller layouts.
+- [ ] Start looking up how to implement a save/load system.
+
 ## 07/17/2025
 
 After doing some of the legwork yesterday, I realized that it is probably a good idea to implement a debug menu using imGUI so that I can test things during combat. That will be the first thing I do after finishing moving the rest of the tools to json files. I finished off yesterday with the common tools. I'm switching priorities here because I think I have a great idea for improving replayability in a novel way. The current roadmap of Sando had you traversing through a randomized series of zones, and the zones were different from each other visually and by the types of enemies you face. I think it would be so cool if the zone also applied a mechanical change the way you play. For example, you enter a zone, and the antagonist applies an effect to the zone that makes it so that health ticks down on a tween, similar to Earthbound. And in the next zone, you add another layer to the mechanics, like a turn-based system where in Pokemon where you can swap out who is taking damage.
@@ -11,7 +24,10 @@ After doing some of the legwork yesterday, I realized that it is probably a good
 - [x] Finish up moving tool data to json files
 - [x] Read over the documentation for imGUI in Love2d
 - [x] Implement an extremely simple debug menu that changes the drawHitbox variable in combat between `true` and `false`
-- [ ] 
+
+### Reflection
+
+Filling out those JSON files makes me so tired... it basically kills my energy to do other stuff afterwards. I had to move around a lot during the day, which isn't a good excuse, but it's important to recognize what sets my off-task so that I can be proactive about setting tasks. I also think I was a little too conservative with setting my TODO items because I was a bit lost once I finished them.
 
 ## 07/16/2025
 
