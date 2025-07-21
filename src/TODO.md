@@ -2,6 +2,17 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/22/2025
+
+Collision on defense. I want to be able to dodge enemy attacks, and land a counterhit if I time it right!
+
+- [ ] Resize Marco
+- [ ] Implement and debug proper collision when overhead
+- [ ] Balance timing
+- [ ] Implement visual indicator on successful dodge and block
+- [ ] Implement feedback on failed dodge and block (console output ok for now)
+- [ ] End attack early when countered or blocked
+
 ## 07/21/2025
 
 Art was tough.
@@ -10,6 +21,7 @@ Art was tough.
 
 - [x] Resize Bake
 - [x] New Enemy - Dastobunni
+- [ ] Resize Marco
 - [x] Fix Hold SBP QTE reset for new progress bar changes
 - [x] Change animations during attack to match move used
 - [x] Add logic to to flinch and get ko'd when attacked
@@ -19,7 +31,7 @@ Art was tough.
 
 ### Reflection
 
-Good progress today. Changing the artstyle to be smaller was a good step, because I can better visualize what needs to be fixed and when. For the last bit of time I will be working today, and rolling into tomorrow, I want to focus on checking for collision when attacked.
+Good progress today. Changing the artstyle to be smaller was a good step, because I can better visualize what needs to be fixed and when. For the last bit of time I will be working today, and rolling into tomorrow, I want to focus on checking for collision when attacked. Things will get busy after today since I am starting a game jam tonight! But that's okay. I'm looking forward to working with others and learning some new stuff that might come in handy for developing Sando.
 
 ## 07/19/2025
 
