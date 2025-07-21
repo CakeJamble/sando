@@ -43,7 +43,7 @@ function Character:init(data, actionButton)
   self.level = 1
   self.currentSkills = {}
   self:updateSkills()
-
+  self.qteSuccess = true
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15

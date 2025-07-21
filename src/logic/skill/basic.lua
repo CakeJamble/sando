@@ -14,6 +14,11 @@ return function(ref, qteManager)
   local goalX, goalY = ref.tPos.x + xOffset - ref.frameWidth, ref.tPos.y - yOffset
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
+  if ref.qteSuccess then
+    print('applying bonus. was ' .. damage)
+    damage = damage + math.ceil(ref.battleStats.attack * 0.1)
+    print('is now ' .. damage)
+  end
 
   local spaceFromTarget = calcSpacingFromTarget(skill.stagingType, ref.type)
   stagingPos.x = stagingPos.x + spaceFromTarget.x

@@ -93,8 +93,13 @@ function TurnManager:init(characterTeam, enemyTeam)
     end
   );
 
+  Signal.register('OnQTESuccess',
+    function()
+      self.activeEntity.qteSuccess = true
+    end)
+
   Signal.register('Attack',
-    function(qteSuccess)
+    function()
       print('attacking')
       self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
     end
