@@ -95,6 +95,7 @@ end
 function Character:endTurn()
   Entity.endTurn(self)
   self.actionUI:unset()
+  self.qteSuccess = false
 end;
 
 function Character:setAnimations()

@@ -13,11 +13,10 @@ return function(ref, qteManager)
 
   local goalX, goalY = ref.tPos.x + xOffset - ref.frameWidth, ref.tPos.y - yOffset
   local hasCollided = false
+
   local damage = ref.battleStats['attack'] + skill.damage
   if ref.qteSuccess then
-    print('applying bonus. was ' .. damage)
     damage = damage + math.ceil(ref.battleStats.attack * 0.1)
-    print('is now ' .. damage)
   end
 
   local spaceFromTarget = calcSpacingFromTarget(skill.stagingType, ref.type)
@@ -33,6 +32,7 @@ return function(ref, qteManager)
         flux.to(ref.pos, skill.duration, {x=goalX,y=goalY}):ease(skill.beginTweenType)
           :delay(0.7) -- give animation time to start
           :onupdate(
+            -- check collision
             function()
               if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
                 ref.target:takeDamage(damage)
@@ -40,6 +40,7 @@ return function(ref, qteManager)
               end
             end)
           :oncomplete(
+            -- move back to starting pos, then end turn
             function()
               ref.currentAnimTag = 'move'
               tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, skill.duration, skill.returnTweenType)

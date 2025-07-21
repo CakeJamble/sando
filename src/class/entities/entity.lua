@@ -182,12 +182,20 @@ function Entity:takeDamage(amount) --> void
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
-  self.currentAnimTag = 'flinch'
+  if self:isAlive() then
+    self.currentAnimTag = 'flinch'
+  else
+    self.currentAnimTag = 'ko'
+  end
 end;
 
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
-  self.currentAnimTag = 'flinch'
+  if self:isAlive() then
+    self.currentAnimTag = 'flinch'
+  else
+    self.currentAnimTag = 'ko'
+  end
 end
 
 -- Called after setting current_stats HP to reflect damage taken during battle
