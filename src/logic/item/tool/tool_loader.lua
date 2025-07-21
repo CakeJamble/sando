@@ -1,6 +1,6 @@
 local json = require('libs.json')
 
-local function loadSkill(toolName)
+local function loadTool(toolName)
 	local jsonPath = 'data/item/tool/' .. toolName .. '.json'
 	local logicPath = 'logic/item/tool/' .. toolName
 
@@ -17,4 +17,4 @@ local function loadSkill(toolName)
 	return data
 end
 
-return loadSkill
+return loadTool

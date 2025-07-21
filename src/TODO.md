@@ -8,11 +8,18 @@ Art was tough.
 
 ### TODO
 
+- [x] Resize Bake
+- [x] New Enemy - Dastobunni
 - [x] Fix Hold SBP QTE reset for new progress bar changes
 - [x] Change animations during attack to match move used
+- [x] Add logic to to flinch and get ko'd when attacked
 - [x] Fix spacing and timing for skill logic
 - [x] Apply attack bonus for QTE success
 - [x] Separate responsibility of skill ending and turn ending
+
+### Reflection
+
+Good progress today. Changing the artstyle to be smaller was a good step, because I can better visualize what needs to be fixed and when. For the last bit of time I will be working today, and rolling into tomorrow, I want to focus on checking for collision when attacked.
 
 ## 07/19/2025
 
