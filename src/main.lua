@@ -9,7 +9,7 @@ flux = require 'libs.flux'
 push = require "libs.push"
 local gameWidth, gameHeight = 640, 360
 local windowWidth, windowHeight = love.window.getDesktopDimensions()
-windowWidth, windowHeight = windowWidth * 0.9, windowHeight * 0.9 
+windowWidth, windowHeight = windowWidth * 0.5, windowHeight * 0.5 
 push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
 
 states = {

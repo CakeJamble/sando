@@ -63,7 +63,6 @@ function HoldSBP:reset()
 	self.progressBarComplete = false
 	self.doneWaiting = false
 	self.progressTween = nil
-	self.feedbackPos.a = 1
 	self.qteComplete = false
 	self.signalEmitted = false
 end;
@@ -154,6 +153,7 @@ function HoldSBP:gamepadreleased(joystick, button)
 				print('Hold SBP QTE Success')
 				self.showGreatText = true
 				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
+					:oncomplete(function() self.feedbackPos.a = 1 end)
 				if not self.signalEmitted then
 					local qteSuccess = true
 					-- Signal.emit('Attack', qteSuccess)

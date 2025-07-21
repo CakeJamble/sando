@@ -4,7 +4,7 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ## 07/22/2025
 
-Collision on defense. I want to be able to dodge enemy attacks, and land a counterhit if I time it right!
+Collision on defense. I want to be able to dodge enemy attacks, and land a counterhit if I time it right! I also need to update the excel sheet to match the new names, stats, and descriptions that I changed in the json files!
 
 - [ ] Resize Marco
 - [ ] Implement and debug proper collision when overhead
