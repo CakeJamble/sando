@@ -40,7 +40,6 @@ return function(ref, qteManager)
               end
             end)
           :oncomplete(
-            -- move back to starting pos, then end turn
             function()
               ref.currentAnimTag = 'move'
               qteManager:reset()

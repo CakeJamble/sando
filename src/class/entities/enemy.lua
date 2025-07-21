@@ -33,6 +33,22 @@ function Enemy:startTurn(hazards)
   end
 end;
 
+function Enemy:takeDamage(amount)
+  Entity.takeDamage(self, amount)
+
+  if self.currentAnimTag == 'ko' then
+    flux.to(self.pos, 1.5, {a = 0})
+    -- Timer.after(1.5, function() self.drawSelf = false end)
+  end
+end;
+
+function Enemy:takeDamagePierce(amount)
+  Entity.takeDamagePierce(self, amount)
+  if self.currentAnimTag == 'ko' then
+    flux.to(self.pos, 1.5, {a = 0})
+  end
+end;
+
 function Enemy:setRewardsDistribution(rewardsDistribution)
   return {
     uncommon = rewardsDistribution[1],

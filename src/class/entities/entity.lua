@@ -27,10 +27,9 @@ function Entity:init(data, x, y)
   self.animations = {}
   self.currentAnimTag = 'idle'
 
-  self.pos = {x = x, y = y, r = 0}
+  self.pos = {x = x, y = y, r = 0, a = 1}
   self.tPos = {x = 0, y = 0}
   self.oPos = {x = x, y = x}
-  
   -- self.dX=0
   -- self.dY=0
   self.frameWidth = data.width      -- width of sprite (or width for a single frame of animation for this character)
@@ -211,7 +210,7 @@ function Entity:takeDamagePierce(amount) --> void
   else
     self.currentAnimTag = 'ko'
   end
-end
+end;
 
 -- Called after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void
@@ -336,8 +335,10 @@ function Entity:draw() --> void
   local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   spriteNum = math.min(spriteNum, #animation.quads)
 
+  love.graphics.setColor(1,1,1,self.pos.a)
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
-
+  love.graphics.setColor(1,1,1,1)
+  
   if Entity.drawHitboxes then
     love.graphics.setColor(1, 0, 0, 0.4)
     love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)

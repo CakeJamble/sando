@@ -12,7 +12,7 @@ Art was tough.
 - [x] Change animations during attack to match move used
 - [x] Fix spacing and timing for skill logic
 - [x] Apply attack bonus for QTE success
-- [ ] Separate responsibility of skill ending and turn ending
+- [x] Separate responsibility of skill ending and turn ending
 
 ## 07/19/2025
 
