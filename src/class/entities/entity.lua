@@ -23,14 +23,7 @@ function Entity:init(data, x, y)
     flinch = {},
     ko = {}
   }
-  self.movementAnimations = {
-    idle = {},
-    moveX = {},
-    moveY = {},
-    moveXY = {},
-    flinch = {},
-    ko = {}
-  }
+  self.baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
   self.animations = {}
   self.currentAnimTag = 'idle'
 
@@ -189,10 +182,12 @@ function Entity:takeDamage(amount) --> void
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
+  self.currentAnimTag = 'flinch'
 end;
 
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
+  self.currentAnimTag = 'flinch'
 end
 
 -- Called after setting current_stats HP to reflect damage taken during battle
@@ -206,14 +201,20 @@ end;
 
   --[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
   Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
-function Entity:setAnimations(subdir)
+function Entity:setAnimations(path)
+  local baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
+  for i,anim in ipairs(baseAnimationTypes) do
+    local image = love.graphics.newImage(path .. anim .. '.png')
+    self.animations[anim] = self:populateFrames(image)
+  end
+
 
   -- Images
-  local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
-  local idle = love.graphics.newImage(path .. 'idle.png')
-  local move = love.graphics.newImage(path .. 'move_x.png')
-  self.animations['idle'] = self:populateFrames(idle)
-  self.animations['move'] = self:populateFrames(move)
+  -- local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
+  -- local idle = love.graphics.newImage(path .. 'idle.png')
+  -- local move = love.graphics.newImage(path .. 'move_x.png')
+  -- self.animations['idle'] = self:populateFrames(idle)
+  -- self.animations['move'] = self:populateFrames(move)
 
   -- all characters have a basic attack
   if subdir == 'character/' then

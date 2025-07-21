@@ -97,19 +97,21 @@ function Character:endTurn()
   self.actionUI:unset()
 end;
 
-function Character:setDefenseAnimations()
+function Character:setAnimations()
   local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'
-  local block = path .. 'block.png'
-  local dodge = path .. 'dodge.png'
-  block = love.graphics.newImage(block)
-  dodge = love.graphics.newImage(dodge)
+  Entity.setAnimations(self, path)
 
-  local animations = {
-    blockAnimation = self:populateFrames(block),
-    dodgeAnimation = self:populateFrames(dodge),
-    idleAnimation = self.movementAnimations.idle
-  }
-  self.defenseState.animations = animations
+  local basicSprite = love.graphics.newImage(path .. 'basic.png')
+  self.animations['basic'] = self:populateFrames(basicSprite)
+
+  self:setDefenseAnimations(path)
+end;
+
+function Character:setDefenseAnimations(path)
+  local block = love.graphics.newImage(path .. 'block.png')
+  local jump = love.graphics.newImage(path .. 'jump.png')
+  self.animations['block'] = self:populateFrames(block)
+  self.animations['jump'] = self:populateFrames(jump)
 end;
 
 function Character:takeDamage(amount)

@@ -9,7 +9,8 @@ Art was tough.
 ### TODO
 
 - [x] Fix Hold SBP QTE reset for new progress bar changes
-- [ ] Change animations during attack to match move used
+- [x] Change animations during attack to match move used
+- [ ] Fixed spacing and timing for skill logic
 
 ## 07/19/2025
 

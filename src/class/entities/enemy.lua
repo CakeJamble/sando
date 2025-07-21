@@ -11,8 +11,8 @@ function Enemy:init(data)
   self.type = 'enemy'
   self.enemyType = data.enemyType
   Entity.init(self, data, Enemy.xPos, Enemy.yPos)
-  local subdir = self.type .. '/' .. data.enemyType .. '/'
-  self:setAnimations(subdir)
+  local animationsPath = 'asset/sprites/entities/enemy/' .. self.enemyType .. '/' .. self.entityName .. '/'
+  self:setAnimations(animationsPath)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self:setRewardsDistribution(data.rewardsDistribution)
