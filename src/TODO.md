@@ -6,7 +6,6 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 Collision on defense. I want to be able to dodge enemy attacks, and land a counterhit if I time it right! I also need to update the excel sheet to match the new names, stats, and descriptions that I changed in the json files!
 
-- [ ] Resize Marco
 - [ ] Implement and debug proper collision when overhead
 - [ ] Balance timing
 - [ ] Implement visual indicator on successful dodge and block
@@ -21,13 +20,14 @@ Art was tough.
 
 - [x] Resize Bake
 - [x] New Enemy - Dastobunni
-- [ ] Resize Marco
+- [x] Resize Marco
 - [x] Fix Hold SBP QTE reset for new progress bar changes
 - [x] Change animations during attack to match move used
 - [x] Add logic to to flinch and get ko'd when attacked
 - [x] Fix spacing and timing for skill logic
 - [x] Apply attack bonus for QTE success
 - [x] Separate responsibility of skill ending and turn ending
+- [x] Enemy fade out on KO (replace with different effects later)
 
 ### Reflection
 
