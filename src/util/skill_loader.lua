@@ -14,6 +14,8 @@ local function loadSkill(skillName)
 		error('Failed to find implementation for skill named \'' .. skillName .. '\': ' .. tostring(proc))
 	end
 
+	data.tag = skillName
+
 	return data
 end
 

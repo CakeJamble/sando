@@ -59,7 +59,7 @@ function HoldSBP:reset()
 	self.showGreatText = false
 	self.actionButton = nil
 	self.progressBar:reset()
-	self.waitForPlayer.curr = self.waitForPlayer.start
+	self.waitForPlayer.curr = 0
 	self.progressBarComplete = false
 	self.doneWaiting = false
 	self.progressTween = nil

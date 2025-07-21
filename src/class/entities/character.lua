@@ -17,8 +17,9 @@ Class = require "libs.hump.class"
 Character = Class{__includes = Entity, 
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
-  yPos = 110,
-  xPos = 50,
+  yPos = 130,
+  xPos = 80,
+  yOffset = 90,
   xCombatStart = -20,
   ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
   statRollsOnLevel = 1,
@@ -46,8 +47,9 @@ function Character:init(data, actionButton)
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
-  Entity.setAnimations(self, 'character/')
-  Character.yPos = Character.yPos + 150
+  -- Entity.setAnimations(self, 'character/')
+  self:setAnimations('character/')
+  Character.yPos = Character.yPos + Character.yOffset
   -- self.currentFP = stats.fp
   -- self.currentDP = stats.dp
 

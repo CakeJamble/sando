@@ -2,12 +2,26 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/21/2025
+
+Art was tough.
+
+### TODO
+
+- [x] Fix Hold SBP QTE reset for new progress bar changes
+- [ ] Change animations during attack to match move used
+
+## 07/19/2025
+
+This weekend I want to focus on art.
+
 ## 07/18/2025
 
 I tend to run out of steam around 3 or so. I think I need to restructure how I tackle tasks so that I can work a bit longer. I would love to figure out joystick input because it seems like everyone gravitates to using that over the d-pad instinctually.
 
 ### TODO
 
+- [x] Figure out sizes of sprites. Figure out whether or not to use Push library
 - [x] Baton library? Review it and see if it's a good fit for this game
 - [x] Review Command Pattern. Is it a good fit for this game?
 - [x] Load in new assets for controller UI
@@ -23,11 +37,22 @@ I tend to run out of steam around 3 or so. I think I need to restructure how I t
 
 I forgot about the collision system! I never finished it!!! Back to work. A little overwhelmed by the issue caused by setting the screen resolution the way I did. I should go back and look at Mario & Luigi to get the size of sprites down so that I don't feel this way about refactoring hitbox data.
 
+Holy shiiiit. The exact dimensions of Mario's idle animation in Partners in Time is 23x35!!! That is tiny! His sprite where he sticks both arms out and waves to the gamera is 30x37. I need to get back to work on art. That is crazy. Why the hell were my characters 64x64 when I couldn't even get the right amount of detail on them. 
+
 Baton actually doesn't seem like a great fit here. While I really like the idea of having different controller layouts, it looks like it is intended to be most useful in movement systems. But my game is more focused on menu navigation. I'll come back to this later.
 
 Also, there's so much to think about right now, I really need to narrow the scope of the stuff I'm working on each day. This TODO had a good amount of stuff but it felt so unrelated to each other. I should be focusing on progress of developing mechanics.
 
-The assets I bought recently are a little small. I'm not sure how I'm gonna be able to use them without blowing them up and making them look kind of distorted
+The assets I bought recently are a little small. I'm not sure how I'm gonna be able to use them without blowing them up and making them look kind of distorted.
+
+I'm feeling a little bit better about getting back into art now that I saw the sizes of sprites is actually way smaller than I thought. It's going to be really tough, but I am up to the challenge. I can only put it off for so long, after all. So, this weekend, I think that the move will be:
+
+1. Resize sprites
+2. Fix positioning for new size sprites in combat
+3. Add another animation or two if I'm up to the task for skills
+4. Start refactoring tween-based dodging and blocking for the more manageable sprite sizes.
+
+This feels good, because now I have a good direction to go in that doesn't feel like I'm spinning my wheels and causing more work for myself later.
 
 ## 07/17/2025
 

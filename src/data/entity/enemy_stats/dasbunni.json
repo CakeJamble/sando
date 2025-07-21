@@ -1,8 +1,8 @@
 {
   "entityName": "Dasbunni",
   "enemyType": "common",
-  "width": 80, "height": 80,
-  "hbWidth": 80, "hbHeight": 80,
+  "width": 32, "height": 32,
+  "hbWidth": 32, "hbHeight": 32,
   "hp": 11,
   "attack": 3,
   "defense": 1,

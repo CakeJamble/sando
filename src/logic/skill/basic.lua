@@ -17,13 +17,33 @@ return function(ref, qteManager)
 
   -- Move from starting position to staging position before changing to animation assoc with skill use
   flux.to(ref.pos, qteManager.activeQTE.duration, {x = stagingPos.x, y = stagingPos.y})
-    -- Then attack by charging from left to right
-    :after(ref.pos, skill.duration, {x = goalX, y = goalY}):ease(skill.beginTweenType)
-      :onupdate(function()
-        if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
-          ref.target:takeDamage(damage)
-          hasCollided = true
-        end
+    :oncomplete(
+      function()
+        print(ref.currentAnimTag)
+        ref.currentAnimTag = skill.tag
+        print(ref.currentAnimTag)
+        -- Attack by charging from left to right
+        flux.to(ref.pos, skill.duration, {x=goalX,y=goalY}):ease(skill.beginTweenType)
+          :onupdate(
+            function()
+              if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
+                ref.target:takeDamage(damage)
+                hasCollided = true
+              end
+            end)
+          :oncomplete(
+            function()
+              print(ref.currentAnimTag)
+              ref.currentAnimTag = 'move'
+              tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, skill.duration, skill.returnTweenType)
+            end)
       end)
-      :oncomplete(function() tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, skill.duration, skill.returnTweenType) end)
+    -- :after(ref.pos, skill.duration, {x = goalX, y = goalY}):ease(skill.beginTweenType)
+    --   :onupdate(function()
+    --     if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
+    --       ref.target:takeDamage(damage)
+    --       hasCollided = true
+    --     end
+    --   end)
+    --   :oncomplete(function() tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, skill.duration, skill.returnTweenType) end)
 end;

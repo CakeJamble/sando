@@ -5,7 +5,7 @@ require('class.entities.enemy_offense_state')
 Class = require "libs.hump.class"
 Enemy = Class{__includes = Entity, 
   -- for testing
-  xPos = 450, yPos = 110}
+  xPos = 450, yPos = 150, yOffset = 40}
 
 function Enemy:init(data)
   self.type = 'enemy'
@@ -16,7 +16,7 @@ function Enemy:init(data)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self:setRewardsDistribution(data.rewardsDistribution)
-  Enemy.yPos = Enemy.yPos + 150
+  Enemy.yPos = Enemy.yPos + Enemy.yOffset
 
   Signal.register('OnStartCombat',
     function()
