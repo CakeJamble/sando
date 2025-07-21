@@ -92,8 +92,8 @@ function Character:startTurn(hazards)
   )
 end
 
-function Character:endTurn()
-  Entity.endTurn(self)
+function Character:endTurn(duration, stagingPos, tweenType)
+  Entity.endTurn(self, duration, stagingPos, tweenType)
   self.actionUI:unset()
   self.qteSuccess = false
 end;

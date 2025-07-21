@@ -28,8 +28,8 @@ function TurnManager:init(characterTeam, enemyTeam)
     function ()
       if self.turnIndex == 1 then
         turnCounter = turnCounter + 1
-      else
-        self.activeEntity:endTurn()
+      -- else
+      --   self.activeEntity:endTurn()
       end
 
       self.qteManager:reset()

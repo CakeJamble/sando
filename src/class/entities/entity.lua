@@ -72,6 +72,33 @@ function Entity:startTurn()
   print('starting turn for ' .. self.entityName)
 end;
 
+function Entity:endTurn(duration, stagingPos, tweenType)
+  self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+end;
+
+function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+  local delay = 0.5
+  flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
+    :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
+  :oncomplete(
+    function()
+      self:reset()
+      Signal.emit('NextTurn')
+    end)
+end;
+
+function Entity:reset()
+  self.isFocused = false
+  self.hasUsedAction = false
+  self.turnFinish = false
+  self.amount = 0
+  self.state = 'idle'
+  self.moveBackTimerStarted = false
+  self.skill = nil
+
+  print('ending turn for ', self.entityName)
+end;
+
 function Entity:setTargets(characterMembers, enemyMembers)
   self.targets = {
     ['characters'] = {},
@@ -101,19 +128,6 @@ function Entity:resetDmgDisplay()
   self.dmgDisplayOffsetY = 0
   self.dmgDisplayScale = 1
   self.opacity = 0
-end;
-
-
-function Entity:endTurn()
-  self.isFocused = false
-  self.hasUsedAction = false
-  self.turnFinish = false
-  self.amount = 0
-  self.state = 'idle'
-  self.moveBackTimerStarted = false
-  self.skill = nil
-
-  print('ending turn for ', self.entityName)
 end;
 
 -- COPY
@@ -184,6 +198,7 @@ function Entity:takeDamage(amount) --> void
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
   if self:isAlive() then
     self.currentAnimTag = 'flinch'
+    Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
   else
     self.currentAnimTag = 'ko'
   end
@@ -265,10 +280,13 @@ function Entity:update(dt) --> void
     -- animation = self.movementAnimations.moveX
   -- end
   
-  
   animation.currentTime = animation.currentTime + dt
-  if animation.currentTime >= animation.duration then 
-    animation.currentTime = animation.currentTime - animation.duration
+  if animation.currentTime >= animation.duration then
+    if not self:isAlive() and self.currentAnimTag == 'ko' then
+      animation.currentTime = animation.duration
+    else
+      animation.currentTime = animation.currentTime - animation.duration
+    end
   end
 
   if self.countFrames then
@@ -313,8 +331,11 @@ function Entity:draw() --> void
     love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
     love.graphics.setColor(1,1,1, 1)
   end
+
   local animation = self.animations[self.currentAnimTag]
   local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+  spriteNum = math.min(spriteNum, #animation.quads)
+
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
 
   if Entity.drawHitboxes then

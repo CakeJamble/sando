@@ -11,7 +11,8 @@ Art was tough.
 - [x] Fix Hold SBP QTE reset for new progress bar changes
 - [x] Change animations during attack to match move used
 - [x] Fix spacing and timing for skill logic
-- [ ] Apply attack bonus for QTE success
+- [x] Apply attack bonus for QTE success
+- [ ] Separate responsibility of skill ending and turn ending
 
 ## 07/19/2025
 

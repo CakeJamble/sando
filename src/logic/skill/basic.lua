@@ -43,8 +43,8 @@ return function(ref, qteManager)
             -- move back to starting pos, then end turn
             function()
               ref.currentAnimTag = 'move'
-              tweenToStagingPosThenStartingPos(ref.pos, stagingPos, ref.oPos, skill.duration, skill.returnTweenType)
-              ref.target.currentAnimTag = 'idle'
+              qteManager:reset()
+              ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
             end)
       end)
 end;
