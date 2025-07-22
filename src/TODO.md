@@ -12,16 +12,19 @@ Collision on defense. I want to be able to dodge enemy attacks, and land a count
 	- [x] Movement animations are now instantiated together all at once
 	- [x] Encapsulate animations characters do during attacks in the Character class (excluding projectiles)
 	- [x] Dynamically create attack animations from skill json data
-- [ ] Implement and debug proper collision when overhead
-- [ ] Balance timing
-- [ ] Implement visual indicator on successful dodge and block
-- [ ] Implement feedback on failed dodge and block (console output ok for now)
+- [x] Implement and debug proper collision when overhead
+	- [x] Entity owned tween table
+	- [x] Interrupt entity on collision overhead
+	- [x] Interrupt character on collision while trying to jump
+- [x] Balance timing
+- [x] Implement visual indicator on successful dodge
+- [x] Implement feedback on failed dodge (console output ok for now)
+- [x] Implement feedback on success/fail block (console output ok for now)
 - [ ] End attack early when countered or blocked
 
 ### Reflection
 
 The changes to the animations data structure in the entity class is awesome. I think it was something I was stuck on because I wasn't really thinking about how to package it all up without coupling the skill class with the entity class. Now that the skills are just tables that I wrap the logic around, passing the data for animations was simple. The filename of each json file directs the character class to the asset file for the sprite sheet, so the two don't actually need to interact directly, meaning I can make changes to skills without changing the animation loader in the character class. And since all entities can move, flinch, and get knocked out, I can put that in the base class implementation and further extend the implementation in inherited classes (characters can jump and block but not all enemies need those animations).
-
 
 
 ## 07/21/2025

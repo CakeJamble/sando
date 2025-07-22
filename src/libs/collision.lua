@@ -44,4 +44,8 @@ function Collision.getJumpAdjustedRect(baseX, baseY, baseW, baseH, jumpProgress,
     }
 end
 
+function Collision.isOverhead(attacker, target)
+    return (attacker.y) > (target.y + target.h * 0.9)
+end;
+
 return Collision

@@ -120,6 +120,7 @@ function Character:takeDamage(amount)
   if self.isGuarding then
     self.battleStats.defense = self.battleStats.defense + self.blockMod
     bonusApplied = true
+    print('taking less damage')
   end
 
   Entity.takeDamage(self, amount)
@@ -132,6 +133,8 @@ function Character:takeDamage(amount)
   if bonusApplied then
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
+
+  self:recoil()
 end;
 
 function Character:takeDamagePierce(amount)
@@ -247,10 +250,8 @@ function Character:checkGuardAndJump(button)
     self.canGuard = true
   elseif button == self.actionButton then    
     if self.canGuard then
-      print('gonna guard')
       self:beginGuard()
     elseif self.canJump then
-      print('gonna jump')
       self:beginJump()
     end
   end
@@ -260,17 +261,14 @@ function Character:beginGuard()
   self.isGuarding = true
   self.canJump = false  
   self.canGuard = false -- for cooldown
-  -- print(self.entityName .. ' began guarding')
 
   Timer.after(Character.guardActiveDur, function()
     self.isGuarding = false
-    -- print(self.entityName .. ' ended guard')
   end)
 
   Timer.after(Character.guardCooldownDur, function()
     self.canGuard = true
     self.canJump = true
-    -- print(self.entityName .. ' came off guard cooldown')
   end)
 end;
 
@@ -280,9 +278,11 @@ function Character:beginJump()
   self.canJump = false
 
   -- Goes up then down, then resets conditional checks for guard/jump
-  local landY = self.pos.y
-  flux.to(self.pos, Character.jumpDur/2, {y = self.pos.y - self.frameHeight})
+  local landY = self.oPos.y
+  local jump = flux.to(self.pos, Character.jumpDur/2, {y = landY - self.frameHeight})
+    :ease('quadout')
     :after(self.pos, Character.jumpDur/2, {y = landY})
+    :ease('quadin')
     :onupdate(function()
       if not self.hasLCanceled and landY <= self.pos.y + (self.frameHeight / 4) then
         self.canLCancel = true
@@ -291,15 +291,39 @@ function Character:beginJump()
     end)
     :oncomplete(
       function()
-        self.isJumping = false
-        self.canJump = true
-        self.landingLag = Character.landingLag
-        self.canLCancel = false
-        self.hasLCanceled = false
-        print('finished landing')
-      end):delay(self.landingLag)
+        Timer.after(self.landingLag,
+          function()
+            self.isJumping = false
+            self.canJump = true
+            self.landingLag = Character.landingLag
+            self.canLCancel = false
+            self.hasLCanceled = false
+            print('finished landing')
+          end)
+      end)
+  self.tweens['jump'] = jump
 end;
-    
+
+function Character:recoil(additionalPenalty)
+  if not additionalPenalty then additionalPenalty = 0 end
+  self.currentAnimTag = 'flinch'
+  self.canJump = false
+  local recoilTime = 0.5 + additionalPenalty
+  Timer.after(recoilTime,
+    function()
+      self.canJump = true
+      self.currentAnimTag = 'idle'
+    end)
+end;
+
+function Character:interruptJump()
+  local tumbleDuration = (Character.jumpDur/2)
+  self:recoil(tumbleDuration)
+  local landY = self.oPos.y
+  self.tweens['jump']:stop()
+  local tumble = flux.to(self.pos, Character.jumpDur/2, {y=landY}):ease('bouncein')
+end;
+
 function Character:update(dt)
   Entity.update(self, dt)
   self.actionUI:update(dt)
@@ -307,5 +331,6 @@ end;
 
 function Character:draw()
   Entity.draw(self)
+  love.graphics.setColor(1,1,1)
   self.actionUI:draw()
 end;

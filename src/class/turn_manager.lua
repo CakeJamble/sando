@@ -30,6 +30,7 @@ function TurnManager:init(characterTeam, enemyTeam)
         turnCounter = turnCounter + 1
       -- else
       --   self.activeEntity:endTurn()
+      -- probably need to reset conditions for jump/guard tweens in case they are interrupted
       end
 
       self.qteManager:reset()

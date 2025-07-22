@@ -5,7 +5,7 @@
 	"chance": 1,
 	"spritePath": "asset/sprites/entities/Enemy/Line/basic.png",
 	"soundPath": "asset/audio/entities/character/marco/basic.wav",
-	"duration": 0.5,
+	"duration": 1,
 	"stagingTime": 1,
 	"stagingType": "near",
 	"beginTweenType": "linear",

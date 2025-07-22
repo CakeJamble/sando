@@ -9,40 +9,7 @@ turnCounter = 1
 -- global functions
 function saveCharacterTeam(team)
   CHARACTER_TEAM = team
-  -- writeTableToJSON(team)
 end;
-
--- function writeTableToJSON(t)
---   local function serialize(t)
---     local result = {}
---     for k, v in pairs(t) do
---       local formattedKey
---       if type(k) == 'string' then
---         formattedKey = string.format('%q', k) -- escape sequence characters
---       else
---         formattedKey = tostring(k)
---       end
-
---       if type(v) == 'table' then
---         result[#result + 1] = string.format('%s:%s', formattedKey, serialize(v))
---       elseif type(v) == 'string' then
---         result[#result + 1] = string.format('%s:%q', formattedKey, v)
---       elseif type(v) == 'number' or type(v) == 'boolean' then
---         result[#result + 1] = string.format('%s:%s', formattedKey, tostring(v))
---       elseif type(v) == 'userdata' then
---         result[#result + 1] = string.format('%s:%q', formattedKey, tostring(v))
---       else
---         error('Unsupported type: ' .. type(v))
---       end
---     end
---     return '{' .. table.concat(result, ',') .. '}'
---   end
-  
---   if type(t) ~= 'table' then
---     error('Expected table, got ' .. type(t))
---   end
---   return serialize(t)
--- end
 
 
 function loadCharacterTeam()
@@ -74,7 +41,7 @@ end
 function calcSpacingFromTarget(tweenType, entityType)
   local space = {x = 0, y = 0}
   local isCharacter = entityType == 'character'
-  local baseSpace = 120
+  local baseSpace = 80
   
   if tweenType == 'near' then
     space.x = baseSpace

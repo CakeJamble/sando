@@ -60,6 +60,8 @@ function Entity:init(data, x, y)
     w = data.hbWidth,
     h = data.hbHeight
   }
+
+  self.tweens = {}
 end;
 
 function Entity:startTurn()
@@ -86,16 +88,33 @@ function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType
     end)
 end;
 
+function Entity:attackInterrupt()
+  self.tweens['attack']:stop()
+  self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
+end;
+
 function Entity:reset()
   self.isFocused = false
   self.hasUsedAction = false
   self.turnFinish = false
   self.amount = 0
   self.state = 'idle'
+  self.currentAnimTag = 'idle'
   self.moveBackTimerStarted = false
   self.skill = nil
 
   print('ending turn for ', self.entityName)
+end;
+
+function Entity:addTween(tag, tween)
+  self.tweens[tag] = tween
+end;
+
+function Entity:stopTween(tag)
+  if self.tweens[tag] then
+    self.tweens[tag]:stop()
+    self.tweens[tag] = nil
+  end
 end;
 
 function Entity:setTargets(characterMembers, enemyMembers)
