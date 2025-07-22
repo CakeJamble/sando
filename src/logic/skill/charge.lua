@@ -53,27 +53,4 @@ return function(ref)
               ref.tweens['attack'] = attack
             end)
         end)
-    -- -- Attack by charging from right to left
-    -- :after(ref.pos, skill.duration, {x = goalX - 80, y = goalY}):ease(skill.beginTweenType)
-    --   :onupdate(function()
-    --     if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
-    --       -- check counter-attack
-    --       if Collision.isOverhead(ref.hitbox, ref.target.hitbox) then
-    --         ref:takeDamage(ref.target.battleStats['attack'])
-    --         hasCollided = true
-    --         ref.target:stopTween('jump')
-    --         ref.target:beginJump()
-    --         print('counterattack success')
-    --       else
-    --         ref.target:takeDamage(damage)
-    --         print('collision')
-    --         hasCollided = true
-
-    --       end
-    --     end
-    --   end)
-    --   :oncomplete(function() 
-    --     ref.currentAnimTag = 'move'
-    --     ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
-    --   end)
 end;

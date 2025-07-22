@@ -1,7 +1,7 @@
 Class = require "libs.hump.class"
 Entity = Class{
   movementTime = 2,
-  drawHitboxes = false
+  drawHitboxes = true
 }
 
   -- Entity constructor
@@ -54,9 +54,11 @@ function Entity:init(data, x, y)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
+  self.hbXOffset = (data.width - data.hbWidth) / 2
+  self.hbYOffset = (data.height - data.hbHeight) * 0.75
   self.hitbox = {
-    x = self.pos.x,
-    y = self.pos.y,
+    x = self.pos.x + self.hbXOffset,
+    y = self.pos.y + self.hbYOffset,
     w = data.hbWidth,
     h = data.hbHeight
   }
@@ -289,8 +291,8 @@ function Entity:populateFrames(image, duration)
 end;
 
 function Entity:update(dt) --> void
-  self.hitbox.x = self.pos.x
-  self.hitbox.y = self.pos.y
+  self.hitbox.x = self.pos.x + self.hbXOffset
+  self.hitbox.y = self.pos.y + self.hbYOffset
   local animation = self.animations[self.currentAnimTag]
   -- if self.state == 'idle' then
     -- animation = self.movementAnimations.idle

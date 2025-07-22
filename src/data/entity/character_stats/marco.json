@@ -1,7 +1,7 @@
 {
 	"entityName": "Marco",
 	"width": 32, "height": 48,
-	"hbWidth": 32, "hbHeight": 48,
+	"hbWidth": 22, "hbHeight": 38,
 	"hp": 10,
 	"fp": 10,
 	"attack": 10,
