@@ -1,0 +1,7 @@
+{
+	"name": "Whetstone",
+	"signal": "OnEnemyBuffed",
+	"description": "Restore a small amount of FP when an enemy's stats are raised",
+	"flavorText": "Caught them monologuing.",
+	"rarity": "rare"
+}

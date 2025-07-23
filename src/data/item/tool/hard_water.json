@@ -1,0 +1,7 @@
+{
+	"name": "Hard Water",
+	"signal": "OnLevelUp",
+	"description": "Roll an additional stat boost whenever you level up",
+	"flavorText": "Good ole tap water.",
+	"rarity": "common"
+}

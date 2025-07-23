@@ -1,0 +1,7 @@
+{
+	"name": "Point Card",
+	"signal": "OnTargetConfirm",
+	"description": "Insufficient FP for a skill is supplemented by using HP.",
+	"flavorText": "Warm to the touch.",
+	"rarity": "uncommon"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "To-Go Bag",
+	"signal": "OnEndCombat",
+	"description": "Adds a slight bonus multiplier to EXP gained after battle.",
+	"flavorText": "The name is illegible.",
+	"rarity": "rare"
+}

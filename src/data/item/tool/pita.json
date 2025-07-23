@@ -1,0 +1,7 @@
+{
+	"name": "Pita",
+	"signal": "OnStartBattle",
+	"description": "A random team member starts each battle with burn",
+	"flavorText": "Take the evil you know over the evils you don't.",
+	"rarity": "common"
+}

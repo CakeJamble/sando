@@ -1,0 +1,7 @@
+{
+	"name": "Thermometer",
+	"signal": "OnStartBattle",
+	"description": "Inflict vulnerable on all enemies at the start of battle",
+	"flavorText": "For tracking when the time to strike the dough is right.",
+	"rarity": "uncommon"
+}

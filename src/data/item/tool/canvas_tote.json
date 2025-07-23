@@ -1,0 +1,7 @@
+{
+	"name": "Canvas Tote",
+	"signal": "OnPickup",
+	"description": "Gain an additional accessory slot",
+	"flavorText": "Simple but effective.",
+	"rarity": "rare"
+}

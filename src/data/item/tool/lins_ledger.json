@@ -1,0 +1,7 @@
+{
+	"name": "Lin's Ledger",
+	"signal": "OnDebuffed",
+	"description": "When debuffed, raise a random stat",
+	"flavorText": "Who would have thought we would need fire insurance in a bakery.",
+	"rarity": "event"
+}

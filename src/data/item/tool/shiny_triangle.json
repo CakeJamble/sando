@@ -1,0 +1,7 @@
+{
+	"name": "Shiny Triangle",
+	"signal": "OnPickup",
+	"description": "Shuffle the move pools of all characters.",
+	"flavorText": "Unburdened from the paralysis of choice.",
+	"rarity": "shop"
+}

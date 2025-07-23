@@ -28,8 +28,9 @@ function TurnManager:init(characterTeam, enemyTeam)
     function ()
       if self.turnIndex == 1 then
         turnCounter = turnCounter + 1
-      else
-        self.activeEntity:endTurn()
+      -- else
+      --   self.activeEntity:endTurn()
+      -- probably need to reset conditions for jump/guard tweens in case they are interrupted
       end
 
       self.qteManager:reset()
@@ -49,6 +50,13 @@ function TurnManager:init(characterTeam, enemyTeam)
 
         self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
       end
+    end
+  );
+
+  Signal.register('PassTurn',
+    function()
+      self.activeEntity.actionUI:unset()
+      Signal.emit('NextTurn')
     end
   );
 
@@ -93,8 +101,13 @@ function TurnManager:init(characterTeam, enemyTeam)
     end
   );
 
+  Signal.register('OnQTESuccess',
+    function()
+      self.activeEntity.qteSuccess = true
+    end)
+
   Signal.register('Attack',
-    function(qteSuccess)
+    function()
       print('attacking')
       self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
     end

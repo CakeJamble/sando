@@ -1,0 +1,7 @@
+{
+	"name": "Necronominom",
+	"signal": "OnSellEquip",
+	"description": "+1 to a random stat when you sell something",
+	"flavorText": "It hungers.",
+	"rarity": "event"
+}

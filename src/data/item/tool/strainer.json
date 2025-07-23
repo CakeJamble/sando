@@ -1,0 +1,7 @@
+{
+	"name": "Strainer",
+	"signal": "OnPickup",
+	"description": "On pickup, increase all member's defense by 1",
+	"flavorText": "No clumps!",
+	"rarity": "common"
+}

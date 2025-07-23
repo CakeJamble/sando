@@ -1,6 +1,4 @@
---! file: gamestate/menu
 local main_menu = {}
-
 local index = 1
 local BUTTONS_START_X = 75
 local BUTTONS_START_Y = 300

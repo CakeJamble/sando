@@ -1,0 +1,7 @@
+{
+	"name": "Deck of Cards",
+	"signal": "OnStartTurn",
+	"description": "Shuffle the FP costs of skills every turn",
+	"flavorText": "It's full of jokers.",
+	"rarity": "rare"
+}

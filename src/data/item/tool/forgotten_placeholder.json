@@ -1,0 +1,7 @@
+{
+	"name": "Forgotten Placeholder",
+	"signal": "OnEscape",
+	"description": "Enemies preparing to escape become vulnerable",
+	"flavorText": "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+	"rarity": "shop"
+}

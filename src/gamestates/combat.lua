@@ -8,6 +8,10 @@ require('class.entities.enemy_team')
 require('class.input.command_manager')
 require('class.turn_manager')
 local generateEncounter = require('util.encounter_generator')
+local imgui = require('libs.cimgui')
+local ffi = require('ffi')
+local showDebugWindow = false
+local checkboxState = ffi.new("bool[1]", false)
 
 local combat = {}
 local numFloors = 50
@@ -22,6 +26,8 @@ local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
 local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
 
 function combat:init()
+  imgui.love.Init()
+
   self.background = love.graphics.newImage(TEMP_BG)
   self.combatTeamUI = love.graphics.newImage(COMBAT_TEAM_UI_PATH)
   self.hpHolder1 = love.graphics.newImage(HP_HOLDER)
@@ -93,11 +99,25 @@ function combat:enter(previous)
 end;
 
 function combat:keypressed(key)
-  if key == 'p' then
+  if key == '`' then
+    showDebugWindow = not showDebugWindow
+  elseif key == 'p' then
     Gamestate.push(states['pause'], self.characterTeam.inventory)
   else
     self.characterTeam:keypressed(key)
   end
+end;
+
+function combat:mousemoved(x, y, dx, dy, istouch)
+  imgui.love.MouseMoved(x, y)
+end;
+
+function combat:mousepressed(x, y, button, istouch, presses)
+  imgui.love.MousePressed(button)
+end;
+
+function combat:mousereleased(x, y, button, istouch, presses)
+  imgui.love.MouseReleased(button)
 end;
 
 function combat:gamepadpressed(joystick, button)
@@ -128,6 +148,20 @@ function combat:update(dt)
     camera:lockWindow(cameraTarget.x, cameraTarget.y, 0, cameraTarget.x + 100, 0, cameraTarget.y + 100)
   end
   Timer.update(dt)
+
+  -- imgui
+  imgui.love.Update(dt)
+  imgui.NewFrame()
+
+  if showDebugWindow then
+    imgui.Begin('Debug Window')
+    
+    if imgui.Checkbox("Show Hitboxes", checkboxState) then
+      Entity.drawHitboxes = checkboxState[0]
+    end
+    imgui.End()
+  end
+
 end;
 
 function combat:draw()
@@ -146,8 +180,15 @@ function combat:draw()
   if self.turnManager then
     self.turnManager:draw()
   end
+
   camera:detach()
   push:finish()
+  imgui.Render()
+  imgui.love.RenderDrawLists()
+end;
+
+function combat:quit()
+  imgui.love.Shutdown()
 end;
   
 return combat

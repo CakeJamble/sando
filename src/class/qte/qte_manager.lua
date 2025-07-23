@@ -1,7 +1,5 @@
 --! filename: qte_manager
 require('class.qte.qte')
-require('skills.skill')
--- require('util.skill_sheet')
 require('class.qte.sbp_qte')
 require('class.qte.hold_sbp_qte')
 require('class.qte.mbp_qte')
@@ -10,7 +8,7 @@ Class = require 'libs.hump.class'
 QTEManager = Class{}
 
 function QTEManager:init(characterTeam)
-	self.buttons = self:loadButtonImages('asset/sprites/input_icons/face_buttons/')
+	self.buttons = self:loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
 	self.qteTable = {
 		sbp = sbpQTE(),
 		holdSBP = HoldSBP(),
@@ -30,15 +28,18 @@ function QTEManager:init(characterTeam)
 end;
 
 function QTEManager:loadButtonImages(buttonDir)
+	local blackButtonsDir = buttonDir .. 'buttons_black/'
+	local pressedButtonsDir = buttonDir .. 'buttons_pressed/' 
+
 	local buttonPaths = {
-		aRaised = buttonDir .. 'a_raised.png',
-		bRaised = buttonDir .. 'b_raised.png',
-		xRaised = buttonDir .. 'x_raised.png',
-		yRaised = buttonDir .. 'y_raised.png',
-		aPressed = buttonDir .. 'a_depressed.png',
-		bPressed = buttonDir .. 'b_depressed.png',
-		xPressed = buttonDir .. 'x_depressed.png',
-		yPressed = buttonDir .. 'y_depressed.png'
+		aRaised = blackButtonsDir 		.. 'btn_a.png',
+		bRaised = blackButtonsDir 		.. 'btn_b.png',
+		xRaised = blackButtonsDir 		.. 'btn_x.png',
+		yRaised = blackButtonsDir 		.. 'btn_y.png',
+		aPressed = pressedButtonsDir 	.. 'btn_a.png',
+		bPressed = pressedButtonsDir 	.. 'btn_b.png',
+		xPressed = pressedButtonsDir 	.. 'btn_x.png',
+		yPressed = pressedButtonsDir 	.. 'btn_y.png'
 
 	}
 	local buttons = {

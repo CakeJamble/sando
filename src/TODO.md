@@ -2,6 +2,150 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/24/2025
+
+### TODO
+
+- [ ] Implement a single test item that heals a target.
+	- [ ] JSON file
+	- [ ] Logic file
+	- [ ] Item Loader function
+	- [ ] Item List in the Character Team class
+- [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
+
+## 07/23/2025
+
+Feeling very motivated after doing the counter-attacks. I want to try and implement the Earthbound style tweening of HP, so that you can use an item to heal back up. However, before I can do that, I need some way to heal. Also, I need to consider if that's really a useful system or not. It could be cool if my HP scales higher, but if I keep numbers low, it probably won't be very satisfying. A couple different ways to implement healing, one being a skill that heals, and the other being a consumable item. If I want to make an item usable, then I will need to refactor the ActionUI, which is something that was bound to happen anyways.
+
+### TODO
+
+- [x] Refactor ActionUI class to use tweening instead of manually moving
+- [x] Add new ActionUI button for using items
+- [x] Add new Action UI button for passing turn
+- [x] Implement Back Button that lets a user cancel targeting using the action button
+- [ ] Implement a single test item that heals a target.
+
+If I have time after that
+
+- [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
+
+### Reflection
+
+Switching up the way the Action UI works felt like the culmination of a lot of things I've learned. I started by deeply nesting the decision hierarchy, then I tried to decouple it with the observor pattern. Then I was able to further simplify it by simplifying the logic after realizing that the landing positions for each button stay constant at the start of every turn. I'm going to focus on the consumable items interface sometime tomorrow since it's a big task to start so late in the work day. And I still need to help out with the game jam!
+
+## 07/22/2025
+
+Collision on defense. I want to be able to dodge enemy attacks, and land a counterhit if I time it right! I also need to update the excel sheet to match the new names, stats, and descriptions that I changed in the json files!
+
+### TODO
+
+- [x] Refactor entity animation data structure
+	- [x] Movement animations are now instantiated together all at once
+	- [x] Encapsulate animations characters do during attacks in the Character class (excluding projectiles)
+	- [x] Dynamically create attack animations from skill json data
+- [x] Implement and debug proper collision when overhead
+	- [x] Entity owned tween table
+	- [x] Interrupt entity on collision overhead
+	- [x] Interrupt character on collision while trying to jump
+- [x] Balance timing
+- [x] Cleanup discrepancy between hitbox data and visual sprite (hitbox should actually be slightly smaller than sprite dimensions)
+- [x] Implement visual indicator on successful dodge
+- [x] Implement feedback on failed dodge (console output ok for now)
+- [x] Implement feedback on success/fail block (console output ok for now)
+- [x] End attack early when countered
+
+### Reflection
+
+The changes to the animations data structure in the entity class is awesome. I think it was something I was stuck on because I wasn't really thinking about how to package it all up without coupling the skill class with the entity class. Now that the skills are just tables that I wrap the logic around, passing the data for animations was simple. The filename of each json file directs the character class to the asset file for the sprite sheet, so the two don't actually need to interact directly, meaning I can make changes to skills without changing the animation loader in the character class. And since all entities can move, flinch, and get knocked out, I can put that in the base class implementation and further extend the implementation in inherited classes (characters can jump and block but not all enemies need those animations).
+
+Overall, a very productive day! I have to cut it short to switch over to the game jam game today.
+
+## 07/21/2025
+
+Art was tough.
+
+### TODO
+
+- [x] Resize Bake
+- [x] New Enemy - Dastobunni
+- [x] Resize Marco
+- [x] Fix Hold SBP QTE reset for new progress bar changes
+- [x] Change animations during attack to match move used
+- [x] Add logic to to flinch and get ko'd when attacked
+- [x] Fix spacing and timing for skill logic
+- [x] Apply attack bonus for QTE success
+- [x] Separate responsibility of skill ending and turn ending
+- [x] Enemy fade out on KO (replace with different effects later)
+
+### Reflection
+
+Good progress today. Changing the artstyle to be smaller was a good step, because I can better visualize what needs to be fixed and when. For the last bit of time I will be working today, and rolling into tomorrow, I want to focus on checking for collision when attacked. Things will get busy after today since I am starting a game jam tonight! But that's okay. I'm looking forward to working with others and learning some new stuff that might come in handy for developing Sando.
+
+## 07/19/2025
+
+This weekend I want to focus on art.
+
+## 07/18/2025
+
+I tend to run out of steam around 3 or so. I think I need to restructure how I tackle tasks so that I can work a bit longer. I would love to figure out joystick input because it seems like everyone gravitates to using that over the d-pad instinctually.
+
+### TODO
+
+- [x] Figure out sizes of sprites. Figure out whether or not to use Push library
+- [x] Baton library? Review it and see if it's a good fit for this game
+- [x] Review Command Pattern. Is it a good fit for this game?
+- [x] Load in new assets for controller UI
+- [ ] Collision System 
+	- [ ] dodging
+	- [ ] guarding
+- [ ] Controller Config? -> Eventually want to display buttons based on controller
+- [ ] Tap Left QTE implementation
+- [ ] Controller layouts.
+- [ ] Start looking up how to implement a save/load system.
+
+### Reflection
+
+I forgot about the collision system! I never finished it!!! Back to work. A little overwhelmed by the issue caused by setting the screen resolution the way I did. I should go back and look at Mario & Luigi to get the size of sprites down so that I don't feel this way about refactoring hitbox data.
+
+Holy shiiiit. The exact dimensions of Mario's idle animation in Partners in Time is 23x35!!! That is tiny! His sprite where he sticks both arms out and waves to the gamera is 30x37. I need to get back to work on art. That is crazy. Why the hell were my characters 64x64 when I couldn't even get the right amount of detail on them. 
+
+Baton actually doesn't seem like a great fit here. While I really like the idea of having different controller layouts, it looks like it is intended to be most useful in movement systems. But my game is more focused on menu navigation. I'll come back to this later.
+
+Also, there's so much to think about right now, I really need to narrow the scope of the stuff I'm working on each day. This TODO had a good amount of stuff but it felt so unrelated to each other. I should be focusing on progress of developing mechanics.
+
+The assets I bought recently are a little small. I'm not sure how I'm gonna be able to use them without blowing them up and making them look kind of distorted.
+
+I'm feeling a little bit better about getting back into art now that I saw the sizes of sprites is actually way smaller than I thought. It's going to be really tough, but I am up to the challenge. I can only put it off for so long, after all. So, this weekend, I think that the move will be:
+
+1. Resize sprites
+2. Fix positioning for new size sprites in combat
+3. Add another animation or two if I'm up to the task for skills
+4. Start refactoring tween-based dodging and blocking for the more manageable sprite sizes.
+
+This feels good, because now I have a good direction to go in that doesn't feel like I'm spinning my wheels and causing more work for myself later.
+
+## 07/17/2025
+
+After doing some of the legwork yesterday, I realized that it is probably a good idea to implement a debug menu using imGUI so that I can test things during combat. That will be the first thing I do after finishing moving the rest of the tools to json files. I finished off yesterday with the common tools. I'm switching priorities here because I think I have a great idea for improving replayability in a novel way. The current roadmap of Sando had you traversing through a randomized series of zones, and the zones were different from each other visually and by the types of enemies you face. I think it would be so cool if the zone also applied a mechanical change the way you play. For example, you enter a zone, and the antagonist applies an effect to the zone that makes it so that health ticks down on a tween, similar to Earthbound. And in the next zone, you add another layer to the mechanics, like a turn-based system where in Pokemon where you can swap out who is taking damage.
+
+### TODO
+
+- [x] Finish up moving tool data to json files
+- [x] Read over the documentation for imGUI in Love2d
+- [x] Implement an extremely simple debug menu that changes the drawHitbox variable in combat between `true` and `false`
+
+### Reflection
+
+Filling out those JSON files makes me so tired... it basically kills my energy to do other stuff afterwards. I had to move around a lot during the day, which isn't a good excuse, but it's important to recognize what sets my off-task so that I can be proactive about setting tasks. I also think I was a little too conservative with setting my TODO items because I was a bit lost once I finished them.
+
+## 07/16/2025
+
+Continuing refactor. Today I think is a good time to start moving the tools and equipment to JSON files.
+
+- [ ] Move tool data to json files
+- [ ] Implement QTE for tapping stick left to charge qte (like the Slap attack)
+
+
 ## 07/15/2025
 
 I forgot to update the TODO again for a few days, despite making some major progress. I think that from here on, I really need to focus on keeping my work scoped into the tasks I'm assigning myself, or I could really burn out once I get frustrated.
@@ -24,9 +168,10 @@ It might be boring, but there's a decent amount of grunt work to do to get the n
 	- [x] Characters
 	- [x] Enemies
 	- [x] Encounter Pools
+- [x] Random Single Button Press QTE
 - [ ] Move Skill data into JSON files in the `data` directory
 
-I expect this to take a while since it's a lot of back and forth, making new files and referencing old ones. 
+I expect the last one to take a while since it's a lot of back and forth, making new files and referencing old ones. 
 
 ### Reflection
 

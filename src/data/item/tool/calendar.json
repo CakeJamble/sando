@@ -1,0 +1,7 @@
+{
+	"name": "Calendar",
+	"signal": "OnStartTurn",
+	"description": "Lose 1 HP every turn and deal 4 HP to enemies",
+	"flavorText": "Closed Mondays and Tuesdays.",
+	"rarity": "common"
+}

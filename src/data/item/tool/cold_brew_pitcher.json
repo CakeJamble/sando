@@ -1,0 +1,7 @@
+{
+	"name": "Cold Brew Pitcher",
+	"signal": "OnSpeedRaise",
+	"description": "Increase luck when you gain speed during combat.",
+	"flavorText": "It's just a pitcher, but it's been called on for greater purposes.",
+	"rarity": "rare"
+}

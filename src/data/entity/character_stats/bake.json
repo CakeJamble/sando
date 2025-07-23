@@ -1,7 +1,7 @@
 {
 	"entityName": "Bake",
-	"width": 64, "height": 64,
-	"hbWidth": 64, "hbHeight": 64,
+	"width": 32, "height": 48,
+	"hbWidth": 20, "hbHeight": 38,
 	"hp": 10,
 	"fp": 10,
 	"attack": 10,

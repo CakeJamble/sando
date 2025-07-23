@@ -1,0 +1,7 @@
+{
+	"name": "Ancient Interface",
+	"signal": "OnAttack",
+	"description": "Your first attack each combat always crits",
+	"flavorText": "There's a satisfying clack to the keys.",
+	"rarity": "common"
+}

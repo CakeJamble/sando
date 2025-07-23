@@ -59,11 +59,10 @@ function HoldSBP:reset()
 	self.showGreatText = false
 	self.actionButton = nil
 	self.progressBar:reset()
-	self.waitForPlayer.curr = self.waitForPlayer.start
+	self.waitForPlayer.curr = 0
 	self.progressBarComplete = false
 	self.doneWaiting = false
 	self.progressTween = nil
-	self.feedbackPos.a = 1
 	self.qteComplete = false
 	self.signalEmitted = false
 end;
@@ -154,6 +153,7 @@ function HoldSBP:gamepadreleased(joystick, button)
 				print('Hold SBP QTE Success')
 				self.showGreatText = true
 				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
+					:oncomplete(function() self.feedbackPos.a = 1 end)
 				if not self.signalEmitted then
 					local qteSuccess = true
 					-- Signal.emit('Attack', qteSuccess)
@@ -167,7 +167,7 @@ end;
 
 function HoldSBP:draw()
 	if self.showGreatText then
-		love.graphics.setColor(1,1,1,self.feedbackPos.a)
+		love.graphics.setColor(1,1,1, self.feedbackPos.a)
 		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)
 		love.graphics.setColor(1,1,1,1)
 	end
@@ -178,9 +178,9 @@ function HoldSBP:draw()
 	end
 	if not self.qteComplete then
 		self.progressBar:draw()
-		love.graphics.setColor(0, 0, 0)
+		-- love.graphics.setColor(0, 0, 0)
 		love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 		love.graphics.setColor(1,1,1)
-		love.graphics.draw(self.buttonUI, self.buttonUIPos.x, self.buttonUIPos.y, 0, 0.5, 0.5)
+		love.graphics.draw(self.buttonUI, self.buttonUIPos.x + 16, self.buttonUIPos.y + 16)
 	end
 end;

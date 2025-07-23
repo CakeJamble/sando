@@ -5,18 +5,18 @@ require('class.entities.enemy_offense_state')
 Class = require "libs.hump.class"
 Enemy = Class{__includes = Entity, 
   -- for testing
-  xPos = 450, yPos = 110}
+  xPos = 450, yPos = 150, yOffset = 40}
 
 function Enemy:init(data)
   self.type = 'enemy'
   self.enemyType = data.enemyType
   Entity.init(self, data, Enemy.xPos, Enemy.yPos)
-  local subdir = self.type .. '/' .. data.enemyType .. '/'
-  self:setAnimations(subdir)
+  local animationsPath = 'asset/sprites/entities/enemy/' .. self.enemyType .. '/' .. self.entityName .. '/'
+  self:setAnimations(animationsPath)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self:setRewardsDistribution(data.rewardsDistribution)
-  Enemy.yPos = Enemy.yPos + 150
+  Enemy.yPos = Enemy.yPos + Enemy.yOffset
 
   Signal.register('OnStartCombat',
     function()
@@ -30,6 +30,22 @@ function Enemy:startTurn(hazards)
 
   for i,hazard in pairs(hazards.enemyHazards) do
     hazard:proc(self)
+  end
+end;
+
+function Enemy:takeDamage(amount)
+  Entity.takeDamage(self, amount)
+
+  if self.currentAnimTag == 'ko' then
+    flux.to(self.pos, 1.5, {a = 0})
+    -- Timer.after(1.5, function() self.drawSelf = false end)
+  end
+end;
+
+function Enemy:takeDamagePierce(amount)
+  Entity.takeDamagePierce(self, amount)
+  if self.currentAnimTag == 'ko' then
+    flux.to(self.pos, 1.5, {a = 0})
   end
 end;
 

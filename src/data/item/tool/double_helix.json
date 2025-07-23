@@ -1,0 +1,7 @@
+{
+	"name": "Double Helix",
+	"signal": "OnTargetConfirm",
+	"description": "Adds +1 hit to multihit attacks",
+	"flavorText": "One strand short of a beautiful braid.",
+	"rarity": "rare"
+}

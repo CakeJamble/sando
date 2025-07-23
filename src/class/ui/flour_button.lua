@@ -3,8 +3,8 @@ require('class.ui.button')
 Class = require 'libs.hump.class'
 FlourButton = Class{__includes = Button}
 
-function FlourButton:init(x, y, layer, skillList, actionButton)
-  Button.init(self, x, y, layer, 'flour.png')
+function FlourButton:init(pos, index, skillList, actionButton)
+  Button.init(self, pos, index, 'flour.png')
   self.skillList = skillList
   self.skillIndex = 1
   self.actionButton = actionButton
@@ -19,50 +19,6 @@ function FlourButton:init(x, y, layer, skillList, actionButton)
     y = self.flourSkillTableOptions.container.y}
   self.previewOffset = self.flourSkillTableOptions.container.height / 2 --centered
   self.description = 'Consume FP to use a powerful skill'
-
-    
-  Signal.register('SpinUIWheelLeft', 
-    function(before, x)
-      if before == 'fsd' then -- after == {left:solo, center:duo, right:flour}
-        self.active = false
-        self.layer = 3
-        self.tX = x + Button.SPACER
-        self.dX = Button.BASE_DX * 2
-      elseif before == 'dfs' then -- result: {left:flour, center:solo, right:duo} 
-        self.active = false
-        self.layer = 3
-        self.tX = x - Button.SPACER
-        self.dX = Button.BASE_DX
-      elseif before == 'sdf' then -- result: {left: duo, center: flour, right: solo}
-        self.active = true
-        self.layer = 1
-        self.tX = x
-        self.dX = Button.BASE_DX
-      end
-    end
-  );
-  
-  Signal.register('SpinUIWheelRight',
-    function(before, x)
-      if before == 'fsd' then -- result: {left: duo, center: flour, right: solo}
-        self.active = true
-        self.layer = 1
-        self.tX = x
-        self.dX = Button.BASE_DX * 1
-      elseif before == 'dfs' then -- result: {left: solo, center: duo, right: flour}
-        self.active = false
-        self.layer = 1
-        self.tX = x + Button.SPACER
-        self.dX = Button.BASE_DX
-      elseif before == 'sdf' then -- result: {left: flour, center: solo, right: duo}
-        self.active = false
-        self.layer = 3
-        self.tX = x - Button.SPACER
-        self.dX = Button.BASE_DX * 2
-      end
-    end
-    );
-    
 end;
 
 --[[ Create UI for the Flour Skills tables
@@ -73,8 +29,8 @@ function FlourButton:populateFlourSkills()
   -- Specify dimensions (mode, x, y, width, height)
   result.container = {
     mode = 'fill',
-    x = self.x + 150,
-    y = self.y,
+    x = self.pos.x + 150,
+    y = self.pos.y,
     width = 100,
     height = 125
   }
@@ -83,7 +39,7 @@ function FlourButton:populateFlourSkills()
   local textSpacing = result.container.height / 10
   local x, y = result.container.x, result.container.y
   local width, height = result.container.width, result.container.height
-  for i=2,#self.skillList do
+  for i=1,#self.skillList do
     table.insert(result.separator, {
     x1 = x, y1 = y + textSpacing * i,
     x2 = x + width, y2 = y + textSpacing * i

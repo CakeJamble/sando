@@ -1,0 +1,7 @@
+{
+	"name": "Shoe Charm",
+	"signal": "OnBuff",
+	"description": "During battle, your luck is raised whenever your speed is raised",
+	"flavorText": "The charms depict the First Generation of bakers, flaws and all.",
+	"rarity": "event"
+}

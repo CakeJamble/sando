@@ -1,0 +1,7 @@
+{
+	"name": "Pear Programmer",
+	"signal": "OnDebuffed",
+	"description": "Gain a small amount of money when your stats are lowered",
+	"flavorText": "Having them around helps, even if they aren't totally sure what's going on.",
+	"rarity": "event"
+}

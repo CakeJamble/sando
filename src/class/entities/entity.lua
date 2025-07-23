@@ -1,15 +1,7 @@
---! file: entity.lua
-require('skills.skill')
--- require('util.stat_sheet')
--- require('util.enemy_list')
--- require('util.skill_sheet')
--- require('util.enemy_skill_list')
--- require('util.animation_frame_counts')
--- require('class.entities.movement_state')
-
 Class = require "libs.hump.class"
 Entity = Class{
-  movementTime = 2
+  movementTime = 2,
+  drawHitboxes = true
 }
 
   -- Entity constructor
@@ -31,19 +23,13 @@ function Entity:init(data, x, y)
     flinch = {},
     ko = {}
   }
-  self.movementAnimations = {
-    idle = {},
-    moveX = {},
-    moveY = {},
-    moveXY = {},
-    flinch = {},
-    ko = {}
-  }
+  self.baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
+  self.animations = {}
+  self.currentAnimTag = 'idle'
 
-  self.pos = {x = x, y = y, r = 0}
+  self.pos = {x = x, y = y, r = 0, a = 1}
   self.tPos = {x = 0, y = 0}
   self.oPos = {x = x, y = x}
-  
   -- self.dX=0
   -- self.dY=0
   self.frameWidth = data.width      -- width of sprite (or width for a single frame of animation for this character)
@@ -68,14 +54,16 @@ function Entity:init(data, x, y)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
+  self.hbXOffset = (data.width - data.hbWidth) / 2
+  self.hbYOffset = (data.height - data.hbHeight) * 0.75
   self.hitbox = {
-    x = self.pos.x,
-    y = self.pos.y,
+    x = self.pos.x + self.hbXOffset,
+    y = self.pos.y + self.hbYOffset,
     w = data.hbWidth,
     h = data.hbHeight
   }
 
-  self.drawHitbox = false
+  self.tweens = {}
 end;
 
 function Entity:startTurn()
@@ -85,6 +73,50 @@ function Entity:startTurn()
   self.state = 'offense'
 
   print('starting turn for ' .. self.entityName)
+end;
+
+function Entity:endTurn(duration, stagingPos, tweenType)
+  self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+end;
+
+function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+  local delay = 0.5
+  flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
+    :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
+  :oncomplete(
+    function()
+      self:reset()
+      Signal.emit('NextTurn')
+    end)
+end;
+
+function Entity:attackInterrupt()
+  self.tweens['attack']:stop()
+  self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
+end;
+
+function Entity:reset()
+  self.isFocused = false
+  self.hasUsedAction = false
+  self.turnFinish = false
+  self.amount = 0
+  self.state = 'idle'
+  self.currentAnimTag = 'idle'
+  self.moveBackTimerStarted = false
+  self.skill = nil
+
+  print('ending turn for ', self.entityName)
+end;
+
+function Entity:addTween(tag, tween)
+  self.tweens[tag] = tween
+end;
+
+function Entity:stopTween(tag)
+  if self.tweens[tag] then
+    self.tweens[tag]:stop()
+    self.tweens[tag] = nil
+  end
 end;
 
 function Entity:setTargets(characterMembers, enemyMembers)
@@ -116,19 +148,6 @@ function Entity:resetDmgDisplay()
   self.dmgDisplayOffsetY = 0
   self.dmgDisplayScale = 1
   self.opacity = 0
-end;
-
-
-function Entity:endTurn()
-  self.isFocused = false
-  self.hasUsedAction = false
-  self.turnFinish = false
-  self.amount = 0
-  self.state = 'idle'
-  self.moveBackTimerStarted = false
-  self.skill = nil
-
-  print('ending turn for ', self.entityName)
 end;
 
 -- COPY
@@ -197,11 +216,22 @@ function Entity:takeDamage(amount) --> void
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
   self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
+  if self:isAlive() then
+    self.currentAnimTag = 'flinch'
+    Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
+  else
+    self.currentAnimTag = 'ko'
+  end
 end;
 
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
-end
+  if self:isAlive() then
+    self.currentAnimTag = 'flinch'
+  else
+    self.currentAnimTag = 'ko'
+  end
+end;
 
 -- Called after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void
@@ -214,21 +244,32 @@ end;
 
   --[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
   Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
-function Entity:setAnimations(subdir)
-  -- Images
-  local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
-  self.spriteSheets.idle = love.graphics.newImage(path .. 'idle.png')
-  self.spriteSheets.moveX = love.graphics.newImage(path .. 'move_x.png')
---  self.spriteSheets.flinch = love.graphics.newImage(path .. 'flinch.png')
---  self.spriteSheets.ko = love.graphics.newImage(path .. 'ko.png')
+function Entity:setAnimations(path)
+  local baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
+  for i,anim in ipairs(baseAnimationTypes) do
+    local image = love.graphics.newImage(path .. anim .. '.png')
+    self.animations[anim] = self:populateFrames(image)
+  end
 
-  -- Quads  
-  self.movementAnimations.idle = Entity.populateFrames(self, self.spriteSheets.idle)
-  self.movementAnimations.moveX = Entity.populateFrames(self, self.spriteSheets.moveX)
---  Entity:populateFrames(self, self.movementAnimations.moveY, self.spriteSheets.moveY, self.durations.moveY)
---  Entity:populateFrames(self, self.movementAnimations.moveXY, self.spriteSheets.moveXY, self.durations.moveXY)
---  Entity:populateFrames(self, self.movementAnimations.flinch, self.spriteSheets.flinch, self.durations.flinch)
---  Entity:populateFrames(self, self.movementAnimations.ko, self.spriteSheets.ko, self.durations.ko)
+
+  -- Images
+  -- local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
+  -- local idle = love.graphics.newImage(path .. 'idle.png')
+  -- local move = love.graphics.newImage(path .. 'move_x.png')
+  -- self.animations['idle'] = self:populateFrames(idle)
+  -- self.animations['move'] = self:populateFrames(move)
+
+  -- all characters have a basic attack
+  if subdir == 'character/' then
+    local basicSprite = love.graphics.newImage(path .. 'basic.png')
+    self.animations['basic'] = self:populateFrames(basicSprite)
+  end
+
+  for i,skill in ipairs(self.skillPool) do
+    local skillPath = path .. skill.tag .. '.png'
+    local image = love.graphics.newImage(skillPath)
+    self.animations[skill.tag] = self:populateFrames(image)
+  end
 end;
 
 function Entity:populateFrames(image, duration)
@@ -250,19 +291,22 @@ function Entity:populateFrames(image, duration)
 end;
 
 function Entity:update(dt) --> void
-  self.hitbox.x = self.pos.x
-  self.hitbox.y = self.pos.y
-  local animation
-  if self.state == 'idle' then
-    animation = self.movementAnimations.idle
-  elseif self.state == 'move' or 'moveback' then
-    animation = self.movementAnimations.moveX
-  end
-  
+  self.hitbox.x = self.pos.x + self.hbXOffset
+  self.hitbox.y = self.pos.y + self.hbYOffset
+  local animation = self.animations[self.currentAnimTag]
+  -- if self.state == 'idle' then
+    -- animation = self.movementAnimations.idle
+  -- elseif self.state == 'move' or 'moveback' then
+    -- animation = self.movementAnimations.moveX
+  -- end
   
   animation.currentTime = animation.currentTime + dt
-  if animation.currentTime >= animation.duration then 
-    animation.currentTime = animation.currentTime - animation.duration
+  if animation.currentTime >= animation.duration then
+    if not self:isAlive() and self.currentAnimTag == 'ko' then
+      animation.currentTime = animation.duration
+    else
+      animation.currentTime = animation.currentTime - animation.duration
+    end
   end
 
   if self.countFrames then
@@ -280,37 +324,43 @@ function Entity:draw() --> void
     -- walk, jump, idle
   -- local state = self.movementState.state
   love.graphics.setColor(0, 0, 0, 0.4)
-  love.graphics.ellipse("fill", self.pos.x + (self.frameWidth / 2), self.pos.y + self.frameHeight, self.frameWidth / 5, self.frameHeight / 8)
+  love.graphics.ellipse("fill", self.pos.x + (self.frameWidth / 2.5), self.pos.y + (self.frameHeight * 0.95), self.frameWidth / 4, self.frameHeight / 8)
   love.graphics.setColor(1, 1, 1, 1)
   
-  local spriteNum
-  local animation
-  if self.state == 'idle' then
-    animation = self.movementAnimations.idle
-    -- spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-    -- love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
-  elseif self.state == 'move' or 'moveback' then
-    animation = self.movementAnimations.moveX
-  elseif self.state == 'moveY' then
-    -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
-  elseif self.state == 'moveXY' then
-    -- love.graphics.draw(self.spriteSheets.moveXY, self.movementAnimations.moveXY[math.floor(self.currentFrame)], self.x, self.y)
-  elseif self.state == 'flinch' then
-    -- love.graphics.draw(self.spriteSheets.flinch, self.movementAnimations.flinch[math.floor(self.currentFrame)], self.x, self.y) 
-  elseif self.state == 'ko' then
-    -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
-  else
-    print("logical error in determining movement state of entity. state is", state)
-  end
+  -- local spriteNum
+  -- local animation
+  -- if self.state == 'idle' then
+  --   animation = self.movementAnimations.idle
+  --   -- spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+  --   -- love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
+  -- elseif self.state == 'move' or 'moveback' then
+  --   animation = self.movementAnimations.moveX
+  -- elseif self.state == 'moveY' then
+  --   -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
+  -- elseif self.state == 'moveXY' then
+  --   -- love.graphics.draw(self.spriteSheets.moveXY, self.movementAnimations.moveXY[math.floor(self.currentFrame)], self.x, self.y)
+  -- elseif self.state == 'flinch' then
+  --   -- love.graphics.draw(self.spriteSheets.flinch, self.movementAnimations.flinch[math.floor(self.currentFrame)], self.x, self.y) 
+  -- elseif self.state == 'ko' then
+  --   -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
+  -- else
+  --   print("logical error in determining movement state of entity. state is", state)
+  -- end
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)
     love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
     love.graphics.setColor(1,1,1, 1)
   end
-  spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
 
-  if self.drawHitbox then
+  local animation = self.animations[self.currentAnimTag]
+  local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+  spriteNum = math.min(spriteNum, #animation.quads)
+
+  love.graphics.setColor(1,1,1,self.pos.a)
+  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
+  love.graphics.setColor(1,1,1,1)
+  
+  if Entity.drawHitboxes then
     love.graphics.setColor(1, 0, 0, 0.4)
     love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)

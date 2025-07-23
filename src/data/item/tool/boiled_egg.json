@@ -1,0 +1,7 @@
+{
+	"name": "Boiled Egg",
+	"signal": "OnPickup",
+	"description": "On pickup, enchant a move of one character with healing",
+	"flavorText": "It's close to hatching...",
+	"rarity": "common"
+}

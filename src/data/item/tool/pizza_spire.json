@@ -1,0 +1,7 @@
+{
+	"name": "Pizza Spire",
+	"signal": "OnSwapMembers",
+	"description": "Swapping party members restores a small amount of FP",
+	"flavorText": "A chef left to slay this, but never returned.",
+	"rarity": "uncommon"
+}

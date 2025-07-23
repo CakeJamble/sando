@@ -1,0 +1,7 @@
+{
+	"name": "Milk Pitcher",
+	"signal": "OnConsumableUse",
+	"description": "Using a consumable slightly increases Max HP",
+	"flavorText": "It chirps with the sound of milk being stretched.",
+	"rarity": "uncommon"
+}

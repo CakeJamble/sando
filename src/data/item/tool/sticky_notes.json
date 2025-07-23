@@ -1,0 +1,7 @@
+{
+	"name": "Sticky Notes",
+	"signal": "OnFaint",
+	"description": "When a character faints, the attacker's stats are decreased",
+	"flavorText": "Someone left their logins and passwords on this.",
+	"rarity": "rare"
+}

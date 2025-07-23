@@ -1,0 +1,7 @@
+{
+	"name": "Vampire Fangs",
+	"signal": "OnPickup",
+	"description": "Lose 50% Max HP. Attacks lifesteal for 25% of damage dealt.",
+	"flavorText": "Makes it harder to eat bread.",
+	"rarity": "event"
+}

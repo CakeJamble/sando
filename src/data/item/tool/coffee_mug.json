@@ -1,0 +1,7 @@
+{
+	"name": "Coffee Mug",
+	"signal": "OnPickup",
+	"description": "Grants 2 additional consumable slots",
+	"flavorText": "A milky blob remains where a shakily drawn tulip once existed",
+	"rarity": "uncommon"
+}

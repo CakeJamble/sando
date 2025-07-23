@@ -1,0 +1,7 @@
+{
+	"name": "Land Cucumber",
+	"signal": "OnFaint",
+	"description": "Upon fainting, deal equal damage to the attacker",
+	"flavorText": "Like a cornered mouse.",
+	"rarity": "common"
+}

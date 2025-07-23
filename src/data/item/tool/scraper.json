@@ -1,0 +1,7 @@
+{
+	"name": "Scraper",
+	"signal": "OnQTESuccess",
+	"description": "+40% to crit bonuses",
+	"flavorText": "Never leave home without it.",
+	"rarity": "rare"
+}

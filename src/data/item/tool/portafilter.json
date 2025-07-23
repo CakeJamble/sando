@@ -1,0 +1,7 @@
+{
+	"name": "Portafilter",
+	"signal": "OnEndCombat",
+	"description": "Find a consumable after every battle",
+	"flavorText": "Massive, thick, heavy, and far too rough.",
+	"rarity": "uncommon"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Decroded Mitts",
+	"signal": "OnDebuffed",
+	"description": "Enemies cannot debuff your team during your turn",
+	"flavorText": "Heat has worn away the fingertips",
+	"rarity": "common"
+}

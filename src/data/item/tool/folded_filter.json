@@ -1,0 +1,7 @@
+{
+	"name": "Folded Filter",
+	"signal": "OnConsumableUse",
+	"description": "When using a consumable, a random stat is lowered, then a different random stat is raised twice.",
+	"flavorText": "More feathers is more fun.",
+	"rarity": "uncommon"
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Stolen Rug",
+	"signal": "OnEnterShop",
+	"description": "The first shop item you purchase is free, then all prices raise slightly.",
+	"flavorText": "The rug was not for sale.",
+	"rarity": "uncommon"
+}

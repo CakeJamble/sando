@@ -1,0 +1,7 @@
+{
+	"name": "Massage Gun",
+	"signal": "OnBuff",
+	"description": "Deal 1 damage to all enemies when you are buffed",
+	"flavorText": "Revitalizes your muscles",
+	"rarity": "event"
+}
