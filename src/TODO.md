@@ -2,6 +2,22 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/23/2025
+
+Feeling very motivated after doing the counter-attacks. I want to try and implement the Earthbound style tweening of HP, so that you can use an item to heal back up. However, before I can do that, I need some way to heal. Also, I need to consider if that's really a useful system or not. It could be cool if my HP scales higher, but if I keep numbers low, it probably won't be very satisfying. A couple different ways to implement healing, one being a skill that heals, and the other being a consumable item. If I want to make an item usable, then I will need to refactor the ActionUI, which is something that was bound to happen anyways.
+
+### TODO
+
+- [ ] Refactor ActionUI class to use tweening instead of manually moving
+- [ ] Add new ActionUI button for using items
+- [ ] Implement a single test item that heals a target.
+
+If I have time after that
+
+- [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
+
+### Reflection
+
 ## 07/22/2025
 
 Collision on defense. I want to be able to dodge enemy attacks, and land a counterhit if I time it right! I also need to update the excel sheet to match the new names, stats, and descriptions that I changed in the json files!
