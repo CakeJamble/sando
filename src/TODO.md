@@ -2,6 +2,17 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/24/2025
+
+### TODO
+
+- [ ] Implement a single test item that heals a target.
+	- [ ] JSON file
+	- [ ] Logic file
+	- [ ] Item Loader function
+	- [ ] Item List in the Character Team class
+- [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
+
 ## 07/23/2025
 
 Feeling very motivated after doing the counter-attacks. I want to try and implement the Earthbound style tweening of HP, so that you can use an item to heal back up. However, before I can do that, I need some way to heal. Also, I need to consider if that's really a useful system or not. It could be cool if my HP scales higher, but if I keep numbers low, it probably won't be very satisfying. A couple different ways to implement healing, one being a skill that heals, and the other being a consumable item. If I want to make an item usable, then I will need to refactor the ActionUI, which is something that was bound to happen anyways.
@@ -10,7 +21,7 @@ Feeling very motivated after doing the counter-attacks. I want to try and implem
 
 - [x] Refactor ActionUI class to use tweening instead of manually moving
 - [x] Add new ActionUI button for using items
-- [ ] Add new Action UI button for passing turn
+- [x] Add new Action UI button for passing turn
 - [x] Implement Back Button that lets a user cancel targeting using the action button
 - [ ] Implement a single test item that heals a target.
 
@@ -19,6 +30,8 @@ If I have time after that
 - [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
 
 ### Reflection
+
+Switching up the way the Action UI works felt like the culmination of a lot of things I've learned. I started by deeply nesting the decision hierarchy, then I tried to decouple it with the observor pattern. Then I was able to further simplify it by simplifying the logic after realizing that the landing positions for each button stay constant at the start of every turn. I'm going to focus on the consumable items interface sometime tomorrow since it's a big task to start so late in the work day. And I still need to help out with the game jam!
 
 ## 07/22/2025
 
