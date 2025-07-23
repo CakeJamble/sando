@@ -19,50 +19,6 @@ function FlourButton:init(pos, index, skillList, actionButton)
     y = self.flourSkillTableOptions.container.y}
   self.previewOffset = self.flourSkillTableOptions.container.height / 2 --centered
   self.description = 'Consume FP to use a powerful skill'
-
-    
-  -- Signal.register('SpinUIWheelLeft', 
-  --   function(before, x)
-  --     if before == 'fsd' then -- after == {left:solo, center:duo, right:flour}
-  --       self.active = false
-  --       self.layer = 3
-  --       self.tX = x + Button.SPACER
-  --       self.dX = Button.BASE_DX * 2
-  --     elseif before == 'dfs' then -- result: {left:flour, center:solo, right:duo} 
-  --       self.active = false
-  --       self.layer = 3
-  --       self.tX = x - Button.SPACER
-  --       self.dX = Button.BASE_DX
-  --     elseif before == 'sdf' then -- result: {left: duo, center: flour, right: solo}
-  --       self.active = true
-  --       self.layer = 1
-  --       self.tX = x
-  --       self.dX = Button.BASE_DX
-  --     end
-  --   end
-  -- );
-  
-  -- Signal.register('SpinUIWheelRight',
-  --   function(before, x)
-  --     if before == 'fsd' then -- result: {left: duo, center: flour, right: solo}
-  --       self.active = true
-  --       self.layer = 1
-  --       self.tX = x
-  --       self.dX = Button.BASE_DX * 1
-  --     elseif before == 'dfs' then -- result: {left: solo, center: duo, right: flour}
-  --       self.active = false
-  --       self.layer = 1
-  --       self.tX = x + Button.SPACER
-  --       self.dX = Button.BASE_DX
-  --     elseif before == 'sdf' then -- result: {left: flour, center: solo, right: duo}
-  --       self.active = false
-  --       self.layer = 3
-  --       self.tX = x - Button.SPACER
-  --       self.dX = Button.BASE_DX * 2
-  --     end
-  --   end
-  --   );
-    
 end;
 
 --[[ Create UI for the Flour Skills tables

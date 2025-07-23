@@ -1,5 +1,3 @@
---! filename: dup button
-require('class.ui.button')
 Class = require('libs.hump.class')
 
 BackButton = Class{}

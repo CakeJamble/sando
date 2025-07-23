@@ -8,8 +8,10 @@ Feeling very motivated after doing the counter-attacks. I want to try and implem
 
 ### TODO
 
-- [ ] Refactor ActionUI class to use tweening instead of manually moving
-- [ ] Add new ActionUI button for using items
+- [x] Refactor ActionUI class to use tweening instead of manually moving
+- [x] Add new ActionUI button for using items
+- [ ] Add new Action UI button for passing turn
+- [x] Implement Back Button that lets a user cancel targeting using the action button
 - [ ] Implement a single test item that heals a target.
 
 If I have time after that

@@ -11,54 +11,6 @@ function DuoButton:init(pos, index, skillList)
     self.selectedSkill = nil
     self.displaySkillList = false
     self.description = 'Consume BP to use a powerful teamup skill'
-    
-  -- Signal.register('SpinUIWheelLeft', 
-  --   function(before, x)
-  --     if before == 'fsd' then -- after == {left:solo, center:duo, right:flour}
-  --       self.active = true
-  --       self.layer = 2
-  --       self.tX = x
-  --       self.dX = Button.BASE_DX
-
-  --     elseif before == 'dfs' then -- result: {left:flour, center:solo, right:duo} 
-  --       self.active = false
-  --       self.layer = 3
-  --       self.tX = x + Button.SPACER
-  --       self.dX = Button.BASE_DX * 2
-
-  --     elseif before == 'sdf' then -- result: {left: duo, center: flour, right: solo}
-  --       self.active = false
-  --       self.layer = 1
-  --       self.tX = x - Button.SPACER
-  --       self.dX = Button.BASE_DX
-
-  --     end
-  --   end
-  -- );
-  
-  -- Signal.register('SpinUIWheelRight',
-  --   function(before, x)
-  --     if before == 'fsd' then -- result: {left: duo, center: flour, right: solo}
-  --       self.active = false
-  --       self.layer = 1
-  --       self.tX = x - Button.SPACER
-  --       self.dX = Button.BASE_DX * 2
-
-  --     elseif before == 'dfs' then -- result: {left: solo, center: duo, right: flour}
-  --       self.active = true
-  --       self.layer = 1
-  --       self.tX = x
-  --       self.dX = Button.BASE_DX
-
-  --     elseif before == 'sdf' then -- result: {left: flour, center: solo, right: duo}
-  --       self.active = false
-  --       self.layer = 1
-  --       self.tX = x + Button.SPACER
-  --       self.dX = Button.BASE_DX
-
-  --     end
-  --   end
-  --   );
 end;
 
 function DuoButton:formatSkillList() --> string

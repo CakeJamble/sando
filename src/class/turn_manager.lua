@@ -53,6 +53,13 @@ function TurnManager:init(characterTeam, enemyTeam)
     end
   );
 
+  Signal.register('PassTurn',
+    function()
+      self.activeEntity.actionUI:unset()
+      Signal.emit('NextTurn')
+    end
+  );
+
   Signal.register('SkillSelected',
     function(skill)
       print('Setting up QTE Manager for selected skill: ' .. skill.name)

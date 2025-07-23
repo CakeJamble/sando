@@ -2,7 +2,9 @@
 require('class.ui.solo_button')
 require('class.ui.flour_button')
 require('class.ui.duo_button')
+require('class.ui.item_button')
 require('class.ui.back_button')
+require('class.ui.pass_button')
 require('util.globals')
 
 Class = require 'libs.hump.class'
@@ -59,15 +61,13 @@ function ActionUI:set(charRef)
   self.skillList = charRef.currentSkills
   self.actionButton = charRef.actionButton
   self.landingPositions = self:setButtonLandingPositions()
-  print('set landing positions')
 
   self.soloButton = SoloButton(self.landingPositions[1], 1, charRef.basic)
   self.flourButton = FlourButton(self.landingPositions[2], 2, charRef.currentSkills, self.actionButton)
-  print('flour button on layer ' .. self.flourButton.layer)
   self.duoButton = DuoButton(self.landingPositions[3], 3, self.skillList)
-  print('duo button on layer ' .. self.duoButton.layer)
-  self.itemButton = SoloButton(self.landingPositions[4], 4, charRef.basic)
-  self.passButton = SoloButton(self.landingPositions[5], 5, charRef.basic)
+  self.itemButton = ItemButton(self.landingPositions[4], 4, {})
+
+  self.passButton = PassButton(self.landingPositions[5], 5, charRef.basic)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton, self.itemButton, self.passButton}
   self.activeButton = self.soloButton
   sortLayers(self.buttons)
@@ -124,12 +124,12 @@ function ActionUI:tweenButtons()
   for i,button in ipairs(self.buttons) do
     local landingPos = self.landingPositions[button.index]
     button:tween(landingPos, self.buttonTweenDuration, self.easeType)
+    if button.index == 1 then self.activeButton = button end
   end
 
   Timer.after(self.buttonTweenDuration + 0.1, 
     function() 
-      self.uiState = 'actionSelect' 
-      sortLayers(self.buttons)
+      self.uiState = 'actionSelect'
     end)
 end;
 
@@ -240,6 +240,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           button.index = (button.index % #self.buttons) + 1
           button.layer = button:idxToLayer()
         end
+        sortLayers(self.buttons)
         self:tweenButtons()
       elseif button == 'dpleft' then                      -- spin the wheel right
         for i,button in ipairs(self.buttons) do
@@ -247,11 +248,14 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           if button.index == 0 then button.index = #self.buttons end
           button.layer = button:idxToLayer()
         end
+        sortLayers(self.buttons)
         self:tweenButtons()
 
 ----------------------- Skill Selection -------------------------
       elseif button == self.actionButton then
-        if self.activeButton == self.soloButton then
+        if self.activeButton == self.passButton then
+          Signal.emit('PassTurn')
+        elseif self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill
           self.uiState = 'targeting'
           self.backButton.isHidden = false

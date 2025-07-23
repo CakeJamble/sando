@@ -35,7 +35,6 @@ function sortLayers(T)
 			return first.layer > second.layer
 		end
 	)
-  for i=1,#T do print(T[i].layer) end
 end
 
 -- current implementation doesn't account for flying attacks
