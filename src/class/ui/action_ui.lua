@@ -21,6 +21,7 @@ function ActionUI:init()
   self.active = false
   self.x = nil
   self.y = nil
+  self.pos = {x=self.x,y=self.y}
   self.actionButton = nil
   self.numTargets = nil
   self.uiState  = nil
@@ -37,6 +38,9 @@ function ActionUI:init()
   self.targetType = 'enemies'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
+  self.buttonTweenDuration = 0.25 -- for delay after buttons set into place
+  self.buttonDims = {w=32,h=32}
+  self.landingPositions = nil
 end;
 
 function ActionUI:setTargets(characterMembers, enemyMembers)
@@ -49,12 +53,19 @@ end;
 function ActionUI:set(charRef)
   self.x = charRef.pos.x + ActionUI.X_OFFSET
   self.y = charRef.pos.y + ActionUI.Y_OFFSET
+  self.pos.x = self.x
+  self.pos.y = self.y
   self.skillList = charRef.currentSkills
   self.actionButton = charRef.actionButton
-  self.soloButton = SoloButton(self.x, self.y, 1, charRef.basic)
-  self.flourButton = FlourButton(self.x - self.iconSpacer, self.y, 2, charRef.currentSkills, self.actionButton)
-  self.duoButton = DuoButton(self.x + self.iconSpacer, self.y, 3, self.skillList)
-  self.buttons = {self.soloButton, self.flourButton, self.duoButton}
+  self.landingPositions = self:setButtonLandingPositions()
+  print('set landing positions')
+
+  self.soloButton = SoloButton(self.landingPositions[1], 1, charRef.basic)
+  self.flourButton = FlourButton(self.landingPositions[2], 2, charRef.currentSkills, self.actionButton)
+  self.duoButton = DuoButton(self.landingPositions[3], 3, self.skillList)
+  self.itemButton = SoloButton(self.landingPositions[4], 4, charRef.basic)
+  self.passButton = SoloButton(self.landingPositions[5], 5, charRef.basic)
+  self.buttons = {self.soloButton, self.flourButton, self.duoButton, self.itemButton, self.passButton}
   self.activeButton = self.soloButton
   
   -- consider removing if you use observer pattern to refactor keypress
@@ -64,12 +75,66 @@ function ActionUI:set(charRef)
 
   self.selectedSkill = self.skillList[1]
   self.active = true
+  self.easeType = 'linear'
 end;
+
+function ActionUI:setButtonLandingPositions()
+  local sideOffsets = {x = 1.5 * self.buttonDims.w, y = self.buttonDims.h / 1.5}
+  local backOffsets = {x = self.buttonDims.w, y = self.buttonDims.h}
+  local landingPositions = {
+    { -- 1
+      x     = self.x, 
+      y     = self.y,
+      scale = 1
+    },
+    { -- 2
+      x     = self.x - sideOffsets.x, 
+      y     = self.y - sideOffsets.y,
+      scale = Button.SIDE_BUTTON_SCALE
+    },
+    { -- 3
+      x     = self.x - backOffsets.x,
+      y     = self.y - backOffsets.y,
+      scale = Button.BACK_BUTTON_SCALE,
+    },
+    { -- 4
+      x     = self.x + backOffsets.x,
+      y     = self.y - backOffsets.y,
+      scale = Button.BACK_BUTTON_SCALE,
+    },
+    { -- 5
+      x     = self.x + sideOffsets.x,
+      y     = self.y - sideOffsets.y,
+      scale = Button.SIDE_BUTTON_SCALE,
+    },
+  }
+  return landingPositions
+end;
+
+-- button indexes and layers get changed before this tween goes off, so we know where they will land
+function ActionUI:tweenButtons()
+  self.uiState = 'rotating'
+  for i=1,#self.buttons do --in ipairs(self.buttons) do
+    self.buttons[i]:tween(self.landingPositions[self.buttons[i].index], self.buttonTweenDuration, self.easeType)
+  --   flux.to(self.buttons[i].pos, self.moveDuration, 
+  --     {
+  --       x     = self.landingPositions[self.buttons[i].index].x,
+  --       y     = self.landingPositions[self.buttons[i].index].y,
+  --       scale = self.landingPositions[self.buttons[i].index].scale
+  --     })
+  --     :ease(self.easeType)
+  end
+
+  Timer.after(self.buttonTweenDuration + 0.1, function() self.uiState = 'actionSelect' end)
+end;
+
 
 function ActionUI:unset()
   self.x = nil; self.y = nil; self.skillList = nil;
   self.soloButton = nil; self.flourButton = nil; self.duoButton = nil;
+  self.itemButton = nil; self.passButton = nil;
   self.buttons = nil; self.activeButton = nil;
+  self.landingPositions = nil
   self.isFocused = false
   self.active = false
 end;
@@ -155,47 +220,123 @@ function ActionUI:keypressed(key) --> void
   end
 end;
 
+-- function ActionUI:gamepadpressed(joystick, button) --> void
+--   if self.active then
+--     if self.uiState == 'actionSelect' then
+--       local before = ''
+--       local x = self.x
+--       if button == 'dpright' then                         -- spin the wheel left
+--         if self.activeButton == self.soloButton then
+--           before = 'fsd'
+--           self.activeButton = self.duoButton
+          
+--         elseif self.activeButton == self.flourButton then
+--           before = 'dfs'
+--           self.activeButton = self.soloButton
+          
+--         else
+--           before = 'sdf'
+--           self.activeButton = self.flourButton
+          
+--         end      
+        
+--         -- Tell all the Buttons where to go
+--         Signal.emit('SpinUIWheelLeft', before, x)
+--         self.uiState = 'rotating'
+        
+--       elseif button == 'dpleft' then                      -- spin the wheel right
+--         if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
+--           before = 'fsd'
+--           self.activeButton = self.flourButton
+          
+--         elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
+--           before = 'dfs'
+--           self.activeButton = self.duoButton
+          
+--         else                                                                  -- {left:solo, center:duo, right:flour}
+--           before = 'sdf'
+--           self.activeButton = self.soloButton        
+--         end
+      
+--         Signal.emit('SpinUIWheelRight', before, x)
+--         self.uiState = 'rotating'
+        
+--        -- stand ins for confirm/cancel button input 
+--       elseif button == self.actionButton then
+--         if self.activeButton == self.soloButton then
+--           self.selectedSkill = self.activeButton.selectedSkill
+--           self.uiState = 'targeting'
+--           Signal.emit('SkillSelected', self.selectedSkill)
+--         else
+--           self.uiState = 'submenuing'
+--           -- self.activeButton.displaySkillList = true
+--           self.activeButton:gamepadpressed(joystick, button)
+--         end
+--       end
+--     elseif self.uiState == 'submenuing' then    -- the activeButton is either flourButton or duoButton
+--       self.activeButton:gamepadpressed(joystick, button)
+--       -- if self.activeButton ~= self.soloButton then
+--       --   self.activeButton.displaySkillList = true
+--       -- else
+--       --   self.flourButton.displaySkillList = false
+--       --   self.duoButton.displaySkillList = false
+--       -- end
+  
+--       -- if button == 'a' then
+--       --   self.selectedSkill = self.activeButton.selectedSkill  -- use signal in button class instead?
+--       --   self.uiState = 'targeting'
+--       --   Signal.emit('SkillSelected', self.selectedSkill)
+--       -- elseif button == 'b' then
+--       --   if self.activeButton == self.soloButton then
+--       --     self.uiState = 'actionSelect'
+--       --   else  -- self.uiState == 'submenuing'
+--       --     self.uiState = 'actionSelect'
+--       --     self.activeButton.displaySkillList = false
+--       --   end
+--       -- end
+  
+--     elseif self.uiState == 'targeting' then
+--       if self.selectedSkill.targetType == 'single' then
+--         -- TODO : need to account for self targeting or team targets for heals/buffs in the future
+--         if button == 'dpleft' or button == 'dpup' then
+--           self.tIndex = math.max(1, self.tIndex - 1)
+--         elseif button == 'dpright' or button == 'dpdown' then
+--           self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
+--         elseif button == self.actionButton then 
+--           Signal.emit('TargetConfirm', self.targetType, self.tIndex)
+--           self.uiState = 'moving'
+--         elseif button == 'b' then
+--           self.tIndex = 1
+--           if self.activeButton == self.soloButton then
+--             self.uiState = 'actionSelect'
+--             Signal.emit('SkillDeselected')
+--           else
+--             self.uiState = 'submenuing'
+--           end
+--         end
+--       end
+--     end
+--   end
+-- end;
+
 function ActionUI:gamepadpressed(joystick, button) --> void
   if self.active then
     if self.uiState == 'actionSelect' then
       local before = ''
       local x = self.x
       if button == 'dpright' then                         -- spin the wheel left
-        if self.activeButton == self.soloButton then
-          before = 'fsd'
-          self.activeButton = self.duoButton
-          
-        elseif self.activeButton == self.flourButton then
-          before = 'dfs'
-          self.activeButton = self.soloButton
-          
-        else
-          before = 'sdf'
-          self.activeButton = self.flourButton
-          
-        end      
-        
-        -- Tell all the Buttons where to go
-        Signal.emit('SpinUIWheelLeft', before, x)
-        self.uiState = 'rotating'
-        
-      elseif button == 'dpleft' then                      -- spin the wheel right
-        if self.activeButton == self.soloButton then                             -- {left: flour, center:solo , right: duo}
-          before = 'fsd'
-          self.activeButton = self.flourButton
-          
-        elseif self.activeButton == self.flourButton then                       -- {left:duo, center:flour, right:solo}
-          before = 'dfs'
-          self.activeButton = self.duoButton
-          
-        else                                                                  -- {left:solo, center:duo, right:flour}
-          before = 'sdf'
-          self.activeButton = self.soloButton        
+        for i,button in ipairs(self.buttons) do
+          button.index = (button.index % #self.buttons) + 1
+          button.layer = button:idxToLayer()
         end
-      
-        Signal.emit('SpinUIWheelRight', before, x)
-        self.uiState = 'rotating'
-        
+        self:tweenButtons()
+      elseif button == 'dpleft' then                      -- spin the wheel right
+        for i,button in ipairs(self.buttons) do
+          button.index = button.index - 1
+          if button.index == 0 then button.index = #self.buttons end
+          button.layer = button:idxToLayer()
+        end
+        self:tweenButtons()
        -- stand ins for confirm/cancel button input 
       elseif button == self.actionButton then
         if self.activeButton == self.soloButton then
@@ -254,6 +395,8 @@ function ActionUI:gamepadpressed(joystick, button) --> void
   end
 end;
 
+
+
 function ActionUI:areDoneRotating()
   for i=1,#self.buttons do
     if not self.buttons[i]:isFinishedRotating() then
@@ -264,18 +407,18 @@ function ActionUI:areDoneRotating()
 end;
 
 function ActionUI:update(dt)
-  if self.active then
-    if self.uiState == 'rotating' then
-      for i=1,#self.buttons do
-        local button = self.buttons[i]
-        button:update(dt)
-      end
+--   if self.active then
+--     if self.uiState == 'rotating' then
+--       for i=1,#self.buttons do
+--         local button = self.buttons[i]
+--         button:update(dt)
+--       end
 
-      if ActionUI.areDoneRotating(self) then
-        self.uiState = 'actionSelect'
-      end
-    end
-  end
+--       if ActionUI.areDoneRotating(self) then
+--         self.uiState = 'actionSelect'
+--       end
+--     end
+--   end
 end;
 
 function ActionUI:draw()
