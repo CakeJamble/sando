@@ -120,7 +120,6 @@ end;
 -- button indexes and layers get changed before this tween goes off, so we know where they will land
 function ActionUI:tweenButtons()
   self.uiState = 'rotating'
-
   for i,button in ipairs(self.buttons) do
     local landingPos = self.landingPositions[button.index]
     button:tween(landingPos, self.buttonTweenDuration, self.easeType)
@@ -143,6 +142,7 @@ function ActionUI:unset()
   self.active = false
 end;
 
+-- deprecated
 function ActionUI:keypressed(key) --> void
   if self.active then
     if self.uiState == 'actionSelect' then
@@ -289,7 +289,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         elseif button == self.actionButton then 
           if self.highlightBack then
             Signal.emit('SkillDeselected')
-
+            self.highlightBack = false
             if self.activeButton == self.soloButton then
               self.uiState = 'actionSelect'
             else
@@ -304,32 +304,6 @@ function ActionUI:gamepadpressed(joystick, button) --> void
       end
     end
   end
-end;
-
-
-
-function ActionUI:areDoneRotating()
-  for i=1,#self.buttons do
-    if not self.buttons[i]:isFinishedRotating() then
-      return false
-    end
-  end
-  return true
-end;
-
-function ActionUI:update(dt)
---   if self.active then
---     if self.uiState == 'rotating' then
---       for i=1,#self.buttons do
---         local button = self.buttons[i]
---         button:update(dt)
---       end
-
---       if ActionUI.areDoneRotating(self) then
---         self.uiState = 'actionSelect'
---       end
---     end
---   end
 end;
 
 function ActionUI:draw()

@@ -326,7 +326,6 @@ end;
 
 function Character:update(dt)
   Entity.update(self, dt)
-  self.actionUI:update(dt)
 end;
 
 function Character:draw()
