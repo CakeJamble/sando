@@ -13,6 +13,7 @@ function Button:init(pos, index, path)
       scale = pos.scale
     }
     self.index = index
+    self.layer = self:idxToLayer()
     local buttonPath = Button.PATH .. path
     self.button = love.graphics.newImage(buttonPath)
     local width, height = self.button:getDimensions()
@@ -36,7 +37,6 @@ function Button:init(pos, index, path)
 end;
 
 function Button:tween(landingPos, duration, easeType)
-  print(landingPos.x, landingPos.y, landingPos.scale, duration, easeType)
   flux.to(self.pos, duration, 
     {
       x     = landingPos.x,

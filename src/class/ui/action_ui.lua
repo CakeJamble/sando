@@ -38,7 +38,7 @@ function ActionUI:init()
   self.targetType = 'enemies'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
-  self.buttonTweenDuration = 0.25 -- for delay after buttons set into place
+  self.buttonTweenDuration = 0.1 -- for delay after buttons set into place
   self.buttonDims = {w=32,h=32}
   self.landingPositions = nil
 end;
@@ -62,11 +62,14 @@ function ActionUI:set(charRef)
 
   self.soloButton = SoloButton(self.landingPositions[1], 1, charRef.basic)
   self.flourButton = FlourButton(self.landingPositions[2], 2, charRef.currentSkills, self.actionButton)
+  print('flour button on layer ' .. self.flourButton.layer)
   self.duoButton = DuoButton(self.landingPositions[3], 3, self.skillList)
+  print('duo button on layer ' .. self.duoButton.layer)
   self.itemButton = SoloButton(self.landingPositions[4], 4, charRef.basic)
   self.passButton = SoloButton(self.landingPositions[5], 5, charRef.basic)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton, self.itemButton, self.passButton}
   self.activeButton = self.soloButton
+  sortLayers(self.buttons)
   
   -- consider removing if you use observer pattern to refactor keypress
   self.uiState = 'actionSelect'
@@ -114,20 +117,18 @@ end;
 -- button indexes and layers get changed before this tween goes off, so we know where they will land
 function ActionUI:tweenButtons()
   self.uiState = 'rotating'
-  for i=1,#self.buttons do --in ipairs(self.buttons) do
-    self.buttons[i]:tween(self.landingPositions[self.buttons[i].index], self.buttonTweenDuration, self.easeType)
-  --   flux.to(self.buttons[i].pos, self.moveDuration, 
-  --     {
-  --       x     = self.landingPositions[self.buttons[i].index].x,
-  --       y     = self.landingPositions[self.buttons[i].index].y,
-  --       scale = self.landingPositions[self.buttons[i].index].scale
-  --     })
-  --     :ease(self.easeType)
+
+  for i,button in ipairs(self.buttons) do
+    local landingPos = self.landingPositions[button.index]
+    button:tween(landingPos, self.buttonTweenDuration, self.easeType)
   end
 
-  Timer.after(self.buttonTweenDuration + 0.1, function() self.uiState = 'actionSelect' end)
+  Timer.after(self.buttonTweenDuration + 0.1, 
+    function() 
+      self.uiState = 'actionSelect' 
+      sortLayers(self.buttons)
+    end)
 end;
-
 
 function ActionUI:unset()
   self.x = nil; self.y = nil; self.skillList = nil;
