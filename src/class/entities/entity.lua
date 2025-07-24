@@ -215,10 +215,11 @@ function Entity:heal(amount) --> void
     self.tweens['damage']:stop()
   end
   self.battleStats["hp"] = math.min(self.baseStats["hp"], self.battleStats["hp"] + amount)
-  Signal.emit('OnHPChanged', amount, isDamage)
+  Signal.emit('OnHPChanged', amount, isDamage, Entity.tweenHP)
 end;
 
 function Entity:takeDamage(amount) --> void
+  local isDamage = true
   local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
@@ -237,6 +238,8 @@ function Entity:takeDamage(amount) --> void
   else
     self.currentAnimTag = 'ko'
   end
+
+  Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
 end;
 
 function Entity:takeDamagePierce(amount) --> void
