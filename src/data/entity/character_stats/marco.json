@@ -10,5 +10,5 @@
 	"luck": 10,
 	"growthRate": 1.25,
 	"basic": "basic",
-	"skillPool": ["scone"]
+	"skillPool": ["scone", "donut_man"]
 }

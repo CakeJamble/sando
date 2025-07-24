@@ -33,6 +33,6 @@ return function(ref, qteManager)
             :oncomplete(function() Signal.emit('DespawnProjectile') end)
         end
       end)
-      :oncomplete(function() Signal.emit('NextTurn') end):delay(0.5)
+      :oncomplete(function() Signal.emit('NextTurn') end)
   end)
 end;

@@ -188,6 +188,8 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.uiState = 'submenuing'
           self.activeButton:gamepadpressed(joystick, button)
         end
+      elseif self.uiState == 'submenuing' then
+          self.activeButton:gamepadpressed(joystick, button)
       end
     -- elseif self.uiState == 'submenuing' then
     --   self.activeButton:gamepadpressed(joystick, button)

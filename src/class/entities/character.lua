@@ -124,7 +124,8 @@ function Character:takeDamage(amount)
   end
 
   Entity.takeDamage(self, amount)
-  Signal.emit('OnDamageTaken', self.amount)
+  local isDamage = true
+  Signal.emit('OnHPChanged', self.amount, isDamage)
   -- For Status Effect that prevents KO on own turn
   if self.cannotLose and self.isFocused then
     self.battleStats['hp'] = math.max(1, self.battleStats['hp'])

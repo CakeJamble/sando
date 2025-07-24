@@ -61,11 +61,13 @@ function combat:init()
       end
     end
   )
-  Signal.register('OnDamageTaken',
-    function(amount)
+  Signal.register('OnHPChanged',
+    function(amount, isDamage)
+      local character = self.characterTeamHP[self.targetedCharacterIndex]
+      if not isDamage then amount = -1 * amount end
       local healthDropDuration = 0.5
       local delay = 0.25
-      local newHP = self.characterTeamHP[self.targetedCharacterIndex].currHP - amount
+      local newHP = math.min(character.totalHP, math.max(0, character.currHP - amount))
       flux.to(self.characterTeamHP[self.targetedCharacterIndex], healthDropDuration, {currHP = newHP}):ease('linear'):delay(delay)
     end
   )

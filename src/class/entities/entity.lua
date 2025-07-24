@@ -210,7 +210,9 @@ function Entity:modifyBattleStat(stat_name, amount) --> void
 end;
 
 function Entity:heal(amount) --> void
-  self.battleStats["hp"] = math.min(self.battleStats["hp"], self.battleStats["hp"] + amount)
+  local isDamage = false
+  self.battleStats["hp"] = math.min(self.baseStats["hp"], self.battleStats["hp"] + amount)
+  Signal.emit('OnHPChanged', amount, isDamage)
 end;
 
 function Entity:takeDamage(amount) --> void
