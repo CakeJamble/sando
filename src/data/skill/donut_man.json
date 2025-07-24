@@ -1,0 +1,22 @@
+{
+	"name": "Donut Man",
+	"damage": 0,
+	"isOffensive": false,
+	"targetType": "single",
+	"effects": ["heal"],
+	"chance": 1,
+	"cost": 0,
+	"spritePath": "asset/sprites/entities/character/marco/basic.png",
+	"soundPath": "asset/audio/entities/character/marco/basic.wav",
+	"duration": 0.5,
+	"stagingTime": 1,
+	"stagingType": "near",
+	"qteType": "HOLD_SBP",
+	"qteBonus": ["damage"],
+	"description": "Heals a target.",
+	"unlockedAtLvl": 1,
+	"beginTweenType": "linear",
+	"returnTweenType": "linear",
+	"isDodgeable": false,
+	"hasProjectile": true
+}

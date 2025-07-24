@@ -118,9 +118,10 @@ function FlourButton:keypressed(key)
 end;
 
 function FlourButton:gamepadpressed(joystick, button)
-  if button == 'dpdown' or button == 'dpright' then
+----------------------- Skill Selection -------------------------
+  if button == 'dpdown' then
     self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
-  elseif button == 'dpup' or button == 'dpleft' then
+  elseif button == 'dpup' then
     if self.skillIndex <= 1 then
       self.skillIndex = #self.skillListDisplay
     else
@@ -133,6 +134,12 @@ function FlourButton:gamepadpressed(joystick, button)
       self.selectedSkill = self.skillList[self.skillIndex]
       Signal.emit('SkillSelected', self.selectedSkill)
     end
+
+----------------------- Skill Cancels -------------------------
+  elseif button == 'dpleft' or button == 'dpright' then -- close skill select menu
+    self.displaySkillList = false
+    -- uncomment next line if you want to reset highlighted skill on spin
+    -- self.skillIndex = 1
   end
 end;
 

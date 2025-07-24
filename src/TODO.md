@@ -8,7 +8,8 @@ Feeling a bit tired at the start of the day, so I'm going to rewrite the TODO so
 
 ### TODO
 
-- [ ] Implement a rudimentary Inventory system for Character Team
+- [x] Fix Flour Skill menu navigation by using directional pad to exit skill select menu
+- [ ] Fix target setup to allow character to target teammates when appropriate
 - [ ] Implement a single test skill that heals a target.
 	- [ ] JSON file
 	- [ ] Logic file
