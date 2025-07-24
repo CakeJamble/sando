@@ -2,7 +2,8 @@ Class = require "libs.hump.class"
 Entity = Class{
   movementTime = 2,
   drawHitboxes = false,
-  drawHitboxPositions = false
+  drawHitboxPositions = false,
+  tweenHP = false
 }
 
   -- Entity constructor
@@ -63,7 +64,6 @@ function Entity:init(data, x, y)
     w = data.hbWidth,
     h = data.hbHeight
   }
-  self.tweenHP = false
   self.tweens = {}
 end;
 
@@ -224,7 +224,7 @@ function Entity:takeDamage(amount) --> void
   self.countFrames = true
   local newHP = math.max(0, self.battleStats["hp"] - self.amount)
   
-  if self.tweenHP then
+  if Entity.tweenHP then
     local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
     self.tweens['damage'] = damageTween
   else

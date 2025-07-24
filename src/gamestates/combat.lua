@@ -11,8 +11,9 @@ local generateEncounter = require('util.encounter_generator')
 local imgui = require('libs.cimgui')
 local ffi = require('ffi')
 local showDebugWindow = false
-local checkboxState = ffi.new("bool[1]", false)
-local test = ffi.new("bool[1]", false)
+local hitboxCheckboxState = ffi.new("bool[1]", false)
+local hitboxYPosCheckboxState = ffi.new("bool[1]", false)
+local tweenHPLossCheckboxState = ffi.new("bool[1]", false)
 
 local combat = {}
 local numFloors = 50
@@ -64,8 +65,12 @@ function combat:init()
   Signal.register('OnHPChanged',
     function(amount, isDamage)
       local character = self.characterTeamHP[self.targetedCharacterIndex]
-      if not isDamage then amount = -1 * amount end
-      local healthDropDuration = 0.5
+      local healthDropDuration = 15
+      if not isDamage then 
+        amount = -1 * amount 
+        healthDropDuration = 0.5
+      end
+
       local delay = 0.25
       local newHP = math.min(character.totalHP, math.max(0, character.currHP - amount))
       flux.to(self.characterTeamHP[self.targetedCharacterIndex], healthDropDuration, {currHP = newHP}):ease('linear'):delay(delay)
@@ -159,13 +164,18 @@ function combat:update(dt)
   if showDebugWindow then
     imgui.Begin('Debug Window')
     
-    if imgui.Checkbox("Show Hitboxes", checkboxState) then
-      Entity.drawHitboxes = checkboxState[0]
+    if imgui.Checkbox("Show Hitboxes", hitboxCheckboxState) then
+      Entity.drawHitboxes = hitboxCheckboxState[0]
     end
 
-    if imgui.Checkbox("Show Hitbox Positions", test) then
-      Entity.drawHitboxPositions = test[0]
+    if imgui.Checkbox("Show Hitbox Positions", hitboxYPosCheckboxState) then
+      Entity.drawHitboxPositions = hitboxYPosCheckboxState[0]
     end
+
+    if imgui.Checkbox("Toggle Gradual HP Loss", tweenHPLossCheckboxState) then
+      Entity.tweenHP = tweenHPLossCheckboxState[0]
+    end
+
     imgui.End()
   end
 
