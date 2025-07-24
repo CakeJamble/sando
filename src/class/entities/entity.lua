@@ -1,7 +1,8 @@
 Class = require "libs.hump.class"
 Entity = Class{
   movementTime = 2,
-  drawHitboxes = true
+  drawHitboxes = false,
+  drawHitboxPositions = false
 }
 
   -- Entity constructor
@@ -364,6 +365,15 @@ function Entity:draw() --> void
     love.graphics.setColor(1, 0, 0, 0.4)
     love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)
+  end
+
+  if Entity.drawHitboxPositions then
+    love.graphics.setColor(0,0,0)
+    local v = math.floor(self.hitbox.y)
+    love.graphics.print(v, self.hitbox.x - 50, v)
+    local val = math.floor(self.hitbox.y + self.hitbox.h)
+    love.graphics.print(val, self.hitbox.x - 50, val)
+    love.graphics.setColor(1,1,1)
   end
 
   if self.projectile then

@@ -12,6 +12,7 @@ local imgui = require('libs.cimgui')
 local ffi = require('ffi')
 local showDebugWindow = false
 local checkboxState = ffi.new("bool[1]", false)
+local test = ffi.new("bool[1]", false)
 
 local combat = {}
 local numFloors = 50
@@ -158,6 +159,10 @@ function combat:update(dt)
     
     if imgui.Checkbox("Show Hitboxes", checkboxState) then
       Entity.drawHitboxes = checkboxState[0]
+    end
+
+    if imgui.Checkbox("Show Hitbox Positions", test) then
+      Entity.drawHitboxPositions = test[0]
     end
     imgui.End()
   end

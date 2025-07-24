@@ -286,7 +286,6 @@ function Character:beginJump()
     :onupdate(function()
       if not self.hasLCanceled and landY <= self.pos.y + (self.frameHeight / 4) then
         self.canLCancel = true
-        print('canLCancel')
       end
     end)
     :oncomplete(
@@ -298,7 +297,6 @@ function Character:beginJump()
             self.landingLag = Character.landingLag
             self.canLCancel = false
             self.hasLCanceled = false
-            print('finished landing')
           end)
       end)
   self.tweens['jump'] = jump

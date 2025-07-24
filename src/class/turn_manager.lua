@@ -80,17 +80,9 @@ function TurnManager:init(characterTeam, enemyTeam)
     function(targetType, tIndex)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
-      self.activeEntity.tPos.x = self.activeEntity.target.oPos.x
-      self.activeEntity.tPos.y = self.activeEntity.target.oPos.y
       print('target name is ' .. self.activeEntity.target.entityName)
 
-      -- local displacement = 120
-      -- if self.activeEntity.type == 'character' then
-      --   displacement = -1 * displacement
-      -- end
-
       -- Skill should control qte because some skills deal damage during QTE
-      -- self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
       if self.activeEntity.type == 'character' then
         self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
         self.qteManager.activeQTE:setUI(self.activeEntity)
