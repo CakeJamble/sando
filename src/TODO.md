@@ -4,13 +4,14 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ## 07/24/2025
 
+Feeling a bit tired at the start of the day, so I'm going to rewrite the TODO so that instead of implementing a whole new class, I start out with just a skill, since the main thing I want to make progress towards is the Earthbound style health system. I also need to get on the gamejam game earlier today to catchup to the progress the rest of the team has made.
+
 ### TODO
 
-- [ ] Implement a single test item that heals a target.
+- [ ] Implement a rudimentary Inventory system for Character Team
+- [ ] Implement a single test skill that heals a target.
 	- [ ] JSON file
 	- [ ] Logic file
-	- [ ] Item Loader function
-	- [ ] Item List in the Character Team class
 - [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
 
 ## 07/23/2025
