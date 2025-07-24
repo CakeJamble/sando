@@ -10,10 +10,10 @@ Feeling a bit tired at the start of the day, so I'm going to rewrite the TODO so
 
 - [x] Fix Flour Skill menu navigation by using directional pad to exit skill select menu
 - [x] Fix target setup to allow character to target teammates when appropriate
-- [ ] Implement a single test skill that heals a target.
-	- [ ] JSON file
-	- [ ] Logic file
-- [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
+- [x] Implement a single test skill that heals a target.
+	- [x] JSON file
+	- [x] Logic file
+- [x] Tween the HP of Characters so that the loss can be interrupted by a heal
 
 ## 07/23/2025
 

@@ -63,7 +63,7 @@ function Entity:init(data, x, y)
     w = data.hbWidth,
     h = data.hbHeight
   }
-
+  self.tweenHP = false
   self.tweens = {}
 end;
 
@@ -211,14 +211,26 @@ end;
 
 function Entity:heal(amount) --> void
   local isDamage = false
+  if self.tweens['damage'] then
+    self.tweens['damage']:stop()
+  end
   self.battleStats["hp"] = math.min(self.baseStats["hp"], self.battleStats["hp"] + amount)
   Signal.emit('OnHPChanged', amount, isDamage)
 end;
 
 function Entity:takeDamage(amount) --> void
+  local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
-  self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
+  local newHP = math.max(0, self.battleStats["hp"] - self.amount)
+  
+  if self.tweenHP then
+    local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
+    self.tweens['damage'] = damageTween
+  else
+    self.battleStats["hp"] = newHP
+  end
+  
   if self:isAlive() then
     self.currentAnimTag = 'flinch'
     Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
