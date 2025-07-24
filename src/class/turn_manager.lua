@@ -64,8 +64,13 @@ function TurnManager:init(characterTeam, enemyTeam)
     function(skill)
       print('Setting up QTE Manager for selected skill: ' .. skill.name)
       -- self.qteManager:setQTE(skill.qteType, self.activeEntity.actionButton)
+      if not skill.isOffensive then
+        self.activeEntity.actionUI.targetType = 'characters'
+        self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = true
+      end
       self.activeEntity.skill = skill
       self.activeEntity.actionUI.uiState = 'targeting'
+
     end
   );
 
