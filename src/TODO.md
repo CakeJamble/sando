@@ -14,7 +14,12 @@ Feeling a bit tired at the start of the day, so I'm going to rewrite the TODO so
 	- [x] JSON file
 	- [x] Logic file
 - [x] Tween the HP of Characters so that the loss can be interrupted by a heal
+	- [x] Toggle option in Debug Window
 - [x] Camera to go with the Hold SBP QTE
+
+### Reflection
+
+Productive day on a tight schedule! I am happy with the new Action UI fixes. I enjoyed unwinding my mistakes for the target setup for the most part. And I still enjoy implementing new skills when I have the brain power. It's way easier to implement skills that I don't have to come up with in advance. I think storyboarding these might actually be a good idea! Finally, the tweening of HP was cool. Camera stuff is hard though.
 
 ## 07/23/2025
 
