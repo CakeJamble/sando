@@ -25,7 +25,7 @@ function HoldSBP:init()
 		curr = 0,
 		fin = 1
 	}
-
+	self.focusSelf = false
 	-- qte feedback
 	self.greatText = love.graphics.newImage(QTE.feedbackDir .. 'great.png')
 	self.showGreatText = false
@@ -46,8 +46,15 @@ function HoldSBP:setFeedback(isSuccess)
 end;
 
 function HoldSBP:setUI(activeEntity)
-	local targetPos = activeEntity.target.pos
 	self.cameraReturnPos.x, self.cameraReturnPos.y = camera:position()
+	self.focusSelf = not activeEntity.skill.isOffensive
+	local targetPos
+	if not activeEntity.skill.isOffensive then
+		targetPos = activeEntity.oPos
+	else
+		targetPos = activeEntity.target.pos
+	end
+	
 	self.progressBar.pos.x = targetPos.x - 75
 	self.progressBar.pos.y = targetPos.y + 100
 	self.buttonUIPos.x = self.progressBar.pos.x + 75
@@ -100,8 +107,19 @@ function HoldSBP:handleQTE()
 	if self.isActionButtonPressed then
 		local goalWidth = self.progressBar.containerOptions.width
 		print('starting progress tween')
-		local goalPosX = self.cameraReturnPos.x + 10
-		local goalPosY = self.cameraReturnPos.y - 30
+
+		-- Hardcoded values that need to be determined dynamically!
+		local goalPosX = self.cameraReturnPos.x 
+		local goalPosY = self.cameraReturnPos.y
+
+		if self.focusSelf then
+			goalPosX = goalPosX - 100
+			goalPosY = goalPosY + 30
+		else
+			goalPosX = goalPosX + 10
+			goalPosY = goalPosY - 30
+		end
+
 		print(goalPosX, goalPosY)
 		self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY,scale = 1.25}):ease('linear')
 		self.progressTween = flux.to(self.progressBar.meterOptions, self.duration, {width = goalWidth}):ease('linear')

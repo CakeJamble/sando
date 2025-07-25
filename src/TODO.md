@@ -14,6 +14,7 @@ Feeling a bit tired at the start of the day, so I'm going to rewrite the TODO so
 	- [x] JSON file
 	- [x] Logic file
 - [x] Tween the HP of Characters so that the loss can be interrupted by a heal
+- [x] Camera to go with the Hold SBP QTE
 
 ## 07/23/2025
 
