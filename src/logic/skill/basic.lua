@@ -36,7 +36,7 @@ return function(ref, qteManager)
       -- Attack by charging from left to right
       local attack = flux.to(ref.pos, skill.duration, {x=goalX,y=goalY})
         :ease(skill.beginTweenType)
-        :delay(0.7) -- give animation time to start
+        -- :delay(0.7) -- give animation time to start
         :onupdate(
           -- check collision
           function()

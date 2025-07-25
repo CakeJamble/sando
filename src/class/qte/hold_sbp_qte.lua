@@ -1,7 +1,6 @@
 --! filename: hold_sbp_qte
 require('class.ui.progress_bar')
 require('class.qte.qte')
-
 HoldSBP = Class{__includes = QTE}
 
 function HoldSBP:init()
@@ -14,6 +13,8 @@ function HoldSBP:init()
 	self.waitTween = nil
 	self.doneWaiting = false
 	self.progressTween = nil
+	self.cameraTween = nil
+	self.cameraReturnPos = {x=0,y=0}
 	self.progressBarComplete = false
 	self.actionButton = nil
 	self.qteButton = nil
@@ -46,6 +47,7 @@ end;
 
 function HoldSBP:setUI(activeEntity)
 	local targetPos = activeEntity.target.pos
+	self.cameraReturnPos.x, self.cameraReturnPos.y = camera:position()
 	self.progressBar.pos.x = targetPos.x - 75
 	self.progressBar.pos.y = targetPos.y + 100
 	self.buttonUIPos.x = self.progressBar.pos.x + 75
@@ -98,6 +100,10 @@ function HoldSBP:handleQTE()
 	if self.isActionButtonPressed then
 		local goalWidth = self.progressBar.containerOptions.width
 		print('starting progress tween')
+		local goalPosX = self.cameraReturnPos.x + 10
+		local goalPosY = self.cameraReturnPos.y - 30
+		print(goalPosX, goalPosY)
+		self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY,scale = 1.25}):ease('linear')
 		self.progressTween = flux.to(self.progressBar.meterOptions, self.duration, {width = goalWidth}):ease('linear')
 			:onupdate(function()
 				if self.progressBar.meterOptions.width >= goalWidth * 0.9 then
@@ -181,6 +187,6 @@ function HoldSBP:draw()
 		-- love.graphics.setColor(0, 0, 0)
 		love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 		love.graphics.setColor(1,1,1)
-		love.graphics.draw(self.buttonUI, self.buttonUIPos.x + 16, self.buttonUIPos.y + 16)
+		love.graphics.draw(self.buttonUI, self.buttonUIPos.x + 14, self.buttonUIPos.y + 14, 0, 2.5, 2.5)
 	end
 end;

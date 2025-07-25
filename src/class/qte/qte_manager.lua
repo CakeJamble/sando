@@ -63,11 +63,6 @@ function QTEManager:loadButtonImages(buttonDir)
 			pressed = love.graphics.newImage(buttonPaths.yPressed),
 			val = 'y'
 		},
-		z = { -- temp for testing
-			raised = love.graphics.newImage(buttonPaths.aRaised),
-			pressed = love.graphics.newImage(buttonPaths.aPressed),
-			val = 'z'
-		}
 	}
 	return buttons
 end;

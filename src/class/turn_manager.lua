@@ -86,7 +86,6 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
       print('target name is ' .. self.activeEntity.target.entityName)
-
       -- Skill should control qte because some skills deal damage during QTE
       if self.activeEntity.type == 'character' then
         self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
@@ -107,6 +106,12 @@ function TurnManager:init(characterTeam, enemyTeam)
     function()
       print('attacking')
       self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
+      local skillDur = self.activeEntity.skill.duration
+      local qteDur = 0
+      if self.activeEntity.type == 'character' then
+        qteDur = qteDur + self.qteManager.activeQTE.duration
+      end
+      self:resetCamera(skillDur + qteDur)
     end
   );
 
@@ -131,6 +136,17 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('Projectile destroyed')
     end
   )
+end;
+
+function TurnManager:resetCamera(delay)
+  local goalX, goalY = camera:position()
+  if self.qteManager.activeQTE then
+    local goalX = self.qteManager.activeQTE.cameraReturnPos.x
+    local goalY = self.qteManager.activeQTE.cameraReturnPos.y
+  end
+  local cameraDelay = 0.5
+  delay = delay + cameraDelay
+  flux.to(camera, 0.5, {x = goalX, y = goalY,scale = 1}):delay(delay)
 end;
 
 function TurnManager:populateTurnQueue()

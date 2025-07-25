@@ -239,7 +239,7 @@ function Entity:takeDamage(amount) --> void
     self.currentAnimTag = 'ko'
   end
 
-  Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
+  -- Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
 end;
 
 function Entity:takeDamagePierce(amount) --> void

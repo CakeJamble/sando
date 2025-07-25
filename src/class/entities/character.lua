@@ -134,7 +134,7 @@ function Character:takeDamage(amount)
   if bonusApplied then
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
-
+Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
   self:recoil()
 end;
 
