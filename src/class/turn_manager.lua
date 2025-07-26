@@ -69,6 +69,9 @@ function TurnManager:init(characterTeam, enemyTeam)
       if not skill.isOffensive then
         self.activeEntity.actionUI.targetType = 'characters'
         self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = true
+      else
+        self.activeEntity.actionUI.targetType = 'enemies'
+        self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = false
       end
       self.activeEntity.skill = skill
       self.activeEntity.actionUI.uiState = 'targeting'
