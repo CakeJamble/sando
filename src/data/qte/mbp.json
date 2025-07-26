@@ -7,7 +7,7 @@
 		"h": 35,
 		"min": 0,
 		"max": 100,
-		"WModifier": "0.95"
+		"wModifier": "0.95"
 	},
 	"inputContainerOptions": {
 		"x": 0,
@@ -21,6 +21,7 @@
 	"baseY": "-25",
 	"buttons": ["a","b","x","y"],
 	"waitDuration": 1,
+	"duration": 3,
 	"feedbackList": ["great.png"],
 	"instructions": "Press the buttons in the order they appear"
 }

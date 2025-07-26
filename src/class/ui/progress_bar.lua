@@ -3,11 +3,12 @@ Class = require 'libs.hump.class'
 
 ProgressBar = Class{}
 
-function ProgressBar:init(targetPos, options)
+function ProgressBar:init(targetPos, options, isOffensive)
 	self.pos = {
 		x = targetPos.x + options.xOffset,
 		y = targetPos.y + options.yOffset
-	} 				-- pos = {x, y}
+	}
+	self.offsets = {x=options.xOffset, y=options.yOffset}
 	self.min = options.min
 	self.max = options.max
 
@@ -17,7 +18,6 @@ function ProgressBar:init(targetPos, options)
 		height = options.h
 	}
 
-
 	self.meterStartingWidth = options.w * options.wModifier
 	self.meterOptions = {
 		color = {0, 1, 0},
@@ -25,6 +25,18 @@ function ProgressBar:init(targetPos, options)
 		width = self.meterStartingWidth,
 		height = options.h * 0.95
 	}
+
+	if not isOffensive then
+		self:reversePosOffsets()
+	end
+end;
+
+--[[	When using buffs/heals we want the 
+			Progress Bar to display near the entity using the skill, 
+			rather than the target of the skill ]]
+function ProgressBar:reversePosOffsets()
+	self.pos.x = self.pos.x - 2 * self.offsets.x
+	self.pos.y = self.pos.y - self.offsets.y
 end;
 
 function ProgressBar:reset()

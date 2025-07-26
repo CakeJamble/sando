@@ -60,7 +60,7 @@ function mbpQTE:setUI(activeEntity)
 	self:readyCamera(isOffensive)
 
 	local tPos = activeEntity.pos
-	self.progressBar = ProgressBar(tPos, self.progressBarOptions)
+	self.progressBar = ProgressBar(tPos, self.progressBarOptions, isOffensive)
 
 	self.inputSequenceContainerDims.x = self.inputSequenceContainerDims.x + self.progressBar.pos.x
 	self.inputSequenceContainerDims.y = self.inputSequenceContainerDims.y + self.progressBar.pos.y
@@ -109,14 +109,17 @@ function mbpQTE:gamepadpressed(joystick, button)
 
 		if self.buttonsIndex > self.inputSequenceLength then
 			print('MBP QTE Success')
-			self.showGreatText = true
-			flux.to(self.feedbackPos, 1, {a=0}):delay(1)
+			self.showFeedback = true
+			flux.to(self.feedbackPos, 1, {a=0}):delay(0.25)
 			self.progressTween:stop()
 			Signal.emit('OnQTESuccess')
 			self.signalEmitted = true
 			self.qteComplete = true
 		end
 	end
+end;
+
+function mbpQTE:gamepadreleased(joystick, button)
 end;
 
 function mbpQTE:moveInputSequenceDown()
@@ -133,7 +136,6 @@ function mbpQTE:reset()
 end;
 
 function mbpQTE:update(dt)
-	QTE.update(self, dt)
 	if self.doneWaiting and not self.signalEmitted then
 		Signal.emit('Attack')
 		self.signalEmitted = true
@@ -144,6 +146,7 @@ function mbpQTE:draw()
 	-- if self.showPrompt and self.frameWindow then
 	-- 	love.graphics.draw(self.actionButtonQTE, self.instructionsPos.x, self.instructionsPos.y, 0, 0.75, 0.75)
 	-- end
+	QTE.draw(self)
 	if not self.qteComplete then
 		self.progressBar:draw()
 		love.graphics.rectangle('fill', self.inputSequenceContainerDims.x, self.inputSequenceContainerDims.y, 
@@ -153,26 +156,15 @@ function mbpQTE:draw()
 		love.graphics.setColor(1,1,1)
 		self:drawInputButtons()
 	end
-	if self.instructions ~= nil then
-		love.graphics.setColor(0, 0, 0)
-		love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
-		love.graphics.setColor(1, 1, 1)
-	end
-	if self.showGreatText then
-		love.graphics.setColor(1,1,1,self.feedbackPos.a)
-		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)
-		love.graphics.setColor(1,1,1,1)
-	end
 end;
 
 function mbpQTE:drawInputButtons()
 	for i,button in ipairs(self.inputSequence) do
 		local yOffset = self.offset * (i-1)
-		love.graphics.setColor(0, 0, 1, self.alphas[i])
 		local rotation = 0
-		local scale = 0.4
 		local xOffset = 25
-		love.graphics.draw(button.raised, self.currentInputContainerDims.x - xOffset, self.baseY - yOffset, rotation, scale)
-		love.graphics.setColor(1, 1, 1, 1)
+		if i >= self.buttonsIndex then
+			love.graphics.draw(button.raised, self.currentInputContainerDims.x - xOffset, self.baseY - yOffset, rotation, self.buttonUIScale)
+		end
 	end
 end;

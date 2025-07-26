@@ -37,10 +37,10 @@ function HoldSBP:setUI(activeEntity)
 	if isOffensive then
 		targetPos = activeEntity.target.oPos
 	else
-		targetPos = activeEntity.oPos		
+		targetPos = activeEntity.oPos
 	end
 
-	self.progressBar = ProgressBar(targetPos, self.progressBarOptions)
+	self.progressBar = ProgressBar(targetPos, self.progressBarOptions, isOffensive)
 	self.buttonUIPos.x = self.progressBar.pos.x + self.buttonUIOffsets.x
 	self.buttonUIPos.y = self.progressBar.pos.y + self.buttonUIOffsets.y
 
@@ -53,7 +53,8 @@ end;
 function HoldSBP:reset()
 	QTE.reset(self)
 	self.actionButton = nil
-	self.progressBar:reset()
+	self.progressBar = nil
+	-- self.progressBar:reset()
 	self.waitForPlayer.curr = 0
 	self.progressBarComplete = false
 	self.doneWaiting = false

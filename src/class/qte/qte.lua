@@ -31,7 +31,12 @@ end;
 
 function QTE:readyCamera(isOffensive)
 	self.cameraReturnPos.x, self.cameraReturnPos.y = camera:position()
-	self.focuseSelf = not isOffensive
+	if isOffensive then 
+		self.focusSelf = false 
+	else 
+		self.focusSelf = true 
+		
+	end
 end;
 
 function QTE:reset()
