@@ -6,41 +6,51 @@ QTE = Class{
 	inputDir = 'asset/sprites/input_icons/'
 }
 
-function QTE:init()
-	self.type = ''
-	self.instructions = nil
-	self.instructionsPos = {x = 200, y = 80}
-	self.feedbackPos = {x = 250, y = 90, a = 1}
-	self.offset = 0
+function QTE:init(data)
+	self.duration = data.duration
+	self.qteComplete = false
+	self.signalEmitted = false
 
-	self.currQTEFrame = 0
-	self.currFeedbackFrame = 0
-	self.numFeedbackFrames = 45
-	self.showPrompt = false
-	self.countQTEFrames = falsef
-	self.countFeedbackFrames = false
+	self.cameraTween = nil
+	self.cameraReturnPos = {x=0,y=0}
+	self.focusSelf = false
+
+	self.instructions = data.instructions
+	self.instructionsPos = {x = 200, y = 80}
+	
+	self.buttonUI = nil
+	self.buttonUIPos = {x=0,y=0}
+	self.buttonUIScale = 2.5
+
+	self.feedbackUI = data.feedbackList
+	self.feedbackIndex = 1
+	self.showFeedback = false
+	self.feedbackPos = {x = 250, y = 90, a = 1}
+	self.feedbackOffsets = {x=25, y=-25}
+end;
+
+function QTE:readyCamera(isOffensive)
+	self.cameraReturnPos.x, self.cameraReturnPos.y = camera:position()
+	self.focuseSelf = not isOffensive
 end;
 
 function QTE:reset()
-	self.currQTEFrame = 0
-	self.currFeedbackFrame = 0
-	self.countQTEFrames = false
-	self.countFeedbackFrames = false
-	self.showPrompt = false
-end;
-
-function QTE:gamepadreleased(joystick, button)
-end;
-
-function QTE:update(dt)
-	if self.countQTEFrames then
-		self.currQTEFrame = self.currQTEFrame + 1
-	end
-	if self.countFeedbackFrames then
-		self.currFeedbackFrame = self.currFeedbackFrame + 1
-	end
+	self.showFeedback = false
+	self.qteComplete = false
+	self.signalEmitted = false
+	self.instructions = nil
 end;
 
 function QTE:draw()
-	love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
+	if self.instructions then
+		love.graphics.setColor(0, 0, 0)
+		love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
+		love.graphics.setColor(1, 1, 1)
+	end
+
+	if self.showFeedback then
+		love.graphics.setColor(1,1,1, self.feedbackPos.a)
+		love.graphics.draw(self.feedbackUI[self.feedbackIndex], self.feedbackPos.x, self.feedbackPos.y)
+		love.graphics.setColor(1,1,1,1)
+	end
 end;

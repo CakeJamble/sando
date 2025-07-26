@@ -1,0 +1,20 @@
+{
+	"name": "RandSBP",
+	"smallCircleOptions": {
+		"mode": "fill",
+		"r": 10,
+		"x": -75,
+		"y": 100,
+		"xSpace": 25
+	},
+	"largeCircleScale": 3,
+	"buttonUIOffsets": {
+		"x": 90,
+		"y": 1
+	},
+	"waitDuration": 1,
+	"timeBtwnLights": 0.75,
+	"numSmallCircles": 3,
+	"feedbackList": ["great.png"],
+	"instructions": "Press the button when it appears!"
+}

@@ -2,6 +2,15 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 07/26/2025
+
+Was feeling really tired so I took yesterday off. Today, I want to focus in on planning some features and how to scale things sustainably. I think doing something with the QTE class by setting data in JSON files similar to other things would be a good idea. I also think my attempt with the flyweight pattern isn't paying off. I originally thought that I was saving overhead by keeping a single object in scope, but if I set everything to nil in the `reset()`, then I'm not really saving any space. I also should definitely clean up the class hierarchy, because there's a lot of reused code.
+
+### TODO
+
+- [ ] Cleanup QTE Inheritence Hierarchy
+	- [ ] Move things to base class that are being reused
+
 ## 07/24/2025
 
 Feeling a bit tired at the start of the day, so I'm going to rewrite the TODO so that instead of implementing a whole new class, I start out with just a skill, since the main thing I want to make progress towards is the Earthbound style health system. I also need to get on the gamejam game earlier today to catchup to the progress the rest of the team has made.

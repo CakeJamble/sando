@@ -3,85 +3,64 @@ require('class.ui.progress_bar')
 require('class.qte.qte')
 HoldSBP = Class{__includes = QTE}
 
-function HoldSBP:init()
+function HoldSBP:init(data)
 	-- progress bar
-	QTE.init(self)
-	self.skill = nil
-	self.qteComplete = false
-	local pbPos = {x = 100, y = 100}
-	self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100, 0.05)
+	QTE.init(self, data)
+	-- self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100, 0.05)
+	self.progressBarOptions = data.progressBarOptions
+	self.buttonUIOffsets = data.buttonUIOffsets
 	self.waitTween = nil
-	self.doneWaiting = false
 	self.progressTween = nil
-	self.cameraTween = nil
-	self.cameraReturnPos = {x=0,y=0}
 	self.progressBarComplete = false
 	self.actionButton = nil
-	self.qteButton = nil
-	self.instructions = nil
-	self.duration = 2
 	self.waitForPlayer = {
-		start = 0,
 		curr = 0,
-		fin = 1
+		fin = data.waitDuration
 	}
-	self.focusSelf = false
-	-- qte feedback
-	self.greatText = love.graphics.newImage(QTE.feedbackDir .. 'great.png')
-	self.showGreatText = false
 	self.buttonUI = nil
-	self.buttonUIPos = {
-		x = pbPos.x + 100,
-		y = pbPos.y
-	}
+	self.buttonUIIndex = 'raised'
+	self.buttonUIPos = {x=0,y=0}
 	self.isActionButtonPressed = false
-	self.signalEmitted = false
 end;
 
-function HoldSBP:setFeedback(isSuccess)
-	if isSuccess then
-		self.showGreatText = true
-		self.countFeedbackFrames = true
-	end
+function HoldSBP:setActionButton(actionButton, buttonUI)
+	self.actionButton = actionButton
+	self.buttonUI = buttonUI
+	self.instructions = "Hold " .. string.upper(actionButton) .. " until the meter is filled!"
 end;
 
 function HoldSBP:setUI(activeEntity)
-	self.cameraReturnPos.x, self.cameraReturnPos.y = camera:position()
-	self.focusSelf = not activeEntity.skill.isOffensive
+	local isOffensive = activeEntity.skill.isOffensive
+	self:readyCamera(isOffensive)
+
 	local targetPos
-	if not activeEntity.skill.isOffensive then
-		targetPos = activeEntity.oPos
+	if isOffensive then
+		targetPos = activeEntity.target.oPos
 	else
-		targetPos = activeEntity.target.pos
+		targetPos = activeEntity.oPos		
 	end
-	
-	self.progressBar.pos.x = targetPos.x - 75
-	self.progressBar.pos.y = targetPos.y + 100
-	self.buttonUIPos.x = self.progressBar.pos.x + 75
-	self.buttonUIPos.y = self.progressBar.pos.y - 15
-	self.feedbackPos.x = targetPos.x + 25
-	self.feedbackPos.y = targetPos.y - 25
+
+	self.progressBar = ProgressBar(targetPos, self.progressBarOptions)
+	self.buttonUIPos.x = self.progressBar.pos.x + self.buttonUIOffsets.x
+	self.buttonUIPos.y = self.progressBar.pos.y + self.buttonUIOffsets.y
+
+	self.feedbackPos.x = targetPos.x + self.feedbackOffsets.x
+	self.feedbackPos.y = targetPos.y + self.feedbackOffsets.y
+
+	self.instructions = 'Hold ' .. self.actionButton .. ' until the meter is full!'
 end;
 
 function HoldSBP:reset()
 	QTE.reset(self)
-	self.showGreatText = false
 	self.actionButton = nil
 	self.progressBar:reset()
 	self.waitForPlayer.curr = 0
 	self.progressBarComplete = false
 	self.doneWaiting = false
 	self.progressTween = nil
-	self.qteComplete = false
-	self.signalEmitted = false
 end;
 
 function HoldSBP:update(dt)
-	QTE.update(self, dt)
-	if self.currFeedbackFrame > self.numFeedbackFrames then
-		self.showGreatText = false
-	end
-
 	if self.doneWaiting and not self.signalEmitted then
 		Signal.emit('Attack')
 		self.signalEmitted = true
@@ -126,19 +105,18 @@ function HoldSBP:handleQTE()
 			:onupdate(function()
 				if self.progressBar.meterOptions.width >= goalWidth * 0.9 then
 					self.progressBarComplete = true -- close enough
-					self.buttonUI = self.qteButton.raised
+					self.buttonUIIndex = 'raised'
 				end
 			end)
 			:oncomplete(function()
 				self.progressBarComplete = true
-				self.waitForPlayer.curr = self.waitForPlayer.start
-				flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
+				self.waitForPlayer.curr = 0
+				self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 					:oncomplete(function()
 						self.qteComplete = true
 						if not self.signalEmitted then
 							print('Failed to end in time. Attacking now')
 							local qteSuccess = false
-							-- Signal.emit('Attack', qteSuccess)
 							self.signalEmitted = true
 						end
 					end)
@@ -149,7 +127,7 @@ end;
 function HoldSBP:gamepadpressed(joystick, button)
 	if button == self.actionButton then
 		self.isActionButtonPressed = true
-		self.buttonUI = self.qteButton.pressed
+		self.buttonUIIndex = 'pressed'
 
 		if self.waitForPlayer.curr < self.waitForPlayer.fin then
 			self.waitTween:stop()
@@ -170,17 +148,16 @@ function HoldSBP:gamepadreleased(joystick, button)
 				if not self.signalEmitted then
 					print('Ended too early. Attacking now')
 					local qteSuccess = false
-					-- Signal.emit('Attack', qteSuccess)
-					-- self.signalEmitted = true
+					self.signalEmitted = true
 				end
 			elseif not self.qteComplete then
 				print('Hold SBP QTE Success')
-				self.showGreatText = true
+				self.waitTween:stop()
+				self.showFeedback = true
 				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
 					:oncomplete(function() self.feedbackPos.a = 1 end)
 				if not self.signalEmitted then
 					local qteSuccess = true
-					-- Signal.emit('Attack', qteSuccess)
 					Signal.emit('OnQTESuccess')
 					self.signalEmitted = true
 				end
@@ -190,21 +167,12 @@ function HoldSBP:gamepadreleased(joystick, button)
 end;
 
 function HoldSBP:draw()
-	if self.showGreatText then
-		love.graphics.setColor(1,1,1, self.feedbackPos.a)
-		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)
-		love.graphics.setColor(1,1,1,1)
-	end
-	if self.instructions ~= nil then
-		love.graphics.setColor(0, 0, 0)
-		love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
-		love.graphics.setColor(1, 1, 1)
-	end
+	QTE.draw(self)
 	if not self.qteComplete then
 		self.progressBar:draw()
 		-- love.graphics.setColor(0, 0, 0)
 		love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 		love.graphics.setColor(1,1,1)
-		love.graphics.draw(self.buttonUI, self.buttonUIPos.x + 14, self.buttonUIPos.y + 14, 0, 2.5, 2.5)
+		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.buttonUIPos.x + 14, self.buttonUIPos.y + 14, 0, self.buttonUIScale, self.buttonUIScale)
 	end
 end;

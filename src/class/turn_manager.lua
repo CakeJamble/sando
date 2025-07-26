@@ -14,7 +14,7 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.activeEntity = nil
   self.turnSpentQueue = {}
   self.rewards = {}
-  self.qteManager = QTEManager()
+  self.qteManager = QTEManager(characterTeam)
   self.combatHazards = {
     characterHazards = {},
     enemyHazards = {}

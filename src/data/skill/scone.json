@@ -11,7 +11,7 @@
 	"duration": 2,
 	"stagingTime": 1,
 	"stagingType": "far",
-	"qteType": "MULTI_BUTTON_PRESS",
+	"qteType": "mbp",
 	"qteBonus": ["damage"],
 	"description": "Deals physical damage to a single target.",
 	"unlockedAtLvl": 1,

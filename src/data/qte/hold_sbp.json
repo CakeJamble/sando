@@ -1,7 +1,19 @@
 {
 	"name": "HoldSBP",
-	"progressBarPosition": [100, 300],
-	"startupWaitingDuration": 1,
-	"qteDuration": 2,
-	"feedbackFileNames": ["great.png"]
+	"progressBarOptions": {
+		"xOffset": -75, 
+		"yOffset": 100,
+		"w": 100,
+		"h": 35,
+		"min": 0,
+		"max": 100,
+		"wModifier": "0.05"
+	},
+	"buttonUIOffsets": {
+		"x": 90,
+		"y": 1
+	},
+	"waitDuration": 1,
+	"duration": 2,
+	"feedbackList": ["great.png"]
 }
