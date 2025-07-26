@@ -113,6 +113,7 @@ function QTEManager:setQTE(qteType, actionButton, skill)
 	elseif qteType == 'hold_sbp' then
 		self.qteTable.holdSBP:setActionButton(actionButton, self.buttons[actionButton])
 		self.activeQTE = self.qteTable.holdSBP
+		self.activeQTE.instructions = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
 	elseif qteType == 'rand_sbp' then
 		local buttons = {'a', 'b', 'x', 'y'}
 		local randIndex = buttons[love.math.random(1, #buttons)]
@@ -121,6 +122,24 @@ function QTEManager:setQTE(qteType, actionButton, skill)
 		self.qteTable.randSBP.button = self.buttons[randIndex].raised
 		self.activeQTE = self.qteTable.randSBP
 	end
+end;
+
+function QTEManager:getInstructions(qteType, actionButton)
+	local result
+	if qteType == 'sbp' then
+		result = 'Press ' .. string.upper(actionButton) .. ' just before hitting the enemy!'
+	elseif qteType == 'stick_move' then
+	    --do
+	elseif qteType == 'mbp' then
+		result = 'Press the buttons in order!'
+	elseif qteType == 'hold_sbp' then
+		result = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
+	elseif qteType == 'rand_sbp' then
+		result = 'Press the button when it appears!'
+	end
+
+
+	return result
 end;
 
 function QTEManager:gamepadpressed(joystick, button)

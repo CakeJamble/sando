@@ -62,7 +62,7 @@ function Character:init(data, actionButton)
 
   self.isGuarding = false
   self.canGuard = false
-  self.canJump = true
+  self.canJump = false
   self.isJumping = false
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
@@ -74,6 +74,7 @@ function Character:init(data, actionButton)
         :oncomplete(function()
           self.oPos.x = self.pos.x
           self.oPos.y = self.pos.y
+          self.canJump = true
         end)
     end
   )

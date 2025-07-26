@@ -8,8 +8,14 @@ Was feeling really tired so I took yesterday off. Today, I want to focus in on p
 
 ### TODO
 
-- [ ] Cleanup QTE Inheritence Hierarchy
-	- [ ] Move things to base class that are being reused
+- [x] Cleanup QTE Inheritence Hierarchy
+	- [x] Move things to base class that are being reused
+- [x] Display QTE Instructions before selecting target
+- [ ] Refactor QTEs to use JSON data to initialize objects
+	- [x] Hold SBP
+	- [ ] Rand SBP
+	- [ ] MBP
+	- [ ] SBP
 
 ## 07/24/2025
 

@@ -47,7 +47,7 @@ function HoldSBP:setUI(activeEntity)
 	self.feedbackPos.x = targetPos.x + self.feedbackOffsets.x
 	self.feedbackPos.y = targetPos.y + self.feedbackOffsets.y
 
-	self.instructions = 'Hold ' .. self.actionButton .. ' until the meter is full!'
+	-- self.instructions = 'Hold ' .. string.upper(self.actionButton) .. ' until the meter is full!'
 end;
 
 function HoldSBP:reset()

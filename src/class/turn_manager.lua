@@ -20,6 +20,8 @@ function TurnManager:init(characterTeam, enemyTeam)
     enemyHazards = {}
   }
   self.setupDelay = 0.75
+  self.instructions = nil
+  self.instructionsPos = {x=200,y=300}
 
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
@@ -71,18 +73,24 @@ function TurnManager:init(characterTeam, enemyTeam)
       self.activeEntity.skill = skill
       self.activeEntity.actionUI.uiState = 'targeting'
 
+      if self.activeEntity.type == 'character' then
+        self.instructions = self.qteManager:getInstructions(skill.qteType, self.activeEntity.actionButton)
+      end
+
     end
   );
 
   Signal.register('SkillDeselected',
     function ()
       self.qteManager:reset()
+      self.instructions = nil
       self.activeEntity.skill = nil
     end
   );
 
   Signal.register('TargetConfirm',
     function(targetType, tIndex)
+      self.instructions = nil
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
       print('target name is ' .. self.activeEntity.target.entityName)
@@ -256,4 +264,9 @@ end;
 
 function TurnManager:draw()
   self.qteManager:draw()
+  if self.instructions then
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
+    love.graphics.setColor(1, 1, 1)
+  end
 end;
