@@ -1,6 +1,6 @@
 {
 	"name": "Charge",
-	"damage": 0,
+	"damage": 10,
 	"effects": ["damage"],
 	"chance": 1,
 	"spritePath": "asset/sprites/entities/Enemy/Line/basic.png",

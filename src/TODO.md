@@ -2,16 +2,39 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
-## 07/24/2025
+## 07/26/2025
+
+Was feeling really tired so I took yesterday off. Today, I want to focus in on planning some features and how to scale things sustainably. I think doing something with the QTE class by setting data in JSON files similar to other things would be a good idea. I also think my attempt with the flyweight pattern isn't paying off. I originally thought that I was saving overhead by keeping a single object in scope, but if I set everything to nil in the `reset()`, then I'm not really saving any space. I also should definitely clean up the class hierarchy, because there's a lot of reused code.
 
 ### TODO
 
-- [ ] Implement a single test item that heals a target.
-	- [ ] JSON file
-	- [ ] Logic file
-	- [ ] Item Loader function
-	- [ ] Item List in the Character Team class
-- [ ] Tween the HP of Characters so that the loss can be interrupted by a heal
+- [x] Cleanup QTE Inheritence Hierarchy
+	- [x] Move things to base class that are being reused
+- [x] Display QTE Instructions before selecting target
+- [ ] Refactor QTEs to use JSON data to initialize objects
+	- [x] Hold SBP
+	- [ ] Rand SBP
+	- [x] MBP
+	- [ ] SBP
+
+## 07/24/2025
+
+Feeling a bit tired at the start of the day, so I'm going to rewrite the TODO so that instead of implementing a whole new class, I start out with just a skill, since the main thing I want to make progress towards is the Earthbound style health system. I also need to get on the gamejam game earlier today to catchup to the progress the rest of the team has made.
+
+### TODO
+
+- [x] Fix Flour Skill menu navigation by using directional pad to exit skill select menu
+- [x] Fix target setup to allow character to target teammates when appropriate
+- [x] Implement a single test skill that heals a target.
+	- [x] JSON file
+	- [x] Logic file
+- [x] Tween the HP of Characters so that the loss can be interrupted by a heal
+	- [x] Toggle option in Debug Window
+- [x] Camera to go with the Hold SBP QTE
+
+### Reflection
+
+Productive day on a tight schedule! I am happy with the new Action UI fixes. I enjoyed unwinding my mistakes for the target setup for the most part. And I still enjoy implementing new skills when I have the brain power. It's way easier to implement skills that I don't have to come up with in advance. I think storyboarding these might actually be a good idea! Finally, the tweening of HP was cool. Camera stuff is hard though.
 
 ## 07/23/2025
 

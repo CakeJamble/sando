@@ -4,15 +4,24 @@ local Collision = require('libs.collision')
 
 return function(ref)
 	local skill = ref.skill
-  local yOffset = ref.frameHeight - ref.target.frameHeight
-  local goalX, goalY = ref.target.oPos.x, ref.target.oPos.y - yOffset
-  local stagingPos = {x = ref.tPos.x, y = ref.tPos.y - yOffset}
+
+  local yOffset = ref.hitbox.h - ref.target.hitbox.h
+  if ref.hitbox.h < ref.target.hitbox.h then
+    yOffset = -1 * yOffset
+  end
+
+  local xOffset = 50
+  local tPos = ref.target.hitbox
+  local goalX, goalY = tPos.x - xOffset, tPos.y + yOffset
+
   local hasCollided = false
-  local damage = 0 + ref.battleStats['attack']
+  local damage = ref.battleStats['attack'] + skill.damage
 
   local spaceFromTarget = calcSpacingFromTarget(skill.stagingType, ref.type)
-  stagingPos.x = stagingPos.x + spaceFromTarget.x
-  stagingPos.y = stagingPos.y + spaceFromTarget.y
+  local stagingPos = {
+    x = tPos.x + spaceFromTarget.x,
+    y = goalY + spaceFromTarget.y
+  }
   ref.tPos.x = stagingPos.x
   ref.tPos.y = stagingPos.y
 
@@ -25,7 +34,7 @@ return function(ref)
         ref.currentAnimTag = skill.tag
         Timer.after(1,
           function()
-            local attack = flux.to(ref.pos, skill.duration, {x = goalX - 80, y = goalY})
+            local attack = flux.to(ref.pos, skill.duration, {x = goalX, y = goalY})
               :ease(skill.beginTweenType)
               :onupdate(function()
                 if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
@@ -36,7 +45,6 @@ return function(ref)
                     ref.target:stopTween('jump')
                     ref:attackInterrupt()
                     ref.target:beginJump()
-                    print('counterattack success')
                   else
                     ref.target:takeDamage(damage)
                     print('collision')

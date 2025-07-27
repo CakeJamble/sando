@@ -65,60 +65,12 @@ function Button:setTargetPos(tX, speedMul)
     self.dX = Button.BASE_DX * speedMul
 end;
 
-function Button:isRotatingRight()
-  return self.x < self.tX
-end;
-
-function Button:isRotatingLeft()
-  return self.x > self.tX
-end;
-
 function Button:setIsActiveButton(isActive)
   self.isActiveButton = isActive
   if isActive then
     self.scaleFactor = 1
   else
       self.scaleFactor = Button.SCALE_DOWN
-  end
-end;
-
-function Button:isFinishedRotating() --> boolean
-  return self.x == self.tX
-end;
-
--- cant set members of class in this context
-function Button.rotateRight(self, dt)
-  self.x = self.x + self.dX * dt
-  if self.active then
-    self.scaleFactor = self.scaleFactor + dt
-  else
-    self.scaleFactor = self.scaleFactor - dt
-  end
-    
-    if self.x > self.tX then
-      self.x = self.tX
-      if self.active then
-        self.scaleFactor = 1
-      else
-        self.scaleFactor = Button.SCALE_DOWN
-      end
-    end
-end;
-
-function Button.rotateLeft(self, dt)
-  self.x = self.x - self.dX * dt
-  if self.active then
-    self.scaleFactor = self.scaleFactor + dt
-  else
-    self.scaleFactor = math.max(self.scaleFactor - dt, Button.SCALE_DOWN)
-  end
-  if self.x < self.tX then
-    self.x = self.tX
-    if self.active then
-      self.scaleFactor = 1
-    else
-      self.scaleFactor = Button.SCALE_DOWN
-    end
   end
 end;
 

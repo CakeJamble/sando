@@ -9,55 +9,46 @@ Class = require 'libs.hump.class'
 
 	mbpQTE = Class{__includes = QTE}
 
-function mbpQTE:init()
-	QTE.init(self)
-	self.duration = 2
+function mbpQTE:init(data)
+	QTE.init(self, data)
 	self.inputSequenceLength = 4
 	self.type = 'mbp'
 	self.pos = {x = nil, y = nil}
-	self.instructions = 'Press the buttons in the order they appear'
-	self.frameWindow = nil
 	self.waitTween = nil
 	self.progressTween = nil
 	-- progress bar
-	local pbPos = {100, 300}
-	self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100, 0.95)
-	self.waitForPlayer = {
-		start = 0,
-		curr = 0,
-		fin = 1.5
-	}
+	self.progressBarOptions = data.progressBarOptions
+	-- local pbPos = {100, 300}
+	-- self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100, 0.95)
 	self.progressBarComplete = false
-	self.signalEmitted = false
-	self.qteComplete = false
+
+	self.waitForPlayer = {
+		curr = 0,
+		fin = data.waitDuration
+	}
 
 	-- face buttons
+	self.buttonsStr = data.buttons
 	self.buttons = nil
 	self.currentButton = nil
 	self.inputSequence = {}
 	self.buttonsIndex = 1
 
 	-- rectangle container for input sequence
-	self.inputSequenceContainerDims = {
-		x=0,y=0,
-		w=40,h=175
-	}
+	self.inputSequenceContainerDims = data.inputContainerOptions
 	self.alphas = {}
-	self.baseY = 0
+	self.baseY = data.baseY
 	self.offset = 45
 	-- circle holding the current (at the bottom of the rectangle container)
-	self.currentInputContainerDims = {x=0,y=0,r=25}
-	-- qte feedback (add more?)
-	self.greatText = love.graphics.newImage(QTE.feedbackDir .. 'great.png')
-	self.showGreatText = false
+	self.currentInputContainerDims = data.currentInputContainerOptions
 end;
 
 --[[Creates input sequence and inserts the face button images into input sequence]]
 function mbpQTE:createInputSequence(buttons)
-	local faceButtons = {'a','b','x','y'}
+	-- local faceButtons = {'a','b','x','y'}
 	for i=1,self.inputSequenceLength do
 		-- local randInput = buttons[love.math.random(#buttons)]
-		local randButton = faceButtons[love.math.random(#faceButtons)]
+		local randButton = self.buttonsStr[love.math.random(#self.buttonsStr)]
 		print(buttons[randButton].val)
 		table.insert(self.inputSequence, buttons[randButton])
 		self.alphas[i] = 1
@@ -65,15 +56,17 @@ function mbpQTE:createInputSequence(buttons)
 end;
 
 function mbpQTE:setUI(activeEntity)
-	local entityPos = activeEntity.pos
-	self.progressBar.pos.x = entityPos.x + 150
-	self.progressBar.pos.y = entityPos.y + 64
+	local isOffensive = activeEntity.skill.isOffensive
+	self:readyCamera(isOffensive)
 
-	self.inputSequenceContainerDims.x = self.progressBar.pos.x
-	self.inputSequenceContainerDims.y = self.progressBar.pos.y - 200
+	local tPos = activeEntity.pos
+	self.progressBar = ProgressBar(tPos, self.progressBarOptions, isOffensive)
+
+	self.inputSequenceContainerDims.x = self.inputSequenceContainerDims.x + self.progressBar.pos.x
+	self.inputSequenceContainerDims.y = self.inputSequenceContainerDims.y + self.progressBar.pos.y
 	self.currentInputContainerDims.x = self.inputSequenceContainerDims.x + (self.inputSequenceContainerDims.w / 2)
 	self.currentInputContainerDims.y = self.inputSequenceContainerDims.y + self.inputSequenceContainerDims.h * 0.9
-	self.baseY = self.currentInputContainerDims.y - 25
+	self.baseY = self.baseY + self.currentInputContainerDims.y
 
 	self.feedbackPos.x = self.currentInputContainerDims.x + 25
 	self.feedbackPos.y = self.baseY - 5
@@ -116,14 +109,17 @@ function mbpQTE:gamepadpressed(joystick, button)
 
 		if self.buttonsIndex > self.inputSequenceLength then
 			print('MBP QTE Success')
-			self.showGreatText = true
-			flux.to(self.feedbackPos, 1, {a=0}):delay(1)
+			self.showFeedback = true
+			flux.to(self.feedbackPos, 1, {a=0}):delay(0.25)
 			self.progressTween:stop()
 			Signal.emit('OnQTESuccess')
 			self.signalEmitted = true
 			self.qteComplete = true
 		end
 	end
+end;
+
+function mbpQTE:gamepadreleased(joystick, button)
 end;
 
 function mbpQTE:moveInputSequenceDown()
@@ -135,16 +131,11 @@ function mbpQTE:reset()
 	self.inputSequence = {}
 	self.buttonsIndex = 1
 	self.progressBar:reset()
-	self.showGreatText = false
 	self.doneWaiting = false
-	self.qteComplete = false
-	self.qteSuccess = false
-	self.signalEmitted = false
 	-- self.actionButton = nil
 end;
 
 function mbpQTE:update(dt)
-	QTE.update(self, dt)
 	if self.doneWaiting and not self.signalEmitted then
 		Signal.emit('Attack')
 		self.signalEmitted = true
@@ -155,6 +146,7 @@ function mbpQTE:draw()
 	-- if self.showPrompt and self.frameWindow then
 	-- 	love.graphics.draw(self.actionButtonQTE, self.instructionsPos.x, self.instructionsPos.y, 0, 0.75, 0.75)
 	-- end
+	QTE.draw(self)
 	if not self.qteComplete then
 		self.progressBar:draw()
 		love.graphics.rectangle('fill', self.inputSequenceContainerDims.x, self.inputSequenceContainerDims.y, 
@@ -164,26 +156,15 @@ function mbpQTE:draw()
 		love.graphics.setColor(1,1,1)
 		self:drawInputButtons()
 	end
-	if self.instructions ~= nil then
-		love.graphics.setColor(0, 0, 0)
-		love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
-		love.graphics.setColor(1, 1, 1)
-	end
-	if self.showGreatText then
-		love.graphics.setColor(1,1,1,self.feedbackPos.a)
-		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)
-		love.graphics.setColor(1,1,1,1)
-	end
 end;
 
 function mbpQTE:drawInputButtons()
 	for i,button in ipairs(self.inputSequence) do
 		local yOffset = self.offset * (i-1)
-		love.graphics.setColor(0, 0, 1, self.alphas[i])
 		local rotation = 0
-		local scale = 0.4
 		local xOffset = 25
-		love.graphics.draw(button.raised, self.currentInputContainerDims.x - xOffset, self.baseY - yOffset, rotation, scale)
-		love.graphics.setColor(1, 1, 1, 1)
+		if i >= self.buttonsIndex then
+			love.graphics.draw(button.raised, self.currentInputContainerDims.x - xOffset, self.baseY - yOffset, rotation, self.buttonUIScale)
+		end
 	end
 end;

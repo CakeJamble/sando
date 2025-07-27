@@ -62,7 +62,7 @@ function Character:init(data, actionButton)
 
   self.isGuarding = false
   self.canGuard = false
-  self.canJump = true
+  self.canJump = false
   self.isJumping = false
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
@@ -74,6 +74,7 @@ function Character:init(data, actionButton)
         :oncomplete(function()
           self.oPos.x = self.pos.x
           self.oPos.y = self.pos.y
+          self.canJump = true
         end)
     end
   )
@@ -124,7 +125,8 @@ function Character:takeDamage(amount)
   end
 
   Entity.takeDamage(self, amount)
-  Signal.emit('OnDamageTaken', self.amount)
+  local isDamage = true
+  Signal.emit('OnHPChanged', self.amount, isDamage)
   -- For Status Effect that prevents KO on own turn
   if self.cannotLose and self.isFocused then
     self.battleStats['hp'] = math.max(1, self.battleStats['hp'])
@@ -133,7 +135,7 @@ function Character:takeDamage(amount)
   if bonusApplied then
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
-
+Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
   self:recoil()
 end;
 
@@ -246,13 +248,15 @@ function Character:gamepadreleased(joystick, button)
 end;
 
 function Character:checkGuardAndJump(button)
-  if button == 'rightshoulder' and not self.isJumping then
-    self.canGuard = true
-  elseif button == self.actionButton then    
-    if self.canGuard then
-      self:beginGuard()
-    elseif self.canJump then
-      self:beginJump()
+  if self:isAlive() then
+    if button == 'rightshoulder' and not self.isJumping then
+      self.canGuard = true
+    elseif button == self.actionButton then    
+      if self.canGuard then
+        self:beginGuard()
+      elseif self.canJump then
+        self:beginJump()
+      end
     end
   end
 end;
@@ -286,7 +290,6 @@ function Character:beginJump()
     :onupdate(function()
       if not self.hasLCanceled and landY <= self.pos.y + (self.frameHeight / 4) then
         self.canLCancel = true
-        print('canLCancel')
       end
     end)
     :oncomplete(
@@ -298,7 +301,6 @@ function Character:beginJump()
             self.landingLag = Character.landingLag
             self.canLCancel = false
             self.hasLCanceled = false
-            print('finished landing')
           end)
       end)
   self.tweens['jump'] = jump
@@ -326,7 +328,6 @@ end;
 
 function Character:update(dt)
   Entity.update(self, dt)
-  self.actionUI:update(dt)
 end;
 
 function Character:draw()

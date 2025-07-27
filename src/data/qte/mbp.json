@@ -1,0 +1,27 @@
+{
+	"name": "MBP",
+	"progressBarOptions": {
+		"xOffset": 150, 
+		"yOffset": 64,
+		"w": 100,
+		"h": 35,
+		"min": 0,
+		"max": 100,
+		"wModifier": "0.95"
+	},
+	"inputContainerOptions": {
+		"x": 0,
+		"y": -200,
+		"w": 40,
+		"h": 175
+	},
+	"currentInputContainerOptions": {
+		"x":0,"y":0,"r":25
+	},
+	"baseY": "-25",
+	"buttons": ["a","b","x","y"],
+	"waitDuration": 1,
+	"duration": 3,
+	"feedbackList": ["great.png"],
+	"instructions": "Press the buttons in the order they appear"
+}

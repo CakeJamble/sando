@@ -4,17 +4,15 @@ require('class.qte.sbp_qte')
 require('class.qte.hold_sbp_qte')
 require('class.qte.mbp_qte')
 require('class.qte.rand_sbp_qte')
+local loadQTE = require 'util.qte_loader'
+
 Class = require 'libs.hump.class'
 QTEManager = Class{}
 
 function QTEManager:init(characterTeam)
 	self.buttons = self:loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
-	self.qteTable = {
-		sbp = sbpQTE(),
-		holdSBP = HoldSBP(),
-		mbp = mbpQTE(),
-		randSBP = randSBP()
-	}
+	self.qteData = self:loadQTEData(characterTeam.members) 
+	self.qteTable = self:initQTETable()
 	
 	self.activeQTE = nil
 
@@ -63,13 +61,32 @@ function QTEManager:loadButtonImages(buttonDir)
 			pressed = love.graphics.newImage(buttonPaths.yPressed),
 			val = 'y'
 		},
-		z = { -- temp for testing
-			raised = love.graphics.newImage(buttonPaths.aRaised),
-			pressed = love.graphics.newImage(buttonPaths.aPressed),
-			val = 'z'
-		}
 	}
 	return buttons
+end;
+
+function QTEManager:loadQTEData(members)
+	local result = {}
+	for i,member in ipairs(members) do
+		local skillPool = member.skillPool
+		for i,skill in ipairs(skillPool) do
+			local qteName = skill.qteType
+			if not result[qteName] then
+				result[qteName] = loadQTE(qteName)
+			end
+		end
+	end
+	return result
+end;
+
+function QTEManager:initQTETable()
+	local result = {
+		-- sbp 			= sbpQTE(self.qteData['sbp']),
+		holdSBP		= HoldSBP(self.qteData['hold_sbp']),
+		mbp 			= mbpQTE(self.qteData['mbp']),
+		-- randSBP 	= randSBP(self.qteData['rand_sbp'])
+	}
+	return result
 end;
 
 function QTEManager:reset()
@@ -80,31 +97,49 @@ function QTEManager:reset()
 end;
 
 function QTEManager:setQTE(qteType, actionButton, skill)
-	if qteType == 'SINGLE_BUTTON_PRESS' then
-		self.qteTable.sbp.actionButton = self.qteTable.sbp.buttons[actionButton]
-		self.qteTable.sbp.actionButtonQTE = self.qteTable.sbp.actionButton.raised
-		self.qteTable.sbp.instructions = "Press " .. actionButton .. ' just before landing the attack!'
-		self.qteTable.sbp.frameWindow = skill.qte_window
-		self.activeQTE = self.qteTable.sbp
-	elseif qteType == 'STICK_MOVE' then
+	if qteType == 'sbp' then
+		-- local actionButton 
+		-- self.qteTable['sbp'] = sbpQTE()
+		-- self.qteTable.sbp.actionButton = self.buttons[actionButton]
+		-- self.qteTable.sbp.actionButtonQTE = self.qteTable.sbp.actionButton.raised
+		-- self.qteTable.sbp.instructions = "Press " .. actionButton .. ' just before landing the attack!'
+		-- self.qteTable.sbp.frameWindow = skill.qte_window
+		-- self.activeQTE = self.qteTable.sbp
+	elseif qteType == 'stick_move' then
 	    --do
-	elseif qteType == 'MULTI_BUTTON_PRESS' then
-		self.qteTable.mbp.buttons = self.buttons
+	elseif qteType == 'mbp' then
 		self.qteTable.mbp:createInputSequence(self.buttons)
 		self.activeQTE = self.qteTable.mbp
-	elseif qteType == 'HOLD_SBP' then
-		self.qteTable.holdSBP.actionButton = actionButton
-		self.qteTable.holdSBP.qteButton = self.buttons[actionButton]
-		self.qteTable.holdSBP.buttonUI = self.buttons[actionButton].raised
-		self.qteTable.holdSBP.instructions = "Hold " .. actionButton .. ' until the meter is filled!'
+	elseif qteType == 'hold_sbp' then
+		self.qteTable.holdSBP:setActionButton(actionButton, self.buttons[actionButton])
 		self.activeQTE = self.qteTable.holdSBP
-	elseif qteType == 'RAND_SBP' then
+		self.activeQTE.instructions = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
+	elseif qteType == 'rand_sbp' then
 		local buttons = {'a', 'b', 'x', 'y'}
 		local randIndex = buttons[love.math.random(1, #buttons)]
+		self.qteTable.randSBP:setActionButton(actionButton, self.buttons[randIndex])
 		self.qteTable.randSBP.qteButton = self.buttons[randIndex]
 		self.qteTable.randSBP.button = self.buttons[randIndex].raised
 		self.activeQTE = self.qteTable.randSBP
 	end
+end;
+
+function QTEManager:getInstructions(qteType, actionButton)
+	local result
+	if qteType == 'sbp' then
+		result = 'Press ' .. string.upper(actionButton) .. ' just before hitting the enemy!'
+	elseif qteType == 'stick_move' then
+	    --do
+	elseif qteType == 'mbp' then
+		result = 'Press the buttons in order!'
+	elseif qteType == 'hold_sbp' then
+		result = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
+	elseif qteType == 'rand_sbp' then
+		result = 'Press the button when it appears!'
+	end
+
+
+	return result
 end;
 
 function QTEManager:gamepadpressed(joystick, button)

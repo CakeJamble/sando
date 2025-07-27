@@ -1,7 +1,9 @@
 Class = require "libs.hump.class"
 Entity = Class{
   movementTime = 2,
-  drawHitboxes = true
+  drawHitboxes = false,
+  drawHitboxPositions = false,
+  tweenHP = false
 }
 
   -- Entity constructor
@@ -62,7 +64,6 @@ function Entity:init(data, x, y)
     w = data.hbWidth,
     h = data.hbHeight
   }
-
   self.tweens = {}
 end;
 
@@ -76,12 +77,17 @@ function Entity:startTurn()
 end;
 
 function Entity:endTurn(duration, stagingPos, tweenType)
-  self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+  if self:isAlive() then
+    self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+  else
+    self:reset()
+    Signal.emit('NextTurn')
+  end
 end;
 
 function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   local delay = 0.5
-  flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
+  local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
     :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
   :oncomplete(
     function()
@@ -92,7 +98,12 @@ end;
 
 function Entity:attackInterrupt()
   self.tweens['attack']:stop()
-  self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
+  if self:isAlive() then
+    self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
+  else
+    self:reset()
+    Signal.emit('NextTurn')
+  end
 end;
 
 function Entity:reset()
@@ -209,19 +220,38 @@ function Entity:modifyBattleStat(stat_name, amount) --> void
 end;
 
 function Entity:heal(amount) --> void
-  self.battleStats["hp"] = math.min(self.battleStats["hp"], self.battleStats["hp"] + amount)
+  local isDamage = false
+  if self.tweens['damage'] then
+    self.tweens['damage']:stop()
+  end
+  self.battleStats["hp"] = math.min(self.baseStats["hp"], self.battleStats["hp"] + amount)
+  Signal.emit('OnHPChanged', amount, isDamage, Entity.tweenHP)
 end;
 
 function Entity:takeDamage(amount) --> void
+  local isDamage = true
+  local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
-  self.battleStats["hp"] = math.max(0, self.battleStats["hp"] - self.amount)
+  local newHP = math.max(0, self.battleStats["hp"] - self.amount)
+  
+  if Entity.tweenHP then
+    local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
+    self.tweens['damage'] = damageTween
+  else
+    self.battleStats["hp"] = newHP
+  end
+  
   if self:isAlive() then
     self.currentAnimTag = 'flinch'
     Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
   else
+    print('hello')
+
     self.currentAnimTag = 'ko'
   end
+
+  -- Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
 end;
 
 function Entity:takeDamagePierce(amount) --> void
@@ -364,6 +394,15 @@ function Entity:draw() --> void
     love.graphics.setColor(1, 0, 0, 0.4)
     love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)
+  end
+
+  if Entity.drawHitboxPositions then
+    love.graphics.setColor(0,0,0)
+    local v = math.floor(self.hitbox.y)
+    love.graphics.print(v, self.hitbox.x - 50, v)
+    local val = math.floor(self.hitbox.y + self.hitbox.h)
+    love.graphics.print(val, self.hitbox.x - 50, val)
+    love.graphics.setColor(1,1,1)
   end
 
   if self.projectile then

@@ -14,12 +14,14 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.activeEntity = nil
   self.turnSpentQueue = {}
   self.rewards = {}
-  self.qteManager = QTEManager()
+  self.qteManager = QTEManager(characterTeam)
   self.combatHazards = {
     characterHazards = {},
     enemyHazards = {}
   }
   self.setupDelay = 0.75
+  self.instructions = nil
+  self.instructionsPos = {x=200,y=300}
 
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
@@ -64,33 +66,38 @@ function TurnManager:init(characterTeam, enemyTeam)
     function(skill)
       print('Setting up QTE Manager for selected skill: ' .. skill.name)
       -- self.qteManager:setQTE(skill.qteType, self.activeEntity.actionButton)
+      if not skill.isOffensive then
+        self.activeEntity.actionUI.targetType = 'characters'
+        self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = true
+      else
+        self.activeEntity.actionUI.targetType = 'enemies'
+        self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = false
+      end
       self.activeEntity.skill = skill
       self.activeEntity.actionUI.uiState = 'targeting'
+
+      if self.activeEntity.type == 'character' then
+        self.instructions = self.qteManager:getInstructions(skill.qteType, self.activeEntity.actionButton)
+      end
+
     end
   );
 
   Signal.register('SkillDeselected',
     function ()
       self.qteManager:reset()
+      self.instructions = nil
       self.activeEntity.skill = nil
     end
   );
 
   Signal.register('TargetConfirm',
     function(targetType, tIndex)
+      self.instructions = nil
       print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
       self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
-      self.activeEntity.tPos.x = self.activeEntity.target.oPos.x
-      self.activeEntity.tPos.y = self.activeEntity.target.oPos.y
       print('target name is ' .. self.activeEntity.target.entityName)
-
-      -- local displacement = 120
-      -- if self.activeEntity.type == 'character' then
-      --   displacement = -1 * displacement
-      -- end
-
       -- Skill should control qte because some skills deal damage during QTE
-      -- self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
       if self.activeEntity.type == 'character' then
         self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
         self.qteManager.activeQTE:setUI(self.activeEntity)
@@ -110,6 +117,12 @@ function TurnManager:init(characterTeam, enemyTeam)
     function()
       print('attacking')
       self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
+      local skillDur = self.activeEntity.skill.duration
+      local qteDur = 0
+      if self.activeEntity.type == 'character' then
+        qteDur = qteDur + self.qteManager.activeQTE.duration
+      end
+      self:resetCamera(skillDur + qteDur)
     end
   );
 
@@ -134,6 +147,17 @@ function TurnManager:init(characterTeam, enemyTeam)
       print('Projectile destroyed')
     end
   )
+end;
+
+function TurnManager:resetCamera(delay)
+  local goalX, goalY = camera:position()
+  if self.qteManager.activeQTE then
+    local goalX = self.qteManager.activeQTE.cameraReturnPos.x
+    local goalY = self.qteManager.activeQTE.cameraReturnPos.y
+  end
+  local cameraDelay = 0.5
+  delay = delay + cameraDelay
+  flux.to(camera, 0.5, {x = goalX, y = goalY,scale = 1}):delay(delay)
 end;
 
 function TurnManager:populateTurnQueue()
@@ -243,4 +267,9 @@ end;
 
 function TurnManager:draw()
   self.qteManager:draw()
+  if self.instructions then
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
+    love.graphics.setColor(1, 1, 1)
+  end
 end;

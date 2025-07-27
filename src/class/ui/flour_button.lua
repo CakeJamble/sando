@@ -12,12 +12,13 @@ function FlourButton:init(pos, index, skillList, actionButton)
   -- self.skillListCursor = love.graphics.newImage(path/to/image)
   self.selectedSkill = nil
   self.displaySkillList = false
+  self.numSkillsInPreview = 5
   self.flourSkillTableOptions = self:populateFlourSkills()
   self.skillListDisplay = self:populateSkillPreviews()
   self.previewPos = {
     x = self.flourSkillTableOptions.container.x, 
     y = self.flourSkillTableOptions.container.y}
-  self.previewOffset = self.flourSkillTableOptions.container.height / 2 --centered
+  self.previewOffset = self.flourSkillTableOptions.container.height / self.numSkillsInPreview
   self.description = 'Consume FP to use a powerful skill'
 end;
 
@@ -36,7 +37,7 @@ function FlourButton:populateFlourSkills()
   }
 
   -- Create separators (lines or images)
-  local textSpacing = result.container.height / 10
+  local textSpacing = result.container.height / self.numSkillsInPreview
   local x, y = result.container.x, result.container.y
   local width, height = result.container.width, result.container.height
   for i=1,#self.skillList do
@@ -118,9 +119,10 @@ function FlourButton:keypressed(key)
 end;
 
 function FlourButton:gamepadpressed(joystick, button)
-  if button == 'dpdown' or button == 'dpright' then
+----------------------- Skill Selection -------------------------
+  if button == 'dpdown' then
     self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
-  elseif button == 'dpup' or button == 'dpleft' then
+  elseif button == 'dpup' then
     if self.skillIndex <= 1 then
       self.skillIndex = #self.skillListDisplay
     else
@@ -133,6 +135,12 @@ function FlourButton:gamepadpressed(joystick, button)
       self.selectedSkill = self.skillList[self.skillIndex]
       Signal.emit('SkillSelected', self.selectedSkill)
     end
+
+----------------------- Skill Cancels -------------------------
+  elseif button == 'dpleft' or button == 'dpright' then -- close skill select menu
+    self.displaySkillList = false
+    -- uncomment next line if you want to reset highlighted skill on spin
+    -- self.skillIndex = 1
   end
 end;
 
@@ -145,7 +153,7 @@ function FlourButton:draw()
     -- draw cursor
     love.graphics.setColor(0, 0, 1)
     love.graphics.rectangle('line', self.previewPos.x,
-      self.previewPos.y + ((self.skillIndex - 1) * self.flourSkillTableOptions.container.height), 100, 25)
+      self.previewPos.y + ((self.skillIndex - 1) * (self.flourSkillTableOptions.container.height / self.numSkillsInPreview)), 100, 25)
     love.graphics.setColor(1, 1, 1)
   end
 end;
