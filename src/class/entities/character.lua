@@ -248,13 +248,15 @@ function Character:gamepadreleased(joystick, button)
 end;
 
 function Character:checkGuardAndJump(button)
-  if button == 'rightshoulder' and not self.isJumping then
-    self.canGuard = true
-  elseif button == self.actionButton then    
-    if self.canGuard then
-      self:beginGuard()
-    elseif self.canJump then
-      self:beginJump()
+  if self:isAlive() then
+    if button == 'rightshoulder' and not self.isJumping then
+      self.canGuard = true
+    elseif button == self.actionButton then    
+      if self.canGuard then
+        self:beginGuard()
+      elseif self.canJump then
+        self:beginJump()
+      end
     end
   end
 end;

@@ -17,8 +17,6 @@ return function(ref, qteManager)
     y = goalY + spaceFromTarget.y
   }
 
-
-
   local hasCollided = false
 
   local damage = ref.battleStats['attack'] + skill.damage

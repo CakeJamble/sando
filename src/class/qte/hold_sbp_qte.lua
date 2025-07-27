@@ -9,18 +9,21 @@ function HoldSBP:init(data)
 	-- self.progressBar = ProgressBar(pbPos, 100, 35, 0, 100, 0.05)
 	self.progressBarOptions = data.progressBarOptions
 	self.buttonUIOffsets = data.buttonUIOffsets
+	self.buttonUI = nil
+	self.buttonUIIndex = 'raised'
+	self.buttonUIPos = {x=0,y=0}
+
 	self.waitTween = nil
 	self.progressTween = nil
 	self.progressBarComplete = false
+	
 	self.actionButton = nil
+	self.isActionButtonPressed = false
+	
 	self.waitForPlayer = {
 		curr = 0,
 		fin = data.waitDuration
 	}
-	self.buttonUI = nil
-	self.buttonUIIndex = 'raised'
-	self.buttonUIPos = {x=0,y=0}
-	self.isActionButtonPressed = false
 end;
 
 function HoldSBP:setActionButton(actionButton, buttonUI)

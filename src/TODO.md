@@ -14,7 +14,7 @@ Was feeling really tired so I took yesterday off. Today, I want to focus in on p
 - [ ] Refactor QTEs to use JSON data to initialize objects
 	- [x] Hold SBP
 	- [ ] Rand SBP
-	- [ ] MBP
+	- [x] MBP
 	- [ ] SBP
 
 ## 07/24/2025

@@ -77,12 +77,17 @@ function Entity:startTurn()
 end;
 
 function Entity:endTurn(duration, stagingPos, tweenType)
-  self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+  if self:isAlive() then
+    self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+  else
+    self:reset()
+    Signal.emit('NextTurn')
+  end
 end;
 
 function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   local delay = 0.5
-  flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
+  local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
     :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
   :oncomplete(
     function()
@@ -93,7 +98,12 @@ end;
 
 function Entity:attackInterrupt()
   self.tweens['attack']:stop()
-  self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
+  if self:isAlive() then
+    self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
+  else
+    self:reset()
+    Signal.emit('NextTurn')
+  end
 end;
 
 function Entity:reset()
@@ -236,6 +246,8 @@ function Entity:takeDamage(amount) --> void
     self.currentAnimTag = 'flinch'
     Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
   else
+    print('hello')
+
     self.currentAnimTag = 'ko'
   end
 
