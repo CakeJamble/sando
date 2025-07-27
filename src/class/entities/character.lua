@@ -283,6 +283,10 @@ function Character:beginJump()
 
   -- Goes up then down, then resets conditional checks for guard/jump
   local landY = self.oPos.y
+  local shadow = flux.to(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 3})
+    :ease('quadout')
+    :after(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 2})
+      :ease('quadin')
   local jump = flux.to(self.pos, Character.jumpDur/2, {y = landY - self.frameHeight})
     :ease('quadout')
     :after(self.pos, Character.jumpDur/2, {y = landY})
@@ -328,6 +332,11 @@ end;
 
 function Character:update(dt)
   Entity.update(self, dt)
+
+  if self.isJumping then
+    self.shadowDims.y = self.oPos.y + (self.frameHeight * 0.95)
+  end
+
 end;
 
 function Character:draw()

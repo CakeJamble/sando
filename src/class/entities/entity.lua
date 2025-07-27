@@ -64,6 +64,13 @@ function Entity:init(data, x, y)
     w = data.hbWidth,
     h = data.hbHeight
   }
+
+  self.shadowDims = {
+    x = self.hitbox.x + (self.hitbox.w / 2.5),
+    y = self.oPos.y + self.frameHeight,
+    w = self.hitbox.w / 2,
+    h = self.hitbox.h / 8
+  }
   self.tweens = {}
 end;
 
@@ -246,8 +253,6 @@ function Entity:takeDamage(amount) --> void
     self.currentAnimTag = 'flinch'
     Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
   else
-    print('hello')
-
     self.currentAnimTag = 'ko'
   end
 
@@ -323,6 +328,8 @@ end;
 function Entity:update(dt) --> void
   self.hitbox.x = self.pos.x + self.hbXOffset
   self.hitbox.y = self.pos.y + self.hbYOffset
+  self.shadowDims.x = self.hitbox.x + (self.hitbox.w / 2)
+  self.shadowDims.y = self.pos.y + (self.frameHeight * 0.95)
   local animation = self.animations[self.currentAnimTag]
   -- if self.state == 'idle' then
     -- animation = self.movementAnimations.idle
@@ -350,32 +357,11 @@ end;
 
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void    
-    -- Placeholder for drawing the state or any visual representation
-    -- walk, jump, idle
-  -- local state = self.movementState.state
+  -- Shadow
   love.graphics.setColor(0, 0, 0, 0.4)
-  love.graphics.ellipse("fill", self.pos.x + (self.frameWidth / 2.5), self.pos.y + (self.frameHeight * 0.95), self.frameWidth / 4, self.frameHeight / 8)
+  love.graphics.ellipse("fill", self.shadowDims.x, self.shadowDims.y, self.shadowDims.w, self.shadowDims.h)
   love.graphics.setColor(1, 1, 1, 1)
   
-  -- local spriteNum
-  -- local animation
-  -- if self.state == 'idle' then
-  --   animation = self.movementAnimations.idle
-  --   -- spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  --   -- love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
-  -- elseif self.state == 'move' or 'moveback' then
-  --   animation = self.movementAnimations.moveX
-  -- elseif self.state == 'moveY' then
-  --   -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
-  -- elseif self.state == 'moveXY' then
-  --   -- love.graphics.draw(self.spriteSheets.moveXY, self.movementAnimations.moveXY[math.floor(self.currentFrame)], self.x, self.y)
-  -- elseif self.state == 'flinch' then
-  --   -- love.graphics.draw(self.spriteSheets.flinch, self.movementAnimations.flinch[math.floor(self.currentFrame)], self.x, self.y) 
-  -- elseif self.state == 'ko' then
-  --   -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
-  -- else
-  --   print("logical error in determining movement state of entity. state is", state)
-  -- end
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)
     love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
