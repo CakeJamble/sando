@@ -22,6 +22,7 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.setupDelay = 0.75
   self.instructions = nil
   self.instructionsPos = {x=200,y=300}
+  self.cameraPosX, self.cameraPosY = camera:position()
 
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
@@ -30,9 +31,6 @@ function TurnManager:init(characterTeam, enemyTeam)
     function ()
       if self.turnIndex == 1 then
         turnCounter = turnCounter + 1
-      -- else
-      --   self.activeEntity:endTurn()
-      -- probably need to reset conditions for jump/guard tweens in case they are interrupted
       end
 
       self.qteManager:reset()
@@ -58,7 +56,7 @@ function TurnManager:init(characterTeam, enemyTeam)
   Signal.register('PassTurn',
     function()
       self.activeEntity.actionUI:unset()
-      Signal.emit('NextTurn')
+      Signal.emit('OnEndTurn', 0)
     end
   );
 
@@ -117,12 +115,14 @@ function TurnManager:init(characterTeam, enemyTeam)
     function()
       print('attacking')
       self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
-      local skillDur = self.activeEntity.skill.duration
-      local qteDur = 0
-      if self.activeEntity.type == 'character' then
-        qteDur = qteDur + self.qteManager.activeQTE.duration
-      end
-      self:resetCamera(skillDur + qteDur)
+    end
+  );
+
+  Signal.register('OnEndTurn', 
+    function(timeBtwnTurns)
+      local withTimeToBreathe = timeBtwnTurns + 0.25
+      self:resetCamera(timeBtwnTurns)
+      Timer.after(withTimeToBreathe , function() Signal.emit('NextTurn') end)
     end
   );
 
@@ -149,15 +149,8 @@ function TurnManager:init(characterTeam, enemyTeam)
   )
 end;
 
-function TurnManager:resetCamera(delay)
-  local goalX, goalY = camera:position()
-  if self.qteManager.activeQTE then
-    local goalX = self.qteManager.activeQTE.cameraReturnPos.x
-    local goalY = self.qteManager.activeQTE.cameraReturnPos.y
-  end
-  local cameraDelay = 0.5
-  delay = delay + cameraDelay
-  flux.to(camera, 0.5, {x = goalX, y = goalY,scale = 1}):delay(delay)
+function TurnManager:resetCamera(duration)
+  flux.to(camera, duration, {x = self.cameraPosX, y = self.cameraPosY, scale = 1})
 end;
 
 function TurnManager:populateTurnQueue()

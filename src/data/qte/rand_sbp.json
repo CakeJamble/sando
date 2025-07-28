@@ -15,6 +15,7 @@
 	"waitDuration": 1,
 	"timeBtwnLights": 0.75,
 	"numSmallCircles": 3,
+	"duration": 3,
 	"feedbackList": ["great.png"],
 	"instructions": "Press the button when it appears!"
 }

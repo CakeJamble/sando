@@ -84,7 +84,7 @@ function QTEManager:initQTETable()
 		-- sbp 			= sbpQTE(self.qteData['sbp']),
 		holdSBP		= HoldSBP(self.qteData['hold_sbp']),
 		mbp 			= mbpQTE(self.qteData['mbp']),
-		-- randSBP 	= randSBP(self.qteData['rand_sbp'])
+		randSBP 	= randSBP(self.qteData['rand_sbp'])
 	}
 	return result
 end;
@@ -117,7 +117,7 @@ function QTEManager:setQTE(qteType, actionButton, skill)
 	elseif qteType == 'rand_sbp' then
 		local buttons = {'a', 'b', 'x', 'y'}
 		local randIndex = buttons[love.math.random(1, #buttons)]
-		self.qteTable.randSBP:setActionButton(actionButton, self.buttons[randIndex])
+		self.qteTable.randSBP:setActionButton(self.buttons[randIndex].val, self.buttons[randIndex])
 		self.qteTable.randSBP.qteButton = self.buttons[randIndex]
 		self.qteTable.randSBP.button = self.buttons[randIndex].raised
 		self.activeQTE = self.qteTable.randSBP

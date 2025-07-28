@@ -45,8 +45,6 @@ return function(ref, qteManager)
           end)
         :oncomplete(
           function()
-            ref.currentAnimTag = 'move'
-            qteManager:reset()
             ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
           end)
         ref.tweens['attack'] = attack

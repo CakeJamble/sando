@@ -88,19 +88,25 @@ function Entity:endTurn(duration, stagingPos, tweenType)
     self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   else
     self:reset()
-    Signal.emit('NextTurn')
+    Signal.emit('OnTurnEnd', 0)
   end
 end;
 
 function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   local delay = 0.5
-  local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
-    :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
-  :oncomplete(
-    function()
-      self:reset()
-      Signal.emit('NextTurn')
+  if stagingPos then
+    self.currentAnimTag = 'move'
+    local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
+      :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
+    :oncomplete(
+      function() 
+        self:reset(); Signal.emit('OnEndTurn', 0); 
+      end)
+  else
+    Timer.after(delay, function() 
+      self:reset(); Signal.emit('OnEndTurn', delay) 
     end)
+  end
 end;
 
 function Entity:attackInterrupt()
@@ -358,9 +364,11 @@ end;
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void    
   -- Shadow
-  love.graphics.setColor(0, 0, 0, 0.4)
-  love.graphics.ellipse("fill", self.shadowDims.x, self.shadowDims.y, self.shadowDims.w, self.shadowDims.h)
-  love.graphics.setColor(1, 1, 1, 1)
+  if self:isAlive() then
+    love.graphics.setColor(0, 0, 0, 0.4)
+    love.graphics.ellipse("fill", self.shadowDims.x, self.shadowDims.y, self.shadowDims.w, self.shadowDims.h)
+    love.graphics.setColor(1, 1, 1, 1)
+  end
   
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)

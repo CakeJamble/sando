@@ -13,6 +13,7 @@ function QTE:init(data)
 
 	self.cameraTween = nil
 	self.cameraReturnPos = {x=0,y=0}
+	self.cameraReturnPos.x, self.cameraReturnPos.y = camera:position()
 	self.focusSelf = false
 
 	self.instructions = data.instructions
@@ -35,7 +36,6 @@ function QTE:readyCamera(isOffensive)
 		self.focusSelf = false 
 	else 
 		self.focusSelf = true 
-		
 	end
 end;
 

@@ -103,7 +103,6 @@ function HoldSBP:handleQTE()
 			goalPosY = goalPosY - 30
 		end
 
-		print(goalPosX, goalPosY)
 		self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY,scale = 1.25}):ease('linear')
 		self.progressTween = flux.to(self.progressBar.meterOptions, self.duration, {width = goalWidth}):ease('linear')
 			:onupdate(function()

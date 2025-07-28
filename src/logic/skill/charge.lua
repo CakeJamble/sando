@@ -55,7 +55,6 @@ return function(ref)
                 end
               end)
               :oncomplete(function() 
-                ref.currentAnimTag = 'move'
                 ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
               end)
               ref.tweens['attack'] = attack
