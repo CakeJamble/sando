@@ -7,12 +7,18 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 ### TODO
 
 - [x] Fix visual bug with shadows when jumping
+- [x] Adjust arc for projectile trajectories to follow a parabola
+- [x] Cleanup camera management so QTEs and Skills can move it independently
 - [ ] Refactor QTEs to use JSON data to initialize objects
-	- [ ] Rand SBP
+	- [x] Rand SBP
 	- [ ] SBP
 - [ ] New Character Skills
-	- [ ] Uses Rand SBP QTE
+	- [x] Uses Rand SBP QTE
 	- [ ] Uses SBP QTE
+
+### Reflection
+
+Overall pretty good. I got sidetracked with the camera movement but I think it was worth looking into. 
 
 ## 07/26/2025
 
