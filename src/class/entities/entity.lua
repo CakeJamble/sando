@@ -100,7 +100,7 @@ function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType
       :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
     :oncomplete(
       function() 
-        self:reset(); Signal.emit('OnEndTurn', 0); 
+        self:reset(); Signal.emit('OnEndTurn', delay); 
       end)
   else
     Timer.after(delay, function() 

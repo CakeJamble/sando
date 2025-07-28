@@ -26,21 +26,15 @@ function randSBP:setActionButton(actionButton, buttonUI)
 end;
 
 function randSBP:setUI(activeEntity)
-	local isOffensive = activeEntity.skill.isOffensive
-	self:readyCamera(isOffensive)
+	self:readyCamera(false)
 
-	local targetPos 
-	if isOffensive then
-		targetPos = activeEntity.target.pos
-	else
-		targetPos = activeEntity.pos
-		self.smallCircleOptions.x = -self.smallCircleOptions.x
-	end
+	self.targetPos = activeEntity.pos
+	self.smallCircleOptions.x = -self.smallCircleOptions.x
 
-	self.smallCircleOptions.x = self.smallCircleOptions.x + targetPos.x
-	self.smallCircleOptions.y = self.smallCircleOptions.y + targetPos.y
-	self.feedbackPos.x = targetPos.x + self.feedbackOffsets.x
-	self.feedbackPos.y = targetPos.y - self.feedbackOffsets.y
+	self.smallCircleOptions.x = self.smallCircleOptions.x + self.targetPos.x
+	self.smallCircleOptions.y = self.smallCircleOptions.y + self.targetPos.y
+	self.feedbackPos.x = self.targetPos.x + self.feedbackOffsets.x
+	self.feedbackPos.y = self.targetPos.y - self.feedbackOffsets.y
 end;
 
 function randSBP:reset()
@@ -57,13 +51,8 @@ function randSBP:beginQTE()
 	local goalPosX = self.cameraReturnPos.x 
 	local goalPosY = self.cameraReturnPos.y
 
-	if self.focusSelf then
-		goalPosX = goalPosX - 100
-		goalPosY = goalPosY + 30
-	else
-		goalPosX = goalPosX + 10
-		goalPosY = goalPosY - 30
-	end
+	goalPosX = goalPosX - self.targetPos.x
+	goalPosY = goalPosY - self.targetPos.y / 4
 
 	self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY, scale = 1.25}):ease('linear')
 	
