@@ -83,8 +83,9 @@ function QTEManager:initQTETable()
 	local result = {
 		-- sbp 			= sbpQTE(self.qteData['sbp']),
 		holdSBP		= HoldSBP(self.qteData['hold_sbp']),
-		mbp 			= mbpQTE(self.qteData['mbp']),
-		randSBP 	= randSBP(self.qteData['rand_sbp'])
+		mbp 		= mbpQTE(self.qteData['mbp']),
+		randSBP 	= randSBP(self.qteData['rand_sbp']),
+		ringQTE 	= ringQTE(self.qteData['ring'])
 	}
 	return result
 end;
