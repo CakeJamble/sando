@@ -18,7 +18,7 @@
 	"currentInputContainerOptions": {
 		"x":0,"y":0,"r":25
 	},
-	"baseY": "-25",
+	"baseY": "-20",
 	"buttons": ["a","b","x","y"],
 	"waitDuration": 1,
 	"duration": 3,

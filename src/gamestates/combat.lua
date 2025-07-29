@@ -66,10 +66,16 @@ function combat:init()
     function(amount, isDamage, hpIsTweened)
       local character = self.characterTeamHP[self.targetedCharacterIndex]
       local healthDropDuration = 0.5
+      if hpIsTweened then
+        healthDropDuration = 15
+      end
+      
       if not isDamage then 
         amount = -1 * amount 
         healthDropDuration = 0.5
       end
+
+
 
       local delay = 0.25
       local newHP = math.min(character.totalHP, math.max(0, character.currHP - amount))
@@ -172,7 +178,7 @@ function combat:update(dt)
       Entity.drawHitboxPositions = hitboxYPosCheckboxState[0]
     end
 
-    if imgui.Checkbox("Toggle Gradual HP Loss", tweenHPLossCheckboxState) then
+    if imgui.Checkbox("Gradual HP Loss", tweenHPLossCheckboxState) then
       Entity.tweenHP = tweenHPLossCheckboxState[0]
     end
 

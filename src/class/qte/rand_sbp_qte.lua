@@ -117,6 +117,6 @@ function randSBP:draw()
 	end
 
 	if self.displayButton then
-		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.smallCircleOptions.x + self.smallCircleOptions.xSpace * 2.75, self.smallCircleOptions.y - self.smallCircleOptions.y / 6.5, 0, self.buttonUIScale, self.buttonUIScale)
+		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.smallCircleOptions.x + self.smallCircleOptions.xSpace * 3.2, self.smallCircleOptions.y - self.smallCircleOptions.y / 8.5, 0, self.buttonUIScale, self.buttonUIScale)
 	end
 end;

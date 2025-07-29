@@ -4,7 +4,7 @@
   "width": 32, "height": 32,
   "hbWidth": 30, "hbHeight": 28,
   "hp": 11,
-  "attack": 3,
+  "attack": 10,
   "defense": 1,
   "speed": 1,
   "luck": 10,

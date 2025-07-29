@@ -162,7 +162,7 @@ function mbpQTE:drawInputButtons()
 	for i,button in ipairs(self.inputSequence) do
 		local yOffset = self.offset * (i-1)
 		local rotation = 0
-		local xOffset = 25
+		local xOffset = 20
 		if i >= self.buttonsIndex then
 			love.graphics.draw(button.raised, self.currentInputContainerDims.x - xOffset, self.baseY - yOffset, rotation, self.buttonUIScale)
 		end

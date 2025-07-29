@@ -249,7 +249,9 @@ function Entity:takeDamage(amount) --> void
   local newHP = math.max(0, self.battleStats["hp"] - self.amount)
   
   if Entity.tweenHP then
+    print('slow tween beginning for HP')
     local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
+      :oncomplete(function() print('done with hp tween') end)
     self.tweens['damage'] = damageTween
   else
     self.battleStats["hp"] = newHP

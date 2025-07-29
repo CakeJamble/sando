@@ -126,7 +126,6 @@ function Character:takeDamage(amount)
 
   Entity.takeDamage(self, amount)
   local isDamage = true
-  Signal.emit('OnHPChanged', self.amount, isDamage)
   -- For Status Effect that prevents KO on own turn
   if self.cannotLose and self.isFocused then
     self.battleStats['hp'] = math.max(1, self.battleStats['hp'])
@@ -135,7 +134,7 @@ function Character:takeDamage(amount)
   if bonusApplied then
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
-Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
+  Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
   self:recoil()
 end;
 

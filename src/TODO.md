@@ -2,6 +2,21 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+### 07/28/2025
+
+- [x] Solicit feedback on mechanics
+- [ ] Try out using `love.physics.shear()` to shear shapes to create illusion of 3D pivot on an axis
+- [ ] Design the Ring QTE (Figma)
+- [ ] Ring QTE
+	- [ ] JSON Data
+	- [ ] Class file
+
+### Reflection
+
+Got a lot of good advice and ideas for new QTEs and mechanics. I'm excited to try and implement the Ring QTE! There are so many ways to make that feel varied and challenging.
+
+I think that QTEs should have a fixed camera zoom. It's getting in the way of a lot of progress, and I already know I will probably have to come back and overhaul a lot of camera issues later anyways. Instead of trying to determine the target to zoom in on dynamically, I should wait until I have a wider range of QTEs to see what kind of camera effects work and what is distracting.
+
 ## 07/27/2025
 
 ### TODO
