@@ -2,7 +2,19 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
-### 07/28/2025
+## 07/29/2025
+
+### TODO
+
+- [ ] Ring QTE
+	- [ ] JSON Data
+	- [ ] Class file
+- [ ] Bugfix: In `QTEManager:initQTETable()` only initialize QTEs that were loaded in the loading function
+
+## 07/28/2025
+
+
+## TODO
 
 - [x] Solicit feedback on mechanics
 - [x] Try out using `love.physics.shear()` to shear shapes to create illusion of 3D pivot on an axis

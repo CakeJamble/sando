@@ -4,6 +4,8 @@ require('class.qte.sbp_qte')
 require('class.qte.hold_sbp_qte')
 require('class.qte.mbp_qte')
 require('class.qte.rand_sbp_qte')
+require('class.qte.ring_qte')
+
 local loadQTE = require 'util.qte_loader'
 
 Class = require 'libs.hump.class'
@@ -85,7 +87,7 @@ function QTEManager:initQTETable()
 		holdSBP		= HoldSBP(self.qteData['hold_sbp']),
 		mbp 		= mbpQTE(self.qteData['mbp']),
 		randSBP 	= randSBP(self.qteData['rand_sbp']),
-		ringQTE 	= ringQTE(self.qteData['ring'])
+		ringQTE 	= RingQTE(self.qteData['ring_qte'])
 	}
 	return result
 end;

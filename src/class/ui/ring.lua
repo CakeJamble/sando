@@ -21,15 +21,8 @@ function Ring:init(options, flipDuration)
 end;
 
 function Ring:flipRing()
-	-- flux.to(self.shear, self.flipDuration, {scale = -1})
-		-- :ease('linear')
-
 	local tween = flux.to(self.shear, self.flipDuration, {angle = 2 * math.pi})
 		:ease('quadout')
-
-	-- flux.to(self.shear, self.flipDuration / 2, {ky = 1.2})
-	-- 	:after(self.shear, self.flipDuration/2, {ky = -1.2})
-	-- 	:ease('quadout')
 
 	flux.to(self.offset, self.flipDuration/2, {y = -100})
 		:ease('quadout')
@@ -39,11 +32,9 @@ function Ring:flipRing()
 	return tween
 end;
 
-
-
 function Ring:draw()
-    love.graphics.push()
-    love.graphics.translate(self.options.x, self.options.y + self.offset.y)
+    -- love.graphics.push()
+    -- love.graphics.translate(self.options.x, self.options.y + self.offset.y)
     local angle = self.shear.angle
     local scaleY = math.cos(angle)
     local shearY = math.sin(angle) * 1.0
@@ -58,5 +49,5 @@ function Ring:draw()
     	love.graphics.setColor(1, 1, 1, 1)
     end
 
-    love.graphics.pop()
+    -- love.graphics.pop()
 end;
