@@ -34,7 +34,7 @@ end;
 
 function HoldSBP:setUI(activeEntity)
 	local isOffensive = activeEntity.skill.isOffensive
-	self:readyCamera(isOffensive)
+	-- self:readyCamera(isOffensive)
 
 	local targetPos
 	if isOffensive then
@@ -42,6 +42,7 @@ function HoldSBP:setUI(activeEntity)
 	else
 		targetPos = activeEntity.oPos
 	end
+	self:readyCamera(targetPos)
 
 	self.progressBar = ProgressBar(targetPos, self.progressBarOptions, isOffensive)
 	self.buttonUIPos.x = self.progressBar.pos.x + self.buttonUIOffsets.x

@@ -5,8 +5,8 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 ### 07/28/2025
 
 - [x] Solicit feedback on mechanics
-- [ ] Try out using `love.physics.shear()` to shear shapes to create illusion of 3D pivot on an axis
-- [ ] Design the Ring QTE (Figma)
+- [x] Try out using `love.physics.shear()` to shear shapes to create illusion of 3D pivot on an axis
+- [x] Design the Ring QTE (Figma)
 - [ ] Ring QTE
 	- [ ] JSON Data
 	- [ ] Class file
