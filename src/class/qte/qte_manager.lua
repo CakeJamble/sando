@@ -8,13 +8,20 @@ require('class.qte.ring_qte')
 
 local loadQTE = require 'util.qte_loader'
 
+local QTEClasses = {
+	hold_sbp = HoldSBP,
+	mbp = mbpQTE,
+	rand_sbp = randSBP,
+	ring_qte = RingQTE
+}
+
 Class = require 'libs.hump.class'
 QTEManager = Class{}
 
 function QTEManager:init(characterTeam)
+	self.qteInits = self:defineQTESetup()
 	self.buttons = self:loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
-	self.qteData = self:loadQTEData(characterTeam.members) 
-	self.qteTable = self:initQTETable()
+	self.qteTable = self:loadQTEData(characterTeam.members)
 	
 	self.activeQTE = nil
 
@@ -67,6 +74,45 @@ function QTEManager:loadButtonImages(buttonDir)
 	return buttons
 end;
 
+	-- hold_sbp = HoldSBP,
+	-- mbp = mbpQTE,
+	-- rand_sbp = randSBP,
+	-- ring_qte = RingQTE
+function QTEManager:defineQTESetup()
+	local qteInits = {
+		hold_sbp = function(self, actionButton)
+			local qte = self.qteTable.hold_sbp
+			qte:setActionButton(actionButton, self.buttons[actionButton])
+			qte = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
+			return qte
+		end,
+
+		mbp = function(self)
+			local qte = self.qteTable.mbp
+			qte:createInputSequence(self.buttons)
+			return qte
+		end,
+
+		rand_sbp = function(self)
+			local buttons = {'a', 'b', 'x', 'y'}
+			local randIndex = buttons[love.math.random(1, #buttons)]
+			local qte = self.qteTable.rand_sbp
+			qte:setActionButton(self.buttons[randIndex].val, self.buttons[randIndex])
+			qte.qteButton = self.buttons[randIndex]
+			qte.button = self.buttons[randIndex].raised
+			return qte
+		end,
+
+		ring_qte = function(self, actionButton)
+			local qte = self.qteTable.ring_qte
+			qte:setActionButton(actionButton, buttonUI)
+			return qte
+		end
+	}
+
+	return qteInits
+end;
+
 function QTEManager:loadQTEData(members)
 	local result = {}
 	for i,member in ipairs(members) do
@@ -74,21 +120,14 @@ function QTEManager:loadQTEData(members)
 		for i,skill in ipairs(skillPool) do
 			local qteName = skill.qteType
 			if not result[qteName] then
-				result[qteName] = loadQTE(qteName)
+				-- result[qteName] = loadQTE(qteName)
+				local qteData = loadQTE(qteName)
+				print(qteName)
+				local qte = QTEClasses[qteName]
+				result[qteName] = qte(qteData)
 			end
 		end
 	end
-	return result
-end;
-
-function QTEManager:initQTETable()
-	local result = {
-		-- sbp 			= sbpQTE(self.qteData['sbp']),
-		holdSBP		= HoldSBP(self.qteData['hold_sbp']),
-		mbp 		= mbpQTE(self.qteData['mbp']),
-		randSBP 	= randSBP(self.qteData['rand_sbp']),
-		ringQTE 	= RingQTE(self.qteData['ring_qte'])
-	}
 	return result
 end;
 
@@ -100,30 +139,11 @@ function QTEManager:reset()
 end;
 
 function QTEManager:setQTE(qteType, actionButton, skill)
-	if qteType == 'sbp' then
-		-- local actionButton 
-		-- self.qteTable['sbp'] = sbpQTE()
-		-- self.qteTable.sbp.actionButton = self.buttons[actionButton]
-		-- self.qteTable.sbp.actionButtonQTE = self.qteTable.sbp.actionButton.raised
-		-- self.qteTable.sbp.instructions = "Press " .. actionButton .. ' just before landing the attack!'
-		-- self.qteTable.sbp.frameWindow = skill.qte_window
-		-- self.activeQTE = self.qteTable.sbp
-	elseif qteType == 'stick_move' then
-	    --do
-	elseif qteType == 'mbp' then
-		self.qteTable.mbp:createInputSequence(self.buttons)
-		self.activeQTE = self.qteTable.mbp
-	elseif qteType == 'hold_sbp' then
-		self.qteTable.holdSBP:setActionButton(actionButton, self.buttons[actionButton])
-		self.activeQTE = self.qteTable.holdSBP
-		self.activeQTE.instructions = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
-	elseif qteType == 'rand_sbp' then
-		local buttons = {'a', 'b', 'x', 'y'}
-		local randIndex = buttons[love.math.random(1, #buttons)]
-		self.qteTable.randSBP:setActionButton(self.buttons[randIndex].val, self.buttons[randIndex])
-		self.qteTable.randSBP.qteButton = self.buttons[randIndex]
-		self.qteTable.randSBP.button = self.buttons[randIndex].raised
-		self.activeQTE = self.qteTable.randSBP
+	local init = self.qteInits[qteType]
+	if init then
+		self.activeQTE = init(self, actionButton)
+	else
+		error("Could not initialize QTE of type: " .. tostring(qteType))
 	end
 end;
 

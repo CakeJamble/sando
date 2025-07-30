@@ -3,14 +3,14 @@
 	"options": {
 		"mode": "fill",
 		"x": 250,
-		"y": 250,
-		"r": 25
+		"y": 200,
+		"r": 50
 	},
 	"shear": {"kx": 1, "ky": 0},
 	"flipDuration": 1,
 	"duration": 2,
 	"numSlices": 1,
-	"sliceLenRange": {"min":0.25, "max": 0.75},
+	"sliceLenRange": {"min":25, "max": 75},
 	"spritePath": "",
 	"feedbackList": ["great.png"],
 }

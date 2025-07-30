@@ -7,7 +7,7 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 ### TODO
 
 - [ ] Ring QTE
-	- [ ] JSON Data
+	- [x] JSON Data
 	- [ ] Class file
 - [ ] Bugfix: In `QTEManager:initQTETable()` only initialize QTEs that were loaded in the loading function
 

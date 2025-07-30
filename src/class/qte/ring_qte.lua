@@ -1,13 +1,25 @@
+require('class.ui.ring')
 RingQTE = Class{__includes =  QTE}
 
 function RingQTE:init(data)
 	QTE.init(self, data)
 	self.options = data.options
 	self.flipDuration = data.flipDuration
-	self.ring = Ring(data.options, self.flipDuration)
+
+	local slicesData = {
+		numSlices = data.numSlices,
+		sliceLenRange = data.sliceLenRange,
+	}
+
+	self.ring = Ring(data.options, self.flipDuration, slicesData, data.duration)
 	self.numSlices = data.numSlices
+	self.successCount = 0
 	self.sliceLenRange = {min = data.sliceLenRange.min, max = data.sliceLenRange.max}
-	self.slices = {}
+	self.sliceIndex = 1
+end;
+
+function RingQTE:setUI(activeEntity)
+	-- need to rework this
 end;
 
 function RingQTE:setActionButton(actionButton, buttonUI)
@@ -17,48 +29,48 @@ function RingQTE:setActionButton(actionButton, buttonUI)
 end;
 
 function RingQTE:beginQTE()
-	-- Begin tweening of line over the ring
-	flipTween = ring:flipRing()
-
-	flipTween:oncomplete(
-		function()
-			for i=1, self.numSlices do
-				local angleMod = love.math.random(self.sliceLenRange.min, self.sliceLenRange.max)
-				local angle = math.pi / angleMod
-
-				local angleStart = love.math.random(0, (2 * math.pi) - angle)
-				local angleEnd = angleStart + angle
-
-				local vertices = self:buildArc(self.options.r, angleStart, angleEnd)
-				self.slices[i] = vertices
-			end
-		end)
+	self.ring:startRevolution()
 end;
 
-function RingQTE:draw()
-	love.graphics.push()
-	love.graphics.translate(self.options.x, self.options.y)
+function RingQTE:gamepadpressed(joystick, button)
+	if button == self.actionButton then
+		if self.ring.line.isActive and self.ring:isInHitBox(self.sliceIndex) then
+			print('good')
+			self.successCount = self.successCount + 1
+		else
+			print('bad')
+		end
+		self.sliceIndex = self.sliceIndex + 1
+	end
 
-	-- shear factor set in ring class
-	self.ring:draw()
-
-	if self.doneWaiting then
-		for i,vertices in ipairs(self.slices) do
-			love.graphics.polygon('fill', vertices)
+	if self.sliceIndex > self.numSlices then
+		if not self.signalEmitted then
+			self.qteComplete = true
+			self.ring.revolutionTween:stop()
+			
+			if self.successCount == self.numSlices then
+				print('Ring QTE Success')
+				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
+					:oncomplete(function() self.feedbackPos.a = 1 end)
+				Signal.emit('OnQTESuccess')
+			else
+				print('Ring QTE Fail')
+			end
+			Signal.emit('Attack')
+			self.signalEmitted = true
 		end
 	end
 
-	love.graphics.pop()
+
 end;
 
-function RingQTE:buildArc(radius, angleStart, angleEnd, segments)
-    local vertices = { 0, 0 } -- center of the fan
-    for i = 0, segments do
-        local angle = angleStart + i * (angleEnd - angleStart) / segments
-        local x = math.cos(angle) * radius
-        local y = math.sin(angle) * radius
-        table.insert(vertices, x)
-        table.insert(vertices, y)
-    end
-    return vertices
-end
+function RingQTE:gamepadreleased(joystick, button)
+end;
+
+function RingQTE:update(dt)
+end;
+
+function RingQTE:draw()
+	self.ring:draw()
+end;
+

@@ -120,7 +120,6 @@ function HoldSBP:handleQTE()
 						self.qteComplete = true
 						if not self.signalEmitted then
 							print('Failed to end in time. Attacking now')
-							local qteSuccess = false
 							self.signalEmitted = true
 						end
 					end)
