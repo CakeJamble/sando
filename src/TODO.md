@@ -6,10 +6,20 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 
 ### TODO
 
-- [ ] Ring QTE
+- [x] Functionality for multiple slices in Ring QTE
+- [ ] Variant of Ring QTE where the ring flips and displays a new slice instead of having multiple slices on single Ring
+- [ ] Design and plan out next skills & QTEs
+
+### TODO
+
+- [x] Ring QTE
 	- [x] JSON Data
-	- [ ] Class file
-- [ ] Bugfix: In `QTEManager:initQTETable()` only initialize QTEs that were loaded in the loading function
+	- [x] Class file
+- [x] Bugfix: In `QTEManager:initQTETable()` only initialize QTEs that were loaded in the loading function
+
+### Reflection
+
+Good progress today!! 
 
 ## 07/28/2025
 
