@@ -12,7 +12,6 @@ function RingQTE:init(data)
 	}
 
 	self.ring = Ring(data.options, self.flipDuration, slicesData, data.duration)
-	self.numSlices = data.numSlices
 	self.successCount = 0
 	self.sliceLenRange = {min = data.sliceLenRange.min, max = data.sliceLenRange.max}
 	self.sliceIndex = 1
@@ -34,7 +33,7 @@ end;
 
 function RingQTE:gamepadpressed(joystick, button)
 	if button == self.actionButton then
-		if self.ring.line.isActive and self.ring:isInHitBox(self.sliceIndex) then
+		if self.ring.line.isActive and self.ring:isInHitBox() then
 			print('good')
 			self.successCount = self.successCount + 1
 		else
@@ -43,12 +42,12 @@ function RingQTE:gamepadpressed(joystick, button)
 		self.sliceIndex = self.sliceIndex + 1
 	end
 
-	if self.sliceIndex > self.numSlices then
+	if self.sliceIndex > self.ring.numSlices then
 		if not self.signalEmitted then
 			self.qteComplete = true
 			self.ring.revolutionTween:stop()
 			
-			if self.successCount == self.numSlices then
+			if self.successCount == self.ring.numSlices then
 				print('Ring QTE Success')
 				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
 					:oncomplete(function() self.feedbackPos.a = 1 end)
@@ -60,8 +59,6 @@ function RingQTE:gamepadpressed(joystick, button)
 			self.signalEmitted = true
 		end
 	end
-
-
 end;
 
 function RingQTE:gamepadreleased(joystick, button)

@@ -70,23 +70,60 @@ end;
 
 function Ring:buildSlices()
 	local slices = {}
+	local spacing = math.rad(5)
+	local maxArc = math.pi * (self.sliceLenRange.max / 100)
+	local minArc = math.pi * (self.sliceLenRange.min / 100)
+	local twoPi = 2 * math.pi
+	local startAngles = {}
 	for i=1, self.numSlices do
-		local angleMod = love.math.random(self.sliceLenRange.min, self.sliceLenRange.max)
-		local angle = math.pi * (angleMod / 100)
-
-		local angleStart = love.math.random() * ((2 * math.pi) - angle)
-		local angleEnd = angleStart + angle
-		local vertices = self:buildArc(self.options.r, angleStart, angleEnd)
-
-		slices[i] = {
-			vertices = vertices,
-			angleStart = angleStart % (2 * math.pi),
-			angleEnd = angleEnd % (2 * math.pi)
-		}
+		table.insert(startAngles, love.math.random() * twoPi)
 	end
+	table.sort(startAngles)
 
+	for i=1, #startAngles do
+		local aStart = startAngles[i]
+		local nextAngle = startAngles[i+1] or (startAngles[1] + twoPi)
+		local availableArc = (nextAngle - aStart - spacing) % twoPi
+
+		if availableArc >= minArc then
+			local arcLen = love.math.random() * (self.sliceLenRange.max - self.sliceLenRange.min)
+			arcLen = minArc + (arcLen / 100) * math.pi
+
+			if arcLen > availableArc then
+				arcLen = availableArc
+			end
+
+			local aEnd = (aStart + arcLen) % twoPi
+			local vertices = self:buildArc(self.options.r, aStart, aEnd)
+
+			table.insert(slices, {
+				vertices = vertices,
+				angleStart = aStart,
+				angleEnd = aEnd
+			})
+		end
+	end
+	self.numSlices = #slices
+	print(self.numSlices)
 	return slices
 end;
+-- 	for i=1, self.numSlices do
+-- 		local angleMod = love.math.random(self.sliceLenRange.min, self.sliceLenRange.max)
+-- 		local angle = prevAngle + math.pi * (angleMod / 100)
+
+-- 		local angleStart = love.math.random() * ((2 * math.pi) - angle)
+-- 		local angleEnd = angleStart + angle
+-- 		local vertices = self:buildArc(self.options.r, angleStart, angleEnd)
+-- 		local prevAngle = angle
+-- 		slices[i] = {
+-- 			vertices = vertices,
+-- 			angleStart = angleStart % (2 * math.pi),
+-- 			angleEnd = angleEnd % (2 * math.pi)
+-- 		}
+-- 	end
+
+-- 	return slices
+-- end;
 
 function Ring:buildArc(radius, angleStart, angleEnd, segments)
     local vertices = { 0, 0 }
@@ -115,15 +152,17 @@ function Ring:startRevolution()
 	end)
 end;
 
-function Ring:isInHitBox(index)
-	if not self.slices[index] then return false end
-
-	local slice = self.slices[index]
+function Ring:isInHitBox()
 	local angle = self.line.angle % (2 * math.pi)
-	local angleStart = slice.angleStart
-	local angleEnd = slice.angleEnd
 
-	return angle >= angleStart and angle <= angleEnd
+	for i,slice in ipairs(self.slices) do
+		local start = slice.angleStart
+		local stop = slice.angleEnd
+		if angle >= start and angle <= stop then
+			return true
+		end
+	end
+	return false
 end;
 
 function Ring:draw()
