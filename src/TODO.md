@@ -2,6 +2,20 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 08/01/2025
+
+I didn't write out a TODO yesterday because I was studying how the Command Pattern refactor will work.
+
+### TODO
+
+- [x] Player Input Command
+- [x] Skill Command
+- [ ] Successful passing of turns and interrupts by enemy entities
+
+### Reflection
+
+Last item will have to spill into tomorrow. It's because I haven't made a new class yet for the enemy AI to select their move.
+
 ## 07/29/2025
 
 ### TODO
@@ -22,7 +36,6 @@ Copy/Paste the list under the most recent for next time under a heading for the 
 Good progress today!! 
 
 ## 07/28/2025
-
 
 ## TODO
 

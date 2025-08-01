@@ -14,6 +14,7 @@ local showDebugWindow = false
 local hitboxCheckboxState = ffi.new("bool[1]", false)
 local hitboxYPosCheckboxState = ffi.new("bool[1]", false)
 local tweenHPLossCheckboxState = ffi.new("bool[1]", false)
+local atbSystem = ffi.new("bool[1]", false)
 
 local combat = {}
 local numFloors = 50
@@ -104,12 +105,17 @@ function combat:enter(previous)
   
   self.enemyTeam = generateEncounter(self.floorNumber)
 
-  Signal.emit('OnStartCombat')
-
-  Timer.after(Character.combatStartEnterDuration, function()
+  if TurnManager.isATB then
     self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
-    Signal.emit('NextTurn')
-  end)
+    Signal.emit('OnStartCombat')
+    Signal.emit('OnEnterScene')
+  else
+    Signal.emit('OnEnterScene')
+    Timer.after(Character.combatStartEnterDuration, function()
+      self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+      Signal.emit('OnStartCombat')
+    end)
+  end
 end;
 
 function combat:keypressed(key)
@@ -179,6 +185,11 @@ function combat:update(dt)
 
     if imgui.Checkbox("Gradual HP Loss", tweenHPLossCheckboxState) then
       Entity.tweenHP = tweenHPLossCheckboxState[0]
+    end
+
+    if imgui.Checkbox("ATB System", atbSystem) then
+      TurnManager.isATB = atbSystem[0]
+      Entity.isATB = atbSystem[0]
     end
 
     imgui.End()

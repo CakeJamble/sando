@@ -68,7 +68,7 @@ function Character:init(data, actionButton)
   self.hasLCanceled = false
   self.canLCancel = false
 
-  Signal.register('OnStartCombat',
+  Signal.register('OnEnterScene',
     function()
       flux.to(self.pos, self.combatStartEnterDuration, {x = Character.xPos})
         :oncomplete(function()
@@ -80,13 +80,10 @@ function Character:init(data, actionButton)
   )
 end;
 
-function Character:startTurn(hazards)
+function Character:startTurn()
   Entity.startTurn(self)
   Signal.emit('OnStartTurn', self)
 
-  for i,hazard in pairs(hazards.characterHazards) do
-    hazard:proc(self)
-  end
   Timer.after(0.25, function()
     self.actionUI:set(self)
   end

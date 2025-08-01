@@ -181,7 +181,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           Signal.emit('PassTurn')
         elseif self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill
-          self.uiState = 'targeting'
+          -- self.uiState = 'targeting'
           self.backButton.isHidden = false
           Signal.emit('SkillSelected', self.selectedSkill)
         else

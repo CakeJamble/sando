@@ -1,14 +1,23 @@
---! filename: turn manager
+require('class.input.player_input_command')
+require('class.input.skill_command')
+require('class.input.cancel_command')
 require('class.qte.qte_manager')
 require('util.globals')
 Class = require('libs.hump.class')
-TurnManager = Class{}
+TurnManager = Class{isATB = true}
 
 function TurnManager:init(characterTeam, enemyTeam)
   self.characterTeam = characterTeam
   self.enemyTeam = enemyTeam
-  self.turnQueue = self:populateTurnQueue()
-  self.turnQueue = self:sortQueue(self.turnQueue)
+  self.turnQueue = {}
+  self.combatants = self:populateTurnQueue()
+
+  -- ATB system will insert entities into queue when they are ready
+  if not TurnManager.isATB then
+    self.turnQueue = self:populateTurnQueue()
+    self.turnQueue = self:sortQueue(self.turnQueue)
+  end
+
   self.listenerCount = 0
   self.turnIndex = 1
   self.activeEntity = nil
@@ -24,6 +33,11 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.instructionsPos = {x=200,y=300}
   self.cameraPosX, self.cameraPosY = camera:position()
 
+  -- ATB Variables
+  self.commandQueue = {}
+  self.activeCommand = nil
+  self.awaitingPlayerAction = false
+
   Signal.register('NextTurn', 
 --[[ After sorting the remaining combatants to account for stat changes during the turn,
   set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
@@ -35,7 +49,13 @@ function TurnManager:init(characterTeam, enemyTeam)
 
       self.qteManager:reset()
       self:removeKOs()
-      if not self:winLossConsMet() then
+
+      if TurnManager.isATB then
+        if #self.commandQueue > 0 then
+          local command = table.remove(self.commandQueue, 1)
+          command:start()
+        end
+      elseif not self:winLossConsMet() then
         self:sortWaitingCombatants()
 
         -- skip over KO'd Characters (they don't get removed from queue bc they can be revived)
@@ -53,70 +73,70 @@ function TurnManager:init(characterTeam, enemyTeam)
     end
   );
 
-  Signal.register('PassTurn',
-    function()
-      self.activeEntity.actionUI:unset()
-      Signal.emit('OnEndTurn', 0)
-    end
-  );
+  -- Signal.register('PassTurn',
+  --   function()
+  --     self.activeEntity.actionUI:unset()
+  --     Signal.emit('OnEndTurn', 0)
+  --   end
+  -- );
 
-  Signal.register('SkillSelected',
-    function(skill)
-      print('Setting up QTE Manager for selected skill: ' .. skill.name)
-      -- self.qteManager:setQTE(skill.qteType, self.activeEntity.actionButton)
-      if not skill.isOffensive then
-        self.activeEntity.actionUI.targetType = 'characters'
-        self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = true
-      else
-        self.activeEntity.actionUI.targetType = 'enemies'
-        self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = false
-      end
-      self.activeEntity.skill = skill
-      self.activeEntity.actionUI.uiState = 'targeting'
+  -- Signal.register('SkillSelected',
+  --   function(skill)
+  --     print('Setting up QTE Manager for selected skill: ' .. skill.name)
+  --     -- self.qteManager:setQTE(skill.qteType, self.activeEntity.actionButton)
+  --     if not skill.isOffensive then
+  --       self.activeEntity.actionUI.targetType = 'characters'
+  --       self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = true
+  --     else
+  --       self.activeEntity.actionUI.targetType = 'enemies'
+  --       self.activeEntity.actionUI.backButton.playerUsingNonOffensiveSkill = false
+  --     end
+  --     self.activeEntity.skill = skill
+  --     self.activeEntity.actionUI.uiState = 'targeting'
 
-      if self.activeEntity.type == 'character' then
-        self.instructions = self.qteManager:getInstructions(skill.qteType, self.activeEntity.actionButton)
-      end
+  --     if self.activeEntity.type == 'character' then
+  --       self.instructions = self.qteManager:getInstructions(skill.qteType, self.activeEntity.actionButton)
+  --     end
 
-    end
-  );
+  --   end
+  -- );
 
-  Signal.register('SkillDeselected',
-    function ()
-      self.qteManager:reset()
-      self.instructions = nil
-      self.activeEntity.skill = nil
-    end
-  );
+  -- Signal.register('SkillDeselected',
+  --   function ()
+  --     self.qteManager:reset()
+  --     self.instructions = nil
+  --     self.activeEntity.skill = nil
+  --   end
+  -- );
 
-  Signal.register('TargetConfirm',
-    function(targetType, tIndex)
-      self.instructions = nil
-      print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
-      self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
-      print('target name is ' .. self.activeEntity.target.entityName)
-      -- Skill should control qte because some skills deal damage during QTE
-      if self.activeEntity.type == 'character' then
-        self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
-        self.qteManager.activeQTE:setUI(self.activeEntity)
-        self.qteManager.activeQTE:beginQTE()
-      else
-        Signal.emit('Attack')
-      end
-    end
-  );
+  -- Signal.register('TargetConfirm',
+  --   function(targetType, tIndex)
+  --     self.instructions = nil
+  --     print('confirming target for', self.activeEntity.entityName, 'for target type', targetType, 'at index', tIndex)
+  --     self.activeEntity.target = self.activeEntity.targets[targetType][tIndex]
+  --     print('target name is ' .. self.activeEntity.target.entityName)
+  --     -- Skill should control qte because some skills deal damage during QTE
+  --     if self.activeEntity.type == 'character' then
+  --       self.qteManager:setQTE(self.activeEntity.skill.qteType, self.activeEntity.actionButton, self.activeEntity.skill)
+  --       self.qteManager.activeQTE:setUI(self.activeEntity)
+  --       self.qteManager.activeQTE:beginQTE()
+  --     else
+  --       Signal.emit('Attack')
+  --     end
+  --   end
+  -- );
 
-  Signal.register('OnQTESuccess',
-    function()
-      self.activeEntity.qteSuccess = true
-    end)
+  -- Signal.register('OnQTESuccess',
+  --   function()
+  --     self.activeEntity.qteSuccess = true
+  --   end)
 
-  Signal.register('Attack',
-    function()
-      print('attacking')
-      self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
-    end
-  );
+  -- Signal.register('Attack',
+  --   function()
+  --     print('attacking')
+  --     self.activeEntity.skill.proc(self.activeEntity, self.qteManager)
+  --   end
+  -- );
 
   Signal.register('OnEndTurn', 
     function(timeBtwnTurns)
@@ -140,13 +160,47 @@ function TurnManager:init(characterTeam, enemyTeam)
     function(projectile)
       self.activeEntity.projectile = projectile
     end
-  )
+  );
+
   Signal.register('DespawnProjectile',
     function() 
       self.activeEntity.projectile = nil 
       print('Projectile destroyed')
     end
-  )
+  );
+
+----------------- ATB Signals ------------------------
+  Signal.register('OnStartCombat',
+    function()
+      if TurnManager.isATB then
+        for i,entity in ipairs(self.combatants) do
+          entity:tweenProgressBar(function()
+            print(entity.entityName .. "'s turn is ready to begin")
+            Signal.emit('TurnReady', entity)
+          end
+          )
+        end
+      end
+    end
+  );
+
+  Signal.register('TurnReady',
+    function(entity)
+      -- enqueue the command to get their desired action
+      local command
+      local isInterrupt
+      if entity.type == 'character' then
+        command = PlayerInputCommand(entity, self)
+        isInterrupt = false
+      else
+        command = PlayerInputCommand(entity, self)
+        isInterrupt = true
+        -- set commaind to AICommand(entity, self) and enqueue it
+      end
+
+      self:enqueueCommand(command, isInterrupt)
+    end
+  );
 end;
 
 function TurnManager:resetCamera(duration)
@@ -217,6 +271,17 @@ function TurnManager:winLossConsMet()
   return result
 end;
 
+function TurnManager:draw()
+  self.qteManager:draw()
+  if self.instructions then
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
+    love.graphics.setColor(1, 1, 1)
+  end
+end;
+
+----------------- Standard Turn-Based Combat -----------------
+
 function TurnManager:entitiesReactToTurnStart()
   if self.activeEntity.type == 'enemy' then
     self.activeEntity:setupOffense()
@@ -229,7 +294,16 @@ function TurnManager:entitiesReactToTurnStart()
 end;
 
 function TurnManager:update(dt)
-  for _,entity in pairs(self.turnQueue) do
+  if TurnManager.isATB then
+    if self.activeCommand and not self.activeCommand.done then
+      self.activeCommand:update(dt)
+    elseif #self.commandQueue > 0 then
+      self.activeCommand = table.remove(self.commandQueue, 1)
+      self.activeCommand:start(self)
+    end
+  end
+
+  for _,entity in pairs(self.combatants) do
     entity:update(dt)
   end
   self.qteManager:update(dt)
@@ -258,11 +332,17 @@ function TurnManager:sortWaitingCombatants()
   end
 end;
 
-function TurnManager:draw()
-  self.qteManager:draw()
-  if self.instructions then
-    love.graphics.setColor(0, 0, 0)
-    love.graphics.print(self.instructions, self.instructionsPos.x, self.instructionsPos.y)
-    love.graphics.setColor(1, 1, 1)
+----------------- Active Timer Battle Combat -----------------
+
+function TurnManager:enqueueCommand(command, isInterrupt)
+  if not self.activeCommand then
+    self.activeCommand = command
+    command:start(self)
+  elseif self.activeCommand.isInterruptible and isInterrupt then -- place active command back onto queue
+    table.insert(self.commandQueue, 1, self.activeCommand)
+    self.activeCommand = command
+    command:start(self)
+  else
+    table.insert(self.commandQueue, command)
   end
 end;

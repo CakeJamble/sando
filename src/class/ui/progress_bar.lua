@@ -39,6 +39,11 @@ function ProgressBar:reversePosOffsets()
 	self.pos.y = self.pos.y - self.offsets.y
 end;
 
+function ProgressBar:setPos(pos)
+	self.pos.x = pos.x + self.offsets.x
+	self.pos.y = pos.y + self.offsets.y
+end;
+
 function ProgressBar:reset()
 	self.meterOptions.width = self.meterStartingWidth
 end;

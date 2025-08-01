@@ -15,6 +15,7 @@ function RingQTE:init(data)
 	self.successCount = 0
 	self.sliceLenRange = {min = data.sliceLenRange.min, max = data.sliceLenRange.max}
 	self.sliceIndex = 1
+	self.onComplete = nil
 end;
 
 function RingQTE:setUI(activeEntity)
@@ -27,8 +28,9 @@ function RingQTE:setActionButton(actionButton, buttonUI)
 	self.instructions = "Press " .. string.upper(actionButton) .. " in the highlighted positions."
 end;
 
-function RingQTE:beginQTE()
+function RingQTE:beginQTE(callback)
 	self.ring:startRevolution()
+	self.onComplete = callback
 end;
 
 function RingQTE:gamepadpressed(joystick, button)
@@ -46,16 +48,18 @@ function RingQTE:gamepadpressed(joystick, button)
 		if not self.signalEmitted then
 			self.qteComplete = true
 			self.ring.revolutionTween:stop()
-			
+			local isSuccess = false
 			if self.successCount == self.ring.numSlices then
 				print('Ring QTE Success')
+				isSuccess = true
 				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
 					:oncomplete(function() self.feedbackPos.a = 1 end)
-				Signal.emit('OnQTESuccess')
+				-- Signal.emit('OnQTESuccess')
 			else
 				print('Ring QTE Fail')
 			end
-			Signal.emit('Attack')
+			self.onComplete(isSuccess)
+			-- Signal.emit('Attack')
 			self.signalEmitted = true
 		end
 	end

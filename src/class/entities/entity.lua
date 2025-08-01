@@ -1,9 +1,11 @@
+require('class.ui.progress_bar')
 Class = require "libs.hump.class"
 Entity = Class{
   movementTime = 2,
   drawHitboxes = false,
   drawHitboxPositions = false,
-  tweenHP = false
+  tweenHP = false,
+  isATB = true
 }
 
   -- Entity constructor
@@ -72,6 +74,19 @@ function Entity:init(data, x, y)
     h = self.hitbox.h / 8
   }
   self.tweens = {}
+
+  local pbOptions = {
+    xOffset = 0,
+    yOffset = 75,
+    min = 0,
+    max = 100,
+    w = 50,
+    h = 5,
+    wModifier = 0.05
+  }
+  self.progressBar = ProgressBar(self.pos, pbOptions, false)
+
+  self.hazards = nil
 end;
 
 function Entity:startTurn()
@@ -79,6 +94,12 @@ function Entity:startTurn()
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'offense'
+
+  if self.hazards then
+    for i,hazard in ipairs(self.hazards) do
+      hazard:proc()
+    end
+  end
 
   print('starting turn for ' .. self.entityName)
 end;
@@ -88,7 +109,7 @@ function Entity:endTurn(duration, stagingPos, tweenType)
     self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   else
     self:reset()
-    Signal.emit('OnTurnEnd', 0)
+    Signal.emit('OnEndTurn', 0)
   end
 end;
 
@@ -338,6 +359,11 @@ function Entity:update(dt) --> void
   self.hitbox.y = self.pos.y + self.hbYOffset
   self.shadowDims.x = self.hitbox.x + (self.hitbox.w / 2)
   self.shadowDims.y = self.pos.y + (self.frameHeight * 0.95)
+
+  if Entity.isATB then
+    self.progressBar:setPos(self.pos)
+  end
+
   local animation = self.animations[self.currentAnimTag]
   -- if self.state == 'idle' then
     -- animation = self.movementAnimations.idle
@@ -406,4 +432,26 @@ function Entity:draw() --> void
     love.graphics.circle('fill', self.projectile.pos.x, self.projectile.pos.y, self.projectile.dims.r)
     love.graphics.setColor(1,1,1)
   end
+
+  if Entity.isATB then
+    self.progressBar:draw()
+  end
+end;
+
+
+-- ATB Functionality
+function Entity:tweenProgressBar(onComplete)
+  local minDur = 1
+  local maxDur = 2
+  local speed = math.max(self.battleStats.speed, 1)
+  local maxSpeed = 999
+  local goalWidth = self.progressBar.containerOptions.width
+
+  local speedRatio = math.min(speed / maxSpeed, 1)
+  local t = maxDur - (speedRatio * (maxDur - minDur))
+  t = math.max(minDur, math.min(maxDur, t))
+
+  flux.to(self.progressBar.meterOptions, t, {width = goalWidth})
+    :ease('linear')
+    :oncomplete(onComplete)
 end;

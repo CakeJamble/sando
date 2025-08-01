@@ -53,7 +53,6 @@ function Ring:flipRing()
 		:onupdate(function()
 			self.shear.ky = math.sin(self.shear.angle) * 1.0
 			self.shear.scale = math.cos(self.shear.angle)
-			-- self.ringShader:send("shearFactor", math.abs(math.sin(self.shear.angle)))
 		end)
 		:ease('quadout')
 

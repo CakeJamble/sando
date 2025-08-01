@@ -25,14 +25,6 @@ function Enemy:init(data)
     end)
 end;
 
-function Enemy:startTurn(hazards)
-  Entity.startTurn(self)
-
-  for i,hazard in pairs(hazards.enemyHazards) do
-    hazard:proc(self)
-  end
-end;
-
 function Enemy:takeDamage(amount)
   Entity.takeDamage(self, amount)
 
