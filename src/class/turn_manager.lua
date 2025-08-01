@@ -1,6 +1,7 @@
 require('class.input.player_input_command')
 require('class.input.skill_command')
 require('class.input.cancel_command')
+require('class.input.ai_command')
 require('class.qte.qte_manager')
 require('util.globals')
 Class = require('libs.hump.class')
@@ -193,9 +194,8 @@ function TurnManager:init(characterTeam, enemyTeam)
         command = PlayerInputCommand(entity, self)
         isInterrupt = false
       else
-        command = PlayerInputCommand(entity, self)
+        command = AICommand(entity, self)
         isInterrupt = true
-        -- set commaind to AICommand(entity, self) and enqueue it
       end
 
       self:enqueueCommand(command, isInterrupt)
@@ -340,6 +340,8 @@ function TurnManager:enqueueCommand(command, isInterrupt)
     command:start(self)
   elseif self.activeCommand.isInterruptible and isInterrupt then -- place active command back onto queue
     table.insert(self.commandQueue, 1, self.activeCommand)
+    print(self.activeCommand.entity.entityName)
+    self.activeCommand:interrupt()
     self.activeCommand = command
     command:start(self)
   else

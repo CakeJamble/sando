@@ -46,19 +46,19 @@ function PlayerInputCommand:start()
 	end
 	Signal.register('SkillDeselected', self.signalHandlers.deselectSkill)
 
-	self.signalHandlers.passTurn = function(entity)
-		entity.actionUI:unset()
-		Signal.emit('OnEndTurn', 0)
-	end
-	Signal.register('PassTurn', self.signalHandlers.passTurn)
-
 	self.signalHandlers.cancel = function()
 		self:cleanupSignals()
 		self.done = true
 	end
 	Signal.register('CancelInput', self.signalHandlers.cancel)
 	Signal.register('OnEndTurn', self.signalHandlers.cancel)
-
+	
+	self.signalHandlers.passTurn = function(entity)
+		entity.actionUI:unset()
+		Signal.emit('OnEndTurn', 0)
+	end
+	Signal.register('PassTurn', self.signalHandlers.passTurn)
+	
 	-- basic cleanup
 	self.awaitingInput = true
 	self.skill = nil
@@ -72,6 +72,10 @@ function PlayerInputCommand:cleanupSignals()
 	Signal.remove('PassTurn', self.signalHandlers.passTurn)
 	Signal.remove('CancelInput', self.signalHandlers.cancel)
 	Signal.remove('OnEndTurn', self.signalHandlers.cancel)
+end;
+
+function PlayerInputCommand:interrupt()
+	self.entity.actionUI.active = false
 end;
 
 function PlayerInputCommand:update(dt)

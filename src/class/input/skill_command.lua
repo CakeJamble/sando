@@ -6,7 +6,11 @@ function SkillCommand:init(entity, target, skill, qteManager)
   self.actor = entity
   self.target = target
   self.skill = skill
-  self.qteManager = qteManager
+
+  if qteManager then
+    self.qteManager = qteManager
+  end
+
   self.done = false
   self.qteResult = nil
   self.waitingForQTE = false
@@ -14,7 +18,7 @@ function SkillCommand:init(entity, target, skill, qteManager)
 end
 
 function SkillCommand:start(turnManager)
-  if self.entity.type == 'character' and self.skill.qteType then
+  if self.qteManager and self.skill.qteType then
     -- Begin QTE for player skills that require it
     self.waitingForQTE = true
     self.qteManager:setQTE(self.skill.qteType, self.entity.actionButton, self.skill)
@@ -36,7 +40,7 @@ end
 
 function SkillCommand:update(dt)
   -- If waiting on QTE, update QTE manager
-  if self.waitingForQTE then
+  if self.qteManager and self.waitingForQTE then
     self.qteManager:update(dt)
   end
 end

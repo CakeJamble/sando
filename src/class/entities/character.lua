@@ -338,5 +338,7 @@ end;
 function Character:draw()
   Entity.draw(self)
   love.graphics.setColor(1,1,1)
-  self.actionUI:draw()
+  if self.actionUI.active then
+    self.actionUI:draw()
+  end
 end;

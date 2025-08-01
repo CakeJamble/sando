@@ -14,7 +14,7 @@ I didn't write out a TODO yesterday because I was studying how the Command Patte
 
 ### Reflection
 
-Last item will have to spill into tomorrow. It's because I haven't made a new class yet for the enemy AI to select their move.
+Last item will have to spill into tomorrow. The gist of the issue right now is that the progress bar is progressing while turns are going, and the progress bar isn't resetting either. So I need to pause the progress bar when a skill is being used. On top of that, the interruptible commands are being placed at the back of the command queue when they can't interrupt the currently running command, when they should actually be placed at the front. An initial easy solution for this is to implement either a priority queue or two queues that the higher priority queue can always have precedence while combat is running.
 
 ## 07/29/2025
 
