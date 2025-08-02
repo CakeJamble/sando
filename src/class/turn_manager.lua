@@ -35,7 +35,10 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.cameraPosX, self.cameraPosY = camera:position()
 
   -- ATB Variables
-  self.commandQueue = {}
+  self.commandQueue = {
+    interruptibles = {},
+    uninterruptibles = {}
+  }
   self.activeCommand = nil
   self.awaitingPlayerAction = false
 
@@ -338,13 +341,11 @@ function TurnManager:enqueueCommand(command, isInterrupt)
   if not self.activeCommand then
     self.activeCommand = command
     command:start(self)
-  elseif self.activeCommand.isInterruptible and isInterrupt then -- place active command back onto queue
-    table.insert(self.commandQueue, 1, self.activeCommand)
-    print(self.activeCommand.entity.entityName)
-    self.activeCommand:interrupt()
-    self.activeCommand = command
-    command:start(self)
   else
-    table.insert(self.commandQueue, command)
+    if isInterrupt then
+      table.insert(self.commandQueue.uninterruptibles, command)
+    else
+      table.insert(self.commandQueue.interruptibles, command)
+    end
   end
 end;
