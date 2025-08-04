@@ -29,21 +29,6 @@ function Ring:init(options, flipDuration, slicesData, qteDuration)
 	}
 	self.revolutionTween = nil
 	self.showSlices = false
-
-	-- local ringShaderCode = [[
-	-- 	extern number shearFactor;
-
-	-- 	vec4 effect(vec4 color, Image texture, vec2 texCoords, vec2 screenCoords) {
-    -- 	vec4 pixel = Texel(texture, texCoords);
-    
-    -- 	// Lighting multiplier: darkens bottom, lightens top based on shearFactor
-    -- 	float lighting = mix(0.6, 1.0, texCoords.y) * shearFactor + (1.0 - shearFactor);
-    
-    -- 	return pixel * color * vec4(vec3(lighting), 1.0);
-	-- 	}
-	-- ]]
-
-	-- self.ringShader = love.graphics.newShader(ringShaderCode)
 end;
 
 function Ring:flipRing()
@@ -105,23 +90,6 @@ function Ring:buildSlices()
 	self.numSlices = #slices
 	return slices
 end;
--- 	for i=1, self.numSlices do
--- 		local angleMod = love.math.random(self.sliceLenRange.min, self.sliceLenRange.max)
--- 		local angle = prevAngle + math.pi * (angleMod / 100)
-
--- 		local angleStart = love.math.random() * ((2 * math.pi) - angle)
--- 		local angleEnd = angleStart + angle
--- 		local vertices = self:buildArc(self.options.r, angleStart, angleEnd)
--- 		local prevAngle = angle
--- 		slices[i] = {
--- 			vertices = vertices,
--- 			angleStart = angleStart % (2 * math.pi),
--- 			angleEnd = angleEnd % (2 * math.pi)
--- 		}
--- 	end
-
--- 	return slices
--- end;
 
 function Ring:buildArc(radius, angleStart, angleEnd, segments)
     local vertices = { 0, 0 }
@@ -167,7 +135,6 @@ function Ring:isInHitBox()
 end;
 
 function Ring:draw()
-	-- love.graphics.setShader(self.ringShader)
     love.graphics.push()
     love.graphics.translate(self.options.x, self.options.y + self.offset.y)
 
@@ -202,5 +169,4 @@ function Ring:draw()
 	end
 
 	love.graphics.pop()
-	-- love.graphics.setShader()
 end;

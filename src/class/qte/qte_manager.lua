@@ -31,7 +31,7 @@ function QTEManager:init(characterTeam)
 		end
 	)
 
-	Signal.register('NextTurn', function() self.activeQTE = nil end)
+	Signal.register('OnEndTurn', function() self.activeQTE = nil end)
 end;
 
 function QTEManager:loadButtonImages(buttonDir)
