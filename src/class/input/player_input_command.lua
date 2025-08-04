@@ -9,7 +9,6 @@ function PlayerInputCommand:init(entity, turnManager)
 	local enemyMembers = turnManager.enemyTeam.members
 	entity:setTargets(characterMembers, enemyMembers)
 	self.target = entity.target
-
 	self.turnManager = turnManager
 	self.awaitingInput = true
 	self.waitingForTarget = false
@@ -24,7 +23,6 @@ function PlayerInputCommand:start()
 		self.skill = skill
 		self.awaitingInput = false
 		self.waitingForTarget = true
-		print(self.entity.entityName)
 		-- self.entity:setTargets(self.turnManager.characterTeam, self.turnManager.enemyTeam)
 		self.entity.actionUI.uiState = 'targeting'
 	end
@@ -36,7 +34,8 @@ function PlayerInputCommand:start()
 		self.target = self.entity.targets[targetType][tIndex]
 		self.waitingForTarget = false
 		local skillCommand = SkillCommand(self.entity, self.target, self.skill, self.turnManager.qteManager)
-		self.turnManager:enqueueCommand(skillCommand)
+		self.done = true
+		self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)
 	end
 	Signal.register('TargetConfirm', self.signalHandlers.target)
 
@@ -75,9 +74,14 @@ function PlayerInputCommand:cleanupSignals()
 end;
 
 function PlayerInputCommand:interrupt()
-	self.entity.actionUI.active = false
+	-- Signal.emit('InterruptActionUI')
+	self:cleanupSignals()
+	print('interrupting ' .. self.entity.entityName .. '\'s command')
 end;
 
 function PlayerInputCommand:update(dt)
-	if self.done then self:cleanupSignals() end
+	if self.done then 
+		self:cleanupSignals() 
+		self.done = false
+	end
 end;

@@ -87,6 +87,14 @@ function Entity:init(data, x, y)
   self.progressBar = ProgressBar(self.pos, pbOptions, false)
 
   self.hazards = nil
+
+  local minDur = 0.5
+  local maxDur = 5
+  local speed = math.max(self.battleStats.speed, 1)
+  local maxSpeed = 999
+
+  local normSpeed = math.min(speed/maxSpeed, 1)
+  self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
 end;
 
 function Entity:startTurn()
@@ -94,6 +102,7 @@ function Entity:startTurn()
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'offense'
+  self.progressBar:reset()
 
   if self.hazards then
     for i,hazard in ipairs(self.hazards) do
@@ -149,6 +158,16 @@ function Entity:reset()
   self.currentAnimTag = 'idle'
   self.moveBackTimerStarted = false
   self.skill = nil
+
+  if Entity.isATB then
+    self.progressBar:reset()
+
+    Timer.after(0.5, function()
+      self:tweenProgressBar(function()
+        Signal.emit('TurnReady', self)
+      end)
+    end)
+  end
 
   print('ending turn for ', self.entityName)
 end;
@@ -441,17 +460,9 @@ end;
 
 -- ATB Functionality
 function Entity:tweenProgressBar(onComplete)
-  local minDur = 1
-  local maxDur = 2
-  local speed = math.max(self.battleStats.speed, 1)
-  local maxSpeed = 999
   local goalWidth = self.progressBar.containerOptions.width
 
-  local speedRatio = math.min(speed / maxSpeed, 1)
-  local t = maxDur - (speedRatio * (maxDur - minDur))
-  t = math.max(minDur, math.min(maxDur, t))
-
-  flux.to(self.progressBar.meterOptions, t, {width = goalWidth})
+  self.pbTween = flux.to(self.progressBar.meterOptions, self.tRate, {width = goalWidth})
     :ease('linear')
     :oncomplete(onComplete)
 end;

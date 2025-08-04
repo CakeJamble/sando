@@ -6,10 +6,7 @@ function SkillCommand:init(entity, target, skill, qteManager)
   self.actor = entity
   self.target = target
   self.skill = skill
-
-  if qteManager then
-    self.qteManager = qteManager
-  end
+  self.qteManager = qteManager
 
   self.done = false
   self.qteResult = nil
@@ -35,7 +32,6 @@ end;
 
 function SkillCommand:executeSkill()
   self.skill.proc(self.entity, self.qteManager)
-  self.done = true
 end
 
 function SkillCommand:update(dt)

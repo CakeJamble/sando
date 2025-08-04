@@ -55,24 +55,24 @@ function TurnManager:init(characterTeam, enemyTeam)
       self:removeKOs()
 
       if TurnManager.isATB then
-        if #self.commandQueue > 0 then
-          local command = table.remove(self.commandQueue, 1)
-          command:start()
-        end
+        -- if #self.commandQueue > 0 then
+        --   local command = table.remove(self.commandQueue, 1)
+        --   command:start()
+        -- end
       elseif not self:winLossConsMet() then
         self:sortWaitingCombatants()
 
         -- skip over KO'd Characters (they don't get removed from queue bc they can be revived)
-        while(not self.turnQueue[self.turnIndex]:isAlive()) do
-          self.turnIndex = self.turnIndex + 1
-        end
+        -- while(not self.turnQueue[self.turnIndex]:isAlive()) do
+        --   self.turnIndex = self.turnIndex + 1
+        -- end
 
-        self.activeEntity = self.turnQueue[self.turnIndex]
-        self.activeEntity:startTurn(self.combatHazards)
-        self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
-        self:entitiesReactToTurnStart()
+        -- self.activeEntity = self.turnQueue[self.turnIndex]
+        -- self.activeEntity:startTurn(self.combatHazards)
+        -- self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
+        -- self:entitiesReactToTurnStart()
 
-        self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
+        -- self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
       end
     end
   );
@@ -146,7 +146,11 @@ function TurnManager:init(characterTeam, enemyTeam)
     function(timeBtwnTurns)
       local withTimeToBreathe = timeBtwnTurns + 0.25
       self:resetCamera(timeBtwnTurns)
-      Timer.after(withTimeToBreathe , function() Signal.emit('NextTurn') end)
+      self.activeCommand.done = true
+      Timer.after(timeBtwnTurns, function()
+        self:resumeProgressBars()
+      end)
+      -- Timer.after(withTimeToBreathe , function() Signal.emit('NextTurn') end)
     end
   );
 
@@ -195,13 +199,11 @@ function TurnManager:init(characterTeam, enemyTeam)
       local isInterrupt
       if entity.type == 'character' then
         command = PlayerInputCommand(entity, self)
-        isInterrupt = false
       else
         command = AICommand(entity, self)
-        isInterrupt = true
       end
 
-      self:enqueueCommand(command, isInterrupt)
+      self:enqueueCommand(command, command.isInterruptible)
     end
   );
 end;
@@ -286,9 +288,8 @@ end;
 ----------------- Standard Turn-Based Combat -----------------
 
 function TurnManager:entitiesReactToTurnStart()
-  if self.activeEntity.type == 'enemy' then
-    self.activeEntity:setupOffense()
-    for _,e in pairs(self.turnQueue) do
+  if self.activeCommand.entity.type == 'enemy' then
+    for _,e in pairs(self.combatants) do
       if e.type == 'character' then
         e.state = 'defense'
       end
@@ -298,12 +299,17 @@ end;
 
 function TurnManager:update(dt)
   if TurnManager.isATB then
-    if self.activeCommand and not self.activeCommand.done then
-      self.activeCommand:update(dt)
-    elseif #self.commandQueue > 0 then
-      self.activeCommand = table.remove(self.commandQueue, 1)
-      self.activeCommand:start(self)
+    if self.activeCommand then
+      if not self.activeCommand.done then
+        self.activeCommand:update(dt)
+      end
+
+      if self.activeCommand.done then
+        self:checkQueues()
+      end
     end
+
+
   end
 
   for _,entity in pairs(self.combatants) do
@@ -337,15 +343,65 @@ end;
 
 ----------------- Active Timer Battle Combat -----------------
 
-function TurnManager:enqueueCommand(command, isInterrupt)
-  if not self.activeCommand then
-    self.activeCommand = command
-    command:start(self)
+function TurnManager:enqueueCommand(command, isInterruptible)
+  if isInterruptible then
+    print('enqueuing command from ' .. command.entity.entityName .. ' in interruptibles queue')
+    table.insert(self.commandQueue.interruptibles, command)
   else
-    if isInterrupt then
-      table.insert(self.commandQueue.uninterruptibles, command)
-    else
-      table.insert(self.commandQueue.interruptibles, command)
+    print('enqueuing command from ' .. command.entity.entityName .. ' in uninterruptibles queue')
+    table.insert(self.commandQueue.uninterruptibles, command)
+  end
+
+  self:checkQueues()
+end;
+
+function TurnManager:checkQueues()
+  if not self.activeCommand then
+    if #self.commandQueue.uninterruptibles > 0 then
+      self.activeCommand = table.remove(self.commandQueue.uninterruptibles, 1)
+    elseif #self.commandQueue.interruptibles > 0 then
+      self.activeCommand = table.remove(self.commandQueue.interruptibles, 1)
     end
+
+    if self.activeCommand then 
+      if not self.activeCommand.isInterruptible then
+        self:interruptProgressBars()
+      end
+      self:entitiesReactToTurnStart()
+      self.activeCommand:start()
+    end
+
+  elseif self.activeCommand.done then
+    self.activeCommand = nil
+    self:checkQueues()
+  elseif self.activeCommand.isInterruptible and #self.commandQueue.uninterruptibles > 0 then
+    local command = table.remove(self.commandQueue.uninterruptibles, 1)
+    self.activeCommand:interrupt()
+    table.insert(self.commandQueue.interruptibles, 1, self.activeCommand)
+    print('placed active command from ' .. self.activeCommand.entity.entityName .. ' back onto interruptibles list')
+    self.activeCommand = command
+    print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
+    self:interruptProgressBars()
+    self:entitiesReactToTurnStart()
+    self.activeCommand:start()
+  end
+end;
+
+function TurnManager:interruptProgressBars()
+  for i,entity in ipairs(self.combatants) do
+    entity.pbTween:stop()
+    if entity.type == 'character' then
+      entity.actionUI.active = false
+    end
+  end
+end;
+
+function TurnManager:resumeProgressBars()
+  for i,entity in ipairs(self.combatants) do
+    entity:tweenProgressBar(function()
+            print(entity.entityName .. "'s turn is ready to begin")
+            Signal.emit('TurnReady', entity)
+          end
+          )
   end
 end;

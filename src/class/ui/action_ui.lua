@@ -142,6 +142,11 @@ function ActionUI:unset()
   self.active = false
 end;
 
+function ActionUI:deactivate()
+  self.active = false
+  print('action ui is no longer active')
+end
+
 -- deprecated
 function ActionUI:keypressed(key) --> void
 end;
@@ -233,7 +238,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
 end;
 
 function ActionUI:draw()
-  if(self.active) then
+  if self.active then
       -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
     if self.uiState == 'targeting' then
       self.backButton:draw()

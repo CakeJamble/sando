@@ -4,6 +4,7 @@ Class = require 'libs.hump.class'
 ProgressBar = Class{}
 
 function ProgressBar:init(targetPos, options, isOffensive)
+	self.active = true
 	self.pos = {
 		x = targetPos.x + options.xOffset,
 		y = targetPos.y + options.yOffset

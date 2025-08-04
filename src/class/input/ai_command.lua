@@ -22,17 +22,13 @@ function AICommand:start()
 	self.signalHandlers.target = function(targetType, tIndex)
 		print(self.entity.entityName .. ' is ready to attack')
 
-		-- pop self-off queue to remove inifinite loop
-		table.remove(self.turnManager.commandQueue, 1)
-
 		self.entity.target = self.entity.targets[targetType][tIndex]
 		self.skill = self.entity.skill
 		self.target = self.entity.targets[targetType][tIndex]
 		self.waitingForTarget = false
 		local skillCommand = SkillCommand(self.entity, self.target, self.skill, nil)
-
-		local isInterrupt = true
-		self.turnManager:enqueueCommand(skillCommand, isInterrupt)
+		self.done = true
+		self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)
 	end
 	Signal.register('TargetConfirm', self.signalHandlers.target)
 
@@ -45,5 +41,8 @@ function AICommand:cleanupSignals()
 end;
 
 function AICommand:update(dt)
-	if self.done then self:cleanupSignals() end
+	if self.done then 
+		self:cleanupSignals() 
+		self.done = false
+	end
 end;

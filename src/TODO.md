@@ -2,6 +2,25 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 08/04/2025
+
+Saturday was a big step towards implementing the ATB system. I didn't write anything in the TODO because a lot of the coding was exploratory in nature, trying to figure out what would work and what wouldn't. I'm happy with the progress so far, but I realized that it will be tough to untangle this progress so that both the ATB and the Standard Battle systems can work interchangeably. I took Sunday (08/03) off because I was starting to feel a little burnt out. It was hard getting started today but I hope that I can regain some momentum now that I feel a bit more rested.
+
+### TODO
+
+- [ ] Fix the progress bar filling function in entity so that there is a more pronounced difference in charging rates for ATB, especially for testing.
+- [x] Fix the division of commands so that they don't overlap, and instead properly interrupt and preempt each other when appropriate
+- [ ] Fix QTE bug that doesn't properly remove UI after ending turn in ATB system
+- [ ] If there's time, add a slight delay between AICommand starting and finishing to make sure it can be interrupted properly.
+
+
+### Random Thoughts
+
+- Now that I have an ATB system, I am realizing that the "OnStartTurn" signals will be complicated to weave into this system. It might be better to rebalance some Tools, Equip, and Accessory designs by having them only affect a single character when their turn starts. One idea I had was to completely remove Tools that had the OnStartTurn signal, and instead make them accessories or equipment, and increase the number of equip slots for those inventory types.
+
+### Reflection
+
+
 ## 08/01/2025
 
 I didn't write out a TODO yesterday because I was studying how the Command Pattern refactor will work.
