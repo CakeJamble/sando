@@ -103,7 +103,6 @@ function Ring:buildSlices()
 		end
 	end
 	self.numSlices = #slices
-	print(self.numSlices)
 	return slices
 end;
 -- 	for i=1, self.numSlices do
@@ -145,9 +144,12 @@ function Ring:startRevolution()
 		self.revolutionTween = flux.to(self.line, self.line.duration, {angle = 2 * math.pi})
 			:ease('linear')
 			:delay(0.25)
-			-- :oncomplete(function()
-			-- 	self.line.isActive = false
-			-- end)
+			:onstart(function()
+				self.revActive = true
+			end)
+			:oncomplete(function()
+				self.revActive = false
+			end)
 	end)
 end;
 

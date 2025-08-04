@@ -369,7 +369,9 @@ function TurnManager:checkQueues()
         self:interruptProgressBars()
       end
       self:entitiesReactToTurnStart()
+      print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
       self.activeCommand:start()
+
     end
 
   elseif self.activeCommand.done then
@@ -392,9 +394,11 @@ function TurnManager:interruptProgressBars()
   for i,entity in ipairs(self.combatants) do
     entity.pbTween:stop()
     if entity.type == 'character' then
-      entity.actionUI.active = false
+      entity.actionUI = nil
+      -- entity.actionUI.active = false
     end
   end
+  Entity.hideProgressBar = true
 end;
 
 function TurnManager:resumeProgressBars()
@@ -405,4 +409,5 @@ function TurnManager:resumeProgressBars()
           end
           )
   end
+  Entity.hideProgressBar = false
 end;

@@ -5,7 +5,8 @@ Entity = Class{
   drawHitboxes = false,
   drawHitboxPositions = false,
   tweenHP = false,
-  isATB = true
+  isATB = true,
+  hideProgressBar = false
 }
 
   -- Entity constructor
@@ -103,6 +104,7 @@ function Entity:startTurn()
   self.turnFinish = false
   self.state = 'offense'
   self.progressBar:reset()
+  self.pbTween:stop()
 
   if self.hazards then
     for i,hazard in ipairs(self.hazards) do
@@ -452,7 +454,7 @@ function Entity:draw() --> void
     love.graphics.setColor(1,1,1)
   end
 
-  if Entity.isATB then
+  if Entity.isATB and not Entity.hideProgressBar then
     self.progressBar:draw()
   end
 end;
@@ -461,8 +463,11 @@ end;
 -- ATB Functionality
 function Entity:tweenProgressBar(onComplete)
   local goalWidth = self.progressBar.containerOptions.width
-
-  self.pbTween = flux.to(self.progressBar.meterOptions, self.tRate, {width = goalWidth})
+  local currWidth = self.progressBar.meterOptions.width
+  local remainingWidth = goalWidth - currWidth
+  local progress = currWidth / goalWidth
+  local remainingDur = self.tRate * (1 - progress)
+  self.pbTween = flux.to(self.progressBar.meterOptions, remainingDur, {width = goalWidth})
     :ease('linear')
     :oncomplete(onComplete)
 end;

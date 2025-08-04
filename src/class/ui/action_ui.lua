@@ -20,7 +20,7 @@ local CURSOR_PATH = CHARACTER_SELECT_PATH .. 'cursor.png'
     -- postconditions: initializes action ui icons for the character
 -- function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy positions list?
 -- The ActionUI position (self.x, self.y) is at the coordinates of the center of the button wheel
-function ActionUI:init()
+function ActionUI:init(charRef, characterMembers, enemyMembers)
   self.active = false
   self.x = nil
   self.y = nil
@@ -37,13 +37,18 @@ function ActionUI:init()
   self.duoButton = nil
   self.buttons = nil
   self.activeButton = nil
-  self.targets = {}
+  self.targets = {
+    ['characters'] = characterMembers,
+    ['enemies'] = enemyMembers
+  }
   self.targetType = 'enemies'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
   self.buttonTweenDuration = 0.1 -- for delay after buttons set into place
   self.buttonDims = {w=32,h=32}
   self.landingPositions = nil
+  self:set(charRef)
+  self.active = false
 end;
 
 function ActionUI:setTargets(characterMembers, enemyMembers)
@@ -79,7 +84,7 @@ function ActionUI:set(charRef)
   
   -- consider removing after refactoring with Command Pattern
 
-  self.selectedSkill = self.skillList[1]
+  -- self.selectedSkill = self.skillList[1]
   self.active = true
   self.easeType = 'linear'
 end;

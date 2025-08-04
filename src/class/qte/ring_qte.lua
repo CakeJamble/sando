@@ -35,13 +35,15 @@ end;
 
 function RingQTE:gamepadpressed(joystick, button)
 	if button == self.actionButton then
-		if self.ring.line.isActive and self.ring:isInHitBox() then
-			print('good')
-			self.successCount = self.successCount + 1
-		else
+		if self.ring.revActive then
+			self.sliceIndex = self.sliceIndex + 1
+			if self.ring:isInHitBox() then
+				print('good')
+				self.successCount = self.successCount + 1
+			else
 			print('bad')
+			end
 		end
-		self.sliceIndex = self.sliceIndex + 1
 	end
 
 	if self.sliceIndex > self.ring.numSlices then

@@ -53,7 +53,7 @@ function Character:init(data, actionButton)
   -- self.currentFP = stats.fp
   -- self.currentDP = stats.dp
 
-  self.actionUI = ActionUI()
+  self.actionUI = ActionUI(self)
   self.cannotLose = false
   self.equips = {}
   
@@ -80,19 +80,22 @@ function Character:init(data, actionButton)
   )
 end;
 
-function Character:startTurn()
+function Character:startTurn(characterMembers, enemyMembers)
   Entity.startTurn(self)
+  self.actionUI = ActionUI(self, characterMembers, enemyMembers)
+  self.actionUI.active = true
   Signal.emit('OnStartTurn', self)
 
-  Timer.after(0.25, function()
-    self.actionUI:set(self)
-  end
-  )
+  -- Timer.after(0.25, function()
+  --   self.actionUI:set(self)
+  -- end
+  -- )
 end
 
 function Character:endTurn(duration, stagingPos, tweenType)
   Entity.endTurn(self, duration, stagingPos, tweenType)
-  self.actionUI:unset()
+  self.actionUI = nil
+  -- self.actionUI:unset()
   self.qteSuccess = false
 end;
 
@@ -152,7 +155,7 @@ end;
 function Character:setTargets(characterMembers, enemyMembers)
   print('setting targets for ', self.entityName)
   Entity.setTargets(self, characterMembers, enemyMembers)
-  self.actionUI:setTargets(characterMembers, enemyMembers)
+  -- self.actionUI:setTargets(characterMembers, enemyMembers)
 end;
 
 --[[ Gains exp, leveling up when applicable
@@ -221,7 +224,7 @@ function Character:keypressed(key)
 end;
 
 function Character:gamepadpressed(joystick, button)
-  if self.actionUI.active then
+  if self.actionUI and self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
   else
     self:checkGuardAndJump(button)
@@ -338,7 +341,7 @@ end;
 function Character:draw()
   Entity.draw(self)
   love.graphics.setColor(1,1,1)
-  if self.actionUI.active then
+  if self.actionUI and self.actionUI.active then
     self.actionUI:draw()
   end
 end;

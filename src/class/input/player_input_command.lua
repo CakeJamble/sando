@@ -18,7 +18,7 @@ function PlayerInputCommand:init(entity, turnManager)
 end;
 
 function PlayerInputCommand:start()
-	self.entity:startTurn()
+	self.entity:startTurn(self.turnManager.characterTeam.members, self.turnManager.enemyTeam.members)
 	self.signalHandlers.skill = function(skill)
 		self.skill = skill
 		self.awaitingInput = false
