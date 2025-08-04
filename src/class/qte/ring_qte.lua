@@ -50,6 +50,7 @@ function RingQTE:gamepadpressed(joystick, button)
 		if not self.signalEmitted then
 			self.qteComplete = true
 			self.ring.revolutionTween:stop()
+			self.ring.revActive = false
 			local isSuccess = false
 			if self.successCount == self.ring.numSlices then
 				print('Ring QTE Success')

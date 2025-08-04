@@ -20,6 +20,7 @@ end;
 function PlayerInputCommand:start()
 	self.entity:startTurn(self.turnManager.characterTeam.members, self.turnManager.enemyTeam.members)
 	self.signalHandlers.skill = function(skill)
+	print(self.entity.entityName .. ' selected a skill')
 		self.skill = skill
 		self.awaitingInput = false
 		self.waitingForTarget = true

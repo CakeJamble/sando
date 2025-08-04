@@ -28,6 +28,7 @@ function AICommand:start()
 		self.waitingForTarget = false
 		local skillCommand = SkillCommand(self.entity, self.target, self.skill, nil)
 		self.done = true
+		self:cleanupSignals()
 		self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)
 	end
 	Signal.register('TargetConfirm', self.signalHandlers.target)
@@ -42,7 +43,8 @@ end;
 
 function AICommand:update(dt)
 	if self.done then 
-		self:cleanupSignals() 
+		self:cleanupSignals()
+		print('cleanup signals for ' .. self.entity.entityName)
 		self.done = false
 	end
 end;
