@@ -147,9 +147,10 @@ function TurnManager:init(characterTeam, enemyTeam)
       local withTimeToBreathe = timeBtwnTurns + 0.25
       self:resetCamera(timeBtwnTurns)
       self.activeCommand.done = true
-      Timer.after(timeBtwnTurns, function()
-        self:resumeProgressBars()
-      end)
+      -- Timer.after(timeBtwnTurns, function()
+      --   self:resumeProgressBars()
+      -- end)
+      self:resumeProgressBars()
       -- Timer.after(withTimeToBreathe , function() Signal.emit('NextTurn') end)
     end
   );
