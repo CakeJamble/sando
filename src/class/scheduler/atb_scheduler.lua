@@ -29,7 +29,6 @@ function ATBScheduler:enter()
 
 	self:registerSignal('OnTurnReady',
 	function(entity)
-		print('OnTurnReady signal emitted')
     entity.hideProgressBar = true
     local command
     local isInterrupt
@@ -44,8 +43,6 @@ function ATBScheduler:enter()
 
   self:registerSignal('TargetConfirm',
   function()
-    print('target confirmed')
-
     for i,entity in ipairs(self.combatants) do
       if entity.tweens['pbTween'] then
         print('stopping ' .. entity.entityName .. "'s progress bar")

@@ -14,9 +14,22 @@ The ATB system feels okay. The speed influence on charging needs to be fixed, bu
 	- [ ] STBScheduler (Standard Turn-Based)
 	- [ ] CTBScheduler (Conditional Turn-Based)
 - [ ] Refactor Signal for Projectile objects spawning/despawning
-	- [x] code
-	- [ ] test/debug
+	- [x] Scone
+		- [x] code
+		- [x] test/debug
+	- [ ] Donut Man
+		- [ ] code
+		- [ ] test/debug
+- [ ] Refactor QTEs to properly transition to skill proc using a callback passed to `beginQTE`
+	- [x] MBP
+	- [x] Ring
+	- [ ] Rand SBP
+	- [ ] Hold SBP
 - [ ] Make a similar interface system for SwapSystem (1v1, Party v. Party, etc.)
+
+### Reflection
+
+The separation of the turn manager into swappable formats was way harder than I thought it would be. I ran into a weird bug caused by some kind of scoping issue. Basically, I couldn't stop the progress bars in the entity class when I was checking the command queues. So instead, I just registered a signal for when a target is confirmed that will pause all the progress bars. And when a turn ends, it will resume them. The only issue I see here is when a turn ends without pausing the progress bars (like when the player passes their turn). Debugging this took all day, so I didn't get as far as I hoped, but I'm really happy with the interface. It isn't stuck inside a monolith TurnManager class anymore! :)
 
 ## 08/04/2025
 

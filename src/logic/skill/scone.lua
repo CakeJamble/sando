@@ -16,7 +16,8 @@ return function(ref, qteManager)
     -- Create a Scone Projectile
     local scone = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2))
     local startX, startY = scone.pos.x, scone.pos.y
-    Signal.emit('ProjectileMade', scone)
+    table.insert(ref.projectiles, scone)
+    -- Signal.emit('ProjectileMade', scone)
     -- Tween the scone projectile through the target
     local attack = flux.to(scone.pos, sconeFlyingTime, {x = goalX}):ease(skill.beginTweenType)
       :onupdate(function()
@@ -30,7 +31,8 @@ return function(ref, qteManager)
           ref.target:takeDamage(damage)
           hasCollided = true
           flux.to(scone.dims, 0.25, {r = 0}):ease('linear')
-            :oncomplete(function() Signal.emit('DespawnProjectile') end)
+            -- :oncomplete(function() Signal.emit('DespawnProjectile') end)
+            :oncomplete(function() table.remove(ref.projectiles, 1) end)
         end
       end)
       :oncomplete(function() ref:endTurn(skill.duration, stagingPos, skill.returnTweenType) end)

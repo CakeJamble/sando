@@ -19,7 +19,7 @@ function Entity:init(data, x, y)
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
-  self.projectile = nil
+  -- self.projectile = nil
   self.projectiles = {}
   self.spriteSheets = {
     idle = {},
@@ -452,9 +452,9 @@ function Entity:draw() --> void
     love.graphics.setColor(1,1,1)
   end
 
-  if self.projectile then
+  for i,projectile in ipairs(self.projectiles) do
     love.graphics.setColor(1,0,0)
-    love.graphics.circle('fill', self.projectile.pos.x, self.projectile.pos.y, self.projectile.dims.r)
+    love.graphics.circle('fill', projectile.pos.x, projectile.pos.y, projectile.dims.r)
     love.graphics.setColor(1,1,1)
   end
 

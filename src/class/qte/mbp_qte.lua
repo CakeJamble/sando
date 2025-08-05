@@ -72,7 +72,8 @@ function mbpQTE:setUI(activeEntity)
 	self.feedbackPos.y = self.baseY - 5
 end;
 
-function mbpQTE:beginQTE()
+function mbpQTE:beginQTE(callback)
+	self.onComplete = callback
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 		:oncomplete(function()
 				print('Failed to start in time. Attacking now.')
@@ -115,6 +116,7 @@ function mbpQTE:gamepadpressed(joystick, button)
 			Signal.emit('OnQTESuccess')
 			self.signalEmitted = true
 			self.qteComplete = true
+			self.onComplete(true)
 		end
 	end
 end;

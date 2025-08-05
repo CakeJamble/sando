@@ -18,7 +18,7 @@ return function(ref, qteManager)
   local donutFlyingTime = 0.8
 
   local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2), 1)
-  Signal.emit('ProjectileMade', donut)
+  table.insert(ref.projectiles, donut)
 
   Timer.after(qteManager.activeQTE.duration,
     function()
@@ -31,7 +31,7 @@ return function(ref, qteManager)
           :oncomplete(
             function()
               target:heal(5)
-              Signal.emit('DespawnProjectile')
+              table.remove(ref.projectiles, 1)
               ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
             end)
         ref.tweens['attack'] = attack
