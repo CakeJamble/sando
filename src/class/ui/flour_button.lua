@@ -139,8 +139,9 @@ function FlourButton:gamepadpressed(joystick, button)
 ----------------------- Skill Cancels -------------------------
   elseif button == 'dpleft' or button == 'dpright' then -- close skill select menu
     self.displaySkillList = false
+    Signal.emit('SkillDeselected')
     -- uncomment next line if you want to reset highlighted skill on spin
-    -- self.skillIndex = 1
+    self.skillIndex = 1
   end
 end;
 

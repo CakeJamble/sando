@@ -8,17 +8,17 @@ Saturday was a big step towards implementing the ATB system. I didn't write anyt
 
 ### TODO
 
-- [ ] Fix the progress bar filling function in entity so that there is a more pronounced difference in charging rates for ATB, especially for testing.
+- [x] Fix the progress bar filling function in entity so that there is a more pronounced difference in charging rates for ATB, especially for testing.
 - [x] Fix the division of commands so that they don't overlap, and instead properly interrupt and preempt each other when appropriate
-- [ ] Fix QTE bug that doesn't properly remove UI after ending turn in ATB system
-- [ ] If there's time, add a slight delay between AICommand starting and finishing to make sure it can be interrupted properly.
-
+- [x] Fix QTE bug that doesn't properly remove UI after ending turn in ATB system
 
 ### Random Thoughts
 
 - Now that I have an ATB system, I am realizing that the "OnStartTurn" signals will be complicated to weave into this system. It might be better to rebalance some Tools, Equip, and Accessory designs by having them only affect a single character when their turn starts. One idea I had was to completely remove Tools that had the OnStartTurn signal, and instead make them accessories or equipment, and increase the number of equip slots for those inventory types.
 
 ### Reflection
+
+I finished my TODO items early. I think in the next step tomorrow, it will be worthwhile to implement an interface where these mechanics can be applied and overlap, with sanity checks being run automatically.
 
 
 ## 08/01/2025

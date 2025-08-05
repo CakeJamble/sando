@@ -196,6 +196,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
+          self.selectedSkill = self.activeButton.skillList[self.activeButton.skillIndex]
           self.activeButton:gamepadpressed(joystick, button)
         end
       elseif self.uiState == 'submenuing' then
