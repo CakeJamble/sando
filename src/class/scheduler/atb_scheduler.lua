@@ -54,6 +54,7 @@ function ATBScheduler:enter()
       else
         print(entity.entityName .. ' had no progress bar to stop')
       end
+      entity.hideProgressBar = true
     end
   end)
 

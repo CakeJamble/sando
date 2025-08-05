@@ -114,8 +114,11 @@ function Entity:startTurn()
   self.turnFinish = false
   self.state = 'offense'
   self.progressBar:reset()
-  self.tweens['pbTween']:stop()
-  self.tweens['pbTween'] = nil
+  
+  if self.tweens['pbTween'] then
+    self.tweens['pbTween']:stop()
+    self.tweens['pbTween'] = nil
+  end
 
   if self.hazards then
     for i,hazard in ipairs(self.hazards) do
@@ -466,15 +469,11 @@ function Entity:tweenProgressBar(onComplete)
   local currWidth = self.progressBar.meterOptions.width
   local progress = currWidth / goalWidth
   local remainingDur = self.tRate * (1 - progress)
-  print('remaining duration is: ' .. remainingDur)
   self.tweens['pbTween'] = flux.to(self.progressBar.meterOptions, remainingDur, {width = goalWidth})
     :ease('linear')
     :oncomplete(onComplete)
-
-
 end;
 
 function Entity:stopProgressBar()
   self.tweens['pbTween']:stop()
-  print(self.entityName, 'stopped progress bar at ' .. self.progressBar.meterOptions.width)
 end;
