@@ -2,6 +2,14 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 08/05/2025
+
+The ATB system feels okay. The speed influence on charging needs to be fixed, but I'm glad the system functions as I intended.
+
+### TODO
+
+- [ ] 
+
 ## 08/04/2025
 
 Saturday was a big step towards implementing the ATB system. I didn't write anything in the TODO because a lot of the coding was exploratory in nature, trying to figure out what would work and what wouldn't. I'm happy with the progress so far, but I realized that it will be tough to untangle this progress so that both the ATB and the Standard Battle systems can work interchangeably. I took Sunday (08/03) off because I was starting to feel a little burnt out. It was hard getting started today but I hope that I can regain some momentum now that I feel a bit more rested.

@@ -6,7 +6,9 @@ require("util.globals")
 require('class.entities.character_team')
 require('class.entities.enemy_team')
 require('class.input.command_manager')
-require('class.turn_manager')
+-- require('class.scheduler.turn_manager')
+require('class.scheduler.atb_scheduler')
+
 local generateEncounter = require('util.encounter_generator')
 local imgui = require('libs.cimgui')
 local ffi = require('ffi')
@@ -105,17 +107,20 @@ function combat:enter(previous)
   
   self.enemyTeam = generateEncounter(self.floorNumber)
 
-  if TurnManager.isATB then
-    self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
-    Signal.emit('OnStartCombat')
-    Signal.emit('OnEnterScene')
-  else
-    Signal.emit('OnEnterScene')
-    Timer.after(Character.combatStartEnterDuration, function()
-      self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
-      Signal.emit('OnStartCombat')
-    end)
-  end
+  -- if TurnManager.isATB then
+  --   self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+  --   Signal.emit('OnStartCombat')
+  --   Signal.emit('OnEnterScene')
+  -- else
+  --   Signal.emit('OnEnterScene')
+  --   Timer.after(Character.combatStartEnterDuration, function()
+  --     self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+  --     Signal.emit('OnStartCombat')
+  --   end)
+  -- end
+  self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
+  Signal.emit('OnStartCombat')
+  Signal.emit('OnEnterScene')
 end;
 
 function combat:keypressed(key)
