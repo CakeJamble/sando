@@ -53,9 +53,9 @@ function PlayerInputCommand:start()
 	Signal.register('CancelInput', self.signalHandlers.cancel)
 	Signal.register('OnEndTurn', self.signalHandlers.cancel)
 	
-	self.signalHandlers.passTurn = function(entity)
-		entity.actionUI:unset()
-		Signal.emit('OnEndTurn', 0)
+	self.signalHandlers.passTurn = function()
+		self.entity.actionUI:unset()
+		self.entity:endTurn()
 	end
 	Signal.register('PassTurn', self.signalHandlers.passTurn)
 	
@@ -78,6 +78,7 @@ function PlayerInputCommand:interrupt()
 	-- Signal.emit('InterruptActionUI')
 	self:cleanupSignals()
 	print('interrupting ' .. self.entity.entityName .. '\'s command')
+	self.entity.actionUI.active = false
 end;
 
 function PlayerInputCommand:update(dt)

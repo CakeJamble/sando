@@ -98,6 +98,14 @@ function Entity:init(data, x, y)
 
   local normSpeed = math.min(speed/maxSpeed, 1)
   self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
+
+  Signal.register('TargetConfirm',
+  function()
+    print('target confirmed')
+    if self.tweens['pbTween'] then
+      self.tweens['pbTween']:stop()
+    end
+  end)
 end;
 
 function Entity:startTurn()
@@ -106,6 +114,8 @@ function Entity:startTurn()
   self.turnFinish = false
   self.state = 'offense'
   self.progressBar:reset()
+  self.tweens['pbTween']:stop()
+  self.tweens['pbTween'] = nil
 
   if self.hazards then
     for i,hazard in ipairs(self.hazards) do
@@ -133,11 +143,11 @@ function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType
       :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
     :oncomplete(
       function() 
-        self:reset(); Signal.emit('OnEndTurn', delay); 
+        self:reset(); Signal.emit('OnEndTurn', 0); 
       end)
   else
     Timer.after(delay, function() 
-      self:reset(); Signal.emit('OnEndTurn', delay) 
+      self:reset(); Signal.emit('OnEndTurn', 0) 
     end)
   end
 end;
@@ -162,6 +172,7 @@ function Entity:reset()
   self.moveBackTimerStarted = false
   self.skill = nil
   print('ending turn for ', self.entityName)
+  
 end;
 
 function Entity:addTween(tag, tween)
@@ -449,22 +460,21 @@ function Entity:draw() --> void
   end
 end;
 
-
 -- ATB Functionality
 function Entity:tweenProgressBar(onComplete)
   local goalWidth = self.progressBar.containerOptions.width
   local currWidth = self.progressBar.meterOptions.width
   local progress = currWidth / goalWidth
   local remainingDur = self.tRate * (1 - progress)
-  print(self.entityName .. ': ' .. remainingDur)
-  self.pbTween = flux.to(self.progressBar.meterOptions, remainingDur, {width = goalWidth})
+  print('remaining duration is: ' .. remainingDur)
+  self.tweens['pbTween'] = flux.to(self.progressBar.meterOptions, remainingDur, {width = goalWidth})
     :ease('linear')
-    :oncomplete(function()
-      print(self.entityName .. ' finished charging pb')
-      -- print('these should be the same: ' .. self.progressBar.meterOptions.width, goalWidth)
-      -- print('these should be the same too: ' .. self.tRate , remainingDur)
-      if self.progressBar.meterOptions.width == goalWidth then
-        onComplete()
-      end
-    end)
+    :oncomplete(onComplete)
+
+
+end;
+
+function Entity:stopProgressBar()
+  self.tweens['pbTween']:stop()
+  print(self.entityName, 'stopped progress bar at ' .. self.progressBar.meterOptions.width)
 end;

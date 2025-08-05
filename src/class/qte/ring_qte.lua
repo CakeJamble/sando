@@ -13,7 +13,6 @@ function RingQTE:init(data)
 	}
 	self.revDur = data.duration
 
-	self.ring = nil
 	self.successCount = 0
 	self.sliceLenRange = {min = data.sliceLenRange.min, max = data.sliceLenRange.max}
 	self.sliceIndex = 1

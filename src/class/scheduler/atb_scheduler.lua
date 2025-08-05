@@ -11,7 +11,6 @@ function ATBScheduler:init(characterTeam, enemyTeam)
 	}
 	self.activeCommand = nil
 	self.awaitingPlayerAction = false
-
 	self:enter()
 end;
 
@@ -31,6 +30,7 @@ function ATBScheduler:enter()
 	self:registerSignal('OnTurnReady',
 	function(entity)
 		print('OnTurnReady signal emitted')
+    entity.hideProgressBar = true
     local command
     local isInterrupt
     if entity.type == 'character' then
@@ -42,12 +42,32 @@ function ATBScheduler:enter()
     self:enqueueCommand(command, command.isInterruptible)
   end)
 
+  self:registerSignal('TargetConfirm',
+  function()
+    print('target confirmed')
+
+    for i,entity in ipairs(self.combatants) do
+      if entity.tweens['pbTween'] then
+        print('stopping ' .. entity.entityName .. "'s progress bar")
+        entity.tweens['pbTween']:stop()
+        entity.tweens['pbTween'] = nil
+      else
+        print(entity.entityName .. ' had no progress bar to stop')
+      end
+    end
+  end)
+
   self:registerSignal('OnEndTurn',
   function(timeBtwnTurns)
   	self:resetCamera(timeBtwnTurns)
   	self.activeCommand.done = true
   	self:removeKOs()
-  	self:resumeProgressBars()
+
+    for i,entity in ipairs(self.combatants) do
+      print('starting ' .. entity.entityName .. "'s progress bar")
+      entity:tweenProgressBar(function() Signal.emit('OnTurnReady', entity) end)
+      entity.hideProgressBar = false
+    end
   end)
 end;
 
@@ -56,6 +76,7 @@ function ATBScheduler:exit()
 end;
 
 function ATBScheduler:enqueueCommand(command, isInterruptible)
+	print(command.entity.entityName, 'pb width / 50 =', command.entity.progressBar.meterOptions.width )
   if isInterruptible then
     print('enqueuing command from ' .. command.entity.entityName .. ' in interruptibles queue')
     table.insert(self.commandQueue.interruptibles, command)
@@ -77,14 +98,9 @@ function ATBScheduler:checkQueues()
     end
 
     if self.activeCommand then 
-      if not self.activeCommand.isInterruptible then
-      	print('pausing progress bars 1')
-        self:interruptProgressBars()
-      end
       -- self:entitiesReactToTurnStart()
       print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
-      self.activeCommand:start()
-
+      self.activeCommand:start(self)
     end
 
   elseif self.activeCommand.done then
@@ -98,10 +114,7 @@ function ATBScheduler:checkQueues()
     print('placed active command from ' .. self.activeCommand.entity.entityName .. ' back onto interruptibles list')
     self.activeCommand = command
     print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
-  	print('pausing progress bars 2')
-    -- self:interruptProgressBars()
-    -- self:entitiesReactToTurnStart()
-    self.activeCommand:start()
+    self.activeCommand:start(self)
   end
 end;
 
@@ -109,8 +122,9 @@ function ATBScheduler:removeKOs()
 	Scheduler.removeKOs(self)
 	for i,entity in ipairs(self.combatants) do
 		if not entity:isAlive() then
-			entity.pbTween:stop()
+			entity:stopProgressBar()
 			entity.hideProgressBar = true
+      entity.tweens['pbTween'] = nil
 		end
 	end
 
@@ -125,33 +139,6 @@ function ATBScheduler:removeKOs()
 			table.remove(self.commandQueue.interruptibles, i)
 		end
 	end
-end;
-
-function ATBScheduler:interruptProgressBars()
-  for i,entity in ipairs(self.combatants) do
-    entity.pbTween:stop()
-    entity.pbTween = nil
-    entity.hideProgressBar = true
-    print('stopped bar for ' .. entity.entityName)
-    if entity.type == 'character' then
-      entity.actionUI = nil
-    end
-  end
-end;
-
-function ATBScheduler:resumeProgressBars()
-	print('resuming progress bars')
-  for i,entity in ipairs(self.combatants) do
-  	if entity:isAlive() then
-  		entity.hideProgressBar = false
-  	end
-  	print('resuming progress bar for ' .. entity.entityName)
-    entity:tweenProgressBar(
-    function()
-      print(entity.entityName .. "'s turn is ready to begin")
-      Signal.emit('OnTurnReady', entity)
-    end)
-  end
 end;
 
 function ATBScheduler:update(dt)
