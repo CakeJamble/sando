@@ -1,6 +1,8 @@
 require('class.scheduler.scheduler')
 ATBScheduler = Class{__includes = Scheduler}
 
+-- Active Timer Battle Scheduler
+
 function ATBScheduler:init(characterTeam, enemyTeam)
 	Scheduler.init(self, characterTeam, enemyTeam)
 	self.commandQueue = {
@@ -14,6 +16,7 @@ function ATBScheduler:init(characterTeam, enemyTeam)
 end;
 
 function ATBScheduler:enter()
+	Scheduler.enter(self)
 	self:registerSignal('OnStartCombat', 
 	function()
     for i,entity in ipairs(self.combatants) do
@@ -27,6 +30,7 @@ function ATBScheduler:enter()
 
 	self:registerSignal('OnTurnReady',
 	function(entity)
+		print('OnTurnReady signal emitted')
     local command
     local isInterrupt
     if entity.type == 'character' then
@@ -42,6 +46,7 @@ function ATBScheduler:enter()
   function(timeBtwnTurns)
   	self:resetCamera(timeBtwnTurns)
   	self.activeCommand.done = true
+  	self:removeKOs()
   	self:resumeProgressBars()
   end)
 end;
@@ -63,6 +68,7 @@ function ATBScheduler:enqueueCommand(command, isInterruptible)
 end;
 
 function ATBScheduler:checkQueues()
+	self:removeKOs()
   if not self.activeCommand then
     if #self.commandQueue.uninterruptibles > 0 then
       self.activeCommand = table.remove(self.commandQueue.uninterruptibles, 1)
@@ -72,6 +78,7 @@ function ATBScheduler:checkQueues()
 
     if self.activeCommand then 
       if not self.activeCommand.isInterruptible then
+      	print('pausing progress bars 1')
         self:interruptProgressBars()
       end
       -- self:entitiesReactToTurnStart()
@@ -81,6 +88,7 @@ function ATBScheduler:checkQueues()
     end
 
   elseif self.activeCommand.done then
+    print('popping active command off from ' .. self.activeCommand.entity.entityName)
     self.activeCommand = nil
     self:checkQueues()
   elseif self.activeCommand.isInterruptible and #self.commandQueue.uninterruptibles > 0 then
@@ -90,31 +98,60 @@ function ATBScheduler:checkQueues()
     print('placed active command from ' .. self.activeCommand.entity.entityName .. ' back onto interruptibles list')
     self.activeCommand = command
     print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
-    self:interruptProgressBars()
+  	print('pausing progress bars 2')
+    -- self:interruptProgressBars()
     -- self:entitiesReactToTurnStart()
     self.activeCommand:start()
   end
 end;
 
+function ATBScheduler:removeKOs()
+	Scheduler.removeKOs(self)
+	for i,entity in ipairs(self.combatants) do
+		if not entity:isAlive() then
+			entity.pbTween:stop()
+			entity.hideProgressBar = true
+		end
+	end
+
+	for i,command in ipairs(self.commandQueue.uninterruptibles) do
+		if not command.entity:isAlive() then
+			table.remove(self.commandQueue.uninterruptibles, i)
+		end
+	end
+
+	for i,command in ipairs(self.commandQueue.interruptibles) do
+		if not command.entity:isAlive() then
+			table.remove(self.commandQueue.interruptibles, i)
+		end
+	end
+end;
+
 function ATBScheduler:interruptProgressBars()
   for i,entity in ipairs(self.combatants) do
     entity.pbTween:stop()
+    entity.pbTween = nil
+    entity.hideProgressBar = true
+    print('stopped bar for ' .. entity.entityName)
     if entity.type == 'character' then
       entity.actionUI = nil
     end
   end
-  Entity.hideProgressBar = true
 end;
 
 function ATBScheduler:resumeProgressBars()
+	print('resuming progress bars')
   for i,entity in ipairs(self.combatants) do
+  	if entity:isAlive() then
+  		entity.hideProgressBar = false
+  	end
+  	print('resuming progress bar for ' .. entity.entityName)
     entity:tweenProgressBar(
     function()
       print(entity.entityName .. "'s turn is ready to begin")
       Signal.emit('OnTurnReady', entity)
     end)
   end
-  Entity.hideProgressBar = false
 end;
 
 function ATBScheduler:update(dt)

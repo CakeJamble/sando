@@ -20,6 +20,10 @@ function Scheduler:init(characterTeam, enemyTeam)
 	self.signalHandlers = {}
 end;
 
+function Scheduler:enter()
+	-- for Signal registration that is shared amongst all Scheduler classes
+end;
+
 function Scheduler:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)
@@ -66,7 +70,7 @@ function Scheduler:removeKOs()
 	end
 
   local removeIndices = {}
-  for i=1, #self.turnQueue do
+  for i=1, #self.combatants do
     for j=1, #koEnemies do
       if self.combatants[i] == koEnemies[j] then
         table.insert(removeIndices, i)
@@ -75,8 +79,8 @@ function Scheduler:removeKOs()
   end
 
   for i=1, #removeIndices do
-    print('removing ' .. self.turnQueue[removeIndices[i]].entityName .. ' from combat')
-    table.remove(self.turnQueue, removeIndices[i])
+    print('removing ' .. self.combatants[removeIndices[i]].entityName .. ' from combat')
+    table.remove(self.combatants, removeIndices[i])
   end
 
   self.enemyTeam:removeMembers(koEnemies)

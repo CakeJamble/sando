@@ -3,23 +3,30 @@ RingQTE = Class{__includes =  QTE}
 
 function RingQTE:init(data)
 	QTE.init(self, data)
+	self.data = data
 	self.options = data.options
 	self.flipDuration = data.flipDuration
 
-	local slicesData = {
+	self.slicesData = {
 		numSlices = data.numSlices,
 		sliceLenRange = data.sliceLenRange,
 	}
+	self.revDur = data.duration
 
-	self.ring = Ring(data.options, self.flipDuration, slicesData, data.duration)
+	self.ring = nil
 	self.successCount = 0
 	self.sliceLenRange = {min = data.sliceLenRange.min, max = data.sliceLenRange.max}
 	self.sliceIndex = 1
 	self.onComplete = nil
 end;
 
-function RingQTE:setUI(activeEntity)
-	-- need to rework this
+function RingQTE:reset()
+	QTE.reset()
+	self.sliceIndex = 1
+end;
+
+function RingQTE:setUI()
+	return Ring(self.options, self.flipDuration, self.slicesData, self.revDur)
 end;
 
 function RingQTE:setActionButton(actionButton, buttonUI)
@@ -29,6 +36,7 @@ function RingQTE:setActionButton(actionButton, buttonUI)
 end;
 
 function RingQTE:beginQTE(callback)
+	self.ring = self:setUI()
 	self.ring:startRevolution()
 	self.onComplete = callback
 end;

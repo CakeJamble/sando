@@ -11,7 +11,7 @@ return function(ref, qteManager)
   local damage = ref.battleStats['attack'] + skill.damage
 
   -- Create a Scone Projectile
-  local wok = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2))
+  local wok = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), 1)
   local startX, startY = wok.pos.x, wok.pos.y
   local peakHeight = -tPos.h
   Signal.emit('ProjectileMade', wok)

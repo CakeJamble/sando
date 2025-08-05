@@ -9,6 +9,7 @@ CharacterTeam = Class{__includes = Team}
 function CharacterTeam:init(characters)
     Team.init(self, characters)
     self.inventory = Inventory(self.members)
+    self.koCharacters = {}
 end;
 
 function CharacterTeam:distributeExperience(amount)
@@ -44,5 +45,11 @@ end;
 function CharacterTeam:gamepadreleased(joystick, button)
   for i,member in pairs(self.members) do
     member:gamepadreleased(joystick, button)
+  end
+end;
+
+function CharacterTeam:registerKO(koCharacters)
+  for i,character in ipairs(koCharacters) do
+    table.insert(self.koCharacters, character)
   end
 end;

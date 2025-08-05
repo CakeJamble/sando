@@ -30,6 +30,7 @@ return function(ref, qteManager)
 
   stage:oncomplete(
     function()
+
       ref.currentAnimTag = skill.tag
       -- Attack by charging from left to right
       local attack = flux.to(ref.pos, skill.duration, {x=goalX,y=goalY})
@@ -45,6 +46,7 @@ return function(ref, qteManager)
           end)
         :oncomplete(
           function()
+
             ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
           end)
         ref.tweens['attack'] = attack

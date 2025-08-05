@@ -12,9 +12,26 @@ function SkillCommand:init(entity, target, skill, qteManager)
   self.qteResult = nil
   self.waitingForQTE = false
   self.isInterruptible = false
+  self.signalHandlers = {}
 end
 
 function SkillCommand:start(turnManager)
+  self.signalHandlers.projectileMade = function(projectile)
+    table.insert(entity.projectiles)
+  end
+  self.signalHandlers.despawnProjectile = function(index)
+    local i = index or 1
+    table.remove(entity.projectiles, i)
+  end
+  Signal.register('ProjectileMade', self.signalHandlers.projectileMade)
+  Signal.register('DespawnProjectile', self.signalHandlers.despawnProjectile)
+
+  self.signalHandlers.endTurn = function()
+    self:cleanupSignals()
+    self.done = true
+  end
+  Signal.register('OnEndTurn', self.signalHandlers.endTurn)
+
   if self.qteManager and self.skill.qteType then
     -- Begin QTE for player skills that require it
     self.waitingForQTE = true
@@ -22,12 +39,18 @@ function SkillCommand:start(turnManager)
     self.qteManager.activeQTE:setUI(self.entity)
     self.qteManager.activeQTE:beginQTE(function()
       -- self.qteResult = result
-      self.waitingForQTE = false
+      -- self.waitingForQTE = false
       self:executeSkill()
     end)
   else
     self:executeSkill()
   end
+end;
+
+function SkillCommand:cleanupSignals()
+  Signal.remove('ProjectileMade', self.signalHandlers.projectileMade)
+  Signal.remove('DespawnProjectile', self.signalHandlers.despawnProjectile)
+  Signal.remove('OnEndTurn', self.signalHandlers.endTurn)
 end;
 
 function SkillCommand:executeSkill()

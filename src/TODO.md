@@ -8,7 +8,15 @@ The ATB system feels okay. The speed influence on charging needs to be fixed, bu
 
 ### TODO
 
-- [ ] 
+- [ ] Separate Turn Manager into Scheduler interfaces to modularly apply the proper combat flow
+	- [x] Scheduler (Base Class)
+	- [x] ATBScheduler (Active Timer Battle)
+	- [ ] STBScheduler (Standard Turn-Based)
+	- [ ] CTBScheduler (Conditional Turn-Based)
+- [ ] Refactor Signal for Projectile objects spawning/despawning
+	- [x] code
+	- [ ] test/debug
+- [ ] Make a similar interface system for SwapSystem (1v1, Party v. Party, etc.)
 
 ## 08/04/2025
 

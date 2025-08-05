@@ -42,40 +42,40 @@ function TurnManager:init(characterTeam, enemyTeam)
   self.activeCommand = nil
   self.awaitingPlayerAction = false
 
-  Signal.register('NextTurn', 
---[[ After sorting the remaining combatants to account for stat changes during the turn,
-  set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
-  and start their turn. After starting it, increment the turnIndex for the next combatant. ]]
-    function ()
-      if self.turnIndex == 1 then
-        turnCounter = turnCounter + 1
-      end
+--   Signal.register('NextTurn', 
+-- --[[ After sorting the remaining combatants to account for stat changes during the turn,
+--   set the next active entity, pass them the valid targets for an operation (attack, heal, etc.),
+--   and start their turn. After starting it, increment the turnIndex for the next combatant. ]]
+--     function ()
+--       if self.turnIndex == 1 then
+--         turnCounter = turnCounter + 1
+--       end
 
-      self.qteManager:reset()
-      self:removeKOs()
+--       self.qteManager:reset()
+--       self:removeKOs()
 
-      if TurnManager.isATB then
-        -- if #self.commandQueue > 0 then
-        --   local command = table.remove(self.commandQueue, 1)
-        --   command:start()
-        -- end
-      elseif not self:winLossConsMet() then
-        self:sortWaitingCombatants()
+--       if TurnManager.isATB then
+--         -- if #self.commandQueue > 0 then
+--         --   local command = table.remove(self.commandQueue, 1)
+--         --   command:start()
+--         -- end
+--       elseif not self:winLossConsMet() then
+--         self:sortWaitingCombatants()
 
-        -- skip over KO'd Characters (they don't get removed from queue bc they can be revived)
-        -- while(not self.turnQueue[self.turnIndex]:isAlive()) do
-        --   self.turnIndex = self.turnIndex + 1
-        -- end
+--         -- skip over KO'd Characters (they don't get removed from queue bc they can be revived)
+--         -- while(not self.turnQueue[self.turnIndex]:isAlive()) do
+--         --   self.turnIndex = self.turnIndex + 1
+--         -- end
 
-        -- self.activeEntity = self.turnQueue[self.turnIndex]
-        -- self.activeEntity:startTurn(self.combatHazards)
-        -- self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
-        -- self:entitiesReactToTurnStart()
+--         -- self.activeEntity = self.turnQueue[self.turnIndex]
+--         -- self.activeEntity:startTurn(self.combatHazards)
+--         -- self.activeEntity:setTargets(self.characterTeam.members, self.enemyTeam.members)
+--         -- self:entitiesReactToTurnStart()
 
-        -- self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
-      end
-    end
-  );
+--         -- self.turnIndex = (self.turnIndex % #self.turnQueue) + 1
+--       end
+--     end
+--   );
 
   -- Signal.register('PassTurn',
   --   function()
@@ -142,71 +142,71 @@ function TurnManager:init(characterTeam, enemyTeam)
   --   end
   -- );
 
-  Signal.register('OnEndTurn', 
-    function(timeBtwnTurns)
-      local withTimeToBreathe = timeBtwnTurns + 0.25
-      self:resetCamera(timeBtwnTurns)
-      self.activeCommand.done = true
-      -- Timer.after(timeBtwnTurns, function()
-      --   self:resumeProgressBars()
-      -- end)
-      self:resumeProgressBars()
-      -- Timer.after(withTimeToBreathe , function() Signal.emit('NextTurn') end)
-    end
-  );
+  -- Signal.register('OnEndTurn', 
+  --   function(timeBtwnTurns)
+  --     local withTimeToBreathe = timeBtwnTurns + 0.25
+  --     self:resetCamera(timeBtwnTurns)
+  --     self.activeCommand.done = true
+  --     -- Timer.after(timeBtwnTurns, function()
+  --     --   self:resumeProgressBars()
+  --     -- end)
+  --     self:resumeProgressBars()
+  --     -- Timer.after(withTimeToBreathe , function() Signal.emit('NextTurn') end)
+  --   end
+  -- );
 
-  Signal.register('PlacedHazards',
-    function(entityType, hazard)
-      if entityType == 'character' then
-        table.insert(self.combatHazards.enemyHazards, hazard)
-      else
-        table.insert(self.combatHazards.characterHazards, hazard)
-      end
-    end
-  );
+  -- Signal.register('PlacedHazards',
+  --   function(entityType, hazard)
+  --     if entityType == 'character' then
+  --       table.insert(self.combatHazards.enemyHazards, hazard)
+  --     else
+  --       table.insert(self.combatHazards.characterHazards, hazard)
+  --     end
+  --   end
+  -- );
 
-  Signal.register('ProjectileMade', 
-    function(projectile)
-      self.activeEntity.projectile = projectile
-    end
-  );
+  -- Signal.register('ProjectileMade', 
+  --   function(projectile)
+  --     self.activeEntity.projectile = projectile
+  --   end
+  -- );
 
-  Signal.register('DespawnProjectile',
-    function() 
-      self.activeEntity.projectile = nil 
-      print('Projectile destroyed')
-    end
-  );
+  -- Signal.register('DespawnProjectile',
+  --   function() 
+  --     self.activeEntity.projectile = nil 
+  --     print('Projectile destroyed')
+  --   end
+  -- );
 
 ----------------- ATB Signals ------------------------
-  Signal.register('OnStartCombat',
-    function()
-      if TurnManager.isATB then
-        for i,entity in ipairs(self.combatants) do
-          entity:tweenProgressBar(function()
-            print(entity.entityName .. "'s turn is ready to begin")
-            Signal.emit('TurnReady', entity)
-          end
-          )
-        end
-      end
-    end
-  );
+  -- Signal.register('OnStartCombat',
+  --   function()
+  --     if TurnManager.isATB then
+  --       for i,entity in ipairs(self.combatants) do
+  --         entity:tweenProgressBar(function()
+  --           print(entity.entityName .. "'s turn is ready to begin")
+  --           Signal.emit('TurnReady', entity)
+  --         end
+  --         )
+  --       end
+  --     end
+  --   end
+  -- );
 
-  Signal.register('TurnReady',
-    function(entity)
-      -- enqueue the command to get their desired action
-      local command
-      local isInterrupt
-      if entity.type == 'character' then
-        command = PlayerInputCommand(entity, self)
-      else
-        command = AICommand(entity, self)
-      end
+  -- Signal.register('TurnReady',
+  --   function(entity)
+  --     -- enqueue the command to get their desired action
+  --     local command
+  --     local isInterrupt
+  --     if entity.type == 'character' then
+  --       command = PlayerInputCommand(entity, self)
+  --     else
+  --       command = AICommand(entity, self)
+  --     end
 
-      self:enqueueCommand(command, command.isInterruptible)
-    end
-  );
+  --     self:enqueueCommand(command, command.isInterruptible)
+  --   end
+  -- );
 end;
 
 function TurnManager:resetCamera(duration)

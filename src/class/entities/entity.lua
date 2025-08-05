@@ -20,6 +20,7 @@ function Entity:init(data, x, y)
   self.skillPool = data.skillPool
   self.skill = nil
   self.projectile = nil
+  self.projectiles = {}
   self.spriteSheets = {
     idle = {},
     moveX = {},
@@ -86,6 +87,7 @@ function Entity:init(data, x, y)
     wModifier = 0.05
   }
   self.progressBar = ProgressBar(self.pos, pbOptions, false)
+  self.hideProgressBar = Entity.hideProgressBar
 
   self.hazards = nil
 
@@ -104,7 +106,6 @@ function Entity:startTurn()
   self.turnFinish = false
   self.state = 'offense'
   self.progressBar:reset()
-  self.pbTween:stop()
 
   if self.hazards then
     for i,hazard in ipairs(self.hazards) do
@@ -160,17 +161,6 @@ function Entity:reset()
   self.currentAnimTag = 'idle'
   self.moveBackTimerStarted = false
   self.skill = nil
-
-  if Entity.isATB then
-    self.progressBar:reset()
-
-    Timer.after(0.5, function()
-      self:tweenProgressBar(function()
-        Signal.emit('TurnReady', self)
-      end)
-    end)
-  end
-
   print('ending turn for ', self.entityName)
 end;
 
@@ -454,7 +444,7 @@ function Entity:draw() --> void
     love.graphics.setColor(1,1,1)
   end
 
-  if Entity.isATB and not Entity.hideProgressBar then
+  if Entity.isATB and not self.hideProgressBar then
     self.progressBar:draw()
   end
 end;
@@ -464,10 +454,17 @@ end;
 function Entity:tweenProgressBar(onComplete)
   local goalWidth = self.progressBar.containerOptions.width
   local currWidth = self.progressBar.meterOptions.width
-  local remainingWidth = goalWidth - currWidth
   local progress = currWidth / goalWidth
   local remainingDur = self.tRate * (1 - progress)
+  print(self.entityName .. ': ' .. remainingDur)
   self.pbTween = flux.to(self.progressBar.meterOptions, remainingDur, {width = goalWidth})
     :ease('linear')
-    :oncomplete(onComplete)
+    :oncomplete(function()
+      print(self.entityName .. ' finished charging pb')
+      -- print('these should be the same: ' .. self.progressBar.meterOptions.width, goalWidth)
+      -- print('these should be the same too: ' .. self.tRate , remainingDur)
+      if self.progressBar.meterOptions.width == goalWidth then
+        onComplete()
+      end
+    end)
 end;

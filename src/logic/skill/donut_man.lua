@@ -16,8 +16,8 @@ return function(ref, qteManager)
 
   local arcHeight = target.hitbox.y - target.hitbox.h
   local donutFlyingTime = 0.8
-      -- Projectile
-  local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2))
+
+  local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2), 1)
   Signal.emit('ProjectileMade', donut)
 
   Timer.after(qteManager.activeQTE.duration,
