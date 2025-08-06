@@ -1,3 +1,4 @@
+-- legacy class
 require('class.input.player_input_command')
 require('class.input.skill_command')
 require('class.input.cancel_command')

@@ -1,3 +1,4 @@
+require('class.entities.entity')
 require('class.scheduler.scheduler')
 STBScheduler = Class{__includes = Scheduler}
 
@@ -5,22 +6,24 @@ STBScheduler = Class{__includes = Scheduler}
 
 function STBScheduler:init(characterTeam, enemyTeam)
 	Scheduler.init(self, characterTeam, enemyTeam)
+	self:sortQueue(self.combatants)
 	self.turnIndex = 1
 	self.activeEntity = nil
 	self.activeCommand = nil
-
+	self.commandQueue = {}
 	self:enter()
 end;
 
 function STBScheduler:enter()
 	Scheduler.enter(self)
-	self:registerSignal('NextTurn',
-	function()
+	Entity.isATB = false
+
+	local turnStart = function()
 		-- self.qteManager:reset()
-		self.removeKOs()
+		self:removeKOs()
 		self:sortWaitingCombatants()
 
-		while not self.turnQueue[self.turnIndex]:isAlive() do
+		while not self.combatants[self.turnIndex]:isAlive() do
 			self.turnIndex = self.turnIndex + 1
 		end
 		self.activeEntity = self.combatants[self.turnIndex]
@@ -37,12 +40,17 @@ function STBScheduler:enter()
 		self.turnIndex = (self.turnIndex % #self.combatants) + 1
 		self.activeCommand:start()
 	end
-	)
+
+	self:registerSignal('NextTurn', turnStart)
+	self:registerSignal('OnStartCombat', function()
+		Timer.after(1, turnStart) end)
+	
 
 	self:registerSignal('OnEndTurn',
 	function(timeBtwnTurns)
 		self:resetCamera(timeBtwnTurns)
 		self.activeCommand.done = true
+		Signal.emit('NextTurn')
 	end)
 
 end;
@@ -66,5 +74,31 @@ function STBScheduler:sortWaitingCombatants()
   for j=self.turnIndex, #self.combatants do
     self.combatants[j] = waitingCombatants[i]
     i = i+1
+  end
+end;
+
+function STBScheduler:enqueueCommand(command)
+  print('enqueuing command from ' .. command.entity.entityName .. ' in command queue')
+  table.insert(self.commandQueue, command)
+  self:checkQueues()
+end;
+
+function STBScheduler:checkQueues()
+	self:removeKOs()
+
+  if not self.activeCommand then
+    if #self.commandQueue > 0 then
+      self.activeCommand = table.remove(self.commandQueue, 1)
+    end
+
+    if self.activeCommand then 
+      -- self:entitiesReactToTurnStart()
+      print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
+      self.activeCommand:start(self)
+    end
+  elseif self.activeCommand.done then
+    print('popping active command off from ' .. self.activeCommand.entity.entityName)
+    self.activeCommand = nil
+    self:checkQueues()
   end
 end;

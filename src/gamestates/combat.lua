@@ -8,6 +8,7 @@ require('class.entities.enemy_team')
 require('class.input.command_manager')
 -- require('class.scheduler.turn_manager')
 require('class.scheduler.atb_scheduler')
+require('class.scheduler.stb_scheduler')
 
 local generateEncounter = require('util.encounter_generator')
 local imgui = require('libs.cimgui')
@@ -118,7 +119,8 @@ function combat:enter(previous)
   --     Signal.emit('OnStartCombat')
   --   end)
   -- end
-  self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
+  -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
+  self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
   Signal.emit('OnStartCombat')
   Signal.emit('OnEnterScene')
 end;

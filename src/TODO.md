@@ -2,6 +2,16 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 08/06/2025
+
+Yesterday was kind of exhausting, but I'm hoping to carry through and do some good work today.
+
+### TODO
+
+- [ ] Test/Debug STBScheduler
+- [ ] Take a look at particle systems for animation
+	- [ ] Adding flames to the Grease Fire RandSBP QTE would be a cool touch
+
 ## 08/05/2025
 
 The ATB system feels okay. The speed influence on charging needs to be fixed, but I'm glad the system functions as I intended.
@@ -13,7 +23,7 @@ The ATB system feels okay. The speed influence on charging needs to be fixed, bu
 	- [x] ATBScheduler (Active Timer Battle)
 	- [ ] STBScheduler (Standard Turn-Based)
 	- [ ] CTBScheduler (Conditional Turn-Based)
-- [ ] Refactor Signal for Projectile objects spawning/despawning
+- [x] Refactor Signal for Projectile objects spawning/despawning
 	- [x] Scone
 		- [x] code
 		- [x] test/debug
