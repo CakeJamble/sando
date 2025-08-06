@@ -15,6 +15,7 @@ Yesterday was kind of exhausting, but I'm hoping to carry through and do some go
 		- sometimes the SkillCommand is going off when you try to pass turn
 - [x] Take a look at particle systems for animation
 	- [x] Adding flames to the Grease Fire RandSBP QTE would be a cool touch
+- [x] Bugfix for characters being stuck in guard state
 
 ### Reflection
 

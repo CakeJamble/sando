@@ -208,7 +208,6 @@ function Character:applyGear()
   end
 end;
 
-
 function Character:keypressed(key)
   -- if self.state == 'offense' then
   --   self.offenseState:keypressed(key)
@@ -246,7 +245,7 @@ end;
 
 function Character:checkGuardAndJump(button)
   if self:isAlive() then
-    if button == 'rightshoulder' and not self.isJumping then
+    if button == 'rightshoulder' and not self.isJumping and not self.isGuarding then
       self.canGuard = true
     elseif button == self.actionButton then    
       if self.canGuard then
@@ -259,7 +258,6 @@ function Character:checkGuardAndJump(button)
 end;
 
 function Character:beginGuard()
-  print(self.entityName .. ' is guarding')
   self.isGuarding = true
   self.canJump = false  
   self.canGuard = false -- for cooldown
@@ -269,7 +267,6 @@ function Character:beginGuard()
   end)
 
   Timer.after(Character.guardCooldownDur, function()
-    self.isGuarding = false
     self.canGuard = true
     self.canJump = true
     print(self.entityName .. ' is done guarding')
