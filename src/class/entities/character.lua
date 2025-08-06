@@ -63,6 +63,7 @@ function Character:init(data, actionButton)
   self.isGuarding = false
   self.canGuard = false
   self.canJump = false
+  self.guardCooldownFinished = true  
   self.isJumping = false
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
@@ -245,7 +246,7 @@ end;
 
 function Character:checkGuardAndJump(button)
   if self:isAlive() then
-    if button == 'rightshoulder' and not self.isJumping and not self.isGuarding then
+    if button == 'rightshoulder' and not self.isJumping and self.guardCooldownFinished then
       self.canGuard = true
     elseif button == self.actionButton then    
       if self.canGuard then
@@ -261,6 +262,7 @@ function Character:beginGuard()
   self.isGuarding = true
   self.canJump = false  
   self.canGuard = false -- for cooldown
+  self.guardCooldownFinished = false
 
   Timer.after(Character.guardActiveDur, function()
     self.isGuarding = false
@@ -269,6 +271,7 @@ function Character:beginGuard()
   Timer.after(Character.guardCooldownDur, function()
     self.canGuard = true
     self.canJump = true
+    self.guardCooldownFinished = true
     print(self.entityName .. ' is done guarding')
   end)
 end;
