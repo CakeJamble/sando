@@ -158,7 +158,6 @@ end;
 
 function ActionUI:gamepadpressed(joystick, button) --> void
   if self.active then
-
 ----------------------- Button Tweening ---------------------------
     if self.uiState == 'actionSelect' or self.uiState == 'submenuing' then
       if button == 'dpright' then                         -- spin the wheel left

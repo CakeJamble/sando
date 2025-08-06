@@ -11,7 +11,7 @@
 	"duration": 0.5,
 	"stagingTime": 1,
 	"stagingType": "near",
-	"qteType": "hold_sbp",
+	"qteType": "rand_sbp",
 	"qteBonus": ["damage"],
 	"description": "Deals physical damage to a single target.",
 	"unlockedAtLvl": 1,

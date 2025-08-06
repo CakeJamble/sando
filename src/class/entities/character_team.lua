@@ -43,7 +43,7 @@ function CharacterTeam:gamepadpressed(joystick, button)
 end;
 
 function CharacterTeam:gamepadreleased(joystick, button)
-  for i,member in pairs(self.members) do
+  for i,member in ipairs(self.members) do
     member:gamepadreleased(joystick, button)
   end
 end;

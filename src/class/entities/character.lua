@@ -239,10 +239,8 @@ function Character:gamepadpressed(joystick, button)
 end;
 
 function Character:gamepadreleased(joystick, button)
-  if self.state == 'defense' then
-    if button == 'rightshoulder' then
+  if button == 'rightshoulder' then
       self.canGuard = false
-    end
   end
 end;
 
@@ -261,6 +259,7 @@ function Character:checkGuardAndJump(button)
 end;
 
 function Character:beginGuard()
+  print(self.entityName .. ' is guarding')
   self.isGuarding = true
   self.canJump = false  
   self.canGuard = false -- for cooldown
@@ -270,8 +269,10 @@ function Character:beginGuard()
   end)
 
   Timer.after(Character.guardCooldownDur, function()
+    self.isGuarding = false
     self.canGuard = true
     self.canJump = true
+    print(self.entityName .. ' is done guarding')
   end)
 end;
 

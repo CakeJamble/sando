@@ -21,6 +21,10 @@ function STBScheduler:enter()
 	local turnStart = function()
 		-- self.qteManager:reset()
 		self:removeKOs()
+		if self:winLossConsMet() then
+			-- transition to rewards
+			print('match done')
+		end
 		self:sortWaitingCombatants()
 
 		while not self.combatants[self.turnIndex]:isAlive() do
@@ -34,7 +38,7 @@ function STBScheduler:enter()
 		if self.activeEntity.type == 'character' then
 			command = PlayerInputCommand(self.activeEntity, self)
 		else
-			command = AICommand(entity, self)
+			command = AICommand(self.activeEntity, self)
 		end
 		self.activeCommand = command
 		self.turnIndex = (self.turnIndex % #self.combatants) + 1

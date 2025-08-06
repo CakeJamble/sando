@@ -161,6 +161,8 @@ end;
 function combat:gamepadreleased(joystick, button)
   if self.turnManager and self.turnManager.qteManager.activeQTE then
     self.turnManager.qteManager:gamepadreleased(joystick, button)
+  else
+    self.characterTeam:gamepadreleased(joystick, button)
   end
 end;
 

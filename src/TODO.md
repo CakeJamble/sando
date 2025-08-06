@@ -9,8 +9,16 @@ Yesterday was kind of exhausting, but I'm hoping to carry through and do some go
 ### TODO
 
 - [ ] Test/Debug STBScheduler
-- [ ] Take a look at particle systems for animation
-	- [ ] Adding flames to the Grease Fire RandSBP QTE would be a cool touch
+	- Come back to look at these issues
+		- Turns aren't always being passed correctly
+		- Sometimes the active button in the action ui isn't registering inputs properly
+		- sometimes the SkillCommand is going off when you try to pass turn
+- [x] Take a look at particle systems for animation
+	- [x] Adding flames to the Grease Fire RandSBP QTE would be a cool touch
+
+### Reflection
+
+HotParticles is so cool! I'm excited to spend some more time messing around with it.
 
 ## 08/05/2025
 

@@ -1,5 +1,5 @@
 require('class.qte.qte')
-
+local fireParticles = require 'asset.particle.small_fire'
 randSBP = Class{__includes = QTE}
 
 function randSBP:init(data)
@@ -104,7 +104,10 @@ end;
 function randSBP:gamepadreleased(joystick, button)
 end;
 
-function randSBP:update()
+function randSBP:update(dt)
+	for i,ps in ipairs(fireParticles) do
+		ps.system:update(dt)
+	end
 end;
 
 function randSBP:draw()
@@ -113,6 +116,12 @@ function randSBP:draw()
 			love.graphics.setColor(0, self.circleGreenVals[i], 0)
 			love.graphics.circle(self.smallCircleOptions.mode, self.smallCircleOptions.x + (i-1) * self.smallCircleOptions.xSpace, self.smallCircleOptions.y, self.smallCircleOptions.r)
 			love.graphics.setColor(1,1,1)
+
+			for _,ps in ipairs(fireParticles) do
+				if self.circleGreenVals[i] == 1 then
+					love.graphics.draw(ps.system, self.smallCircleOptions.x + (i-1) * self.smallCircleOptions.xSpace, self.smallCircleOptions.y )
+				end
+			end
 		end
 		love.graphics.setColor(1,0,0)
 		love.graphics.circle(self.smallCircleOptions.mode, self.smallCircleOptions.x + self.smallCircleOptions.xSpace * 4, self.smallCircleOptions.y, self.smallCircleOptions.r * self.largeCircleScale)
