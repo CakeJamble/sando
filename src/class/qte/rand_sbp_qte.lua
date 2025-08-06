@@ -46,7 +46,8 @@ function randSBP:reset()
 	self.doneWaiting = false
 end;
 
-function randSBP:beginQTE()
+function randSBP:beginQTE(callback)
+	self.onComplete = callback
 	-- Hardcoded values that need to be determined dynamically!
 	local goalPosX = self.cameraReturnPos.x 
 	local goalPosY = self.cameraReturnPos.y
@@ -80,21 +81,23 @@ end;
 
 function randSBP:gamepadpressed(joystick, button)
 	if self.displayButton and not self.qteComplete then
+		local qteSuccess = false
 		if not self.doneWaiting then
 			Timer.cancel(self.waitTimer)
 		end
 		self.buttonUIIndex = 'pressed'
-		if button ~= self.actionButton then
-			print('qte failed, pressed wrong button')
-		else
+		if button == self.actionButton then
+			qteSuccess = true
 			print('qte success')
-			Signal.emit('OnQTESuccess')
-			self.signalEmitted = true
+			-- Signal.emit('OnQTESuccess')
 		end
+		self.onComplete(qteSuccess)
+		self.signalEmitted = true
+		
 		self.doneWaiting = true
 		self.displayButton = false
 		self.qteComplete = true
-		Signal.emit('Attack')
+		-- Signal.emit('Attack')
 	end
 end;
 

@@ -16,6 +16,11 @@ function SkillCommand:init(entity, target, skill, qteManager)
 end
 
 function SkillCommand:start(turnManager)
+  self.signalHandlers.qteSuccess = function(isSuccess)
+    self.skill.isSuccess = isSuccess
+  end
+  Signal.register('OnQTEResolved', self.signalHandlers.qteSuccess)
+
   self.signalHandlers.projectileMade = function(projectile)
     table.insert(entity.projectiles)
   end
@@ -51,6 +56,7 @@ function SkillCommand:cleanupSignals()
   Signal.remove('ProjectileMade', self.signalHandlers.projectileMade)
   Signal.remove('DespawnProjectile', self.signalHandlers.despawnProjectile)
   Signal.remove('OnEndTurn', self.signalHandlers.endTurn)
+  Signal.remove('OnQTEResolved', self.signalHandlers.qteSuccess)
 end;
 
 function SkillCommand:executeSkill()

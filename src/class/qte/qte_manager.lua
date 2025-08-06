@@ -83,7 +83,7 @@ function QTEManager:defineQTESetup()
 		hold_sbp = function(self, actionButton)
 			local qte = self.qteTable.hold_sbp
 			qte:setActionButton(actionButton, self.buttons[actionButton])
-			qte = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
+			qte.instructions = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
 			return qte
 		end,
 

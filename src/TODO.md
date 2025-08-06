@@ -17,19 +17,24 @@ The ATB system feels okay. The speed influence on charging needs to be fixed, bu
 	- [x] Scone
 		- [x] code
 		- [x] test/debug
-	- [ ] Donut Man
-		- [ ] code
-		- [ ] test/debug
-- [ ] Refactor QTEs to properly transition to skill proc using a callback passed to `beginQTE`
+	- [x] Donut Man
+		- [x] code
+		- [x] test/debug
+- [ ] Fix ActionUI bug that isn't setting the targets properly
+- [x] Refactor QTEs to properly transition to skill proc using a callback passed to `beginQTE`
 	- [x] MBP
 	- [x] Ring
-	- [ ] Rand SBP
-	- [ ] Hold SBP
+	- [x] Rand SBP
+	- [x] Hold SBP
 - [ ] Make a similar interface system for SwapSystem (1v1, Party v. Party, etc.)
 
 ### Reflection
 
 The separation of the turn manager into swappable formats was way harder than I thought it would be. I ran into a weird bug caused by some kind of scoping issue. Basically, I couldn't stop the progress bars in the entity class when I was checking the command queues. So instead, I just registered a signal for when a target is confirmed that will pause all the progress bars. And when a turn ends, it will resume them. The only issue I see here is when a turn ends without pausing the progress bars (like when the player passes their turn). Debugging this took all day, so I didn't get as far as I hoped, but I'm really happy with the interface. It isn't stuck inside a monolith TurnManager class anymore! :)
+
+The QTEs are a little bit coupled to the skills now because of the command pattern. It is difficult to just swap out moves with different QTE types because the skill logic will have to check an internal variable that gets changed when a signal is emitted from the QTE class. I think this is inevitable to get all the different QTE types I want and the different kinds of attacks (range, cqc, continuous until failed qte, post-qte, etc.).
+
+Today was really challenging, and the outcomes basically look like the same as they did before I started, but that's because this was a major refactor in how the combat state is arranged. I hope that tomorrow will be quicker with the standard turn based scheduler. And then I'll try out the swap mechanic.
 
 ## 08/04/2025
 
