@@ -53,7 +53,7 @@ function Character:init(data, actionButton)
   -- self.currentFP = stats.fp
   -- self.currentDP = stats.dp
 
-  self.actionUI = ActionUI(self)
+  -- self.actionUI = ActionUI(self)
   self.cannotLose = false
   self.equips = {}
   

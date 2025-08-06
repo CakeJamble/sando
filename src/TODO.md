@@ -16,10 +16,15 @@ Yesterday was kind of exhausting, but I'm hoping to carry through and do some go
 - [x] Take a look at particle systems for animation
 	- [x] Adding flames to the Grease Fire RandSBP QTE would be a cool touch
 - [x] Bugfix for characters being stuck in guard state
+- [x] Create a bugtracker file
 
 ### Reflection
 
 HotParticles is so cool! I'm excited to spend some more time messing around with it.
+
+There's a bit of a messy design flaw in the skill logic. I need the skills that enemies use to target the `oPos` table for character entities because they can be in midair during turn changes. But if they use the oPos, they are calculating the trajectory of collision using the sprite width, and not the more accurate hitbox data, which is tuned to how it looks in game.
+
+It's not a huge issue now, but I should definitely keep that somewhere so I don't forget
 
 ## 08/05/2025
 

@@ -31,7 +31,7 @@ function STBScheduler:enter()
 			self.turnIndex = self.turnIndex + 1
 		end
 		self.activeEntity = self.combatants[self.turnIndex]
-		self.activeEntity:startTurn()
+		-- self.activeEntity:startTurn()
 		
 		local command
 
