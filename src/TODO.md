@@ -2,13 +2,30 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 08/07/2025
+
+Still feeling a bit tired today. Hope I'm not coming down with anything. I'll try to focus up and be productive. Got a bit of a late start but I don't wanna push myself too hard and burn out this week.
+
+### TODO
+
+- [ ] New enemy move - Shadow Attack
+	- [ ] Data
+	- [ ] Animation
+	- [ ] Logic
+	- [ ] Test
+	- [ ] Tune
+- [x] Ring QTE Variant - MultiRing: N-consecutive ring tosses
+	- [x] Data
+	- [x] Logic
+	- [x] Test
+
 ## 08/06/2025
 
 Yesterday was kind of exhausting, but I'm hoping to carry through and do some good work today.
 
 ### TODO
 
-- [ ] Test/Debug STBScheduler
+- [x] Test/Debug STBScheduler
 	- Come back to look at these issues
 		- Turns aren't always being passed correctly
 		- Sometimes the active button in the action ui isn't registering inputs properly

@@ -4,6 +4,16 @@ Check the box if the bug has been fixed.
 
 ## Bug Tracker
 
+### 08/07/2025
+
+- [ ] STBScheduler will start Bake's turn, interrupt it with the enemy command, but not disable the action UI
+- [ ] If the above bug happens and Bake's turn is resumed, the game crashes when Bake selects a skill
+- [ ] RingQTE & Variants sometimes make a very large slice with the wrong hitbox data
+- [x] RingQTE & Variants softlock when no input is given
+- [x] RingQTE & Variants don't reset properly when QTE is failed
+- [x] RingQTE & Variants trigger skill every frame when no input is given
+- [ ] When completing the Combo Ring QTE, sometimes both characters' action ui will appear
+
 ### 08/06/2025
 
 - [x] Characters are stuck in guard state after initiating a guard

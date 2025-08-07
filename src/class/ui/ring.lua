@@ -29,6 +29,7 @@ function Ring:init(options, flipDuration, slicesData, qteDuration)
 	}
 	self.revolutionTween = nil
 	self.showSlices = false
+	self.gotNoInput = false
 end;
 
 function Ring:flipRing()
@@ -105,8 +106,8 @@ function Ring:buildArc(radius, angleStart, angleEnd, segments)
 end
 
 function Ring:startRevolution()
-	local flipTween = self:flipRing()
-	flipTween:oncomplete(function() 
+	self.flipTween = self:flipRing()
+	self.flipTween:oncomplete(function() 
 		self.line.angle = 0
 
 		self.revolutionTween = flux.to(self.line, self.line.duration, {angle = 2 * math.pi})

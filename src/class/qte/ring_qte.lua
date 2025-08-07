@@ -38,6 +38,13 @@ function RingQTE:beginQTE(callback)
 	self.ring = self:setUI()
 	self.ring:startRevolution()
 	self.onComplete = callback
+
+	self.ring.flipTween:oncomplete(function()
+		self.ring.revolutionTween:oncomplete(function()
+			self.signalEmitted = true
+			callback(false)
+		end)
+	end)
 end;
 
 function RingQTE:gamepadpressed(joystick, button)
@@ -49,30 +56,32 @@ function RingQTE:gamepadpressed(joystick, button)
 				self.successCount = self.successCount + 1
 			else
 			print('bad')
+			self.onComplete(false)
 			end
+			
+			if self.sliceIndex > self.ring.numSlices then
+				if not self.signalEmitted then
+					self.qteComplete = true
+					self.ring.revolutionTween:stop()
+					self.ring.revActive = false
+					local isSuccess = false
+					if self.successCount == self.ring.numSlices then
+						print('Ring QTE Success')
+						isSuccess = true
+						flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
+							:oncomplete(function() self.feedbackPos.a = 1 end)
+					else
+						print('Ring QTE Fail')
+					end
+					self.onComplete(isSuccess)
+					self.signalEmitted = true
+				end
+			end
+
 		end
 	end
 
-	if self.sliceIndex > self.ring.numSlices then
-		if not self.signalEmitted then
-			self.qteComplete = true
-			self.ring.revolutionTween:stop()
-			self.ring.revActive = false
-			local isSuccess = false
-			if self.successCount == self.ring.numSlices then
-				print('Ring QTE Success')
-				isSuccess = true
-				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
-					:oncomplete(function() self.feedbackPos.a = 1 end)
-				-- Signal.emit('OnQTESuccess')
-			else
-				print('Ring QTE Fail')
-			end
-			self.onComplete(isSuccess)
-			-- Signal.emit('Attack')
-			self.signalEmitted = true
-		end
-	end
+
 end;
 
 function RingQTE:gamepadreleased(joystick, button)

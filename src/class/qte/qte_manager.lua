@@ -5,6 +5,7 @@ require('class.qte.hold_sbp_qte')
 require('class.qte.mbp_qte')
 require('class.qte.rand_sbp_qte')
 require('class.qte.ring_qte')
+require('class.qte.combo_ring_qte')
 
 local loadQTE = require 'util.qte_loader'
 
@@ -12,7 +13,8 @@ local QTEClasses = {
 	hold_sbp = HoldSBP,
 	mbp = mbpQTE,
 	rand_sbp = randSBP,
-	ring_qte = RingQTE
+	ring_qte = RingQTE,
+	combo_ring_qte = ComboRingQTE,
 }
 
 Class = require 'libs.hump.class'
@@ -74,10 +76,6 @@ function QTEManager:loadButtonImages(buttonDir)
 	return buttons
 end;
 
-	-- hold_sbp = HoldSBP,
-	-- mbp = mbpQTE,
-	-- rand_sbp = randSBP,
-	-- ring_qte = RingQTE
 function QTEManager:defineQTESetup()
 	local qteInits = {
 		hold_sbp = function(self, actionButton)
@@ -107,6 +105,12 @@ function QTEManager:defineQTESetup()
 			local qte = self.qteTable.ring_qte
 			qte:setActionButton(actionButton, buttonUI)
 			return qte
+		end,
+
+		combo_ring_qte = function(self, actionButton)
+			local qte = self.qteTable.combo_ring_qte
+			qte:setActionButton(actionButton, buttonUI)
+			return qte
 		end
 	}
 
@@ -122,7 +126,6 @@ function QTEManager:loadQTEData(members)
 			if not result[qteName] then
 				-- result[qteName] = loadQTE(qteName)
 				local qteData = loadQTE(qteName)
-				print(qteName)
 				local qte = QTEClasses[qteName]
 				result[qteName] = qte(qteData)
 			end
