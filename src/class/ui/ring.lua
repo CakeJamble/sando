@@ -71,8 +71,9 @@ function Ring:buildSlices()
 		local availableArc = (nextAngle - aStart - spacing) % twoPi
 
 		if availableArc >= minArc then
-			local arcLen = love.math.random() * (self.sliceLenRange.max - self.sliceLenRange.min)
-			arcLen = minArc + (arcLen / 100) * math.pi
+			local arcLen = love.math.random() * (maxArc - minArc) + minArc
+
+			print(arcLen)
 
 			if arcLen > availableArc then
 				arcLen = availableArc
@@ -95,8 +96,9 @@ end;
 function Ring:buildArc(radius, angleStart, angleEnd, segments)
     local vertices = { 0, 0 }
     local segments = segments or 32
+    local totalAngle = (angleEnd - angleStart) % (2 * math.pi)
     for i = 0, segments do
-        local angle = angleStart + i * (angleEnd - angleStart) / segments
+        local angle = angleStart + i * totalAngle / segments
         local x = math.cos(angle) * radius
         local y = math.sin(angle) * radius
         table.insert(vertices, x)
@@ -128,11 +130,24 @@ function Ring:isInHitBox()
 	for i,slice in ipairs(self.slices) do
 		local start = slice.angleStart
 		local stop = slice.angleEnd
-		if angle >= start and angle <= stop then
+		if self:angleInSlice(angle, start, stop) then
 			return true
 		end
 	end
 	return false
+end;
+
+function Ring:angleInSlice(angle, start, stop)
+	local twoPi = 2 * math.pi
+	angle = angle % twoPi
+	start = start % twoPi
+	stop = stop % twoPi
+
+	if start < stop then
+		return angle >= start and angle <= stop
+	else
+		return angle >= start or angle <= stop
+	end
 end;
 
 function Ring:draw()

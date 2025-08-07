@@ -19,7 +19,7 @@ function STBScheduler:enter()
 	Entity.isATB = false
 
 	local turnStart = function()
-		-- self.qteManager:reset()
+		self.qteManager:reset()
 		self:removeKOs()
 		if self:winLossConsMet() then
 			-- transition to rewards
@@ -31,7 +31,6 @@ function STBScheduler:enter()
 			self.turnIndex = self.turnIndex + 1
 		end
 		self.activeEntity = self.combatants[self.turnIndex]
-		-- self.activeEntity:startTurn()
 		
 		local command
 

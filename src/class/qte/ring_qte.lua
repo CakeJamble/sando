@@ -20,7 +20,7 @@ function RingQTE:init(data)
 end;
 
 function RingQTE:reset()
-	QTE.reset()
+	QTE.reset(self)
 	self.sliceIndex = 1
 end;
 

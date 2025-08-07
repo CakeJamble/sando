@@ -1,6 +1,7 @@
 {
 	"name": "Combo Ring",
-	"maxCombo": 3,
+	"minCombo": 2,
+	"maxCombo": 5,
 	"options": {
 		"mode": "fill",
 		"x": 250,

@@ -5,12 +5,24 @@ function ComboRingQTE:init(data)
 	RingQTE.init(self, data)
 	self.combo = 0
 	self.index = 1
-	self.maxCombo = data.maxCombo
+	self.min = data.minCombo
+	self.max = data.maxCombo
 	self.rings = {}
+end;
+
+function ComboRingQTE:reset()
+	RingQTE.reset(self)
+	self.combo = 0
+	self.index = 1
+	self.successCount = 0
+	self.signalEmitted = false
+	self.rings = {}
+	print('reset combo ring qte')
 end;
 
 function ComboRingQTE:makeRings()
 	local rings = {}
+	self.maxCombo = love.math.random(self.min, self.max)
 	for i=1, self.maxCombo do
 		rings[i] = self:setUI()
 	end
@@ -21,7 +33,10 @@ function ComboRingQTE:beginQTE(callback)
 	if callback then
 		self.rings = self:makeRings()
 		self.onComplete = callback
+	else
+		print('there was no callback fcn provided')
 	end
+	print('in rings array of count: ' .. #self.rings, "index " .. self.index .. ' was selected')
 	local ring = self.rings[self.index]
 	ring:startRevolution()
 	ring.flipTween:oncomplete(function()

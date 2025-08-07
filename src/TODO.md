@@ -14,10 +14,15 @@ Still feeling a bit tired today. Hope I'm not coming down with anything. I'll tr
 	- [ ] Logic
 	- [ ] Test
 	- [ ] Tune
-- [x] Ring QTE Variant - MultiRing: N-consecutive ring tosses
+- [x] Ring QTE Variant - `ComboRingQTE`: N-consecutive ring tosses
 	- [x] Data
 	- [x] Logic
 	- [x] Test
+- [x] Polish on `STBScheduler`
+
+### Reflection
+
+New QTE was smooth to develop and intuitive to fix. I'm glad I was able to extract the tween from the ring and use the callback for finishing the qte in `beginQTE()` instead of in the `Ring` UI class. It is still difficult to read but I think it makes more sense to have it there.
 
 ## 08/06/2025
 
