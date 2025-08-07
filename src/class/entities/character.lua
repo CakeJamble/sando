@@ -81,9 +81,9 @@ function Character:init(data, actionButton)
   )
 end;
 
-function Character:startTurn(characterMembers, enemyMembers)
+function Character:startTurn()
   Entity.startTurn(self)
-  self.actionUI = ActionUI(self, characterMembers, enemyMembers)
+  self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
   self.actionUI.active = true
   Signal.emit('OnStartTurn', self)
 

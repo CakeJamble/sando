@@ -5,9 +5,9 @@ PlayerInputCommand = Class{__includes = Command}
 function PlayerInputCommand:init(entity, turnManager)
 	Command.init(self, entity)
 
-	local characterMembers = turnManager.characterTeam.members
-	local enemyMembers = turnManager.enemyTeam.members
-	entity:setTargets(characterMembers, enemyMembers)
+	-- local characterMembers = turnManager.characterTeam.members
+	-- local enemyMembers = turnManager.enemyTeam.members
+	-- entity:setTargets(characterMembers, enemyMembers)
 	self.target = entity.target
 	self.turnManager = turnManager
 	self.awaitingInput = true
@@ -18,7 +18,9 @@ function PlayerInputCommand:init(entity, turnManager)
 end;
 
 function PlayerInputCommand:start()
-	self.entity:startTurn(self.turnManager.characterTeam.members, self.turnManager.enemyTeam.members)
+	local validTargets = self.turnManager:getValidTargets()
+	self.entity:setTargets(validTargets)
+	self.entity:startTurn()
 	local skillSelected = function(skill)
 		self.skill = skill
 		self.awaitingInput = false

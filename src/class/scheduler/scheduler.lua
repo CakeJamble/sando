@@ -48,6 +48,13 @@ function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	return queue
 end;
 
+function Scheduler:getValidTargets()
+	local result = {}
+	result.characters = self.characterTeam:getLivingMembers()
+	result.enemies = self.enemyTeam:getLivingMembers()
+	return result
+end;
+
 function Scheduler:resetCamera(duration)
 	flux.to(camera, duration, {x = self.cameraPosX, y = self.cameraPosY, scale = 1})
 end;

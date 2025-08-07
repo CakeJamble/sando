@@ -29,7 +29,7 @@ function SkillCommand:start(turnManager)
     table.remove(entity.projectiles, i)
   end
   self:registerSignal('ProjectileMade', projectileMade)
-  self:registerSignal('despawnProjectile', despawnProjectile)
+  self:registerSignal('DespawnProjectile', despawnProjectile)
 
   local endTurn = function()
     self:cleanupSignals()

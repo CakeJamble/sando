@@ -3,9 +3,9 @@ AICommand = Class{__includes = Command}
 
 function AICommand:init(entity, turnManager)
 	Command.init(self, entity)
-	local characterMembers = turnManager.characterTeam.members
-	local enemyMembers = turnManager.enemyTeam.members
-	entity:setTargets(characterMembers, enemyMembers)
+	-- local characterMembers = turnManager.characterTeam.members
+	-- local enemyMembers = turnManager.enemyTeam.members
+	-- entity:setTargets(characterMembers, enemyMembers)
 	self.target = entity.target
 
 	self.turnManager = turnManager
@@ -17,9 +17,10 @@ function AICommand:init(entity, turnManager)
 end;
 
 function AICommand:start()
+	local validTargets = self.turnManager:getValidTargets()
+	self.entity:setTargets(validTargets)
 	self.entity:startTurn()
 
-	-- self.signalHandlers.target = function(targetType, tIndex)
 	local targetConfirm = function(targetType, tIndex)
 		print(self.entity.entityName .. ' is ready to attack')
 
@@ -32,16 +33,11 @@ function AICommand:start()
 		self:cleanupSignals()
 		self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)
 	end
-	-- Signal.register('TargetConfirm', self.signalHandlers.target)
 	self:registerSignal('TargetConfirm', targetConfirm)
 
 	-- skill and target select
 	self.entity:setupOffense()
 end;
-
--- function AICommand:cleanupSignals()
--- 	Signal.remove('TargetConfirm', self.signalHandlers.target)
--- end;
 
 function AICommand:update(dt)
 	if self.done then 

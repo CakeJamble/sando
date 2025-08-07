@@ -19,6 +19,7 @@ Still feeling a bit tired today. Hope I'm not coming down with anything. I'll tr
 	- [x] Logic
 	- [x] Test
 - [x] Polish on `STBScheduler`
+- [x] Cleanup interface for Scheduler so that targets are set before the turn starts
 
 ### Reflection
 

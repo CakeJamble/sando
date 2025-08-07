@@ -189,23 +189,11 @@ function Entity:stopTween(tag)
   end
 end;
 
-function Entity:setTargets(characterMembers, enemyMembers)
+function Entity:setTargets(targets)
   self.targets = {
-    ['characters'] = {},
-    ['enemies'] = {}
+    ['characters'] = targets.characters,
+    ['enemies'] = targets.enemies
   }
-
-  for i=1,#characterMembers do
-    if characterMembers[i]:isAlive() then
-      table.insert(self.targets.characters, characterMembers[i])
-    end
-  end
-
-  for i=1,#enemyMembers do
-    if enemyMembers[i]:isAlive() then
-      table.insert(self.targets.enemies, enemyMembers[i])
-    end
-  end
   
   print('targets set for ' .. self.entityName)
 end;
