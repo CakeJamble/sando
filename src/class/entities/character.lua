@@ -85,7 +85,7 @@ function Character:startTurn()
   Entity.startTurn(self)
   self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
   self.actionUI.active = true
-  Signal.emit('OnStartTurn', self)
+  -- Signal.emit('OnStartTurn', self)
 
   -- Timer.after(0.25, function()
   --   self.actionUI:set(self)
@@ -95,9 +95,11 @@ end
 
 function Character:endTurn(duration, stagingPos, tweenType)
   Entity.endTurn(self, duration, stagingPos, tweenType)
+  self.actionUI:unset()
   self.actionUI = nil
-  -- self.actionUI:unset()
   self.qteSuccess = false
+  self.canJump = true
+  self.canGuard = false
 end;
 
 function Character:setAnimations()
@@ -269,7 +271,6 @@ function Character:beginGuard()
   end)
 
   Timer.after(Character.guardCooldownDur, function()
-    self.canGuard = true
     self.canJump = true
     self.guardCooldownFinished = true
     print(self.entityName .. ' is done guarding')

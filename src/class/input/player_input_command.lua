@@ -49,15 +49,14 @@ function PlayerInputCommand:start()
 	local cancelInput = function()
 		self:cleanupSignals()
 		self.done = true
+		-- self.entity:endTurn()
 	end
 	self:registerSignal('CancelInput', cancelInput)
 	self:registerSignal('OnEndTurn', cancelInput)
-	
-	local passTurn = function()
-		self.entity.actionUI:unset()
+	self:registerSignal('PassTurn', function()
+		cancelInput()
 		self.entity:endTurn()
-	end
-	self:registerSignal('PassTurn', passTurn)
+	end)
 end;
 
 function PlayerInputCommand:interrupt()

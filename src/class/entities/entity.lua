@@ -101,7 +101,6 @@ function Entity:init(data, x, y)
 
   Signal.register('TargetConfirm',
   function()
-    print('target confirmed')
     if self.tweens['pbTween'] then
       self.tweens['pbTween']:stop()
     end
@@ -175,7 +174,6 @@ function Entity:reset()
   self.moveBackTimerStarted = false
   self.skill = nil
   print('ending turn for ', self.entityName)
-  
 end;
 
 function Entity:addTween(tag, tween)

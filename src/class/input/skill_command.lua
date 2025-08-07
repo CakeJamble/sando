@@ -12,7 +12,6 @@ function SkillCommand:init(entity, target, skill, qteManager)
   self.qteResult = nil
   self.waitingForQTE = false
   self.isInterruptible = false
-  -- self.signalHandlers = {}
 end
 
 function SkillCommand:start(turnManager)

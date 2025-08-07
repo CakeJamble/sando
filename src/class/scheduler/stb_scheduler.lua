@@ -28,10 +28,9 @@ function STBScheduler:enter()
 		self:sortWaitingCombatants()
 
 		while not self.combatants[self.turnIndex]:isAlive() do
-			self.turnIndex = self.turnIndex + 1
+			self.turnIndex = (self.turnIndex % #self.combatants) + 1
 		end
 		self.activeEntity = self.combatants[self.turnIndex]
-		
 		local command
 
 		if self.activeEntity.type == 'character' then
@@ -52,8 +51,10 @@ function STBScheduler:enter()
 	self:registerSignal('OnEndTurn',
 	function(timeBtwnTurns)
 		self:resetCamera(timeBtwnTurns)
-		self.activeCommand.done = true
-		Signal.emit('NextTurn')
+		Timer.after(timeBtwnTurns, function()
+			self.activeCommand.done = true
+			turnStart()
+		end)
 	end)
 
 end;

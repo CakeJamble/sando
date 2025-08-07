@@ -48,7 +48,6 @@ function ActionUI:init(charRef, characterMembers, enemyMembers)
   self.buttonDims = {w=32,h=32}
   self.landingPositions = nil
   self:set(charRef)
-  self.active = false
 end;
 
 function ActionUI:setTargets(characterMembers, enemyMembers)

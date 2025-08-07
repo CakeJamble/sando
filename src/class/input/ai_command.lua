@@ -26,9 +26,9 @@ function AICommand:start()
 
 		self.entity.target = self.entity.targets[targetType][tIndex]
 		self.skill = self.entity.skill
-		self.target = self.entity.targets[targetType][tIndex]
+		self.target = self.entity.target
 		self.waitingForTarget = false
-		local skillCommand = SkillCommand(self.entity, self.target, self.skill, nil)
+		local skillCommand = SkillCommand(self.entity, self.target, self.skill)
 		self.done = true
 		self:cleanupSignals()
 		self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)
