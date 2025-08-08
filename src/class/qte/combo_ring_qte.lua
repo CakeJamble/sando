@@ -17,7 +17,6 @@ function ComboRingQTE:reset()
 	self.successCount = 0
 	self.signalEmitted = false
 	self.rings = {}
-	print('reset combo ring qte')
 end;
 
 function ComboRingQTE:makeRings()
@@ -36,7 +35,6 @@ function ComboRingQTE:beginQTE(callback)
 	else
 		print('there was no callback fcn provided')
 	end
-	print('in rings array of count: ' .. #self.rings, "index " .. self.index .. ' was selected')
 	local ring = self.rings[self.index]
 	ring:startRevolution()
 	ring.flipTween:oncomplete(function()

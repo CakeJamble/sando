@@ -73,8 +73,6 @@ function Ring:buildSlices()
 		if availableArc >= minArc then
 			local arcLen = love.math.random() * (maxArc - minArc) + minArc
 
-			print(arcLen)
-
 			if arcLen > availableArc then
 				arcLen = availableArc
 			end
