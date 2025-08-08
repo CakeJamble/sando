@@ -25,6 +25,8 @@ Still feeling a bit tired today. Hope I'm not coming down with anything. I'll tr
 
 New QTE was smooth to develop and intuitive to fix. I'm glad I was able to extract the tween from the ring and use the callback for finishing the qte in `beginQTE()` instead of in the `Ring` UI class. It is still difficult to read but I think it makes more sense to have it there.
 
+Progress is slowing down because the bugs are getting more difficult to fix. I think it's okay to move on and come back to them now that I have a bug tracker. Tomorrow, I think it will be fun to make the new move I described today. But first thing I want to do in the morning is redesign it to fit the theme of the game better. It might also be worth the time this weekend to go through all the moves I thought of in the spreadsheet and prune the bad ones and add some good ideas. So far, I've enjoyed working on QTEs the most, but I think making new moves can be fun if I don't have to design it on the fly. That gets frustrating really quick.
+
 ## 08/06/2025
 
 Yesterday was kind of exhausting, but I'm hoping to carry through and do some good work today.
