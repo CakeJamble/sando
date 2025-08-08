@@ -34,7 +34,7 @@ end;
 
 function HoldSBP:setUI(activeEntity)
 	local isOffensive = activeEntity.skill.isOffensive
-	self:readyCamera(isOffensive)
+	-- self:readyCamera(isOffensive)
 
 	local targetPos
 	if isOffensive then
@@ -42,6 +42,7 @@ function HoldSBP:setUI(activeEntity)
 	else
 		targetPos = activeEntity.oPos
 	end
+	self:readyCamera(targetPos)
 
 	self.progressBar = ProgressBar(targetPos, self.progressBarOptions, isOffensive)
 	self.buttonUIPos.x = self.progressBar.pos.x + self.buttonUIOffsets.x
@@ -75,7 +76,8 @@ end;
 1. Wait a x seconds for player to press button
 	1a. If they haven't pressed it, they fail the QTE
 2. After pressing, cancel the waitTween ]]
-function HoldSBP:beginQTE()
+function HoldSBP:beginQTE(callback)
+	self.onComplete = callback
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 		:oncomplete(function()
 				print('Failed to start in time. Attacking now.')
@@ -83,6 +85,7 @@ function HoldSBP:beginQTE()
 				self.doneWaiting = true
 				self.qteComplete = true
 				self.instructions = nil
+				self.onComplete(qteSuccess)
 		end)
 end;
 
@@ -90,9 +93,10 @@ function HoldSBP:handleQTE()
 	if self.isActionButtonPressed then
 		local goalWidth = self.progressBar.containerOptions.width
 		print('starting progress tween')
+		self.onComplete()
 
 		-- Hardcoded values that need to be determined dynamically!
-		local goalPosX = self.cameraReturnPos.x 
+		local goalPosX = self.cameraReturnPos.x
 		local goalPosY = self.cameraReturnPos.y
 
 		if self.focusSelf then
@@ -103,7 +107,6 @@ function HoldSBP:handleQTE()
 			goalPosY = goalPosY - 30
 		end
 
-		print(goalPosX, goalPosY)
 		self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY,scale = 1.25}):ease('linear')
 		self.progressTween = flux.to(self.progressBar.meterOptions, self.duration, {width = goalWidth}):ease('linear')
 			:onupdate(function()
@@ -120,7 +123,7 @@ function HoldSBP:handleQTE()
 						self.qteComplete = true
 						if not self.signalEmitted then
 							print('Failed to end in time. Attacking now')
-							local qteSuccess = false
+							Signal.emit('OnQTEResolved', false)
 							self.signalEmitted = true
 						end
 					end)
@@ -144,7 +147,7 @@ end;
 
 function HoldSBP:gamepadreleased(joystick, button)
 	if button == self.actionButton then
-		self.isActionButtonPressed = false
+		self.isActionButtonPressed = true
 		if self.progressTween then
 			print('stopping progress tween')
 			self.progressTween:stop()
@@ -152,6 +155,7 @@ function HoldSBP:gamepadreleased(joystick, button)
 				if not self.signalEmitted then
 					print('Ended too early. Attacking now')
 					local qteSuccess = false
+					Signal.emit('OnQTEResolved', qteSuccess)
 					self.signalEmitted = true
 				end
 			elseif not self.qteComplete then
@@ -162,7 +166,7 @@ function HoldSBP:gamepadreleased(joystick, button)
 					:oncomplete(function() self.feedbackPos.a = 1 end)
 				if not self.signalEmitted then
 					local qteSuccess = true
-					Signal.emit('OnQTESuccess')
+					Signal.emit('OnQTEResolved', qteSuccess)
 					self.signalEmitted = true
 				end
 			end

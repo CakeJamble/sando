@@ -1,9 +1,12 @@
+require('class.ui.progress_bar')
 Class = require "libs.hump.class"
 Entity = Class{
   movementTime = 2,
   drawHitboxes = false,
   drawHitboxPositions = false,
-  tweenHP = false
+  tweenHP = false,
+  isATB = true,
+  hideProgressBar = false
 }
 
   -- Entity constructor
@@ -16,7 +19,8 @@ function Entity:init(data, x, y)
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
-  self.projectile = nil
+  -- self.projectile = nil
+  self.projectiles = {}
   self.spriteSheets = {
     idle = {},
     moveX = {},
@@ -64,7 +68,43 @@ function Entity:init(data, x, y)
     w = data.hbWidth,
     h = data.hbHeight
   }
+
+  self.shadowDims = {
+    x = self.hitbox.x + (self.hitbox.w / 2.5),
+    y = self.oPos.y + self.frameHeight,
+    w = self.hitbox.w / 2,
+    h = self.hitbox.h / 8
+  }
   self.tweens = {}
+
+  local pbOptions = {
+    xOffset = 0,
+    yOffset = 75,
+    min = 0,
+    max = 100,
+    w = 50,
+    h = 5,
+    wModifier = 0.05
+  }
+  self.progressBar = ProgressBar(self.pos, pbOptions, false)
+  self.hideProgressBar = Entity.hideProgressBar
+
+  self.hazards = nil
+
+  local minDur = 0.5
+  local maxDur = 5
+  local speed = math.max(self.battleStats.speed, 1)
+  local maxSpeed = 999
+
+  local normSpeed = math.min(speed/maxSpeed, 1)
+  self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
+
+  Signal.register('TargetConfirm',
+  function()
+    if self.tweens['pbTween'] then
+      self.tweens['pbTween']:stop()
+    end
+  end)
 end;
 
 function Entity:startTurn()
@@ -72,6 +112,18 @@ function Entity:startTurn()
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'offense'
+  self.progressBar:reset()
+  
+  if self.tweens['pbTween'] then
+    self.tweens['pbTween']:stop()
+    self.tweens['pbTween'] = nil
+  end
+
+  if self.hazards then
+    for i,hazard in ipairs(self.hazards) do
+      hazard:proc()
+    end
+  end
 
   print('starting turn for ' .. self.entityName)
 end;
@@ -81,19 +133,25 @@ function Entity:endTurn(duration, stagingPos, tweenType)
     self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   else
     self:reset()
-    Signal.emit('NextTurn')
+    Signal.emit('OnEndTurn', 0)
   end
 end;
 
 function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   local delay = 0.5
-  local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
-    :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
-  :oncomplete(
-    function()
-      self:reset()
-      Signal.emit('NextTurn')
+  if stagingPos then
+    self.currentAnimTag = 'move'
+    local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
+      :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
+    :oncomplete(
+      function() 
+        self:reset(); Signal.emit('OnEndTurn', 0); 
+      end)
+  else
+    Timer.after(delay, function() 
+      self:reset(); Signal.emit('OnEndTurn', 0) 
     end)
+  end
 end;
 
 function Entity:attackInterrupt()
@@ -115,7 +173,6 @@ function Entity:reset()
   self.currentAnimTag = 'idle'
   self.moveBackTimerStarted = false
   self.skill = nil
-
   print('ending turn for ', self.entityName)
 end;
 
@@ -130,23 +187,11 @@ function Entity:stopTween(tag)
   end
 end;
 
-function Entity:setTargets(characterMembers, enemyMembers)
+function Entity:setTargets(targets)
   self.targets = {
-    ['characters'] = {},
-    ['enemies'] = {}
+    ['characters'] = targets.characters,
+    ['enemies'] = targets.enemies
   }
-
-  for i=1,#characterMembers do
-    if characterMembers[i]:isAlive() then
-      table.insert(self.targets.characters, characterMembers[i])
-    end
-  end
-
-  for i=1,#enemyMembers do
-    if enemyMembers[i]:isAlive() then
-      table.insert(self.targets.enemies, enemyMembers[i])
-    end
-  end
   
   print('targets set for ' .. self.entityName)
 end;
@@ -236,7 +281,9 @@ function Entity:takeDamage(amount) --> void
   local newHP = math.max(0, self.battleStats["hp"] - self.amount)
   
   if Entity.tweenHP then
+    print('slow tween beginning for HP')
     local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
+      :oncomplete(function() print('done with hp tween') end)
     self.tweens['damage'] = damageTween
   else
     self.battleStats["hp"] = newHP
@@ -246,8 +293,6 @@ function Entity:takeDamage(amount) --> void
     self.currentAnimTag = 'flinch'
     Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
   else
-    print('hello')
-
     self.currentAnimTag = 'ko'
   end
 
@@ -323,6 +368,13 @@ end;
 function Entity:update(dt) --> void
   self.hitbox.x = self.pos.x + self.hbXOffset
   self.hitbox.y = self.pos.y + self.hbYOffset
+  self.shadowDims.x = self.hitbox.x + (self.hitbox.w / 2)
+  self.shadowDims.y = self.pos.y + (self.frameHeight * 0.95)
+
+  if Entity.isATB then
+    self.progressBar:setPos(self.pos)
+  end
+
   local animation = self.animations[self.currentAnimTag]
   -- if self.state == 'idle' then
     -- animation = self.movementAnimations.idle
@@ -350,32 +402,13 @@ end;
 
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void    
-    -- Placeholder for drawing the state or any visual representation
-    -- walk, jump, idle
-  -- local state = self.movementState.state
-  love.graphics.setColor(0, 0, 0, 0.4)
-  love.graphics.ellipse("fill", self.pos.x + (self.frameWidth / 2.5), self.pos.y + (self.frameHeight * 0.95), self.frameWidth / 4, self.frameHeight / 8)
-  love.graphics.setColor(1, 1, 1, 1)
+  -- Shadow
+  if self:isAlive() then
+    love.graphics.setColor(0, 0, 0, 0.4)
+    love.graphics.ellipse("fill", self.shadowDims.x, self.shadowDims.y, self.shadowDims.w, self.shadowDims.h)
+    love.graphics.setColor(1, 1, 1, 1)
+  end
   
-  -- local spriteNum
-  -- local animation
-  -- if self.state == 'idle' then
-  --   animation = self.movementAnimations.idle
-  --   -- spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  --   -- love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.x, self.y, 0, 1 )
-  -- elseif self.state == 'move' or 'moveback' then
-  --   animation = self.movementAnimations.moveX
-  -- elseif self.state == 'moveY' then
-  --   -- love.graphics.draw(self.spriteSheets.moveY, self.movementAnimations.moveY[math.floor(self.currentFrame)], self.x, self.y)
-  -- elseif self.state == 'moveXY' then
-  --   -- love.graphics.draw(self.spriteSheets.moveXY, self.movementAnimations.moveXY[math.floor(self.currentFrame)], self.x, self.y)
-  -- elseif self.state == 'flinch' then
-  --   -- love.graphics.draw(self.spriteSheets.flinch, self.movementAnimations.flinch[math.floor(self.currentFrame)], self.x, self.y) 
-  -- elseif self.state == 'ko' then
-  --   -- love.graphics.draw(self.spriteSheets.ko, self.movementAnimations.ko[math.floor(self.currentFrame)], self.x, self.y)
-  -- else
-  --   print("logical error in determining movement state of entity. state is", state)
-  -- end
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)
     love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
@@ -405,9 +438,28 @@ function Entity:draw() --> void
     love.graphics.setColor(1,1,1)
   end
 
-  if self.projectile then
+  for i,projectile in ipairs(self.projectiles) do
     love.graphics.setColor(1,0,0)
-    love.graphics.circle('fill', self.projectile.pos.x, self.projectile.pos.y, self.projectile.dims.r)
+    love.graphics.circle('fill', projectile.pos.x, projectile.pos.y, projectile.dims.r)
     love.graphics.setColor(1,1,1)
   end
+
+  if Entity.isATB and not self.hideProgressBar then
+    self.progressBar:draw()
+  end
+end;
+
+-- ATB Functionality
+function Entity:tweenProgressBar(onComplete)
+  local goalWidth = self.progressBar.containerOptions.width
+  local currWidth = self.progressBar.meterOptions.width
+  local progress = currWidth / goalWidth
+  local remainingDur = self.tRate * (1 - progress)
+  self.tweens['pbTween'] = flux.to(self.progressBar.meterOptions, remainingDur, {width = goalWidth})
+    :ease('linear')
+    :oncomplete(onComplete)
+end;
+
+function Entity:stopProgressBar()
+  self.tweens['pbTween']:stop()
 end;

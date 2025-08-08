@@ -27,6 +27,7 @@ return function(ref)
 
   -- Move from starting position to staging position before changing to animation assoc with skill
   local stage = flux.to(ref.pos, skill.stagingTime, {x = stagingPos.x, y = stagingPos.y})
+  
   ref.currentAnimTag = 'move'
   ref.tweens['stage'] = stage
   stage:oncomplete(
@@ -55,7 +56,6 @@ return function(ref)
                 end
               end)
               :oncomplete(function() 
-                ref.currentAnimTag = 'move'
                 ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
               end)
               ref.tweens['attack'] = attack

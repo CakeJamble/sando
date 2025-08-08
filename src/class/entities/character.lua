@@ -53,7 +53,7 @@ function Character:init(data, actionButton)
   -- self.currentFP = stats.fp
   -- self.currentDP = stats.dp
 
-  self.actionUI = ActionUI()
+  -- self.actionUI = ActionUI(self)
   self.cannotLose = false
   self.equips = {}
   
@@ -63,12 +63,13 @@ function Character:init(data, actionButton)
   self.isGuarding = false
   self.canGuard = false
   self.canJump = false
+  self.guardCooldownFinished = true  
   self.isJumping = false
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
   self.canLCancel = false
 
-  Signal.register('OnStartCombat',
+  Signal.register('OnEnterScene',
     function()
       flux.to(self.pos, self.combatStartEnterDuration, {x = Character.xPos})
         :oncomplete(function()
@@ -80,23 +81,25 @@ function Character:init(data, actionButton)
   )
 end;
 
-function Character:startTurn(hazards)
+function Character:startTurn()
   Entity.startTurn(self)
-  Signal.emit('OnStartTurn', self)
+  self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
+  self.actionUI.active = true
+  -- Signal.emit('OnStartTurn', self)
 
-  for i,hazard in pairs(hazards.characterHazards) do
-    hazard:proc(self)
-  end
-  Timer.after(0.25, function()
-    self.actionUI:set(self)
-  end
-  )
+  -- Timer.after(0.25, function()
+  --   self.actionUI:set(self)
+  -- end
+  -- )
 end
 
 function Character:endTurn(duration, stagingPos, tweenType)
   Entity.endTurn(self, duration, stagingPos, tweenType)
   self.actionUI:unset()
+  self.actionUI = nil
   self.qteSuccess = false
+  self.canJump = true
+  self.canGuard = false
 end;
 
 function Character:setAnimations()
@@ -126,7 +129,6 @@ function Character:takeDamage(amount)
 
   Entity.takeDamage(self, amount)
   local isDamage = true
-  Signal.emit('OnHPChanged', self.amount, isDamage)
   -- For Status Effect that prevents KO on own turn
   if self.cannotLose and self.isFocused then
     self.battleStats['hp'] = math.max(1, self.battleStats['hp'])
@@ -135,7 +137,7 @@ function Character:takeDamage(amount)
   if bonusApplied then
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
-Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
+  Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
   self:recoil()
 end;
 
@@ -156,7 +158,7 @@ end;
 function Character:setTargets(characterMembers, enemyMembers)
   print('setting targets for ', self.entityName)
   Entity.setTargets(self, characterMembers, enemyMembers)
-  self.actionUI:setTargets(characterMembers, enemyMembers)
+  -- self.actionUI:setTargets(characterMembers, enemyMembers)
 end;
 
 --[[ Gains exp, leveling up when applicable
@@ -209,7 +211,6 @@ function Character:applyGear()
   end
 end;
 
-
 function Character:keypressed(key)
   -- if self.state == 'offense' then
   --   self.offenseState:keypressed(key)
@@ -225,7 +226,7 @@ function Character:keypressed(key)
 end;
 
 function Character:gamepadpressed(joystick, button)
-  if self.actionUI.active then
+  if self.actionUI and self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
   else
     self:checkGuardAndJump(button)
@@ -240,16 +241,14 @@ function Character:gamepadpressed(joystick, button)
 end;
 
 function Character:gamepadreleased(joystick, button)
-  if self.state == 'defense' then
-    if button == 'rightshoulder' then
+  if button == 'rightshoulder' then
       self.canGuard = false
-    end
   end
 end;
 
 function Character:checkGuardAndJump(button)
   if self:isAlive() then
-    if button == 'rightshoulder' and not self.isJumping then
+    if button == 'rightshoulder' and not self.isJumping and self.guardCooldownFinished then
       self.canGuard = true
     elseif button == self.actionButton then    
       if self.canGuard then
@@ -265,14 +264,16 @@ function Character:beginGuard()
   self.isGuarding = true
   self.canJump = false  
   self.canGuard = false -- for cooldown
+  self.guardCooldownFinished = false
 
   Timer.after(Character.guardActiveDur, function()
     self.isGuarding = false
   end)
 
   Timer.after(Character.guardCooldownDur, function()
-    self.canGuard = true
     self.canJump = true
+    self.guardCooldownFinished = true
+    print(self.entityName .. ' is done guarding')
   end)
 end;
 
@@ -283,6 +284,10 @@ function Character:beginJump()
 
   -- Goes up then down, then resets conditional checks for guard/jump
   local landY = self.oPos.y
+  local shadow = flux.to(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 3})
+    :ease('quadout')
+    :after(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 2})
+      :ease('quadin')
   local jump = flux.to(self.pos, Character.jumpDur/2, {y = landY - self.frameHeight})
     :ease('quadout')
     :after(self.pos, Character.jumpDur/2, {y = landY})
@@ -328,10 +333,17 @@ end;
 
 function Character:update(dt)
   Entity.update(self, dt)
+
+  if self.isJumping then
+    self.shadowDims.y = self.oPos.y + (self.frameHeight * 0.95)
+  end
+
 end;
 
 function Character:draw()
   Entity.draw(self)
   love.graphics.setColor(1,1,1)
-  self.actionUI:draw()
+  if self.actionUI and self.actionUI.active then
+    self.actionUI:draw()
+  end
 end;

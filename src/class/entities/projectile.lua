@@ -1,11 +1,12 @@
 Projectile = Class{}
 
-function Projectile:init(x, y)
+function Projectile:init(x, y, index)
 	self.pos = {x=x, y=y}
 	self.dims = {r = 10}
 	self.hitbox = {
 		x=x,y=y,w=2*self.dims.r, h=2*self.dims.r
 	}
+	self.index = index
 end;
 
 function Projectile:update(dt)

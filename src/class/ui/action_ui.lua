@@ -20,7 +20,7 @@ local CURSOR_PATH = CHARACTER_SELECT_PATH .. 'cursor.png'
     -- postconditions: initializes action ui icons for the character
 -- function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy positions list?
 -- The ActionUI position (self.x, self.y) is at the coordinates of the center of the button wheel
-function ActionUI:init()
+function ActionUI:init(charRef, characterMembers, enemyMembers)
   self.active = false
   self.x = nil
   self.y = nil
@@ -37,13 +37,17 @@ function ActionUI:init()
   self.duoButton = nil
   self.buttons = nil
   self.activeButton = nil
-  self.targets = {}
+  self.targets = {
+    ['characters'] = characterMembers,
+    ['enemies'] = enemyMembers
+  }
   self.targetType = 'enemies'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
   self.buttonTweenDuration = 0.1 -- for delay after buttons set into place
   self.buttonDims = {w=32,h=32}
   self.landingPositions = nil
+  self:set(charRef)
 end;
 
 function ActionUI:setTargets(characterMembers, enemyMembers)
@@ -79,7 +83,7 @@ function ActionUI:set(charRef)
   
   -- consider removing after refactoring with Command Pattern
 
-  self.selectedSkill = self.skillList[1]
+  -- self.selectedSkill = self.skillList[1]
   self.active = true
   self.easeType = 'linear'
 end;
@@ -142,13 +146,17 @@ function ActionUI:unset()
   self.active = false
 end;
 
+function ActionUI:deactivate()
+  self.active = false
+  print('action ui is no longer active')
+end
+
 -- deprecated
 function ActionUI:keypressed(key) --> void
 end;
 
 function ActionUI:gamepadpressed(joystick, button) --> void
   if self.active then
-
 ----------------------- Button Tweening ---------------------------
     if self.uiState == 'actionSelect' or self.uiState == 'submenuing' then
       if button == 'dpright' then                         -- spin the wheel left
@@ -181,11 +189,12 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           Signal.emit('PassTurn')
         elseif self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill
-          self.uiState = 'targeting'
+          -- self.uiState = 'targeting'
           self.backButton.isHidden = false
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
+          self.selectedSkill = self.activeButton.skillList[self.activeButton.skillIndex]
           self.activeButton:gamepadpressed(joystick, button)
         end
       elseif self.uiState == 'submenuing' then
@@ -233,7 +242,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
 end;
 
 function ActionUI:draw()
-  if(self.active) then
+  if self.active then
       -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
     if self.uiState == 'targeting' then
       self.backButton:draw()

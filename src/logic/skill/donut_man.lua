@@ -16,27 +16,24 @@ return function(ref, qteManager)
 
   local arcHeight = target.hitbox.y - target.hitbox.h
   local donutFlyingTime = 0.8
-      -- Projectile
-  local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2))
-  Signal.emit('ProjectileMade', donut)
+
+  local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2), 1)
+  table.insert(ref.projectiles, donut)
 
   Timer.after(qteManager.activeQTE.duration,
     function()
 
       -- Tween projectile to the target in an arc (quadout then quad in for feel of gravity)
-      flux.to(donut.pos, donutFlyingTime / 2, {x = xMidPoint, y = arcHeight})
+      local attack = flux.to(donut.pos, donutFlyingTime / 2, {x = xMidPoint, y = arcHeight})
         :ease('quadout')
         :after(donut.pos, donutFlyingTime / 2, {x = goalX, y = goalY})
           :ease('quadin')
           :oncomplete(
             function()
-              local preHealHP = target.battleStats.hp
               target:heal(5)
-              print(target.entityName .. ' healed 5.')
-              print('HP was ' .. preHealHP .. ' and is now ' .. target.battleStats.hp)
-              Signal.emit('DespawnProjectile')
-              Timer.after(0.25, function() Signal.emit('NextTurn') end)
-            end
-          )
+              table.remove(ref.projectiles, 1)
+              ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
+            end)
+        ref.tweens['attack'] = attack
     end)
 end;

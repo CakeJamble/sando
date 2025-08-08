@@ -4,6 +4,7 @@ Class = require 'libs.hump.class'
 ProgressBar = Class{}
 
 function ProgressBar:init(targetPos, options, isOffensive)
+	self.active = true
 	self.pos = {
 		x = targetPos.x + options.xOffset,
 		y = targetPos.y + options.yOffset
@@ -37,6 +38,11 @@ end;
 function ProgressBar:reversePosOffsets()
 	self.pos.x = self.pos.x - 2 * self.offsets.x
 	self.pos.y = self.pos.y - self.offsets.y
+end;
+
+function ProgressBar:setPos(pos)
+	self.pos.x = pos.x + self.offsets.x
+	self.pos.y = pos.y + self.offsets.y
 end;
 
 function ProgressBar:reset()

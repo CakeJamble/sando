@@ -2,6 +2,176 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 08/07/2025
+
+Still feeling a bit tired today. Hope I'm not coming down with anything. I'll try to focus up and be productive. Got a bit of a late start but I don't wanna push myself too hard and burn out this week.
+
+### TODO
+
+- [ ] New enemy move - Shadow Attack
+	- [ ] Data
+	- [ ] Animation
+	- [ ] Logic
+	- [ ] Test
+	- [ ] Tune
+- [x] Ring QTE Variant - `ComboRingQTE`: N-consecutive ring tosses
+	- [x] Data
+	- [x] Logic
+	- [x] Test
+- [x] Polish on `STBScheduler`
+- [x] Cleanup interface for Scheduler so that targets are set before the turn starts
+
+### Reflection
+
+New QTE was smooth to develop and intuitive to fix. I'm glad I was able to extract the tween from the ring and use the callback for finishing the qte in `beginQTE()` instead of in the `Ring` UI class. It is still difficult to read but I think it makes more sense to have it there.
+
+Progress is slowing down because the bugs are getting more difficult to fix. I think it's okay to move on and come back to them now that I have a bug tracker. Tomorrow, I think it will be fun to make the new move I described today. But first thing I want to do in the morning is redesign it to fit the theme of the game better. It might also be worth the time this weekend to go through all the moves I thought of in the spreadsheet and prune the bad ones and add some good ideas. So far, I've enjoyed working on QTEs the most, but I think making new moves can be fun if I don't have to design it on the fly. That gets frustrating really quick.
+
+## 08/06/2025
+
+Yesterday was kind of exhausting, but I'm hoping to carry through and do some good work today.
+
+### TODO
+
+- [x] Test/Debug STBScheduler
+	- Come back to look at these issues
+		- Turns aren't always being passed correctly
+		- Sometimes the active button in the action ui isn't registering inputs properly
+		- sometimes the SkillCommand is going off when you try to pass turn
+- [x] Take a look at particle systems for animation
+	- [x] Adding flames to the Grease Fire RandSBP QTE would be a cool touch
+- [x] Bugfix for characters being stuck in guard state
+- [x] Create a bugtracker file
+
+### Reflection
+
+HotParticles is so cool! I'm excited to spend some more time messing around with it.
+
+There's a bit of a messy design flaw in the skill logic. I need the skills that enemies use to target the `oPos` table for character entities because they can be in midair during turn changes. But if they use the oPos, they are calculating the trajectory of collision using the sprite width, and not the more accurate hitbox data, which is tuned to how it looks in game.
+
+It's not a huge issue now, but I should definitely keep that somewhere so I don't forget
+
+## 08/05/2025
+
+The ATB system feels okay. The speed influence on charging needs to be fixed, but I'm glad the system functions as I intended.
+
+### TODO
+
+- [ ] Separate Turn Manager into Scheduler interfaces to modularly apply the proper combat flow
+	- [x] Scheduler (Base Class)
+	- [x] ATBScheduler (Active Timer Battle)
+	- [ ] STBScheduler (Standard Turn-Based)
+	- [ ] CTBScheduler (Conditional Turn-Based)
+- [x] Refactor Signal for Projectile objects spawning/despawning
+	- [x] Scone
+		- [x] code
+		- [x] test/debug
+	- [x] Donut Man
+		- [x] code
+		- [x] test/debug
+- [ ] Fix ActionUI bug that isn't setting the targets properly
+- [x] Refactor QTEs to properly transition to skill proc using a callback passed to `beginQTE`
+	- [x] MBP
+	- [x] Ring
+	- [x] Rand SBP
+	- [x] Hold SBP
+- [ ] Make a similar interface system for SwapSystem (1v1, Party v. Party, etc.)
+
+### Reflection
+
+The separation of the turn manager into swappable formats was way harder than I thought it would be. I ran into a weird bug caused by some kind of scoping issue. Basically, I couldn't stop the progress bars in the entity class when I was checking the command queues. So instead, I just registered a signal for when a target is confirmed that will pause all the progress bars. And when a turn ends, it will resume them. The only issue I see here is when a turn ends without pausing the progress bars (like when the player passes their turn). Debugging this took all day, so I didn't get as far as I hoped, but I'm really happy with the interface. It isn't stuck inside a monolith TurnManager class anymore! :)
+
+The QTEs are a little bit coupled to the skills now because of the command pattern. It is difficult to just swap out moves with different QTE types because the skill logic will have to check an internal variable that gets changed when a signal is emitted from the QTE class. I think this is inevitable to get all the different QTE types I want and the different kinds of attacks (range, cqc, continuous until failed qte, post-qte, etc.).
+
+Today was really challenging, and the outcomes basically look like the same as they did before I started, but that's because this was a major refactor in how the combat state is arranged. I hope that tomorrow will be quicker with the standard turn based scheduler. And then I'll try out the swap mechanic.
+
+## 08/04/2025
+
+Saturday was a big step towards implementing the ATB system. I didn't write anything in the TODO because a lot of the coding was exploratory in nature, trying to figure out what would work and what wouldn't. I'm happy with the progress so far, but I realized that it will be tough to untangle this progress so that both the ATB and the Standard Battle systems can work interchangeably. I took Sunday (08/03) off because I was starting to feel a little burnt out. It was hard getting started today but I hope that I can regain some momentum now that I feel a bit more rested.
+
+### TODO
+
+- [x] Fix the progress bar filling function in entity so that there is a more pronounced difference in charging rates for ATB, especially for testing.
+- [x] Fix the division of commands so that they don't overlap, and instead properly interrupt and preempt each other when appropriate
+- [x] Fix QTE bug that doesn't properly remove UI after ending turn in ATB system
+
+### Random Thoughts
+
+- Now that I have an ATB system, I am realizing that the "OnStartTurn" signals will be complicated to weave into this system. It might be better to rebalance some Tools, Equip, and Accessory designs by having them only affect a single character when their turn starts. One idea I had was to completely remove Tools that had the OnStartTurn signal, and instead make them accessories or equipment, and increase the number of equip slots for those inventory types.
+
+### Reflection
+
+I finished my TODO items early. I think in the next step tomorrow, it will be worthwhile to implement an interface where these mechanics can be applied and overlap, with sanity checks being run automatically.
+
+
+## 08/01/2025
+
+I didn't write out a TODO yesterday because I was studying how the Command Pattern refactor will work.
+
+### TODO
+
+- [x] Player Input Command
+- [x] Skill Command
+- [ ] Successful passing of turns and interrupts by enemy entities
+
+### Reflection
+
+Last item will have to spill into tomorrow. The gist of the issue right now is that the progress bar is progressing while turns are going, and the progress bar isn't resetting either. So I need to pause the progress bar when a skill is being used. On top of that, the interruptible commands are being placed at the back of the command queue when they can't interrupt the currently running command, when they should actually be placed at the front. An initial easy solution for this is to implement either a priority queue or two queues that the higher priority queue can always have precedence while combat is running.
+
+## 07/29/2025
+
+### TODO
+
+- [x] Functionality for multiple slices in Ring QTE
+- [ ] Variant of Ring QTE where the ring flips and displays a new slice instead of having multiple slices on single Ring
+- [ ] Design and plan out next skills & QTEs
+
+### TODO
+
+- [x] Ring QTE
+	- [x] JSON Data
+	- [x] Class file
+- [x] Bugfix: In `QTEManager:initQTETable()` only initialize QTEs that were loaded in the loading function
+
+### Reflection
+
+Good progress today!! 
+
+## 07/28/2025
+
+## TODO
+
+- [x] Solicit feedback on mechanics
+- [x] Try out using `love.physics.shear()` to shear shapes to create illusion of 3D pivot on an axis
+- [x] Design the Ring QTE (Figma)
+- [ ] Ring QTE
+	- [ ] JSON Data
+	- [ ] Class file
+
+### Reflection
+
+Got a lot of good advice and ideas for new QTEs and mechanics. I'm excited to try and implement the Ring QTE! There are so many ways to make that feel varied and challenging.
+
+I think that QTEs should have a fixed camera zoom. It's getting in the way of a lot of progress, and I already know I will probably have to come back and overhaul a lot of camera issues later anyways. Instead of trying to determine the target to zoom in on dynamically, I should wait until I have a wider range of QTEs to see what kind of camera effects work and what is distracting.
+
+## 07/27/2025
+
+### TODO
+
+- [x] Fix visual bug with shadows when jumping
+- [x] Adjust arc for projectile trajectories to follow a parabola
+- [x] Cleanup camera management so QTEs and Skills can move it independently
+- [ ] Refactor QTEs to use JSON data to initialize objects
+	- [x] Rand SBP
+	- [ ] SBP
+- [ ] New Character Skills
+	- [x] Uses Rand SBP QTE
+	- [ ] Uses SBP QTE
+
+### Reflection
+
+Overall pretty good. I got sidetracked with the camera movement but I think it was worth looking into. 
+
 ## 07/26/2025
 
 Was feeling really tired so I took yesterday off. Today, I want to focus in on planning some features and how to scale things sustainably. I think doing something with the QTE class by setting data in JSON files similar to other things would be a good idea. I also think my attempt with the flyweight pattern isn't paying off. I originally thought that I was saving overhead by keeping a single object in scope, but if I set everything to nil in the `reset()`, then I'm not really saving any space. I also should definitely clean up the class hierarchy, because there's a lot of reused code.

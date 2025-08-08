@@ -1,5 +1,5 @@
 require('class.qte.qte')
-
+local fireParticles = require 'asset.particle.small_fire'
 randSBP = Class{__includes = QTE}
 
 function randSBP:init(data)
@@ -9,13 +9,15 @@ function randSBP:init(data)
 	self.doneWaiting = false
 	self.circleGreenVals = {0,0,0}
 	self.smallCircleOptions = data.smallCircleOptions
-	self.timeBtwnLights = data.timeBtwnCirclesLightingUp
+	self.timeBtwnLights = data.timeBtwnLights
 	self.largeCircleScale = data.largeCircleScale
 	self.waitDuration = data.waitDuration
 	self.actionButton = nil
 	self.buttonUI = nil
+	-- self.duration = self.timeBtwnLights * 3
 	self.buttonUIIndex = 'raised'
 	self.numSmallCircles = data.numSmallCircles
+	self.waitTimer = nil
 end;
 
 function randSBP:setActionButton(actionButton, buttonUI)
@@ -24,21 +26,15 @@ function randSBP:setActionButton(actionButton, buttonUI)
 end;
 
 function randSBP:setUI(activeEntity)
-	local isOffensive = activeEntity.skill.isOffensive
-	self:readyCamera(isOffensive)
+	self:readyCamera(false)
 
-	local targetPos 
-	if isOffensive then
-		targetPos = activeEntity.target.pos
-	else
-		targetPos = activeEntity.pos
-		self.smallCircleOptions.x = -self.smallCircleOptions.x
-	end
+	self.targetPos = activeEntity.pos
+	self.smallCircleOptions.x = -self.smallCircleOptions.x
 
-	self.smallCircleOptions.x = self.smallCircleOptions.x + targetPos.x
-	self.smallCircleOptions.y = self.smallCircleOptions.y + targetPos.y
-	self.feedbackPos.x = targetPos.x + self.feedbackOffsets.x
-	self.feedbackPos.y = targetPos.y - self.feedbackOffsets.y
+	self.smallCircleOptions.x = self.smallCircleOptions.x + self.targetPos.x
+	self.smallCircleOptions.y = self.smallCircleOptions.y + self.targetPos.y
+	self.feedbackPos.x = self.targetPos.x + self.feedbackOffsets.x
+	self.feedbackPos.y = self.targetPos.y - self.feedbackOffsets.y
 end;
 
 function randSBP:reset()
@@ -50,19 +46,30 @@ function randSBP:reset()
 	self.doneWaiting = false
 end;
 
-function randSBP:beginQTE()
+function randSBP:beginQTE(callback)
+	self.onComplete = callback
+	-- Hardcoded values that need to be determined dynamically!
+	local goalPosX = self.cameraReturnPos.x 
+	local goalPosY = self.cameraReturnPos.y
+
+	goalPosX = goalPosX - self.targetPos.x
+	goalPosY = goalPosY - self.targetPos.y / 4
+
+	self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY, scale = 1.25}):ease('linear')
+	
 	for i=1,self.numSmallCircles do
 		Timer.after(i*self.timeBtwnLights, function() self.circleGreenVals[i] = 1 end)
 	end
 
 	-- Show random button and give player time to react, then end QTE
-	Timer.after((self.numSmallCircles + 1)*self.timeBtwnLights, 
+	Timer.after(self.duration, 
 		function() 
 			self.displayButton = true 
 
 			-- Slight delay to give time to see the result
-			Timer.after(self.waitForPlayer,
+			self.waitTimer = Timer.after(self.waitDuration,
 				function()
+					-- qte failed
 					self.qteComplete = true
 					self.doneWaiting = true
 					Signal.emit('Attack')
@@ -74,14 +81,32 @@ end;
 
 function randSBP:gamepadpressed(joystick, button)
 	if self.displayButton and not self.qteComplete then
-		self.buttonUIIndex = 'pressed'
-		if button ~= self.actionButton then
-			print('qte failed, pressed wrong button')
-		else
-			print('qte success')
-			Signal.emit('OnQTESuccess')
+		local qteSuccess = false
+		if not self.doneWaiting then
+			Timer.cancel(self.waitTimer)
 		end
+		self.buttonUIIndex = 'pressed'
+		if button == self.actionButton then
+			qteSuccess = true
+			print('qte success')
+			-- Signal.emit('OnQTESuccess')
+		end
+		self.onComplete(qteSuccess)
+		self.signalEmitted = true
+		
+		self.doneWaiting = true
+		self.displayButton = false
 		self.qteComplete = true
+		-- Signal.emit('Attack')
+	end
+end;
+
+function randSBP:gamepadreleased(joystick, button)
+end;
+
+function randSBP:update(dt)
+	for i,ps in ipairs(fireParticles) do
+		ps.system:update(dt)
 	end
 end;
 
@@ -89,15 +114,21 @@ function randSBP:draw()
 	if not self.qteComplete then
 		for i=1,3 do
 			love.graphics.setColor(0, self.circleGreenVals[i], 0)
-			love.graphics.circle(self.smallCircleOptions.mode, self.smallCircleOptions.x + (i-1) * self.smallCircleOptions.xOffset, self.smallCircleOptions.y, self.smallCircleOptions.r)
+			love.graphics.circle(self.smallCircleOptions.mode, self.smallCircleOptions.x + (i-1) * self.smallCircleOptions.xSpace, self.smallCircleOptions.y, self.smallCircleOptions.r)
 			love.graphics.setColor(1,1,1)
+
+			for _,ps in ipairs(fireParticles) do
+				if self.circleGreenVals[i] == 1 then
+					love.graphics.draw(ps.system, self.smallCircleOptions.x + (i-1) * self.smallCircleOptions.xSpace, self.smallCircleOptions.y )
+				end
+			end
 		end
 		love.graphics.setColor(1,0,0)
-		love.graphics.circle(self.smallCircleOptions.mode, self.smallCircleOptions.x + self.smallCircleOptions.xOffset * 4, self.smallCircleOptions.y, self.smallCircleOptions.r * self.largeCircleScale)
+		love.graphics.circle(self.smallCircleOptions.mode, self.smallCircleOptions.x + self.smallCircleOptions.xSpace * 4, self.smallCircleOptions.y, self.smallCircleOptions.r * self.largeCircleScale)
 		love.graphics.setColor(1, 1, 1)
 	end
 
 	if self.displayButton then
-		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.smallCircleOptions.x + self.smallCircleOptions.xOffset * 2.75, self.smallCircleOptions.y - self.smallCircleOptions.y / 6.5, 0, 0.5, 0.5)
+		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.smallCircleOptions.x + self.smallCircleOptions.xSpace * 3.2, self.smallCircleOptions.y - self.smallCircleOptions.y / 8.5, 0, self.buttonUIScale, self.buttonUIScale)
 	end
 end;

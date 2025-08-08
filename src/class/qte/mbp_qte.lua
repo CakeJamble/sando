@@ -72,7 +72,8 @@ function mbpQTE:setUI(activeEntity)
 	self.feedbackPos.y = self.baseY - 5
 end;
 
-function mbpQTE:beginQTE()
+function mbpQTE:beginQTE(callback)
+	self.onComplete = callback
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 		:oncomplete(function()
 				print('Failed to start in time. Attacking now.')
@@ -115,6 +116,7 @@ function mbpQTE:gamepadpressed(joystick, button)
 			Signal.emit('OnQTESuccess')
 			self.signalEmitted = true
 			self.qteComplete = true
+			self.onComplete(true)
 		end
 	end
 end;
@@ -162,7 +164,7 @@ function mbpQTE:drawInputButtons()
 	for i,button in ipairs(self.inputSequence) do
 		local yOffset = self.offset * (i-1)
 		local rotation = 0
-		local xOffset = 25
+		local xOffset = 20
 		if i >= self.buttonsIndex then
 			love.graphics.draw(button.raised, self.currentInputContainerDims.x - xOffset, self.baseY - yOffset, rotation, self.buttonUIScale)
 		end

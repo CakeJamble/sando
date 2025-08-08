@@ -1,4 +1,4 @@
--- HUMP Globals
+-- -- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
 Camera = require "libs.hump.camera"
 Signal = require "libs.hump.signal"

@@ -6,7 +6,7 @@
 	"fp": 10,
 	"attack": 10,
 	"defense": 1,
-	"speed": 20,
+	"speed": 500,
 	"luck": 10,
 	"growthRate": 1.25,
 	"basic": "basic",

@@ -6,7 +6,10 @@ require("util.globals")
 require('class.entities.character_team')
 require('class.entities.enemy_team')
 require('class.input.command_manager')
-require('class.turn_manager')
+-- require('class.scheduler.turn_manager')
+require('class.scheduler.atb_scheduler')
+require('class.scheduler.stb_scheduler')
+
 local generateEncounter = require('util.encounter_generator')
 local imgui = require('libs.cimgui')
 local ffi = require('ffi')
@@ -14,6 +17,7 @@ local showDebugWindow = false
 local hitboxCheckboxState = ffi.new("bool[1]", false)
 local hitboxYPosCheckboxState = ffi.new("bool[1]", false)
 local tweenHPLossCheckboxState = ffi.new("bool[1]", false)
+local atbSystem = ffi.new("bool[1]", false)
 
 local combat = {}
 local numFloors = 50
@@ -66,10 +70,16 @@ function combat:init()
     function(amount, isDamage, hpIsTweened)
       local character = self.characterTeamHP[self.targetedCharacterIndex]
       local healthDropDuration = 0.5
+      if hpIsTweened then
+        healthDropDuration = 15
+      end
+      
       if not isDamage then 
         amount = -1 * amount 
         healthDropDuration = 0.5
       end
+
+
 
       local delay = 0.25
       local newHP = math.min(character.totalHP, math.max(0, character.currHP - amount))
@@ -98,12 +108,21 @@ function combat:enter(previous)
   
   self.enemyTeam = generateEncounter(self.floorNumber)
 
+  -- if TurnManager.isATB then
+  --   self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+  --   Signal.emit('OnStartCombat')
+  --   Signal.emit('OnEnterScene')
+  -- else
+  --   Signal.emit('OnEnterScene')
+  --   Timer.after(Character.combatStartEnterDuration, function()
+  --     self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
+  --     Signal.emit('OnStartCombat')
+  --   end)
+  -- end
+  -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
+  self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
   Signal.emit('OnStartCombat')
-
-  Timer.after(Character.combatStartEnterDuration, function()
-    self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
-    Signal.emit('NextTurn')
-  end)
+  Signal.emit('OnEnterScene')
 end;
 
 function combat:keypressed(key)
@@ -133,7 +152,6 @@ function combat:gamepadpressed(joystick, button)
     Gamestate.push(states['pause'])
   end
   if self.turnManager and self.turnManager.qteManager.activeQTE then
-    print('turn manager')
     self.turnManager.qteManager:gamepadpressed(joystick, button)
   else
     self.characterTeam:gamepadpressed(joystick, button)
@@ -143,6 +161,8 @@ end;
 function combat:gamepadreleased(joystick, button)
   if self.turnManager and self.turnManager.qteManager.activeQTE then
     self.turnManager.qteManager:gamepadreleased(joystick, button)
+  else
+    self.characterTeam:gamepadreleased(joystick, button)
   end
 end;
 
@@ -172,8 +192,13 @@ function combat:update(dt)
       Entity.drawHitboxPositions = hitboxYPosCheckboxState[0]
     end
 
-    if imgui.Checkbox("Toggle Gradual HP Loss", tweenHPLossCheckboxState) then
+    if imgui.Checkbox("Gradual HP Loss", tweenHPLossCheckboxState) then
       Entity.tweenHP = tweenHPLossCheckboxState[0]
+    end
+
+    if imgui.Checkbox("ATB System", atbSystem) then
+      TurnManager.isATB = atbSystem[0]
+      Entity.isATB = atbSystem[0]
     end
 
     imgui.End()

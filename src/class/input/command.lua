@@ -7,20 +7,26 @@
 Class = require 'libs.hump.class'
 Command = Class{}
 
-function Command:init()
-  self.listeners = {}
+function Command:init(entity)
+  self.entity = entity
+  self.done = false
+  self.signalHandlers = {}
 end;
 
-function Command:addListener(listener)
-  table.insert(self.listeners, listener)
+function Command:registerSignal(name, f)
+  self.signalHandlers[name] = f
+  Signal.register(name, f)
 end;
 
-function Command:notifyListeners(signal)
-  for i=1,self.listeners do
-    Signal.emit(signal, Command:execute())
+function Command:cleanupSignals()
+  for name,f in pairs(self.signalHandlers) do
+    Signal.remove(name, f)
   end
+  self.signalHandlers = {}
 end;
 
-function Command:execute()
-  -- does nothing by default
+function Command:start(battle) -- = 0;
+end;
+
+function Command:update(dt, battle) -- = 0;
 end;

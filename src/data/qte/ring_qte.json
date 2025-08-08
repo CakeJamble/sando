@@ -1,0 +1,16 @@
+{
+	"name": "Ring",
+	"options": {
+		"mode": "fill",
+		"x": 250,
+		"y": 200,
+		"r": 50
+	},
+	"shear": {"kx": 1, "ky": 0},
+	"flipDuration": 1,
+	"duration": 1,
+	"numSlices": 1,
+	"sliceLenRange": {"min":25, "max": 50},
+	"spritePath": "",
+	"feedbackList": ["great.png"],
+}

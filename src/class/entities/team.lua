@@ -31,6 +31,17 @@ function Team:removeMembers(entities) --> void
   end
 end;
 
+function Team:getLivingMembers()
+  local result = {}
+  for i,member in ipairs(self.members) do
+    if member:isAlive() then
+      table.insert(result, member)
+    end
+  end
+  return result
+end;
+
+
   -- Iterates over team members to check if they are all knocked out
     -- preconditions: none
     -- postcondition: returns true if team wiped, false otherwise
