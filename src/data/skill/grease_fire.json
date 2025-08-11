@@ -1,8 +1,8 @@
 {
 	"name": "Grease Fire",
 	"damage": 0,
-	"isOffensive": true,
-	"targetType": "single",
+	"targetType": "enemies",
+	"isSingleTarget": true,
 	"effects": ["damage"],
 	"chance": 1,
 	"cost": 3,

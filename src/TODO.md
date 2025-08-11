@@ -2,6 +2,33 @@
 
 Copy/Paste the list under the most recent for next time under a heading for the date you are working on and make it a checkbox.
 
+## 08/11/2025
+
+I took a break this weekend. I spent a bit of time looking at different VSTs and trying stuff out. I enjoyed playing with different arpeggiators to make little house-like progressions, but am still a ways off from understanding how to make proper SFX. Might be a good idea to set aside some time to watch some videos and tutorials on how it is done! That would be a good midday break from programming that will help keep me motivated.
+
+I'm going to try and stop using this TODO and switch over to Trello to keep things more organized. I think I'll make a new file called Retros or something that I will write my daily reflections in instead.
+
+### TODO
+
+- [ ] REVIVE THE TRELLO. Start using midsized goals to complete a certain number of tasks per week
+- [ ] Get back to making content. It's okay if it sucks for now, I just need to get back in the hang of things after feeling pretty languid late last week.
+
+## 08/08/2025
+
+Feeling really tired today still, despite sleeping early and sleeping in. :(
+
+Getting off topic trying to implement moves and not finishing them. I guess I'm starting to burn out a bit. I'm going to transition to something new for the rest of the day and step away from code (11:00 AM).
+
+### TODO
+
+~~- [ ] Redesign shadow attack idea to fit the theme better~~
+
+~~- [ ] Implement new attack~~
+
+~~- [ ] Go through excel spreadsheet(s) and pick out next move to dev~~
+
+~~- [ ] Prune some of the weaker move ideas~~
+
 ## 08/07/2025
 
 Still feeling a bit tired today. Hope I'm not coming down with anything. I'll try to focus up and be productive. Got a bit of a late start but I don't wanna push myself too hard and burn out this week.

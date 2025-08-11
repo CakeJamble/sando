@@ -23,12 +23,8 @@ function AICommand:start()
 
 	local targetConfirm = function(targetType, tIndex)
 		print(self.entity.entityName .. ' is ready to attack')
-
-		self.entity.target = self.entity.targets[targetType][tIndex]
-		self.skill = self.entity.skill
-		self.target = self.entity.target
 		self.waitingForTarget = false
-		local skillCommand = SkillCommand(self.entity, self.target, self.skill)
+		local skillCommand = SkillCommand(self.entity)
 		self.done = true
 		self:cleanupSignals()
 		self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)

@@ -51,10 +51,22 @@ end;
 function Enemy:setupOffense()
   local skillIndex = love.math.random(1, #self.skillPool)
   self.skill = self.skillPool[skillIndex]
+  local targetType = self.skill.targetType
+  local isSingleTarget = self.skill.isSingleTarget
+  self.target = self:targetSelect(targetType, isSingleTarget)
+end;
 
-  local tIndex = love.math.random(1, #self.targets.characters)
-  self.target = self.targets.characters[tIndex]
-  Signal.emit('TargetConfirm', 'characters', tIndex)
+function Enemy:targetSelect(targetType, isSingleTarget)
+  local target
+
+  if isSingleTarget then
+    local tIndex = love.math.random(1, #self.targets[targetType])
+    target = self.targets[targetType][tIndex]
+  else
+    target = self.targets[targetType]
+  end
+
+  return target
 end;
 
 function Enemy:knockOut()
