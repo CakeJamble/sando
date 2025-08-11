@@ -68,6 +68,7 @@ function combat:init()
   )
   Signal.register('OnHPChanged',
     function(amount, isDamage, hpIsTweened)
+      print(self.targetedCharacterIndex)
       local character = self.characterTeamHP[self.targetedCharacterIndex]
       local healthDropDuration = 0.5
       if hpIsTweened then
@@ -90,7 +91,6 @@ end;
 
 function combat:enter(previous)
   self.lockCamera = false
-  -- self.commandManager = CommandManager()
   self.characterTeam = loadCharacterTeam()
   self.rewardExp = 0
   self.rewardMoney = 0
@@ -104,21 +104,9 @@ function combat:enter(previous)
       totalHP = entity.baseStats.hp
     })
   end
-    -- self.characterTeamHP[i] = self.characterTeam.members[i].entityName .. ': ' .. curr .. ' / ' .. total
   
   self.enemyTeam = generateEncounter(self.floorNumber)
 
-  -- if TurnManager.isATB then
-  --   self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
-  --   Signal.emit('OnStartCombat')
-  --   Signal.emit('OnEnterScene')
-  -- else
-  --   Signal.emit('OnEnterScene')
-  --   Timer.after(Character.combatStartEnterDuration, function()
-  --     self.turnManager = TurnManager(self.characterTeam, self.enemyTeam)
-  --     Signal.emit('OnStartCombat')
-  --   end)
-  -- end
   -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
   self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
   Signal.emit('OnStartCombat')

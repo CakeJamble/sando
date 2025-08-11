@@ -10,8 +10,8 @@ All Skills should have the following attributes.
 
 1. `name`: `string`
 2. `damage`: `number`
-3. `isOffensive`: `bool` - True if this attack targets adversaries, false otherwise
-3. `targetType`: `string` - Whether this attacks a single target or multiple targets
+3. `targetType`: `string` - `characters`, `enemies`, or `any`
+3. `isSingleTarget`: `bool` - True if this skill targets a single entity, false otherwise
 3. `effects`: `array[string]` - List of effect(s) that can occur
 4. `chance`: `number` - Probability of the effect occurring. `chance` should be between 0 and 1. If it is not defined, it defaults to 0.
 5. `spritePath`: `string`

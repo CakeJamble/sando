@@ -41,7 +41,7 @@ function ActionUI:init(charRef, characterMembers, enemyMembers)
     ['characters'] = characterMembers,
     ['enemies'] = enemyMembers
   }
-  self.targetType = 'enemies'
+  self.targetType = 'any'
   self.tIndex = 1
   self.targetCursor = love.graphics.newImage(ActionUI.TARGET_CURSOR_PATH)
   self.buttonTweenDuration = 0.1 -- for delay after buttons set into place
@@ -189,7 +189,6 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           Signal.emit('PassTurn')
         elseif self.activeButton == self.soloButton then
           self.selectedSkill = self.activeButton.selectedSkill
-          -- self.uiState = 'targeting'
           self.backButton.isHidden = false
           Signal.emit('SkillSelected', self.selectedSkill)
         else
@@ -200,11 +199,8 @@ function ActionUI:gamepadpressed(joystick, button) --> void
       elseif self.uiState == 'submenuing' then
           self.activeButton:gamepadpressed(joystick, button)
       end
-    -- elseif self.uiState == 'submenuing' then
-    --   self.activeButton:gamepadpressed(joystick, button)
     elseif self.uiState == 'targeting' then
-      if self.selectedSkill.targetType == 'single' then
-        -- TODO : need to account for self targeting or team targets for heals/buffs in the future
+      if self.selectedSkill.isSingleTarget then
         if button == 'dpleft' then
           if self.tIndex == 1 then
             self.highlightBack = true
@@ -217,10 +213,10 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           if self.highlightBack then
             self.highlightBack = false
           else
-            self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
+            self.tIndex = math.min(#self.targets, self.tIndex + 1)
           end
         elseif button == 'dpdown' then
-          self.tIndex = math.min(#self.targets[self.targetType], self.tIndex + 1)
+          self.tIndex = math.min(#self.targets, self.tIndex + 1)
         elseif button == self.actionButton then 
           if self.highlightBack then
             Signal.emit('SkillDeselected')
@@ -250,7 +246,7 @@ function ActionUI:draw()
       if self.highlightBack then
         target = self.backButton
       else
-        target = self.targets[self.targetType][self.tIndex]
+        target = self.targets[self.tIndex]
       end
 
       love.graphics.draw(self.targetCursor, target.pos.x + ActionUI.X_OFFSET, target.pos.y + ActionUI.Y_OFFSET)

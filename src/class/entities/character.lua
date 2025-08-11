@@ -93,6 +93,27 @@ function Character:startTurn()
   -- )
 end
 
+function Character:setTargets(targets, targetType)
+  -- Entity.setTargets(self, targets[targetType])
+  -- self.actionUI.targets = {
+  --   ['characters'] = targets.characters,
+  --   ['enemies'] = targets.enemies
+  -- }
+
+  if targetType == 'any' then
+    Entity.setTargets(self, targets)
+    self.actionUI.targets = {
+      ['characters'] = targets.characters,
+      ['enemies'] = targets.enemies
+    }
+  else
+    self.targets = targets[targetType]
+    self.actionUI.targets = targets[targetType]
+    self.actionUI.targetType = targetType
+  end
+
+end;
+
 function Character:endTurn(duration, stagingPos, tweenType)
   Entity.endTurn(self, duration, stagingPos, tweenType)
   self.actionUI:unset()
@@ -152,13 +173,6 @@ end;
 function Character:cleanse()
   -- cleanse all curses
   -- play cleanse animation
-end;
-
-
-function Character:setTargets(characterMembers, enemyMembers)
-  print('setting targets for ', self.entityName)
-  Entity.setTargets(self, characterMembers, enemyMembers)
-  -- self.actionUI:setTargets(characterMembers, enemyMembers)
 end;
 
 --[[ Gains exp, leveling up when applicable

@@ -4,25 +4,21 @@ PlayerInputCommand = Class{__includes = Command}
 
 function PlayerInputCommand:init(entity, turnManager)
 	Command.init(self, entity)
-
-	-- local characterMembers = turnManager.characterTeam.members
-	-- local enemyMembers = turnManager.enemyTeam.members
-	-- entity:setTargets(characterMembers, enemyMembers)
 	self.target = entity.target
 	self.turnManager = turnManager
 	self.awaitingInput = true
 	self.waitingForTarget = false
 	self.skill = nil
-	-- self.signalHandlers = {}
 	self.isInterruptible = true
 end;
 
 function PlayerInputCommand:start()
-	local validTargets = self.turnManager:getValidTargets()
-	self.entity:setTargets(validTargets)
 	self.entity:startTurn()
 	local skillSelected = function(skill)
+		self.entity.skill = skill
 		self.skill = skill
+		local validTargets = self.turnManager:getValidTargets()
+		self.entity:setTargets(validTargets, skill.targetType)
 		self.awaitingInput = false
 		self.waitingForTarget = true
 		self.entity.actionUI.uiState = 'targeting'
@@ -30,11 +26,11 @@ function PlayerInputCommand:start()
 	self:registerSignal('SkillSelected', skillSelected)
 
 	local targetConfirm = function(targetType, tIndex)
-		self.entity.target = self.entity.targets[targetType][tIndex]
+		self.entity.target = self.entity.targets[tIndex]
 		self.entity.skill = self.skill
-		self.target = self.entity.targets[targetType][tIndex]
+		self.target = self.entity.targets[tIndex]
 		self.waitingForTarget = false
-		local skillCommand = SkillCommand(self.entity, self.target, self.skill, self.turnManager.qteManager)
+		local skillCommand = SkillCommand(self.entity, self.turnManager.qteManager)
 		self.done = true
 		self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)
 	end

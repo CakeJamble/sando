@@ -1,8 +1,8 @@
 {
 	"name": "Donut Man",
 	"damage": 0,
-	"isOffensive": false,
-	"targetType": "single",
+	"targetType": "characters",
+	"isSingleTarget": true,
 	"effects": ["heal"],
 	"chance": 1,
 	"cost": 0,

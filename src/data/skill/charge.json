@@ -1,5 +1,7 @@
 {
 	"name": "Charge",
+	"targetType": "characters",
+	"isSingleTarget": true,
 	"damage": 1,
 	"effects": ["damage"],
 	"chance": 1,
