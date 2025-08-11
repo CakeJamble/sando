@@ -4,7 +4,7 @@ local Collision = require('libs.collision')
 
 return function(ref, qteManager)
   local skill = ref.skill
-  local target = ref.target
+  local target = ref.targets[1]
   local goalX, goalY = target.hitbox.x + (target.hitbox.w / 2), target.hitbox.y + (target.hitbox.h / 3)
   local xMidPoint = ref.hitbox.x + (target.hitbox.w/ 2) - goalX
   if ref.hitbox.x > target.hitbox.x then

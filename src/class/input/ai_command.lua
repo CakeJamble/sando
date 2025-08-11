@@ -6,7 +6,7 @@ function AICommand:init(entity, turnManager)
 	-- local characterMembers = turnManager.characterTeam.members
 	-- local enemyMembers = turnManager.enemyTeam.members
 	-- entity:setTargets(characterMembers, enemyMembers)
-	self.target = entity.target
+	self.targets = entity.targets
 
 	self.turnManager = turnManager
 	self.awaitingInput = true
@@ -17,8 +17,6 @@ function AICommand:init(entity, turnManager)
 end;
 
 function AICommand:start()
-	local validTargets = self.turnManager:getValidTargets()
-	self.entity:setTargets(validTargets)
 	self.entity:startTurn()
 
 	local targetConfirm = function(targetType, tIndex)
@@ -32,7 +30,8 @@ function AICommand:start()
 	self:registerSignal('TargetConfirm', targetConfirm)
 
 	-- skill and target select
-	self.entity:setupOffense()
+	local validTargets = self.turnManager:getValidTargets()
+	self.entity:setupOffense(validTargets)
 end;
 
 function AICommand:update(dt)

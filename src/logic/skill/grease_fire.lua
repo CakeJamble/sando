@@ -5,7 +5,8 @@ local Collision = require('libs.collision')
 
 return function(ref, qteManager)
   local skill = ref.skill
-  local tPos = ref.target.hitbox
+  local target = ref.targets[1]
+  local tPos = target.hitbox
   local goalX, goalY = tPos.x + tPos.w / 2, tPos.y
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
@@ -26,8 +27,8 @@ return function(ref, qteManager)
       local t = (wok.pos.x - startX) / (goalX - startX)
       wok.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)
 
-      if not hasCollided and Collision.rectsOverlap(wok.hitbox, ref.target.hitbox) then
-        ref.target:takeDamage(damage)
+      if not hasCollided and Collision.rectsOverlap(wok.hitbox, target.hitbox) then
+        target:takeDamage(damage)
         hasCollided = true
         flux.to(wok.dims, 0.25, {r = 0}):ease('linear')
           :oncomplete(function() Signal.emit('DespawnProjectile') end)
