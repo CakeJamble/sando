@@ -348,6 +348,16 @@ function Entity:setAnimations(path)
   end
 end;
 
+function Entity:setSFX(path, baseSFXTypes)
+  local sfxList = {}
+  for i,sfx in ipairs(baseSFXTypes) do
+    local sfxPath = "asset/audio/entities/" .. path .. self.entityName .. "/" .. sfx .. ".wav"
+    local src = love.audio.newSource(sfxPath, "static")
+    sfxList[sfx] = src
+  end
+  return sfxList
+end;
+
 function Entity:populateFrames(image, duration)
   local animation = {}
   animation.spriteSheet = image

@@ -49,6 +49,9 @@ function Character:init(data, actionButton)
   self.experienceRequired = 15
   -- Entity.setAnimations(self, 'character/')
   self:setAnimations('character/')
+
+  local baseSFXTypes = {'jump'}
+  self.sfx = self:setSFX('character/', baseSFXTypes)
   Character.yPos = Character.yPos + Character.yOffset
   -- self.currentFP = stats.fp
   -- self.currentDP = stats.dp
@@ -323,6 +326,7 @@ function Character:beginJump()
           end)
       end)
   self.tweens['jump'] = jump
+  self.sfx.jump:play()
 end;
 
 function Character:recoil(additionalPenalty)
