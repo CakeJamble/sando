@@ -102,12 +102,12 @@ function Character:setTargets(targets, targetType)
 
   if targetType == 'any' then
     Entity.setTargets(self, targets)
-    self.actionUI.targets = {
+    self.actionUI.targetableEntities = {
       ['characters'] = targets.characters,
       ['enemies'] = targets.enemies
     }
   else
-    self.targets = targets[targetType]
+    self.targetableEntities = targets[targetType]
     self.actionUI.targets = targets[targetType]
     self.actionUI.targetType = targetType
   end

@@ -43,7 +43,8 @@ function Entity:init(data, x, y)
   self.currentFrame = 1
   self.isFocused = false
   self.targets = {}
-  self.target = nil
+  -- self.target = nil
+  self.targetableEntities = {}
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'idle'
@@ -137,6 +138,15 @@ function Entity:endTurn(duration, stagingPos, tweenType)
   end
 end;
 
+function Entity:setTargets(targets)
+  self.targets = {
+    ['characters'] = targets.characters,
+    ['enemies'] = targets.enemies
+  }
+  
+  print('targets set for ' .. self.entityName)
+end;
+
 function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   local delay = 0.5
   if stagingPos then
@@ -185,15 +195,6 @@ function Entity:stopTween(tag)
     self.tweens[tag]:stop()
     self.tweens[tag] = nil
   end
-end;
-
-function Entity:setTargets(targets)
-  self.targets = {
-    ['characters'] = targets.characters,
-    ['enemies'] = targets.enemies
-  }
-  
-  print('targets set for ' .. self.entityName)
 end;
 
 function Entity:resetDmgDisplay()

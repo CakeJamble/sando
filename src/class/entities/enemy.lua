@@ -25,6 +25,14 @@ function Enemy:init(data)
     end)
 end;
 
+function Enemy:setTargets(targets, targetType)
+  if targetType == 'any' then
+    Entity.setTargets(self, targets)
+  else
+    self.targetableEntities = targets[targetType]
+  end
+end;
+
 function Enemy:takeDamage(amount)
   Entity.takeDamage(self, amount)
 
@@ -48,25 +56,29 @@ function Enemy:setRewardsDistribution(rewardsDistribution)
   }
 end;
 
-function Enemy:setupOffense()
+function Enemy:setupOffense(validTargets)
   local skillIndex = love.math.random(1, #self.skillPool)
   self.skill = self.skillPool[skillIndex]
   local targetType = self.skill.targetType
   local isSingleTarget = self.skill.isSingleTarget
-  self.target = self:targetSelect(targetType, isSingleTarget)
+  self:setTargets(validTargets, targetType)
+  self.targets = self:targetSelect(targetType, isSingleTarget)
+  Signal.emit('TargetConfirm')
 end;
 
 function Enemy:targetSelect(targetType, isSingleTarget)
-  local target
+  local targets = {}
 
   if isSingleTarget then
-    local tIndex = love.math.random(1, #self.targets[targetType])
-    target = self.targets[targetType][tIndex]
+    local tIndex = love.math.random(1, #self.targetableEntities)
+    table.insert(targets, self.targetableEntities[tIndex])
   else
-    target = self.targets[targetType]
+    for i,entity in ipairs(self.targetableEntities) do
+      table.insert(targets, entity)
+    end
   end
 
-  return target
+  return targets
 end;
 
 function Enemy:knockOut()

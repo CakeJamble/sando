@@ -4,7 +4,7 @@ PlayerInputCommand = Class{__includes = Command}
 
 function PlayerInputCommand:init(entity, turnManager)
 	Command.init(self, entity)
-	self.target = entity.target
+	self.targets = entity.targets
 	self.turnManager = turnManager
 	self.awaitingInput = true
 	self.waitingForTarget = false
@@ -26,9 +26,18 @@ function PlayerInputCommand:start()
 	self:registerSignal('SkillSelected', skillSelected)
 
 	local targetConfirm = function(targetType, tIndex)
-		self.entity.target = self.entity.targets[tIndex]
-		self.entity.skill = self.skill
-		self.target = self.entity.targets[tIndex]
+		-- self.entity.target = self.entity.targets[tIndex]
+
+		if self.skill.isSingleTarget then
+			table.insert(self.entity.targets, self.entity.targetableEntities[tIndex])
+			table.insert(self.targets, self.entity.targetableEntities[tIndex])
+		else
+			for i,entity in ipairs(self.entity.targetableEntities) do
+				table.insert(self.entity.targets, entity)
+			end
+			self.targets = self.entity.targets
+		end
+
 		self.waitingForTarget = false
 		local skillCommand = SkillCommand(self.entity, self.turnManager.qteManager)
 		self.done = true

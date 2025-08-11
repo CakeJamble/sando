@@ -4,12 +4,13 @@ local Collision = require('libs.collision')
 
 return function(ref, qteManager)
   local skill = ref.skill
+  local target = ref.targets[1]
   local xOffset = 40
-  local yOffset = ref.hitbox.h - ref.target.hitbox.h
-  if ref.hitbox.h < ref.target.hitbox.h then
+  local yOffset = ref.hitbox.h - target.hitbox.h
+  if ref.hitbox.h < target.hitbox.h then
     yOffset = -1 * yOffset
   end
-  local tPos = ref.target.hitbox
+  local tPos = target.hitbox
   local goalX, goalY = tPos.x + xOffset, tPos.y - yOffset
   local spaceFromTarget = calcSpacingFromTarget(skill.stagingType, ref.type)
   local stagingPos = {
@@ -39,8 +40,8 @@ return function(ref, qteManager)
         :onupdate(
           -- check collision
           function()
-            if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
-              ref.target:takeDamage(damage)
+            if not hasCollided and Collision.rectsOverlap(ref.hitbox, target.hitbox) then
+              target:takeDamage(damage)
               hasCollided = true
             end
           end)

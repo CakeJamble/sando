@@ -4,14 +4,15 @@ local Collision = require('libs.collision')
 
 return function(ref)
 	local skill = ref.skill
+  local target = ref.targets[1]
 
-  local yOffset = ref.hitbox.h - ref.target.hitbox.h
-  if ref.hitbox.h < ref.target.hitbox.h then
+  local yOffset = ref.hitbox.h - target.hitbox.h
+  if ref.hitbox.h < target.hitbox.h then
     yOffset = -1 * yOffset
   end
 
   local xOffset = 50
-  local tPos = ref.target.hitbox
+  local tPos = target.hitbox
   local goalX, goalY = tPos.x - xOffset, tPos.y + yOffset
 
   local hasCollided = false
@@ -38,19 +39,19 @@ return function(ref)
             local attack = flux.to(ref.pos, skill.duration, {x = goalX, y = goalY})
               :ease(skill.beginTweenType)
               :onupdate(function()
-                if not hasCollided and Collision.rectsOverlap(ref.hitbox, ref.target.hitbox) then
+                if not hasCollided and Collision.rectsOverlap(ref.hitbox, target.hitbox) then
                   hasCollided = true  
                   -- check counter-attack
-                  if Collision.isOverhead(ref.hitbox, ref.target.hitbox) then
-                    ref:takeDamage(ref.target.battleStats['attack'])
-                    ref.target:stopTween('jump')
+                  if Collision.isOverhead(ref.hitbox, target.hitbox) then
+                    ref:takeDamage(target.battleStats['attack'])
+                    target:stopTween('jump')
                     ref:attackInterrupt()
-                    ref.target:beginJump()
+                    target:beginJump()
                   else
-                    ref.target:takeDamage(damage)
+                    target:takeDamage(damage)
                     print('collision')
-                    if ref.target.isJumping then
-                      ref.target:interruptJump()
+                    if target.isJumping then
+                      target:interruptJump()
                     end
                   end
                 end
