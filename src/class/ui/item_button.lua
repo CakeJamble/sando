@@ -91,31 +91,31 @@ function ItemButton:itemListToStr()
 end;
 
 function ItemButton:setItemPreview()
-    self.itemPreview = self.list[self.itemIndex].description
+    self.itemPreview = self.list[self.index].description
 end;
 
 function ItemButton:gamepadpressed(joystick, button)
 ----------------------- Action Selection -------------------------
   if button == 'dpdown' then
-    self.itemIndex = (self.itemIndex % #self.listMenu) + 1
+    self.index = (self.index % #self.listMenu) + 1
   elseif button == 'dpup' then
-    if self.itemIndex <= 1 then
-      self.itemIndex = #self.listMenu
+    if self.index <= 1 then
+      self.index = #self.listMenu
     else
-      self.itemIndex = self.itemIndex - 1
+      self.index = self.index - 1
     end
   elseif button == self.actionButton then
     if not self.displayList then
       self.displayList = true
     else
-      self.selectedItem = self.list[self.itemIndex]
+      self.selectedItem = self.list[self.index]
       Signal.emit('ItemSelected', self.selectedItem)
     end
 ----------------------- Action Cancels -------------------------
   elseif button == 'dpleft' or button == 'dpright' then -- close item select menu
     self.displayList = false
     Signal.emit('ItemDeselected')
-    self.itemIndex = 1
+    self.index = 1
   end
 end;
 

@@ -32,6 +32,7 @@ function ActionUI:init(charRef, characterMembers, enemyMembers)
 
   self.skillList = nil
   self.selectedSkill = nil
+  self.selectedItem = nil
   self.soloButton = nil
   self.flourButton = nil
   self.duoButton = nil
@@ -144,6 +145,8 @@ function ActionUI:unset()
   self.landingPositions = nil
   self.isFocused = false
   self.active = false
+  self.selectedSkill = nil
+  self.selectedItem = nil
 end;
 
 function ActionUI:deactivate()
@@ -191,9 +194,17 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.selectedSkill = self.activeButton.selectedSkill
           self.backButton.isHidden = false
           Signal.emit('SkillSelected', self.selectedSkill)
-        else
+
+--! FIXME after refactoring inheritence of buttons that have nested menus!!!
+        elseif self.activeButton == self.flourButton then
           self.uiState = 'submenuing'
           self.selectedSkill = self.activeButton.list[self.activeButton.skillIndex]
+          self.activeButton:gamepadpressed(joystick, button)
+        elseif self.activeButton == self.itemButton then
+          self.uiState = 'submenuing'
+          self.selectedItem = self.activeButton.list[self.activeButton.itemIndex]
+          self.activeButton:gamepadpressed(joystick, button)
+        else
           self.activeButton:gamepadpressed(joystick, button)
         end
       elseif self.uiState == 'submenuing' then
