@@ -7,19 +7,19 @@ function SubMenuButton:init(pos, index, path, actionButton, actionList)
 	self.displayList = false
 	self.numItemsInPreview = 5
 	self.listOptions = self:populateList()
-	self.listUI = self:populatePreviews
+	self.listUI = self:populatePreviews()
 	self.previewPos = {
 		x = self.listOptions.container.x,
 		y = self.listOptions.container.y
 	}
-	self.previewOffset = self.listOptions.container.height / 2
+	self.previewOffset = self.listOptions.container.height / self.numItemsInPreview
 	self.listIndex = 1
 	self.selectedAction = nil
 end;
 
 function SubMenuButton:populateList()
   local result = {container = {}, separator = {}}
-  -- Specify dimensions (mode, x, y, width, height)
+
   result.container = {
     mode = 'fill',
     x = self.pos.x + 150,
@@ -93,24 +93,24 @@ end;
 function SubMenuButton:gamepadpressed(joystick, button)
 ----------------------- Action Selection -------------------------
   if button == 'dpdown' then
-    self.index = (self.index % #self.listMenu) + 1
+    self.listIndex = (self.listIndex % #self.listUI) + 1
   elseif button == 'dpup' then
-    if self.index <= 1 then
-      self.index = #self.listMenu
+    if self.listIndex <= 1 then
+      self.listIndex = #self.listUI
     else
-      self.index = self.index - 1
+      self.listIndex = self.listIndex - 1
     end
   elseif button == self.actionButton then
     if not self.displayList then
       self.displayList = true
     else
       self.selectedAction = self.actionList[self.listIndex]
-      Signal.emit('ItemSelected', self.selectedItem)
     end
 ----------------------- Action Cancels -------------------------
   elseif button == 'dpleft' or button == 'dpright' then -- close item select menu
     self.displayList = false
-    self.index = 1
+    self.selectedAction = nil
+    self.listIndex = 1
   end
 end;
 
@@ -121,7 +121,7 @@ function SubMenuButton:draw()
 		self:drawElems()
 
     love.graphics.setColor(0,0,1)
-    love.graphics.rectangle('line', self.previewPos.x, self.previewPos.y + ((self.itemIndex - 1) * self.itemTableOptions.container.height), 100, 25)
+    love.graphics.rectangle('line', self.previewPos.x, self.previewPos.y + ((self.listIndex - 1) * (self.listOptions.container.height / self.numItemsInPreview)), 100, 25)
     love.graphics.setColor(1, 1, 1)
   end
 end;

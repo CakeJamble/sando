@@ -198,11 +198,11 @@ function ActionUI:gamepadpressed(joystick, button) --> void
 --! FIXME after refactoring inheritence of buttons that have nested menus!!!
         elseif self.activeButton == self.flourButton then
           self.uiState = 'submenuing'
-          self.selectedSkill = self.activeButton.list[self.activeButton.skillIndex]
+          self.selectedSkill = self.activeButton.actionList[self.activeButton.listIndex]
           self.activeButton:gamepadpressed(joystick, button)
         elseif self.activeButton == self.itemButton then
           self.uiState = 'submenuing'
-          self.selectedItem = self.activeButton.list[self.activeButton.itemIndex]
+          self.selectedItem = self.activeButton.actionList[self.activeButton.listIndex]
           self.activeButton:gamepadpressed(joystick, button)
         else
           self.activeButton:gamepadpressed(joystick, button)
