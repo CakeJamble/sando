@@ -89,7 +89,7 @@ function PlayerInputCommand:start()
 	local deselectSkill = function()
 		self.turnManager.qteManager:reset()
 		self.commandKey = ''
-		self.skill = nil
+		self.action = nil
 	end
 	self:registerSignal('SkillDeselected', deselectSkill)
 

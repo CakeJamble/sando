@@ -27,7 +27,8 @@ Character = Class{__includes = Entity,
   guardActiveDur = 0.25,
   guardCooldownDur = 0.75,
   jumpDur = 0.5,
-  landingLag = 0.25
+  landingLag = 0.25,
+  inventory = nil
 }
 
 -- Character constructor

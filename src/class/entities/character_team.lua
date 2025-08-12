@@ -2,6 +2,10 @@
 require('class.entities.team')
 require('class.item.inventory')
 require('class.entities.character')
+require('class.ui.action_ui')
+
+local loadItem = require 'util.item_loader'
+local espresso = loadItem('espresso')
 
 Class = require 'libs.hump.class'
 CharacterTeam = Class{__includes = Team}
@@ -9,7 +13,10 @@ CharacterTeam = Class{__includes = Team}
 function CharacterTeam:init(characters)
     Team.init(self, characters)
     self.inventory = Inventory(self.members)
+    self.inventory:addConsumable(espresso)
     self.koCharacters = {}
+    Character.inventory = self.inventory
+    ActionUI.consumables = self.inventory.consumables
 end;
 
 function CharacterTeam:distributeExperience(amount)

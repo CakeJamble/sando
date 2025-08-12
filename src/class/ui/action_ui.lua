@@ -69,7 +69,7 @@ function ActionUI:set(charRef)
   self.soloButton = SoloButton(self.landingPositions[1], 1, charRef.basic)
   self.flourButton = FlourButton(self.landingPositions[2], 2, charRef.currentSkills, self.actionButton)
   self.duoButton = DuoButton(self.landingPositions[3], 3, self.skillList)
-  self.itemButton = ItemButton(self.landingPositions[4], 4, {})
+  self.itemButton = ItemButton(self.landingPositions[4], 4, ActionUI.consumables)
 
   self.passButton = PassButton(self.landingPositions[5], 5, charRef.basic)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton, self.itemButton, self.passButton}
@@ -183,7 +183,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         sortLayers(self.buttons)
         self:tweenButtons()
 
------------------------ Skill Selection -------------------------
+----------------------- Action Selection -------------------------
       elseif button == self.actionButton then
         if self.activeButton == self.passButton then
           Signal.emit('PassTurn')
@@ -193,7 +193,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           Signal.emit('SkillSelected', self.selectedSkill)
         else
           self.uiState = 'submenuing'
-          self.selectedSkill = self.activeButton.skillList[self.activeButton.skillIndex]
+          self.selectedSkill = self.activeButton.list[self.activeButton.skillIndex]
           self.activeButton:gamepadpressed(joystick, button)
         end
       elseif self.uiState == 'submenuing' then

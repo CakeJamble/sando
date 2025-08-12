@@ -5,7 +5,7 @@ FlourButton = Class{__includes = Button}
 
 function FlourButton:init(pos, index, skillList, actionButton)
   Button.init(self, pos, index, 'flour.png')
-  self.skillList = skillList
+  self.list = skillList
   self.skillIndex = 1
   self.actionButton = actionButton
   -- self.skillListHolder = love.graphics.newImage(path/to/image)
@@ -40,7 +40,7 @@ function FlourButton:populateFlourSkills()
   local textSpacing = result.container.height / self.numSkillsInPreview
   local x, y = result.container.x, result.container.y
   local width, height = result.container.width, result.container.height
-  for i=1,#self.skillList do
+  for i=1,#self.list do
     table.insert(result.separator, {
     x1 = x, y1 = y + textSpacing * i,
     x2 = x + width, y2 = y + textSpacing * i
@@ -52,11 +52,11 @@ end;
 function FlourButton:populateSkillPreviews()
   local result = {}
   local preview = {}
-  for i=1,#self.skillList do
-    preview.name = self.skillList[i].name
-    preview.cost = self.skillList[i].cost
-    preview.description = self.skillList[i].description
-    preview.targetType = self.skillList[i].targetType
+  for i=1,#self.list do
+    preview.name = self.list[i].name
+    preview.cost = self.list[i].cost
+    preview.description = self.list[i].description
+    preview.targetType = self.list[i].targetType
 
     table.insert(result, preview)
     preview = {}
@@ -89,19 +89,19 @@ end;
 
 function FlourButton:skillListToStr()
   local result = ''
-  for i=1,#self.skillList do
-    result = result .. self.skillList[i].skill['skill_name'] .. self.skillList[i].skill['cost'] .. '\n'
+  for i=1,#self.list do
+    result = result .. self.list[i].skill['skill_name'] .. self.list[i].skill['cost'] .. '\n'
   end
   return result
 end;
 
 function FlourButton:setSkillPreview()
-  self.skillPreview = self.skillList[self.skillIndex].description
+  self.skillPreview = self.list[self.skillIndex].description
 end;
 
 function FlourButton:validateSkillCosts(currentFP)
-  for i=1,#self.skillList do
-    self.pickableSkillIndices[i] = (self.skillList[i].cost < currentFP)
+  for i=1,#self.list do
+    self.pickableSkillIndices[i] = (self.list[i].cost < currentFP)
   end
 end;
 
@@ -119,7 +119,7 @@ function FlourButton:keypressed(key)
 end;
 
 function FlourButton:gamepadpressed(joystick, button)
------------------------ Skill Selection -------------------------
+----------------------- Action Selection -------------------------
   if button == 'dpdown' then
     self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
   elseif button == 'dpup' then
@@ -132,11 +132,11 @@ function FlourButton:gamepadpressed(joystick, button)
     if not self.displaySkillList then
       self.displaySkillList = true
     else
-      self.selectedSkill = self.skillList[self.skillIndex]
+      self.selectedSkill = self.list[self.skillIndex]
       Signal.emit('SkillSelected', self.selectedSkill)
     end
 
------------------------ Skill Cancels -------------------------
+----------------------- Action Cancels -------------------------
   elseif button == 'dpleft' or button == 'dpright' then -- close skill select menu
     self.displaySkillList = false
     Signal.emit('SkillDeselected')

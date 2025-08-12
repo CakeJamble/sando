@@ -5,7 +5,7 @@ ItemButton = Class{__includes = Button}
 
 function ItemButton:init(pos, index, itemList)
     Button.init(self, pos, index, 'item.png')
-    self.itemList = itemList
+    self.list = itemList
     self.displayList = false
     self.description = 'Use an item to gain an advantage'
     self.itemTableOptions = self:populateItemList()
@@ -15,6 +15,7 @@ function ItemButton:init(pos, index, itemList)
         y = self.itemTableOptions.container.y
     }
     self.previewOffset = self.itemTableOptions.container.height / 2 --centered
+    self.itemIndex = 1
 end;
 
 function ItemButton:populateItemList()
@@ -32,7 +33,7 @@ function ItemButton:populateItemList()
   local textSpacing = result.container.height / 10
   local x, y = result.container.x, result.container.y
   local width, height = result.container.width, result.container.height
-  for i, item in ipairs(self.itemList) do
+  for i, item in ipairs(self.list) do
     table.insert(result.separator, {
     x1 = x, y1 = y + textSpacing * i,
     x2 = x + width, y2 = y + textSpacing * i
@@ -44,7 +45,7 @@ end;
 function ItemButton:populatePreviews()
   local result = {}
   local preview = {}
-  for i, item in ipairs(self.itemList) do
+  for i, item in ipairs(self.list) do
     preview.name = item.name
     preview.description = item.description
     preview.targetType = item.targetType
@@ -80,14 +81,39 @@ end;
 
 function ItemButton:itemListToStr()
   local result = ''
-  for i, item in ipairs(self.itemList) do
+  for i, item in ipairs(self.list) do
     result = result .. item.name .. '\n'
   end
   return result
 end;
 
 function ItemButton:setItemPreview()
-    self.itemPreview = self.itemList[self.itemIndex].description
+    self.itemPreview = self.list[self.itemIndex].description
+end;
+
+function ItemButton:gamepadpressed(joystick, button)
+----------------------- Action Selection -------------------------
+  if button == 'dpdown' then
+    self.itemIndex = (self.itemIndex % #self.listMenu) + 1
+  elseif button == 'dpup' then
+    if self.itemIndex <= 1 then
+      self.itemIndex = #self.listMenu
+    else
+      self.itemIndex = self.itemIndex - 1
+    end
+  elseif button == self.actionButton then
+    if not self.displayList then
+      self.displayList = true
+    else
+      self.selectedItem = self.list[self.itemIndex]
+      Signal.emit('ItemSelected', self.selectedItem)
+    end
+----------------------- Action Cancels -------------------------
+  elseif button == 'dpleft' or button == 'dpright' then -- close item select menu
+    self.displayList = false
+    Signal.emit('ItemDeselected')
+    self.itemIndex = 1
+  end
 end;
 
 function ItemButton:draw()
