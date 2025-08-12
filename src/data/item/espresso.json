@@ -1,0 +1,7 @@
+{
+	"name": "Espresso",
+	"itemType": "support",
+	"effects": ["heal"],
+	"amount": 10,
+	"duration": 3
+}
