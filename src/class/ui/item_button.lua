@@ -3,19 +3,22 @@ Class = require('libs.hump.class')
 
 ItemButton = Class{__includes = Button}
 
-function ItemButton:init(pos, index, itemList)
-    Button.init(self, pos, index, 'item.png')
-    self.list = itemList
-    self.displayList = false
-    self.description = 'Use an item to gain an advantage'
-    self.itemTableOptions = self:populateItemList()
-    self.listMenu = self:populatePreviews()
-    self.previewPos = {
-        x = self.itemTableOptions.container.x, 
-        y = self.itemTableOptions.container.y
-    }
-    self.previewOffset = self.itemTableOptions.container.height / 2 --centered
-    self.itemIndex = 1
+function ItemButton:init(pos, index, itemList, actionButton)
+  Button.init(self, pos, index, 'item.png')
+  self.actionButton = actionButton
+  self.list = itemList
+  self.displayList = false
+  self.description = 'Use an item to gain an advantage'
+  self.numItemsInPreview = 5
+  self.itemTableOptions = self:populateItemList()
+  self.listMenu = self:populatePreviews()
+  self.previewPos = {
+      x = self.itemTableOptions.container.x, 
+      y = self.itemTableOptions.container.y
+  }
+  self.previewOffset = self.itemTableOptions.container.height / 2 --centered
+  self.itemIndex = 1
+  self.selectedItem = nil
 end;
 
 function ItemButton:populateItemList()
@@ -30,7 +33,7 @@ function ItemButton:populateItemList()
   }
 
   -- Create separators (lines or images)
-  local textSpacing = result.container.height / 10
+  local textSpacing = result.container.height / self.numItemsInPreview
   local x, y = result.container.x, result.container.y
   local width, height = result.container.width, result.container.height
   for i, item in ipairs(self.list) do

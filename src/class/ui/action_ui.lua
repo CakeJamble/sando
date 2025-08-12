@@ -69,7 +69,7 @@ function ActionUI:set(charRef)
   self.soloButton = SoloButton(self.landingPositions[1], 1, charRef.basic)
   self.flourButton = FlourButton(self.landingPositions[2], 2, charRef.currentSkills, self.actionButton)
   self.duoButton = DuoButton(self.landingPositions[3], 3, self.skillList)
-  self.itemButton = ItemButton(self.landingPositions[4], 4, ActionUI.consumables)
+  self.itemButton = ItemButton(self.landingPositions[4], 4, ActionUI.consumables, self.actionButton)
 
   self.passButton = PassButton(self.landingPositions[5], 5, charRef.basic)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton, self.itemButton, self.passButton}
