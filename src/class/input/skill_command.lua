@@ -3,10 +3,6 @@ SkillCommand = Class{__includes = Command}
 
 function SkillCommand:init(entity, qteManager)
   Command.init(self, entity)
-  self.actor = entity
-
-  -- self.target = entity.target
-  -- self.skill = entity.skill
   self.qteManager = qteManager
 
   self.done = false
@@ -17,12 +13,12 @@ end
 
 function SkillCommand:start(turnManager)
   local qteResolve = function(isSuccess)
-    self.actor.skill.isSuccess = isSuccess
+    self.entity.skill.isSuccess = isSuccess
   end
   self:registerSignal('OnQTEResolved', qteResolve)
 
   local projectileMade = function(projectile)
-    table.insert(entity.projectiles)
+    table.insert(entity.projectiles, projectile)
   end
   local despawnProjectile = function(index)
     local i = index or 1
