@@ -65,6 +65,13 @@ function PlayerInputCommand:start()
 	end
 	self:registerSignal('ItemSelected', itemSelected)
 
+	local itemDeselected = function()
+		self.turnManager.qteManager:reset()
+		self.commandKey = ''
+		self.action = nil
+	end
+	self:registerSignal('ItemDeselected', itemDeselected)
+
 	local targetConfirm = function(targetType, tIndex)
 		if self.action.isSingleTarget then
 			table.insert(self.entity.targets, self.entity.targetableEntities[tIndex])
