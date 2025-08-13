@@ -32,6 +32,7 @@ function ActionUI:init(charRef, characterMembers, enemyMembers)
 
   self.skillList = nil
   self.selectedSkill = nil
+  self.selectedItem = nil
   self.soloButton = nil
   self.flourButton = nil
   self.duoButton = nil
@@ -69,7 +70,7 @@ function ActionUI:set(charRef)
   self.soloButton = SoloButton(self.landingPositions[1], 1, charRef.basic)
   self.flourButton = FlourButton(self.landingPositions[2], 2, charRef.currentSkills, self.actionButton)
   self.duoButton = DuoButton(self.landingPositions[3], 3, self.skillList)
-  self.itemButton = ItemButton(self.landingPositions[4], 4, {})
+  self.itemButton = ItemButton(self.landingPositions[4], 4, ActionUI.consumables, self.actionButton)
 
   self.passButton = PassButton(self.landingPositions[5], 5, charRef.basic)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton, self.itemButton, self.passButton}
@@ -144,6 +145,8 @@ function ActionUI:unset()
   self.landingPositions = nil
   self.isFocused = false
   self.active = false
+  self.selectedSkill = nil
+  self.selectedItem = nil
 end;
 
 function ActionUI:deactivate()
@@ -183,7 +186,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         sortLayers(self.buttons)
         self:tweenButtons()
 
------------------------ Skill Selection -------------------------
+----------------------- Action Selection -------------------------
       elseif button == self.actionButton then
         if self.activeButton == self.passButton then
           Signal.emit('PassTurn')
@@ -191,11 +194,20 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.selectedSkill = self.activeButton.selectedSkill
           self.backButton.isHidden = false
           Signal.emit('SkillSelected', self.selectedSkill)
-        else
+
+--! FIXME after refactoring inheritence of buttons that have nested menus!!!
+        elseif self.activeButton == self.flourButton or self.activeButton == self.itemButton then
           self.uiState = 'submenuing'
-          self.selectedSkill = self.activeButton.skillList[self.activeButton.skillIndex]
+          self.selectedSkill = self.activeButton.actionList[self.activeButton.listIndex]
           self.activeButton:gamepadpressed(joystick, button)
         end
+        -- elseif self.activeButton == self.itemButton then
+        --   self.uiState = 'submenuing'
+        --   self.selectedItem = self.activeButton.actionList[self.activeButton.listIndex]
+        --   self.activeButton:gamepadpressed(joystick, button)
+        -- else
+        --   self.activeButton:gamepadpressed(joystick, button)
+        -- end
       elseif self.uiState == 'submenuing' then
           self.activeButton:gamepadpressed(joystick, button)
       end

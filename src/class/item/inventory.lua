@@ -18,9 +18,9 @@ Inventory = Class{
 }
 
 function Inventory:init(team)
-    self.gears = {} -- Gear Manager? Equipment & Accessories?
+    self.gears = {}
     self.toolManager = ToolManager(team)
-    self.consumables = {} -- Consumables Manager?
+    self.consumables = {}
     self.numConsumableSlots = 3
     self.numEquipSlots = 2
     self.numAccessories = 2
@@ -38,32 +38,6 @@ function Inventory:init(team)
     self.textXStart = 60
     self.textOffset = 170
     self.cabinetRotate = math.pi/2
-    -- local textXStart = 60
-    -- local textOffset = 170
-    -- local cabinetRotate = math.pi/2
-    -- self.menuComponents = {
-    --     team = {text = 'Team',
-    --             x = self.window.x + textXStart,
-    --             y = 50,
-    --             r = cabinetRotate,
-    --             sx = 3,
-    --             sy = 4
-    --     },
-    --     tool = {text = 'Tools',
-    --             x = self.window.x + textXStart + (2 * textOffset),
-    --             y = 50,
-    --             r = cabinetRotate,
-    --             sx = 3,
-    --             sy = 4
-    --     },
-    --     settings = {text = 'Settings',
-    --                 x = self.window.x + textXStart + (3 * textOffset),
-    --                 y = 50,
-    --                 r = cabinetRotate,cabinetRotate,
-    --                 sx = 3,
-    --                 sy = 4
-    --     }
-    -- }
 end
 
 --[[ Equips a piece of equipment to a character's equip slot.
@@ -74,6 +48,22 @@ function Inventory:equip(character, equipSlot, equipment) --> Gear or nil
     local replacedEquip = character.equips[equipSlot]
     character.equips[equipSlot] = equipment
     return replacedEquip
+end;
+
+function Inventory:addConsumable(item)
+    if #self.consumables >= self.numConsumableSlots then
+        return false
+    else
+        table.insert(self.consumables, item)
+        return true
+    end
+end;
+
+function Inventory:popConsumable(index)
+    if #self.consumables == 0 then
+        error('cannot pop off empty table')
+    end
+    return table.remove(self.consumables, index)    
 end;
 
 function Inventory:addTool(tool)
