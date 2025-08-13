@@ -2,20 +2,19 @@
 
 Save the bakery! Recruit team members and level-up in this active turn-based combat RPG as you run the gauntlet of enemies and bosses!
 
-## 🔗 Quick Links (For Potential Employers & Collaborators)
+## 🔗 Quick Links
 
-- [Design Document - Email for Permission to View](https://docs.google.com/document/d/1nEuiEjtqEy8lEPdqv0Vll76njOY-9loD1x_p4BfTgoM/edit?usp=sharing)
-- [Itch.io Store Page - Currently under development, access with 'MadeWithLOVE'](https://cakejamble.itch.io/sando)
-- [See my design process on Figma](https://www.figma.com/files/team/1365416823601159568/project/246899128/Sando-?fuid=1365416821386778796)
-- [Progress Tracking on Trello](https://trello.com/b/HwgkOIyj/sando)
+Now that Sando is in an intense development period, the game is gettings several updates day-to-day. For this reason, previously available quick links have been removed until Sando lands in a spot where I feel comfortable sharing my progress. If you would like to see my work process, I've begun a Dev Log series on my Wordpress where I try to organize the development process into more digestible chunks of milestones. I'll add back other links later!
+
+- [Dev Logs - CakeJamble Wordpress](https://cakejamble.wordpress.com/)
 
 ## ✅ Repository Structure
 
-The source code for the game can be found in its entirety in `src`. Use your preferred build method to launch in LOVE. Test script files are hosted in a private repository. If you have a strong reason for wanting to view these files, reach me at the email listed in the inquiries section at the bottom of this page.
+The source code for the game can be found in its entirety in `src`. Use your preferred build method to launch in LOVE.
 
 ### 🎨 `asset`
 
-Contains sprite sheets and documentation.
+Animations, SFX, music, backgrounds, and documentation.
 
 ### 🖥️ `class`
 
@@ -34,8 +33,13 @@ Contains the source code for the different gamestates in the game. Uses `hump.ga
 
 ### 📖 `libs`
 
-Contains the libraries used for the game's implementation. Expect many more libraries and credits to come as development gains momentum!
+Contains the libraries used for the game's implementation.
+
 - [hump](https://hump.readthedocs.io/en/latest/)
+- [flux](https://github.com/rxi/flux)
+- [cimgui-love](https://codeberg.org/apicici/cimgui-love)
+- [json.lua](https://github.com/rxi/json.lua)
+- [push](https://github.com/Ulydev/push)
 
 ### 🛠️ `util`
 
@@ -46,10 +50,14 @@ Contains helper functions and globals for the game.
 ### 🧪 Features
 
 - [ ] Roguelike loop
-- [ ] Active Turn-Based Combat System with Quick-Time-Events, inspired by Mario RPG series (SNES, N64, GBA, GC, Switch)
+- [x] Reactive Combat System with Quick-Time-Events, inspired by Mario RPG series (SNES, N64, GBA, GC, Switch)
+- [x] Modular Turn Scheduling system, allowing custom swapping between different turn-based battle architectures (Standard, ATB, CTB)
+- [ ] Modular Entity engagement system, allowing custom swapping between different combat formats (3v3, Bench-Swap System)
+- [x] Data-Oriented Design Architecture enabling designers to write a JSON file & an associated Lua script for a skill/item action, and the game engine will handle the rest
 - [ ] Unlockable Characters
 - [ ] Events
-- [ ] Shops for progression during runs & metaprogression over a save file
+- [ ] Shops
+- [ ] Meta-progression system across runs
 - [ ] Input-Assist Mode
 - [ ] More more more but I will have to trickle that out after some testable alpha is done.
 
@@ -59,7 +67,17 @@ TBD - Store pages have been acquired for itch.io & Steam, but will remain unpubl
 
 ### 📢 Publication
 
-Targeting a release window for a Vertical Slice Demo of the game's core roguelike loop in Q3/Q4 2025.
+Targeting a release window for a Vertical Slice Demo of the game's core roguelike loop in Late 2025.
+
+## 💁 Tools & External Resources
+
+- [HotPartciles](https://github.com/ReFreezed/HotParticles)
+- [Magical 8Bit Plug](https://ymck.net/app/magical-8bit-plug-en)
+- [Bfxr](https://www.bfxr.net/)
+- [Figma](https://www.figma.com/)
+- [Sublime Text](https://www.sublimetext.com/)
+- [Sublime Merge](https://www.sublimemerge.com/)
+
 
 ## 📫 Inquiries
 
@@ -67,4 +85,4 @@ Direct all inquiries regarding to the development of this product to the email o
 
 ## ⚠️ Disclaimer
 
-I provide no support for learning from this repository. Despite the code being publicly available, this is NOT an open-source software. At any time, especially as development kicks into full-swing following my graduation from university, I reserve the right to change the visibility of this repository without any notice or reason.
+I provide no support for code taken from this repository. Despite the code being publicly available, this is NOT an open-source software. I may respond to emails that ask for support or suggest improvements, but I cannot promise I will respond promptly or consistently at this time. I reserve the right to change the visibility of this repository without any notice or reason.
