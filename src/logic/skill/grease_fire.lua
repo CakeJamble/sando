@@ -21,8 +21,6 @@ return function(ref, qteManager)
   local cam = flux.to(camera, skill.duration, {x = goalX}):ease('quadout')
   local attack = flux.to(wok.pos, skill.duration, {x = goalX}):ease(skill.beginTweenType)
     :onupdate(function()
-      wok:update()
-
       -- over duration, tween y in a parabola towards target
       local t = (wok.pos.x - startX) / (goalX - startX)
       wok.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)

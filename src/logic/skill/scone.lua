@@ -22,8 +22,6 @@ return function(ref, qteManager)
     -- Tween the scone projectile through the target
     local attack = flux.to(scone.pos, sconeFlyingTime, {x = goalX}):ease(skill.beginTweenType)
       :onupdate(function()
-        scone:update()
-
       -- over duration, tween y in a parabola towards target
       local t = (scone.pos.x - startX) / (goalX - startX)
       scone.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)

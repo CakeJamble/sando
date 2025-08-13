@@ -41,21 +41,17 @@ return function(ref, qteManager)
     end
   end
 
-  local onUpdate = function()
-    checkCollision()
-  end
-
 -- Tweening for 2 Targets + Rebound onto ref
   local goalX, goalY = goalPos[1].x, goalPos[1].y
   local attack = flux.to(flame.pos, flameTravelTime, {x = goalPos[1].x, y = goalPos[1].y})
     :ease(skill.beginTweenType)
-    :onupdate(onUpdate)
+    :onupdate(checkCollision)
     :after(flame.pos, flameTravelTime, {x = goalPos[1].x, y = goalPos[2].y})
       :ease(skill.beginTweenType)
-      :onupdate(onUpdate)
+      :onupdate(checkCollision)
     :after(flame.pos, flameTravelTime, {x = goalPos[2].x, y = goalPos[2].y})
       :ease(skill.beginTweenType)
-      :onupdate(onUpdate)
+      :onupdate(checkCollision)
     :after(flame.pos, flameTravelTime, {x = goalPos[3].x, y = goalPos[3].y})
       :ease(skill.beginTweenType)
       :oncomplete(function()

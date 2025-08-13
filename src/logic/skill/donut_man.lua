@@ -22,7 +22,6 @@ return function(ref, qteManager)
 
   Timer.after(qteManager.activeQTE.duration,
     function()
-
       -- Tween projectile to the target in an arc (quadout then quad in for feel of gravity)
       local attack = flux.to(donut.pos, donutFlyingTime / 2, {x = xMidPoint, y = arcHeight})
         :ease('quadout')
