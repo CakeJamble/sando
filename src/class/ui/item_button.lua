@@ -98,10 +98,10 @@ end;
 function ItemButton:gamepadpressed(joystick, button)
   SubMenuButton.gamepadpressed(self, joystick, button)
 
-  if button == self.actionButton and self.displayList then
+  if button == self.actionButton and self.selectedAction then
     Signal.emit('ItemSelected', self.selectedAction)
   elseif button == 'dpleft' or button == 'dpright' then
-    Signal.emit('ItemSelected')
+    Signal.emit('ItemDeselected')
   end
 -- ----------------------- Action Selection -------------------------
 --   if button == 'dpdown' then

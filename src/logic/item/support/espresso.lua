@@ -28,7 +28,7 @@ return function(item, entity)
         function()
           target:heal(item.amount)
           table.remove(entity.projectiles, 1)
-          entity:endTurn(skill.duration)
+          entity:endTurn(item.duration)
         end)
     entity.tweens['item'] = item
 end;
