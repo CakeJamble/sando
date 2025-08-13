@@ -18,5 +18,6 @@
 	"beginTweenType": "linear",
 	"returnTweenType": "linear",
 	"isDodgeable": false,
-	"hasProjectile": true
+	"hasProjectile": true,
+	"castsShadow": true
 }

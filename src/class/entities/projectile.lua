@@ -1,6 +1,6 @@
 Projectile = Class{drawHitboxes = false}
 
-function Projectile:init(x, y, index)
+function Projectile:init(x, y, castsShadow, index)
 	self.pos = {x=x, y=y}
 	self.dims = {r = 10}
 	local r = self.dims.r
@@ -8,6 +8,7 @@ function Projectile:init(x, y, index)
 		x=x-r,y=y-r,w=2*self.dims.r, h=2*self.dims.r
 	}
 	self.index = index
+	self.castsShadow = castsShadow
 end;
 
 function Projectile:update(dt)
@@ -21,10 +22,11 @@ function Projectile:draw()
 	love.graphics.circle('fill', self.pos.x, self.pos.y, self.dims.r)
 	love.graphics.setColor(1,1,1)
 
-	-- shadow
-	 love.graphics.setColor(0, 0, 0, 0.4)
-  love.graphics.ellipse("fill", self.pos.x, self.pos.y + self.hitbox.h, self.hitbox.w / 2, self.hitbox.h / 4)
-  love.graphics.setColor(1, 1, 1, 1)
+	if self.castsShadow then
+		love.graphics.setColor(0, 0, 0, 0.4)
+	  love.graphics.ellipse("fill", self.pos.x, self.pos.y + self.hitbox.h, self.hitbox.w / 2, self.hitbox.h / 4)
+	  love.graphics.setColor(1, 1, 1, 1)
+	end
 
   if Projectile.drawHitboxes then
     love.graphics.setColor(1, 1, 0, 0.4)
