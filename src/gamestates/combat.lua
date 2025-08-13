@@ -1,6 +1,7 @@
 --! file: gamestates/combat
 require("class.entities.enemy")
 require("class.ui.action_ui")
+require('class.entities.projectile')
 require('gamestates.character_select')
 require("util.globals")
 require('class.entities.character_team')
@@ -174,6 +175,7 @@ function combat:update(dt)
     
     if imgui.Checkbox("Show Hitboxes", hitboxCheckboxState) then
       Entity.drawHitboxes = hitboxCheckboxState[0]
+      Projectile.drawHitboxes = hitboxCheckboxState[0]
     end
 
     if imgui.Checkbox("Show Hitbox Positions", hitboxYPosCheckboxState) then

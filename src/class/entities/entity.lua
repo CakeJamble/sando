@@ -385,7 +385,11 @@ function Entity:update(dt) --> void
   if Entity.isATB then
     self.progressBar:setPos(self.pos)
   end
-
+  
+  for i,projectile in ipairs(self.projectiles) do
+    projectile:update(dt)
+  end
+  
   local animation = self.animations[self.currentAnimTag]
   -- if self.state == 'idle' then
     -- animation = self.movementAnimations.idle
@@ -450,9 +454,7 @@ function Entity:draw() --> void
   end
 
   for i,projectile in ipairs(self.projectiles) do
-    love.graphics.setColor(1,0,0)
-    love.graphics.circle('fill', projectile.pos.x, projectile.pos.y, projectile.dims.r)
-    love.graphics.setColor(1,1,1)
+    projectile:draw()
   end
 
   if Entity.isATB and not self.hideProgressBar then

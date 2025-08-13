@@ -17,7 +17,7 @@ return function(ref, qteManager)
   local arcHeight = target.hitbox.y - target.hitbox.h
   local donutFlyingTime = 0.8
 
-  local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2), 1)
+  local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
   table.insert(ref.projectiles, donut)
 
   Timer.after(qteManager.activeQTE.duration,
