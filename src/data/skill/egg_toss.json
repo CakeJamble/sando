@@ -1,0 +1,23 @@
+{
+	"name": "Egg Toss",
+	"damage": 0,
+	"targetType": "enemies",
+	"isSingleTarget": false,
+	"effects": ["damage"],
+	"chance": 1,
+	"cost": 2,
+	"spritePath": "asset/sprites/entities/character/marco/basic.png",
+	"soundPath": "asset/audio/entities/character/marco/basic.wav",
+	"duration": 2,
+	"stagingTime": 1,
+	"stagingType": "far",
+	"qteType": "rand_sbp",
+	"qteBonus": ["damage"],
+	"description": "Deals damage to random targets.",
+	"unlockedAtLvl": 1,
+	"beginTweenType": "linear",
+	"returnTweenType": "linear",
+	"isDodgeable": false,
+	"hasProjectile": true,
+	"castsShadow": true
+}
