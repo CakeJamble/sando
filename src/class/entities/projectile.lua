@@ -7,15 +7,34 @@ function Projectile:init(x, y, castsShadow, index)
 	self.hitbox = {
 		x=x-r,y=y-r,w=2*self.dims.r, h=2*self.dims.r
 	}
+	self.shadowPos = {
+		x=x, y=y + self.hitbox.h,
+		w=self.hitbox.w/2, h=self.hitbox.h/4
+	}
+
 	self.index = index
 	self.castsShadow = castsShadow
+	self.tweens = {}
 end;
 
 function Projectile:update(dt)
 	local r = self.dims.r
 	self.hitbox.x = self.pos.x - r
 	self.hitbox.y = self.pos.y - r
+	self.shadowPos.x = self.pos.x
 end
+
+function Projectile:tweenShadow(duration)
+	local tween = flux.to(self.shadowPos, duration / 2, {w = self.hitbox.w / 3})
+		:ease('quadout')
+		:after(duration / 2, {w = self.hitbox.w / 2})
+			:ease('quadin')
+	self.tweens['shadow'] = tween
+end;
+
+function Projectile:interruptTween(tweenKey)
+	self.tweens[tweenKey]:stop()
+end;
 
 function Projectile:draw()
 	love.graphics.setColor(1,0,0,1) --red
@@ -24,7 +43,7 @@ function Projectile:draw()
 
 	if self.castsShadow then
 		love.graphics.setColor(0, 0, 0, 0.4)
-	  love.graphics.ellipse("fill", self.pos.x, self.pos.y + self.hitbox.h, self.hitbox.w / 2, self.hitbox.h / 4)
+	  love.graphics.ellipse("fill", self.shadowPos.x, self.shadowPos.y, self.shadowPos.w, self.shadowPos.h)
 	  love.graphics.setColor(1, 1, 1, 1)
 	end
 

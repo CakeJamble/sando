@@ -38,6 +38,7 @@ return function(ref, qteManager)
     local startX, startY = egg.pos.x, egg.pos.y
     local eggTween = flux.to(egg.pos, eggFlightTime, {x = goalX})
       :ease(skill.beginTweenType)
+      :onstart(function() egg:tweenShadow(eggFlightTime) end)
       :onupdate(
       function()
         local t = (egg.pos.x - startX) / (goalX - startX)
