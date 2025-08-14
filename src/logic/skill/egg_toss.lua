@@ -6,6 +6,7 @@ local Collision = require('libs.collision')
 return function(ref, qteManager)
   local skill = ref.skill
   local targets = ref.targets
+  local damage = ref.battleStats['attack'] + skill.damage
 
   local tPos = {}
   for i,target in ipairs(targets) do
@@ -21,16 +22,9 @@ return function(ref, qteManager)
   local timeBtwnThrows = 0.3
   local peakHeight = -100
   local attack = {}
-
-  local parabolaFleight = function()
-    local t = (egg.pos.x - startX) / (goalX - startX)
-    egg.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)
-
-    if not hasCollided and Collision.rectsOverlap(egg.hitbox, target.hitbox) then
-      target:takeDamage(damage)
-      hasCollided = true
-      table.remove(ref.projectiles, egg.index)
-    end
+  local hasCollided = {}
+  for i=1, numProjectiles do
+    table.insert(hasCollided, false)
   end
 
   for i=1, numProjectiles do
@@ -39,12 +33,22 @@ return function(ref, qteManager)
     table.insert(ref.projectiles, egg)
 
     local tIndex = love.math.random(1, #targets)
-    local goalX = tPos[tIndex].x
+    local goalX, goalY = tPos[tIndex].x, tPos[tIndex].y
     local target = targets[tIndex]
     local startX, startY = egg.pos.x, egg.pos.y
     local eggTween = flux.to(egg.pos, eggFlightTime, {x = goalX})
       :ease(skill.beginTweenType)
-      :onupdate(parabolaFleight)
+      :onupdate(
+      function()
+        local t = (egg.pos.x - startX) / (goalX - startX)
+        egg.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)
+
+        if not hasCollided[i] and Collision.rectsOverlap(egg.hitbox, target.hitbox) then
+          target:takeDamage(damage)
+          hasCollided[i] = true
+          table.remove(ref.projectiles, i)
+        end
+      end)
       :delay((i-1) * timeBtwnThrows)
     table.insert(attack, eggTween)
   end
