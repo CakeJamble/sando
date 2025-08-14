@@ -81,6 +81,7 @@ function mbpQTE:beginQTE(callback)
 				self.doneWaiting = true
 				self.qteComplete = true
 				self.instructions = nil
+				self.onComplete(false)
 		end)
 end;
 

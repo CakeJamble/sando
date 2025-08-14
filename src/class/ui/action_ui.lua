@@ -194,20 +194,11 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.selectedSkill = self.activeButton.selectedSkill
           self.backButton.isHidden = false
           Signal.emit('SkillSelected', self.selectedSkill)
-
---! FIXME after refactoring inheritence of buttons that have nested menus!!!
         elseif self.activeButton == self.flourButton or self.activeButton == self.itemButton then
           self.uiState = 'submenuing'
           self.selectedSkill = self.activeButton.actionList[self.activeButton.listIndex]
           self.activeButton:gamepadpressed(joystick, button)
         end
-        -- elseif self.activeButton == self.itemButton then
-        --   self.uiState = 'submenuing'
-        --   self.selectedItem = self.activeButton.actionList[self.activeButton.listIndex]
-        --   self.activeButton:gamepadpressed(joystick, button)
-        -- else
-        --   self.activeButton:gamepadpressed(joystick, button)
-        -- end
       elseif self.uiState == 'submenuing' then
           self.activeButton:gamepadpressed(joystick, button)
       end
@@ -241,6 +232,25 @@ function ActionUI:gamepadpressed(joystick, button) --> void
 
           else
             Signal.emit('TargetConfirm', self.targetType, self.tIndex)
+            self.uiState = 'moving'
+          end
+        end
+      else
+        if button == 'dpleft' then
+          self.highlightBack = true
+        elseif button == 'dpright' and self.highlightBack then
+          self.highlightBack = false
+        elseif button == self.actionButton then
+          if self.highlightBack then
+            Signal.emit('SkillDeselected')
+            self.highlightBack = false
+            if self.activeButton == self.soloButton then
+              self.uiState = 'actionSelect'
+            else
+              self.uiState = 'submenuing'
+            end
+          else
+            Signal.emit('TargetConfirm', self.targetType)
             self.uiState = 'moving'
           end
         end

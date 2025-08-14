@@ -38,7 +38,9 @@ return function(ref, qteManager)
     local egg = Projectile(x, y, skill.castsShadow, i)
     table.insert(ref.projectiles, egg)
 
-    local goalX = tPos[i].x
+    local tIndex = love.math.random(1, #targets)
+    local goalX = tPos[tIndex].x
+    local target = targets[tIndex]
     local startX, startY = egg.pos.x, egg.pos.y
     local eggTween = flux.to(egg.pos, eggFlightTime, {x = goalX})
       :ease(skill.beginTweenType)

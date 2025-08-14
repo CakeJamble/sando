@@ -39,10 +39,10 @@ function PlayerInputCommand:start()
 		self.entity.skill = skill
 		self.action = skill
 		local validTargets = self.turnManager:getValidTargets()
+		self.commandKey = 'skill_command'
 		self.entity:setTargets(validTargets, self.action.targetType)
 		self.awaitingInput = false
 		self.waitingForTarget = true
-		self.commandKey = 'skill_command'
 		self.entity.actionUI.uiState = 'targeting'
 	end
 	self:registerSignal('SkillSelected', skillSelected)
@@ -84,10 +84,8 @@ function PlayerInputCommand:start()
 		end
 
 		self.waitingForTarget = false
-		-- local skillCommand = SkillCommand(self.entity, self.turnManager.qteManager)
 		local command = self.commands[self.commandKey](self)
 		self.done = true
-		-- self.turnManager:enqueueCommand(skillCommand, skillCommand.isInterruptible)
 		self.turnManager:enqueueCommand(command, command.isInterruptible)
 		self.commandKey = ''
 	end
@@ -115,7 +113,6 @@ function PlayerInputCommand:start()
 end;
 
 function PlayerInputCommand:interrupt()
-	-- Signal.emit('InterruptActionUI')
 	self:cleanupSignals()
 	print('interrupting ' .. self.entity.entityName .. '\'s command')
 	self.entity.actionUI.active = false
