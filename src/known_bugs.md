@@ -4,6 +4,11 @@ Check the box if the bug has been fixed.
 
 ## Bug Tracker
 
+### 08/14/2025
+
+- [ ] On KO from a multihit attack, projectiles do not despawn because they are programmed to despawn after colliding with the entity (who no longer exists)
+	- Move despawning of entities out from the `takeDamage` into some other function that gets called when the action that KOs them resolves (endTurn, or some other new helper in the logic file)
+
 ### 08/07/2025
 
 - [ ] STBScheduler will start Bake's turn, interrupt it with the enemy command, but not disable the action UI
