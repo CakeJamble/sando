@@ -15,7 +15,7 @@ function TapAnalogLeftQTE:init(data)
 	self.progressTween = nil
 	self.progressBarComplete = false
 	self.instructions = 'Tap the Analog Stick left to charge up the meter.'
-	self.waitForPlayer {curr = 0, fin = data.waitDuration}
+	self.waitForPlayer = {curr = 0, fin = data.waitDuration}
 	self.tapLeftCounter = 0
 	self.maxTaps = 10
 	self.onComplete = nil
@@ -65,21 +65,27 @@ function TapAnalogLeftQTE:gamepadpressed(joystick, button)
 			self.waitTween:stop()
 		end
 		self.tapLeftCounter = self.tapLeftCounter + 1
-		local goalWidth = (self.progressBar.containerOptions.width * 0.95) / (self.tapLeftCounter / self.maxTaps)
+		local widthIncrease = (self.progressBar.containerOptions.width * 0.95) * (self.tapLeftCounter / self.maxTaps)
+		local goalWidth = math.min(self.progressBar.containerOptions.width, widthIncrease)
 		self.progressTween = flux.to(self.progressBar.meterOptions, 0.25, {width = goalWidth})
 			:oncomplete(function()
-				if self.progressBar.meterOptions.width >= (self.progressBar.containerOptions.width * 0.95) then
+				if self.progressBar.meterOptions.width >= (self.progressBar.containerOptions.width * 0.95) and not self.signalEmitted then
 					local qteSuccess = true
+					print('qte success')
 					self.onComplete(qteSuccess)
 					self.signalEmitted = true
 				end
 			end)
+	end
+end;
+
+function TapAnalogLeftQTE:gamepadreleased(joystick, button)
 end;
 
 function TapAnalogLeftQTE:update(dt)
 	if input.joystick then
 		if JoystickUtils.isLatchedDirectionPressed(input.joystick, 'left') then
-			self:gamepadpressed('dpleft')
+			self:gamepadpressed(input.joystick, 'dpleft')
 		end
 	end
 end;
