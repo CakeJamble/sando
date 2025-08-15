@@ -357,6 +357,10 @@ function Character:update(dt)
     self.shadowDims.y = self.oPos.y + (self.frameHeight * 0.95)
   end
 
+  if self.actionUI and self.actionUI.active then
+    self.actionUI:update(dt)
+  end
+
 end;
 
 function Character:draw()

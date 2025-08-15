@@ -6,6 +6,7 @@ require('class.ui.item_button')
 require('class.ui.back_button')
 require('class.ui.pass_button')
 require('util.globals')
+local JoystickUtils = require('util.joystick_utils')
 
 Class = require 'libs.hump.class'
 ActionUI = Class{
@@ -255,6 +256,20 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           end
         end
       end
+    end
+  end
+end;
+
+function ActionUI:update(dt)
+  if input.joystick then
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+      self:gamepadpressed(input.joystick, 'dpright')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+      self:gamepadpressed(input.joystick, 'dpleft')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:gamepadpressed(input.joystick, 'dpup')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:gamepadpressed(input.joystick, 'dpdown')
     end
   end
 end;
