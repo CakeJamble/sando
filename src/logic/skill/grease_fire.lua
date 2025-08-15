@@ -10,6 +10,7 @@ return function(ref, qteManager)
   local goalX, goalY = tPos.x + tPos.w / 2, tPos.y
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
+  local goalShadowY = tPos.y + tPos.h
 
   -- Create a Scone Projectile
   local wok = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
@@ -20,6 +21,7 @@ return function(ref, qteManager)
   -- Tween the scone projectile through the target
   local cam = flux.to(camera, skill.duration, {x = goalX}):ease('quadout')
   local attack = flux.to(wok.pos, skill.duration, {x = goalX}):ease(skill.beginTweenType)
+    :onstart(function() wok:tweenShadow(skill.duration, goalShadowY); end)
     :onupdate(function()
       -- over duration, tween y in a parabola towards target
       local t = (wok.pos.x - startX) / (goalX - startX)

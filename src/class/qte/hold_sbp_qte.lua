@@ -168,12 +168,10 @@ end;
 function HoldSBP:draw()
 	QTE.draw(self)
 	if not self.qteComplete then
-		camera:detach()
 		self.progressBar:draw()
 		-- love.graphics.setColor(0, 0, 0)
 		love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 		love.graphics.setColor(1,1,1)
 		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.buttonUIPos.x + 14, self.buttonUIPos.y + 14, 0, self.buttonUIScale, self.buttonUIScale)
-		camera:attach()
 	end
 end;

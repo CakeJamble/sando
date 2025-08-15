@@ -151,7 +151,6 @@ function mbpQTE:draw()
 	-- end
 	QTE.draw(self)
 	if not self.qteComplete then
-		camera:detach()
 		self.progressBar:draw()
 		love.graphics.rectangle('fill', self.inputSequenceContainerDims.x, self.inputSequenceContainerDims.y, 
 			self.inputSequenceContainerDims.w, self.inputSequenceContainerDims.h)
@@ -159,7 +158,6 @@ function mbpQTE:draw()
 		love.graphics.circle('fill', self.currentInputContainerDims.x, self.currentInputContainerDims.y, self.currentInputContainerDims.r)
 		love.graphics.setColor(1,1,1)
 		self:drawInputButtons()
-		camera:attach()
 	end
 end;
 
