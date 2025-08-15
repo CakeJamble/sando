@@ -111,6 +111,7 @@ function randSBP:update(dt)
 end;
 
 function randSBP:draw()
+	camera:detach()
 	if not self.qteComplete then
 		for i=1,3 do
 			love.graphics.setColor(0, self.circleGreenVals[i], 0)
@@ -131,4 +132,5 @@ function randSBP:draw()
 	if self.displayButton then
 		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.smallCircleOptions.x + self.smallCircleOptions.xSpace * 3.2, self.smallCircleOptions.y - self.smallCircleOptions.y / 8.5, 0, self.buttonUIScale, self.buttonUIScale)
 	end
+	camera:attach()
 end;

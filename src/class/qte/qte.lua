@@ -28,6 +28,7 @@ function QTE:init(data)
 	self.showFeedback = false
 	self.feedbackPos = {x = 250, y = 90, a = 1}
 	self.feedbackOffsets = {x=25, y=-25}
+	self.qteSuccess = false
 end;
 
 function QTE:readyCamera(isOffensive)
