@@ -50,8 +50,6 @@ function HoldSBP:setUI(activeEntity)
 
 	self.feedbackPos.x = targetPos.x + self.feedbackOffsets.x
 	self.feedbackPos.y = targetPos.y + self.feedbackOffsets.y
-
-	-- self.instructions = 'Hold ' .. string.upper(self.actionButton) .. ' until the meter is full!'
 end;
 
 function HoldSBP:reset()
@@ -93,6 +91,8 @@ function HoldSBP:handleQTE()
 	if self.isActionButtonPressed then
 		local goalWidth = self.progressBar.containerOptions.width
 		print('starting progress tween')
+		
+		-- Start here because QTE happens alongside skill
 		self.onComplete()
 
 		-- Hardcoded values that need to be determined dynamically!

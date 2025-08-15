@@ -3,6 +3,7 @@ local Vector = require('libs.hump.vector')
 local M = {}
 M.activeRumbles = {}
 M.axisRepeaterStates = {}
+M.latchStates = {}
 
 function M.getDeadzoneVector(joystick, stick, deadzone)
 	deadzone = deadzone or 0.25
@@ -145,6 +146,48 @@ end
 function M.isAxisRepeaterTriggered(joystick, direction)
     if not M.axisRepeaterStates[joystick] then return false end
     return M.axisRepeaterStates[joystick][direction].triggered
+end
+
+function M.isLatchedDirectionPressed(joystick, direction, config)
+    if not joystick or not joystick:isConnected() then return false end
+
+    if not M.latchStates[joystick] then
+        M.latchStates[joystick] = { up = false, down = false, left = false, right = false }
+    end
+
+    config = config or {}
+    local neutralThreshold = config.neutralThreshold or 0.25
+    local triggerThreshold = config.triggerThreshold or 0.5
+
+    local state = M.latchStates[joystick]
+    local vec = Vector(joystick:getGamepadAxis('leftx'), joystick:getGamepadAxis('lefty'))
+
+    -- Check for the neutral state (within deadzone)
+    if vec:len() < neutralThreshold then
+        for dir, _ in pairs(state) do
+            state[dir] = false
+        end
+    end
+
+    local isDirectionPushed = false
+    if direction == 'right' and vec.x > triggerThreshold then
+        isDirectionPushed = true
+    elseif direction == 'left' and vec.x < -triggerThreshold then
+        isDirectionPushed = true
+    elseif direction == 'down' and vec.y > triggerThreshold then
+        isDirectionPushed = true
+    elseif direction == 'up' and vec.y < -triggerThreshold then
+        isDirectionPushed = true
+    end
+
+    -- Trigger input if pushed but wasn't pushed the previous frame
+    local wasTriggered = false
+    if isDirectionPushed and not state[direction] then
+        wasTriggered = true
+        state[direction] = true -- latch it back
+    end
+
+    return wasTriggered
 end
 
 return M
