@@ -89,7 +89,6 @@ function randSBP:gamepadpressed(joystick, button)
 		if button == self.actionButton then
 			qteSuccess = true
 			print('qte success')
-			-- Signal.emit('OnQTESuccess')
 		end
 		self.onComplete(qteSuccess)
 		self.signalEmitted = true
@@ -97,7 +96,6 @@ function randSBP:gamepadpressed(joystick, button)
 		self.doneWaiting = true
 		self.displayButton = false
 		self.qteComplete = true
-		-- Signal.emit('Attack')
 	end
 end;
 

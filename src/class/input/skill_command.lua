@@ -18,11 +18,11 @@ function SkillCommand:start(turnManager)
   self:registerSignal('OnQTEResolved', qteResolve)
 
   local projectileMade = function(projectile)
-    table.insert(entity.projectiles, projectile)
+    table.insert(self.entity.projectiles, projectile)
   end
   local despawnProjectile = function(index)
     local i = index or 1
-    table.remove(entity.projectiles, i)
+    table.remove(self.entity.projectiles, i)
   end
   self:registerSignal('ProjectileMade', projectileMade)
   self:registerSignal('DespawnProjectile', despawnProjectile)

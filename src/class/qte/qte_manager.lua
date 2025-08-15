@@ -194,6 +194,9 @@ end;
 
 function QTEManager:draw()
 	if self.activeQTE then
+		-- draw UI independent of camera movement
+		camera:detach()
 		self.activeQTE:draw()
+		camera:attach()
 	end
 end;

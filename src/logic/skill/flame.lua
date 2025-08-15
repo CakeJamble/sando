@@ -19,12 +19,6 @@ return function(ref, qteManager)
     table.insert(hasCollided, false)
   end
 
-  -- Pathing projectile between 2 targets
-  -- local goalPos = {
-  --   {x = tPos[1].x - (2 * tPos[1].w), y = tPos[1].y + tPos[1].h},
-  --   {x = ref.hitbox.x - (ref.hitbox.w / 2), y = tPos[2].y + tPos[2].h},
-  -- }
-
   local goalPos = {}
   for i,pos in ipairs(tPos) do
     local x, y

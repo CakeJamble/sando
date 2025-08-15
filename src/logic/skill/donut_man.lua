@@ -16,6 +16,7 @@ return function(ref, qteManager)
 
   local arcHeight = target.hitbox.y - target.hitbox.h
   local donutFlyingTime = 0.8
+  local goalShadowY = target.hitbox.y + target.hitbox.h
 
   local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
   table.insert(ref.projectiles, donut)
@@ -25,6 +26,7 @@ return function(ref, qteManager)
       -- Tween projectile to the target in an arc (quadout then quad in for feel of gravity)
       local attack = flux.to(donut.pos, donutFlyingTime / 2, {x = xMidPoint, y = arcHeight})
         :ease('quadout')
+        :onstart(function() donut:tweenShadow(donutFlyingTime, goalShadowY); end)
         :after(donut.pos, donutFlyingTime / 2, {x = goalX, y = goalY})
           :ease('quadin')
           :oncomplete(

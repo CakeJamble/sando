@@ -24,7 +24,8 @@ function Projectile:update(dt)
 	self.shadowPos.x = self.pos.x
 end
 
-function Projectile:tweenShadow(duration)
+function Projectile:tweenShadow(duration, targetYPos)
+	flux.to(self.shadowPos, duration, {y = targetYPos})
 	local tween = flux.to(self.shadowPos, duration / 2, {w = self.hitbox.w / 3})
 		:ease('quadout')
 		:after(duration / 2, {w = self.hitbox.w / 2})
