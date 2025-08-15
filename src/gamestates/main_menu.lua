@@ -18,6 +18,8 @@ local buttonPaths = {
 }
 local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
 local TEMP_BG = 'asset/sprites/background/temp_mm_bg.png'
+local Vector = require('libs.hump.vector')
+local JoystickUtils = require('util.joystick_utils')
 
 function main_menu:init()
   self.background = love.graphics.newImage(TEMP_BG)
@@ -95,13 +97,20 @@ end;
 function main_menu:update(dt)
   flux.update(dt)
   Timer.update(dt)
+
+  if input.joystick and self.bounceFinished then
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:set_down()
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:set_up()
+    end
+  end
 end;
 
 function main_menu:draw()
   push:start()
   love.graphics.draw(self.background, 0, 0)
   for i=1,#self.mmButtons do
-    -- love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), BUTTONS_START_Y)
     love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), self.pos.y)
   end
   love.graphics.draw(self.cursor, self.cursorPos.x, self.pos.y)

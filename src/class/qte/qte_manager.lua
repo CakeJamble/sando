@@ -6,6 +6,7 @@ require('class.qte.mbp_qte')
 require('class.qte.rand_sbp_qte')
 require('class.qte.ring_qte')
 require('class.qte.combo_ring_qte')
+require('class.qte.tap_analog_left_qte')
 
 local loadQTE = require 'util.qte_loader'
 
@@ -15,6 +16,7 @@ local QTEClasses = {
 	rand_sbp = randSBP,
 	ring_qte = RingQTE,
 	combo_ring_qte = ComboRingQTE,
+	tap_analog_left_qte = TapAnalogLeftQTE
 }
 
 Class = require 'libs.hump.class'
@@ -111,7 +113,13 @@ function QTEManager:defineQTESetup()
 			local qte = self.qteTable.combo_ring_qte
 			qte:setActionButton(actionButton, buttonUI)
 			return qte
-		end
+		end,
+
+		tap_analog_left_qte = function(self)
+			local qte = self.qteTable.tap_analog_left_qte
+			-- set joystick UI here
+			return qte
+		end,
 	}
 
 	return qteInits
@@ -163,8 +171,6 @@ function QTEManager:getInstructions(qteType, actionButton)
 	elseif qteType == 'rand_sbp' then
 		result = 'Press the button when it appears!'
 	end
-
-
 	return result
 end;
 

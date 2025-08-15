@@ -1,0 +1,19 @@
+{
+	"name": "TapAnalogLeftQTE",
+	"progressBarOptions": {
+		"xOffset": -75, 
+		"yOffset": 100,
+		"w": 100,
+		"h": 35,
+		"min": 0,
+		"max": 100,
+		"wModifier": "0.05"
+	},
+	"buttonUIOffsets": {
+		"x": 80,
+		"y": -14
+	},
+	"waitDuration": 4,
+	"duration": 3,
+	"feedbackList": ["great.png"]
+}

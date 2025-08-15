@@ -3,7 +3,7 @@ require("class.entities.character_team")
 require("util.globals")
 require("class.entities.character")
 local loadCharacterData = require('util.character_loader')
-
+local JoystickUtils = require('util.joystick_utils')
 local character_select = {}
 
 local TEAM_CAP = 2
@@ -198,6 +198,20 @@ end;
 
 function character_select:statsToString(stats)
   return 'Name: ' .. stats['entityName'] .. '\n' .. 'HP: ' .. stats['hp'] .. '\n' .. 'FP: ' .. stats['fp'] .. '\n' .. 'Attack: ' .. stats['attack'] .. '\n' .. 'Defense: ' .. stats['defense'] .. '\n' .. 'Speed: ' .. stats['speed'] .. '\n' .. 'Luck: ' .. stats['luck']
+end;
+
+function character_select:update(dt)
+  if input.joystick then
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+      self:gamepadpressed(input.joystick, 'dpright')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+      self:gamepadpressed(input.joystick, 'dpleft')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:gamepadpressed(input.joystick, 'dpup')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:gamepadpressed(input.joystick, 'dpdown')
+    end
+  end
 end;
 
 function character_select:draw()
