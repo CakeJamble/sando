@@ -1,7 +1,7 @@
 {
 	"name": "MBP",
 	"progressBarOptions": {
-		"xOffset": 150, 
+		"xOffset": -150, 
 		"yOffset": 64,
 		"w": 100,
 		"h": 35,
