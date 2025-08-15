@@ -98,7 +98,7 @@ function main_menu:update(dt)
   flux.update(dt)
   Timer.update(dt)
 
-  if input.joystick then
+  if input.joystick and self.bounceFinished then
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
       self:set_down()
     elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
