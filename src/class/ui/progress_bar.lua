@@ -24,7 +24,8 @@ function ProgressBar:init(targetPos, options, isOffensive)
 		color = {0, 1, 0},
 		mode = 'fill',
 		width = self.meterStartingWidth,
-		height = options.h * 0.95
+		height = options.h * 0.95,
+		value = 0
 	}
 
 	if not isOffensive then
@@ -38,6 +39,16 @@ end;
 function ProgressBar:reversePosOffsets()
 	self.pos.x = self.pos.x - 2 * self.offsets.x
 	self.pos.y = self.pos.y - self.offsets.y
+end;
+
+function ProgressBar:increaseMeter(amount)
+	self.meterOptions.value = math.min(self.max, self.meterOptions.value + amount)
+
+	return self.meterOptions.value
+end;
+
+function ProgressBar:decreaseMeter(amount)
+	self.meterOptions.value = math.max(self.min, self.meterOptions.value - amount)
 end;
 
 function ProgressBar:setPos(pos)
