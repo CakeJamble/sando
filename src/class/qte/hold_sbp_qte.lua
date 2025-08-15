@@ -34,14 +34,7 @@ end;
 
 function HoldSBP:setUI(activeEntity)
 	local isOffensive = activeEntity.skill.isOffensive
-	-- self:readyCamera(isOffensive)
-
-	local targetPos
-	if isOffensive then
-		targetPos = activeEntity.target.oPos
-	else
-		targetPos = activeEntity.oPos
-	end
+	local targetPos = activeEntity.pos
 	self:readyCamera(targetPos)
 
 	self.progressBar = ProgressBar(targetPos, self.progressBarOptions, isOffensive)
@@ -92,10 +85,9 @@ function HoldSBP:handleQTE()
 		local goalWidth = self.progressBar.containerOptions.width
 		print('starting progress tween')
 		
-		-- Start here because QTE happens alongside skill
+		-- Start here because QTE happens alongside movement dictated by action's logic
 		self.onComplete()
 
-		-- Hardcoded values that need to be determined dynamically!
 		local goalPosX = self.cameraReturnPos.x
 		local goalPosY = self.cameraReturnPos.y
 
@@ -103,15 +95,14 @@ function HoldSBP:handleQTE()
 			goalPosX = goalPosX - 100
 			goalPosY = goalPosY + 30
 		else
-			goalPosX = goalPosX + 10
+			goalPosX = goalPosX + 100
 			goalPosY = goalPosY - 30
 		end
-
 		self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY,scale = 1.25}):ease('linear')
 		self.progressTween = flux.to(self.progressBar.meterOptions, self.duration, {width = goalWidth}):ease('linear')
 			:onupdate(function()
 				if self.progressBar.meterOptions.width >= goalWidth * 0.9 then
-					self.progressBarComplete = true -- close enough
+					self.progressBarComplete = true
 					self.buttonUIIndex = 'raised'
 				end
 			end)
@@ -177,10 +168,12 @@ end;
 function HoldSBP:draw()
 	QTE.draw(self)
 	if not self.qteComplete then
+		camera:detach()
 		self.progressBar:draw()
 		-- love.graphics.setColor(0, 0, 0)
 		love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 		love.graphics.setColor(1,1,1)
 		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.buttonUIPos.x + 14, self.buttonUIPos.y + 14, 0, self.buttonUIScale, self.buttonUIScale)
+		camera:attach()
 	end
 end;
