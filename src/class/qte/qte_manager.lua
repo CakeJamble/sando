@@ -171,8 +171,6 @@ function QTEManager:getInstructions(qteType, actionButton)
 	elseif qteType == 'rand_sbp' then
 		result = 'Press the button when it appears!'
 	end
-
-
 	return result
 end;
 
