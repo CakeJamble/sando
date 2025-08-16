@@ -18,8 +18,10 @@ local buttonPaths = {
 }
 local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
 local TEMP_BG = 'asset/sprites/background/temp_mm_bg.png'
-local Vector = require('libs.hump.vector')
+-- local Vector = require('libs.hump.vector')
+local Timer = require('libs.hump.timer')
 local JoystickUtils = require('util.joystick_utils')
+local flux = require('libs.flux')
 
 function main_menu:init()
   self.background = love.graphics.newImage(TEMP_BG)
@@ -80,7 +82,6 @@ function main_menu:set_up()
     index = 5
     self.cursorPos.x = BUTTONS_START_X + ((index - 1) * BUTTONS_OFFSET)
   end
-  
 end;
 
 function main_menu:set_down()
@@ -91,7 +92,6 @@ function main_menu:set_down()
     self.cursorPos.x = BUTTONS_START_X
     index = 1
   end
-  
 end;
 
 function main_menu:update(dt)
