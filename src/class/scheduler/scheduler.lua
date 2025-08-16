@@ -1,10 +1,14 @@
-require('class.input.player_input_command')
-require('class.input.skill_command')
-require('class.input.cancel_command')
-require('class.input.ai_command')
-require('class.qte.qte_manager')
+-- local PlayerInputCommand = require('class.input.player_input_command')
+-- local SkillCommand = require('class.input.skill_command')
+-- local CancelCommand = require('class.input.cancel_command')
+-- local AICommand = require('class.input.ai_command')
+local QTEManager = require('class.qte.qte_manager')
 require('util.globals')
-Scheduler = Class{}
+local Class = require('libs.hump.class')
+local Signal = require('libs.hump.signal')
+local flux = require('libs.flux')
+
+local Scheduler = Class{}
 
 function Scheduler:init(characterTeam, enemyTeam)
 	self.characterTeam = characterTeam
@@ -38,10 +42,10 @@ end;
 
 function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	local queue = {}
-	for i,character in ipairs(characterMembers) do
+	for _,character in ipairs(characterMembers) do
 		table.insert(queue, character)
 	end
-	for i,enemy in ipairs(enemyMembers) do
+	for _,enemy in ipairs(enemyMembers) do
 		table.insert(queue, enemy)
 	end
 
@@ -120,3 +124,5 @@ end;
 function Scheduler:draw()
 	self.qteManager:draw()
 end;
+
+return Scheduler

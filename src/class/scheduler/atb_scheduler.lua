@@ -1,5 +1,10 @@
-require('class.scheduler.scheduler')
-ATBScheduler = Class{__includes = Scheduler}
+local Scheduler = require('class.scheduler.scheduler')
+local Class = require('libs.hump.class')
+local Signal = require('libs.hump.signal')
+local PlayerInputCommand = require('class.input.player_input_command')
+local AICommand = require('class.input.ai_command')
+
+local ATBScheduler = Class{__includes = Scheduler}
 
 -- Active Timer Battle Scheduler
 
@@ -16,14 +21,14 @@ end;
 
 function ATBScheduler:enter()
 	Scheduler.enter(self)
-	self:registerSignal('OnStartCombat', 
+	self:registerSignal('OnStartCombat',
 	function()
-    for i,entity in ipairs(self.combatants) do
-	  	entity:tweenProgressBar(
-	  	function()
-	  		print(entity.entityName .. "'s turn is ready to begin")
-	  		Signal.emit('OnTurnReady', entity)
-	  	end)
+    for _,entity in ipairs(self.combatants) do
+      entity:tweenProgressBar(
+      function()
+        print(entity.entityName .. "'s turn is ready to begin")
+        Signal.emit('OnTurnReady', entity)
+      end)
 	  end
 	end)
 
@@ -31,7 +36,7 @@ function ATBScheduler:enter()
 	function(entity)
     entity.hideProgressBar = true
     local command
-    local isInterrupt
+    -- local isInterrupt
     if entity.type == 'character' then
       command = PlayerInputCommand(entity, self)
     else
@@ -43,7 +48,7 @@ function ATBScheduler:enter()
 
   self:registerSignal('TargetConfirm',
   function()
-    for i,entity in ipairs(self.combatants) do
+    for _,entity in ipairs(self.combatants) do
       if entity.tweens['pbTween'] then
         print('stopping ' .. entity.entityName .. "'s progress bar")
         entity.tweens['pbTween']:stop()
@@ -57,11 +62,11 @@ function ATBScheduler:enter()
 
   self:registerSignal('OnEndTurn',
   function(timeBtwnTurns)
-  	self:resetCamera(timeBtwnTurns)
-  	self.activeCommand.done = true
-  	self:removeKOs()
+    self:resetCamera(timeBtwnTurns)
+    self.activeCommand.done = true
+    self:removeKOs()
 
-    for i,entity in ipairs(self.combatants) do
+    for _,entity in ipairs(self.combatants) do
       print('starting ' .. entity.entityName .. "'s progress bar")
       entity:tweenProgressBar(function() Signal.emit('OnTurnReady', entity) end)
       entity.hideProgressBar = false
@@ -95,7 +100,7 @@ function ATBScheduler:checkQueues()
       self.activeCommand = table.remove(self.commandQueue.interruptibles, 1)
     end
 
-    if self.activeCommand then 
+    if self.activeCommand then
       -- self:entitiesReactToTurnStart()
       print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
       self.activeCommand:start(self)
@@ -118,7 +123,7 @@ end;
 
 function ATBScheduler:removeKOs()
 	Scheduler.removeKOs(self)
-	for i,entity in ipairs(self.combatants) do
+	for _,entity in ipairs(self.combatants) do
 		if not entity:isAlive() then
 			entity:stopProgressBar()
 			entity.hideProgressBar = true
@@ -152,3 +157,5 @@ function ATBScheduler:update(dt)
 
 	Scheduler.update(self, dt)
 end;
+
+return ATBScheduler

@@ -1,6 +1,11 @@
-require('class.entities.entity')
-require('class.scheduler.scheduler')
-STBScheduler = Class{__includes = Scheduler}
+local Entity = require('class.entities.entity')
+local Scheduler = require('class.scheduler.scheduler')
+local Class = require('libs.hump.class')
+local PlayerInputCommand = require('class.input.player_input_command')
+local AICommand = require('class.input.ai_command')
+local Timer = require('libs.hump.timer')
+
+local STBScheduler = Class{__includes = Scheduler}
 
 -- Standard Turn Based Scheduler
 
@@ -46,7 +51,6 @@ function STBScheduler:enter()
 	self:registerSignal('NextTurn', turnStart)
 	self:registerSignal('OnStartCombat', function()
 		Timer.after(1, turnStart) end)
-	
 
 	self:registerSignal('OnEndTurn',
 	function(timeBtwnTurns)
@@ -74,7 +78,7 @@ end;
 
 function STBScheduler:sortWaitingCombatants()
   local waitingCombatants = {unpack(self.combatants, self.turnIndex, #self.combatants)}
-  local i=1 
+  local i=1
   for j=self.turnIndex, #self.combatants do
     self.combatants[j] = waitingCombatants[i]
     i = i+1
@@ -95,7 +99,7 @@ function STBScheduler:checkQueues()
       self.activeCommand = table.remove(self.commandQueue, 1)
     end
 
-    if self.activeCommand then 
+    if self.activeCommand then
       -- self:entitiesReactToTurnStart()
       print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
       self.activeCommand:start(self)
@@ -106,3 +110,5 @@ function STBScheduler:checkQueues()
     self:checkQueues()
   end
 end;
+
+return STBScheduler
