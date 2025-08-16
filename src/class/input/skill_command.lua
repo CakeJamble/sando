@@ -1,5 +1,6 @@
-require('class.input.command')
-SkillCommand = Class{__includes = Command}
+local Command = require('class.input.command')
+local Class = require('libs.hump.class')
+local SkillCommand = Class{__includes = Command}
 
 function SkillCommand:init(entity, qteManager)
   Command.init(self, entity)
@@ -63,3 +64,5 @@ end
 function SkillCommand:isDone()
   return self.done
 end
+
+return SkillCommand

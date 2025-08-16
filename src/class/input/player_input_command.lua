@@ -1,7 +1,10 @@
-require('class.input.command')
-require('class.input.skill_command')
-require('class.input.item_command')
-PlayerInputCommand = Class{__includes = Command}
+-- local InputCommand = require('class.input.command')
+local Command = require('class.input.command')
+local SkillCommand = require('class.input.skill_command')
+local ItemCommand = require('class.input.item_command')
+local Class = require('libs.hump.class')
+
+local PlayerInputCommand = Class{__includes = Command}
 
 local CommandClasses = {
 	skill_command = SkillCommand,
@@ -77,7 +80,7 @@ function PlayerInputCommand:start()
 			table.insert(self.entity.targets, self.entity.targetableEntities[tIndex])
 			table.insert(self.targets, self.entity.targetableEntities[tIndex])
 		else
-			for i,entity in ipairs(self.entity.targetableEntities) do
+			for _,entity in ipairs(self.entity.targetableEntities) do
 				table.insert(self.entity.targets, entity)
 			end
 			self.targets = self.entity.targets
@@ -119,8 +122,10 @@ function PlayerInputCommand:interrupt()
 end;
 
 function PlayerInputCommand:update(dt)
-	if self.done then 
-		self:cleanupSignals() 
+	if self.done then
+		self:cleanupSignals()
 		self.done = false
 	end
 end;
+
+return PlayerInputCommand
