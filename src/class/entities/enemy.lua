@@ -1,9 +1,10 @@
 --! filename: Enemy
-require("class.entities.entity")
-require('class.entities.enemy_offense_state')
+local Entity = require("class.entities.entity")
+local Signal = require('libs.hump.signal')
+local Class = require('libs.hump.class')
+local flux = require('libs.flux')
 
-Class = require "libs.hump.class"
-Enemy = Class{__includes = Entity, 
+local Enemy = Class{__includes = Entity,
   -- for testing
   xPos = 450, yPos = 150, yOffset = 40}
 
@@ -15,7 +16,7 @@ function Enemy:init(data)
   self:setAnimations(animationsPath)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
-  self.lootReward = self:setRewardsDistribution(data.rewardsDistribution)
+  self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
 
   Signal.register('OnStartCombat',
@@ -49,7 +50,7 @@ function Enemy:takeDamagePierce(amount)
   end
 end;
 
-function Enemy:setRewardsDistribution(rewardsDistribution)
+function Enemy.setRewardsDistribution(rewardsDistribution)
   return {
     uncommon = rewardsDistribution[1],
     rare = rewardsDistribution[2]
@@ -73,7 +74,7 @@ function Enemy:targetSelect(targetType, isSingleTarget)
     local tIndex = love.math.random(1, #self.targetableEntities)
     table.insert(targets, self.targetableEntities[tIndex])
   else
-    for i,entity in ipairs(self.targetableEntities) do
+    for _,entity in ipairs(self.targetableEntities) do
       table.insert(targets, entity)
     end
   end
@@ -88,3 +89,5 @@ function Enemy:knockOut()
   reward.loot = self.lootReward
   return reward
 end;
+
+return Enemy
