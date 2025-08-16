@@ -1,20 +1,21 @@
 --! filename: Character
 --[[
   Character class
-  Used to create a character object, which consists of 
+  Used to create a character object, which consists of
   a character's stats, skills, states, and gear.
 ]]
 -- require("util.skill_sheet")
 -- require("util.stat_sheet")
-require("class.entities.entity")
-require("class.entities.offense_state")
-require("class.entities.defense_state")
-require("class.ui.action_ui")
-require("class.item.gear")
+local Entity = require("class.entities.entity")
+local ActionUI = require("class.ui.action_ui")
+local Signal = require('libs.hump.signal')
+local Timer = require('libs.hump.timer')
+local flux = require('libs.flux')
+-- require("class.item.gear")
 
 
-Class = require "libs.hump.class"
-Character = Class{__includes = Entity, 
+local Class = require "libs.hump.class"
+local Character = Class{__includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
   yPos = 130,
@@ -60,14 +61,14 @@ function Character:init(data, actionButton)
   -- self.actionUI = ActionUI(self)
   self.cannotLose = false
   self.equips = {}
-  
+
   self.combatStartEnterDuration = Character.combatStartEnterDuration
   Character.combatStartEnterDuration = Character.combatStartEnterDuration + 0.1
 
   self.isGuarding = false
   self.canGuard = false
   self.canJump = false
-  self.guardCooldownFinished = true  
+  self.guardCooldownFinished = true
   self.isJumping = false
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
@@ -174,10 +175,10 @@ function Character:takeDamagePierce(amount)
   end
 end;
 
-function Character:cleanse()
-  -- cleanse all curses
-  -- play cleanse animation
-end;
+-- function Character:cleanse()
+--   -- cleanse all curses
+--   -- play cleanse animation
+-- end;
 
 --[[ Gains exp, leveling up when applicable
       - preconditions: an amount of exp to gain
@@ -201,7 +202,7 @@ end;
   -- preconditions: none
   -- postconditions: updates self.experiencedRequired based on polynomial scaling
 function Character:getRequiredExperience() --> int
-  local result = 0
+  local result
   if self.level < 3 then
     result = self.level^Character.EXP_POW_SCALE + self.level * Character.EXP_MULT_SCALE + Character.EXP_BASE_ADD
   else
@@ -215,7 +216,7 @@ end;
       - preconditions: none
       - postconditions: updates self.current_skills ]]
 function Character:updateSkills()
-  for i,skill in pairs(self.skillPool) do
+  for _,skill in pairs(self.skillPool) do
     if self.level == skill.unlockedAtLvl then
       table.insert(self.currentSkills, skill)
     end
@@ -223,7 +224,7 @@ function Character:updateSkills()
 end;
 
 function Character:applyGear()
-  for i, equip in pairs(self.gear:getEquips()) do
+  for _, equip in pairs(self.gear:getEquips()) do
     local statMod = equip:getStatModifiers()
     Entity:modifyBattleStat(statMod['stat'], statMod['amount'])
   end
@@ -268,7 +269,7 @@ function Character:checkGuardAndJump(button)
   if self:isAlive() then
     if button == 'rightshoulder' and not self.isJumping and self.guardCooldownFinished then
       self.canGuard = true
-    elseif button == self.actionButton then    
+    elseif button == self.actionButton then
       if self.canGuard then
         self:beginGuard()
       elseif self.canJump then
@@ -280,7 +281,7 @@ end;
 
 function Character:beginGuard()
   self.isGuarding = true
-  self.canJump = false  
+  self.canJump = false
   self.canGuard = false -- for cooldown
   self.guardCooldownFinished = false
 
@@ -327,6 +328,7 @@ function Character:beginJump()
           end)
       end)
   self.tweens['jump'] = jump
+  self.tweens['shadow'] = shadow
   self.sfx.jump:play()
 end;
 
@@ -348,6 +350,7 @@ function Character:interruptJump()
   local landY = self.oPos.y
   self.tweens['jump']:stop()
   local tumble = flux.to(self.pos, Character.jumpDur/2, {y=landY}):ease('bouncein')
+  self.tweens['tumble'] = tumble
 end;
 
 function Character:update(dt)
@@ -370,3 +373,5 @@ function Character:draw()
     self.actionUI:draw()
   end
 end;
+
+return Character
