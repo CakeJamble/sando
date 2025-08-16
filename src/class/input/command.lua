@@ -25,10 +25,4 @@ function Command:cleanupSignals()
   self.signalHandlers = {}
 end;
 
-function Command:start(battle) -- = 0;
-end;
-
-function Command:update(dt, battle) -- = 0;
-end;
-
 return Command
