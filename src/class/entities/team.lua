@@ -64,7 +64,7 @@ function Team:update(dt)
 end;
 
 function Team:draw()
-  for i,member in pairs(self.members) do
+  for _,member in pairs(self.members) do
     member:draw()
   end
 end;
