@@ -1,13 +1,14 @@
 --! filename: mbp_qte.lua
-require('class.qte.qte')
-require('class.ui.progress_bar')
-Class = require 'libs.hump.class'
-
+local QTE = require('class.qte.qte')
+local ProgressBar = require('class.ui.progress_bar')
+local Class = require 'libs.hump.class'
+local Signal = require('libs.hump.signal')
+local flux = require('libs.flux')
 --[[ mbpQTE: Multi Button Press QTE
 	- QTE for skills that require multiple button presses within a given duration
 	]]
 
-	mbpQTE = Class{__includes = QTE}
+local mbpQTE = Class{__includes = QTE}
 
 function mbpQTE:init(data)
 	QTE.init(self, data)
@@ -81,7 +82,7 @@ function mbpQTE:beginQTE(callback)
 				self.doneWaiting = true
 				self.qteComplete = true
 				self.instructions = nil
-				self.onComplete(false)
+				self.onComplete(qteSuccess)
 		end)
 end;
 
@@ -103,7 +104,7 @@ function mbpQTE:gamepadpressed(joystick, button)
 			print('stopping wait tween')
 			self.waitTween:stop()
 			self.doneWaiting = true
-			self:handleQTE()	
+			self:handleQTE()
 		elseif not self.progressBarComplete then
 			print('Hit the correct button')
 		end
@@ -171,3 +172,5 @@ function mbpQTE:drawInputButtons()
 		end
 	end
 end;
+
+return mbpQTE

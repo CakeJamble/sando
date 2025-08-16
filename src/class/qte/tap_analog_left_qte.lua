@@ -1,9 +1,11 @@
 --! filename: hold_sbp_qte
-require('class.ui.progress_bar')
-require('class.qte.qte')
+local ProgressBar = require('class.ui.progress_bar')
+local QTE = require('class.qte.qte')
 local JoystickUtils = require('util.joystick_utils')
+local Class = require('libs.hump.class')
+local flux = require('libs.flux')
 
-TapAnalogLeftQTE = Class{__includes = QTE}
+local TapAnalogLeftQTE = Class{__includes = QTE}
 
 function TapAnalogLeftQTE:init(data)
 	QTE.init(self, data)

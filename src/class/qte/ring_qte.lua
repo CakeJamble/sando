@@ -1,5 +1,8 @@
-require('class.ui.ring')
-RingQTE = Class{__includes =  QTE}
+local Ring = require('class.ui.ring')
+local Class = require('libs.hump.class')
+local QTE = require('libs.hump.qte')
+local flux = require('libs.flux')
+local RingQTE = Class{__includes =  QTE}
 
 function RingQTE:init(data)
 	QTE.init(self, data)
@@ -58,7 +61,7 @@ function RingQTE:gamepadpressed(joystick, button)
 			print('bad')
 			self.onComplete(false)
 			end
-			
+
 			if self.sliceIndex > self.ring.numSlices then
 				if not self.signalEmitted then
 					self.qteComplete = true
@@ -94,3 +97,4 @@ function RingQTE:draw()
 	self.ring:draw()
 end;
 
+return RingQTE

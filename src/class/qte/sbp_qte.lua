@@ -1,11 +1,11 @@
 --! filename: sbpQTE
-require('class.qte.qte')
-Class = require 'libs.hump.class'
+local QTE = require('class.qte.qte')
+local Class = require 'libs.hump.class'
 
 --[[ sbpQTE : Single Button Press QTE
 	- QTE for skills and basic attacks that only require a single buttons press at a given interval. 
 ]]
-sbpQTE = Class{__includes = QTE}
+local sbpQTE = Class{__includes = QTE}
 
 function sbpQTE:init()
 	QTE.init(self)
@@ -44,11 +44,11 @@ function sbpQTE:loadButtonImages(buttonDir)
 		},
 		b = {
 			raised = love.graphics.newImage(buttonPaths.bRaised),
-			pressed = love.graphics.newImage(buttonPaths.bPressed) 
+			pressed = love.graphics.newImage(buttonPaths.bPressed)
 		},
 		x = {
 			raised = love.graphics.newImage(buttonPaths.xRaised),
-			pressed = love.graphics.newImage(buttonPaths.xPressed) 
+			pressed = love.graphics.newImage(buttonPaths.xPressed)
 		},
 		y = {
 			raised = love.graphics.newImage(buttonPaths.yRaised),
@@ -103,3 +103,5 @@ function sbpQTE:draw()
 		love.graphics.draw(self.greatText, self.feedbackPos.x, self.feedbackPos.y)
 	end
 end;
+
+return sbpQTE
