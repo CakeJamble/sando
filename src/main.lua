@@ -1,15 +1,11 @@
 -- -- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
-Camera = require "libs.hump.camera"
-Signal = require "libs.hump.signal"
-Timer = require 'libs.hump.timer'
-flux = require 'libs.flux'
 
 -- Push globals (Screen Size)
 push = require "libs.push"
 local gameWidth, gameHeight = 640, 360
 local windowWidth, windowHeight = love.window.getDesktopDimensions()
-windowWidth, windowHeight = windowWidth * 0.5, windowHeight * 0.5 
+windowWidth, windowHeight = windowWidth * 0.5, windowHeight * 0.5
 push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
 
 states = {
@@ -29,7 +25,6 @@ function love.load()
   input = {joystick = nil}
   font = love.graphics.newFont('asset/thin_sans.ttf')
   love.graphics.setFont(font)
-  camera = Camera()
   Gamestate.registerEvents()
   Gamestate.switch(states['main_menu'])
   local joysticks = love.joystick.getJoysticks()

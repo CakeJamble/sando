@@ -1,7 +1,7 @@
 --! file: gamestates/character_select
-require("class.entities.character_team")
+local CharacterTeam = require("class.entities.character_team")
 require("util.globals")
-require("class.entities.character")
+local Character = require("class.entities.character")
 local loadCharacterData = require('util.character_loader')
 local JoystickUtils = require('util.joystick_utils')
 local character_select = {}
@@ -19,11 +19,11 @@ local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
 function character_select:init()
-  cursor = love.graphics.newImage(CURSOR_PATH)  
-  bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
-  marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
-  mariaPortrait = love.graphics.newImage(MARIA_PORTRAIT_PATH)
-  keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
+  self.cursor = love.graphics.newImage(CURSOR_PATH)
+  self.bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
+  self.marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
+  self.mariaPortrait = love.graphics.newImage(MARIA_PORTRAIT_PATH)
+  self.keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
 
   self.instructions = 'Select your team members'
   self.selectedContainerOptions = {
@@ -36,22 +36,22 @@ function character_select:init()
 end;
 
 function character_select:enter()
-  index = 0
-  spriteRow = 0
-  spriteCol = 0
-  spriteXOffset = 0
-  spriteYOffset = 0
-  numPlayableCharacters = 4
-  teamCount = 0
-  
-  selectedTeamIndices = {}
-  
+  self.index = 0
+  self.spriteRow = 0
+  self.spriteCol = 0
+  self.spriteXOffset = 0
+  self.spriteYOffset = 0
+  self.numPlayableCharacters = 4
+  self.teamCount = 0
+
+  self.selectedTeamIndices = {}
+
   for i=1,TEAM_CAP do
-    selectedTeamIndices[i] = {}
+    self.selectedTeamIndices[i] = {}
   end
 
   -- statPreview = character_select:setStatPreview()
-  
+
 end;
 
 function character_select:keypressed(key)
@@ -68,7 +68,7 @@ function character_select:keypressed(key)
   end
   -- statPreview = character_select:setStatPreview()
 end;
-  
+
 function character_select:gamepadpressed(joystick, button)
   if button == 'dpright' then
     character_select:set_right()
@@ -85,74 +85,74 @@ function character_select:gamepadpressed(joystick, button)
 end;
 
 function character_select:set_right()
-  if spriteCol < GRID_LENGTH then
-    spriteCol = spriteCol + 1
-    spriteXOffset = OFFSET * spriteCol
-    index = index + 1
-  else 
-    spriteCol = 0
-    spriteXOffset = 0
-    if spriteRow < GRID_LENGTH then
-      spriteRow = spriteRow + 1
-      spriteYOffset = spriteYOffset + OFFSET
-      index = index + 1
+  if self.spriteCol < GRID_LENGTH then
+    self.spriteCol = self.spriteCol + 1
+    self.spriteXOffset = OFFSET * self.spriteCol
+    self.index = self.index + 1
+  else
+    self.spriteCol = 0
+    self.spriteXOffset = 0
+    if self.spriteRow < GRID_LENGTH then
+      self.spriteRow = self.spriteRow + 1
+      self.spriteYOffset = self.spriteYOffset + OFFSET
+      self.index = self.index + 1
     else
-      spriteRow = 0
-      spriteYOffset = 0
-      index = 0
+      self.spriteRow = 0
+      self.spriteYOffset = 0
+      self.index = 0
     end
   end
 end;
 
 function character_select:set_left()
-  if spriteCol > 0 then
-    spriteCol = spriteCol - 1
-    index = index - 1
-  elseif spriteRow > 0 then
-    spriteRow = spriteRow - 1
-    spriteCol = GRID_LENGTH
-    spriteYOffset = OFFSET * spriteRow
-    index = index - 1
+  if self.spriteCol > 0 then
+    self.spriteCol = self.spriteCol - 1
+    self.index = self.index - 1
+  elseif self.spriteRow > 0 then
+    self.spriteRow = self.spriteRow - 1
+    self.spriteCol = GRID_LENGTH
+    self.spriteYOffset = OFFSET * self.spriteRow
+    self.index = self.index - 1
   else
-    spriteCol = GRID_LENGTH
-    spriteRow = GRID_LENGTH
-    spriteYOffset = OFFSET * spriteRow
-    index = numPlayableCharacters - 1
+    self.spriteCol = GRID_LENGTH
+    self.spriteRow = GRID_LENGTH
+    self.spriteYOffset = OFFSET * self.spriteRow
+    self.index = self.numPlayableCharacters - 1
   end
-  spriteXOffset = OFFSET * spriteCol
+  self.spriteXOffset = OFFSET * self.spriteCol
 end;
 
 function character_select:set_up()
-  if spriteRow > 0 then
-    spriteRow = spriteRow - 1
-    spriteYOffset = spriteRow * OFFSET
-    index = index - GRID_LENGTH
+  if self.spriteRow > 0 then
+    self.spriteRow = self.spriteRow - 1
+    self.spriteYOffset = self.spriteRow * OFFSET
+    self.index = self.index - GRID_LENGTH
   else
-    spriteRow = GRID_LENGTH
-    spriteYOffset = GRID_LENGTH * OFFSET
-    index = spriteCol + (spriteRow * GRID_LENGTH)
+    self.spriteRow = GRID_LENGTH
+    self.spriteYOffset = GRID_LENGTH * OFFSET
+    self.index = self.spriteCol + (self.spriteRow * GRID_LENGTH)
   end
 end;
 
 function character_select:set_down()
-  if spriteRow < GRID_LENGTH then
-    spriteRow = spriteRow + 1
-    spriteYOffset = spriteRow * OFFSET
-    index = index + GRID_LENGTH
+  if self.spriteRow < GRID_LENGTH then
+    self.spriteRow = self.spriteRow + 1
+    self.spriteYOffset = self.spriteRow * OFFSET
+    self.index = self.index + GRID_LENGTH
   else
-    spriteRow = 0
-    spriteYOffset = 0
-    index = spriteCol
+    self.spriteRow = 0
+    self.spriteYOffset = 0
+    self.index = self.spriteCol
   end
 end;
 
 function character_select:validate_selection()
-  if teamCount == TEAM_CAP then
+  if self.teamCount == TEAM_CAP then
     character_select:indicesToCharacters()
     Gamestate.switch(states['combat'])
   else
-    selectedTeamIndices[teamCount + 1] = index
-    teamCount = teamCount + 1
+    self.selectedTeamIndices[self.teamCount + 1] = self.index
+    self.teamCount = self.teamCount + 1
   end
 end;
 
@@ -161,34 +161,34 @@ end;
 function character_select:indicesToCharacters()
   local characterList = {}
   for i=1,TEAM_CAP do
-    if selectedTeamIndices[i] == 0 then
+    if self.selectedTeamIndices[i] == 0 then
       -- bake = Character(get_bake_stats(), 'a')
-      bake = Character(loadCharacterData('bake'), 'a')
+      local bake = Character(loadCharacterData('bake'), 'a')
       characterList[i] = bake
-    elseif selectedTeamIndices[i] == 1 then
+    elseif self.selectedTeamIndices[i] == 1 then
       -- marco = Character(get_marco_stats(), 'x')
-      marco = Character(loadCharacterData('marco'), 'x')
+      local marco = Character(loadCharacterData('marco'), 'x')
       characterList[i] = marco
-    elseif selectedTeamIndices[i] == 2 then
-      maria = Character(get_maria_stats(), 'b')
+    elseif self.selectedTeamIndices[i] == 2 then
+      local maria = Character(get_maria_stats(), 'b')
       characterList[i] = maria
-    elseif selectedTeamIndices[i] == 3 then
-      key = Character(get_key_stats(), 'y')
+    elseif self.selectedTeamIndices[i] == 3 then
+      local key = Character(get_key_stats(), 'y')
       characterList[i] = key
     end
   end
-  
-  characterTeam = CharacterTeam(characterList, TEAM_CAP)
+
+  local characterTeam = CharacterTeam(characterList, TEAM_CAP)
   saveCharacterTeam(characterTeam)
 end;
 
 function character_select:setStatPreview()
-  local statPreview = ''
-  if spriteRow == 0 and spriteCol == 0 then
+  local statPreview
+  if self.spriteRow == 0 and self.spriteCol == 0 then
     statPreview = character_select:statsToString(get_bake_stats())
-  elseif spriteRow == 0 and spriteCol == 1 then
+  elseif self.spriteRow == 0 and self.spriteCol == 1 then
     statPreview = character_select:statsToString(get_marco_stats())
-  elseif spriteRow == 1 and spriteCol == 0 then
+  elseif self.spriteRow == 1 and self.spriteCol == 0 then
     statPreview = character_select:statsToString(get_maria_stats())
   else
     statPreview = character_select:statsToString(get_key_stats())
@@ -217,23 +217,26 @@ end;
 function character_select:draw()
   push:start()
   -- Character Select Grid and Stats
-  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10, OFFSET * (GRID_LENGTH + 1) + 10)
-  love.graphics.draw(bakePortrait, SELECT_START, SELECT_START)
-  love.graphics.draw(marcoPortrait, SELECT_START + OFFSET, SELECT_START)
-  love.graphics.draw(mariaPortrait, SELECT_START, SELECT_START + OFFSET)
-  love.graphics.draw(keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
-  love.graphics.draw(cursor, SELECT_START + (spriteCol * OFFSET), SELECT_START+ (spriteRow * OFFSET))
+  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10,
+    OFFSET * (GRID_LENGTH + 1) + 10)
+  love.graphics.draw(self.bakePortrait, SELECT_START, SELECT_START)
+  love.graphics.draw(self.marcoPortrait, SELECT_START + OFFSET, SELECT_START)
+  love.graphics.draw(self.mariaPortrait, SELECT_START, SELECT_START + OFFSET)
+  love.graphics.draw(self.keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
+  love.graphics.draw(self.cursor, SELECT_START + (self.spriteCol * OFFSET), SELECT_START+ (self.spriteRow * OFFSET))
   -- love.graphics.print(statPreview, 300, 100)
 
   -- Instructions
   love.graphics.print(self.instructions, 240, 20)
 
-  if teamCount < TEAM_CAP then
-    love.graphics.print('Choose ' .. TEAM_CAP - teamCount .. ' characters', 240, 50)
+  if self.teamCount < TEAM_CAP then
+    love.graphics.print('Choose ' .. TEAM_CAP - self.teamCount .. ' characters', 240, 50)
   else
     love.graphics.print('Press confirm to begin', 240, 50)
   end
-  love.graphics.rectangle(self.selectedContainerOptions.mode, self.selectedContainerOptions.x, self.selectedContainerOptions.y, self.selectedContainerOptions.width, self.selectedContainerOptions.height)
+  love.graphics.rectangle(self.selectedContainerOptions.mode,
+    self.selectedContainerOptions.x, self.selectedContainerOptions.y,
+    self.selectedContainerOptions.width, self.selectedContainerOptions.height)
   push:finish()
 end;
 

@@ -1,5 +1,6 @@
-require('class.qte.ring_qte')
-ComboRingQTE = Class{__includes = RingQTE}
+local Class = require('libs.hump.class')
+local RingQTE = require('class.qte.ring_qte')
+local ComboRingQTE = Class{__includes = RingQTE}
 
 function ComboRingQTE:init(data)
 	RingQTE.init(self, data)
@@ -87,3 +88,5 @@ function ComboRingQTE:draw()
 		self.rings[self.index]:draw()
 	end
 end;
+
+return ComboRingQTE

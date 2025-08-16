@@ -1,5 +1,5 @@
 require('util.globals')
-require('class.entities.projectile')
+local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 
@@ -8,7 +8,7 @@ return function(ref, qteManager)
   local skill = ref.skill
   local targets = ref.targets
   local tPos = {}
-  for i,target in ipairs(targets) do
+  for _,target in ipairs(targets) do
     table.insert(tPos, target.hitbox)
   end
   local damage = ref.battleStats['attack'] + skill.damage
@@ -43,7 +43,7 @@ return function(ref, qteManager)
 
   local flame = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
   table.insert(ref.projectiles, flame)
-  
+
   local checkCollision = function()
     for i,target in ipairs(targets) do
       if not hasCollided[i] and Collision.rectsOverlap(flame.hitbox, target.hitbox) then
@@ -61,7 +61,7 @@ return function(ref, qteManager)
 
   for i=2, #goalPos do
     local t = flameTravelTime
-    
+
     -- Make flame faster so it can be jumped over
     if i % 2 == 1 then
       t = t / 3

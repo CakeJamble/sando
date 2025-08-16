@@ -9,11 +9,11 @@
     to manage that functionality.
 ]]
 
-require('class.item.gear')
-require('class.item.tool_manager')
+local Gear = require('class.item.gear')
+local ToolManager = require('class.item.tool_manager')
 
-Class = require 'libs.hump.class'
-Inventory = Class{
+local Class = require 'libs.hump.class'
+local Inventory = Class{
     cabinetPath = 'asset/sprites/pause/2cabinet.png'
 }
 
@@ -63,7 +63,7 @@ function Inventory:popConsumable(index)
     if #self.consumables == 0 then
         error('cannot pop off empty table')
     end
-    return table.remove(self.consumables, index)    
+    return table.remove(self.consumables, index)
 end;
 
 function Inventory:addTool(tool)
@@ -113,3 +113,5 @@ function Inventory:draw()
         gear:draw()
     end
 end;
+
+return Inventory

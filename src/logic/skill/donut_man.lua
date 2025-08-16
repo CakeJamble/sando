@@ -1,6 +1,7 @@
 require('util.globals')
 local flux = require('libs.flux')
-local Collision = require('libs.collision')
+local Projectile = require('class.entities.projectile')
+local Timer = require('libs.hump.timer')
 
 return function(ref, qteManager)
   local skill = ref.skill
@@ -33,7 +34,7 @@ return function(ref, qteManager)
             function()
               target:heal(5)
               table.remove(ref.projectiles, 1)
-              ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
+              ref:endTurn(skill.duration, nil, skill.returnTweenType)
             end)
         ref.tweens['attack'] = attack
     end)

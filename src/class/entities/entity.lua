@@ -1,6 +1,10 @@
-require('class.ui.progress_bar')
-Class = require "libs.hump.class"
-Entity = Class{
+local Signal = require('libs.hump.signal')
+local ProgressBar = require('class.ui.progress_bar')
+local Class = require "libs.hump.class"
+local Timer = require('libs.hump.timer')
+local flux = require('libs.flux')
+
+local Entity = Class{
   movementTime = 2,
   drawHitboxes = false,
   drawHitboxPositions = false,
@@ -114,14 +118,14 @@ function Entity:startTurn()
   self.turnFinish = false
   self.state = 'offense'
   self.progressBar:reset()
-  
+
   if self.tweens['pbTween'] then
     self.tweens['pbTween']:stop()
     self.tweens['pbTween'] = nil
   end
 
   if self.hazards then
-    for i,hazard in ipairs(self.hazards) do
+    for _,hazard in ipairs(self.hazards) do
       hazard:proc()
     end
   end
@@ -143,7 +147,7 @@ function Entity:setTargets(targets)
     ['characters'] = targets.characters,
     ['enemies'] = targets.enemies
   }
-  
+
   print('targets set for ' .. self.entityName)
 end;
 
@@ -154,9 +158,10 @@ function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType
     local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
       :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
     :oncomplete(
-      function() 
+      function()
         self:reset(); Signal.emit('OnEndTurn', 0); 
       end)
+    self.tweens['stageBack'] = stageBack
   else
     Timer.after(delay, function() 
       self:reset(); Signal.emit('OnEndTurn', 0) 
@@ -275,12 +280,11 @@ function Entity:heal(amount) --> void
 end;
 
 function Entity:takeDamage(amount) --> void
-  local isDamage = true
   local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
   local newHP = math.max(0, self.battleStats["hp"] - self.amount)
-  
+
   if Entity.tweenHP then
     print('slow tween beginning for HP')
     local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
@@ -289,7 +293,7 @@ function Entity:takeDamage(amount) --> void
   else
     self.battleStats["hp"] = newHP
   end
-  
+
   if self:isAlive() then
     self.currentAnimTag = 'flinch'
     Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
@@ -322,26 +326,12 @@ end;
   Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
 function Entity:setAnimations(path)
   local baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
-  for i,anim in ipairs(baseAnimationTypes) do
+  for _,anim in ipairs(baseAnimationTypes) do
     local image = love.graphics.newImage(path .. anim .. '.png')
     self.animations[anim] = self:populateFrames(image)
   end
 
-
-  -- Images
-  -- local path = 'asset/sprites/entities/' .. subdir .. self.entityName .. '/'
-  -- local idle = love.graphics.newImage(path .. 'idle.png')
-  -- local move = love.graphics.newImage(path .. 'move_x.png')
-  -- self.animations['idle'] = self:populateFrames(idle)
-  -- self.animations['move'] = self:populateFrames(move)
-
-  -- all characters have a basic attack
-  if subdir == 'character/' then
-    local basicSprite = love.graphics.newImage(path .. 'basic.png')
-    self.animations['basic'] = self:populateFrames(basicSprite)
-  end
-
-  for i,skill in ipairs(self.skillPool) do
+  for _,skill in ipairs(self.skillPool) do
     local skillPath = path .. skill.tag .. '.png'
     local image = love.graphics.newImage(skillPath)
     self.animations[skill.tag] = self:populateFrames(image)
@@ -350,7 +340,7 @@ end;
 
 function Entity:setSFX(path, baseSFXTypes)
   local sfxList = {}
-  for i,sfx in ipairs(baseSFXTypes) do
+  for _,sfx in ipairs(baseSFXTypes) do
     local sfxPath = "asset/audio/entities/" .. path .. self.entityName .. "/" .. sfx .. ".wav"
     local src = love.audio.newSource(sfxPath, "static")
     sfxList[sfx] = src
@@ -362,17 +352,17 @@ function Entity:populateFrames(image, duration)
   local animation = {}
   animation.spriteSheet = image
   animation.quads = {}
-  
+
   for y = 0, image:getHeight() - self.frameHeight, self.frameHeight do
     for x = 0, image:getWidth() - self.frameWidth, self.frameWidth do
       table.insert(animation.quads, love.graphics.newQuad(x, y, self.frameWidth, self.frameHeight, image:getDimensions()))
     end
   end
-  
+
   animation.duration = duration or 1
   animation.currentTime = 0
   animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
-  
+
   return animation
 end;
 
@@ -385,18 +375,12 @@ function Entity:update(dt) --> void
   if Entity.isATB then
     self.progressBar:setPos(self.pos)
   end
-  
-  for i,projectile in ipairs(self.projectiles) do
+
+  for _,projectile in ipairs(self.projectiles) do
     projectile:update(dt)
   end
-  
+
   local animation = self.animations[self.currentAnimTag]
-  -- if self.state == 'idle' then
-    -- animation = self.movementAnimations.idle
-  -- elseif self.state == 'move' or 'moveback' then
-    -- animation = self.movementAnimations.moveX
-  -- end
-  
   animation.currentTime = animation.currentTime + dt
   if animation.currentTime >= animation.duration then
     if not self:isAlive() and self.currentAnimTag == 'ko' then
@@ -416,14 +400,14 @@ function Entity:update(dt) --> void
 end;
 
 -- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
-function Entity:draw() --> void    
+function Entity:draw() --> void
   -- Shadow
   if self:isAlive() then
     love.graphics.setColor(0, 0, 0, 0.4)
     love.graphics.ellipse("fill", self.shadowDims.x, self.shadowDims.y, self.shadowDims.w, self.shadowDims.h)
     love.graphics.setColor(1, 1, 1, 1)
   end
-  
+
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)
     love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
@@ -437,7 +421,7 @@ function Entity:draw() --> void
   love.graphics.setColor(1,1,1,self.pos.a)
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
   love.graphics.setColor(1,1,1,1)
-  
+
   if Entity.drawHitboxes then
     love.graphics.setColor(1, 0, 0, 0.4)
     love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
@@ -453,7 +437,7 @@ function Entity:draw() --> void
     love.graphics.setColor(1,1,1)
   end
 
-  for i,projectile in ipairs(self.projectiles) do
+  for _,projectile in ipairs(self.projectiles) do
     projectile:draw()
   end
 
@@ -476,3 +460,5 @@ end;
 function Entity:stopProgressBar()
   self.tweens['pbTween']:stop()
 end;
+
+return Entity

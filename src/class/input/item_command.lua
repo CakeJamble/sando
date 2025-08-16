@@ -1,5 +1,7 @@
-require('class.input.command')
-ItemCommand = Class{__includes = Command}
+local Command = require('class.input.command')
+local Class = require('libs.hump.class')
+
+local ItemCommand = Class{__includes = Command}
 
 function ItemCommand:init(entity, item, qteManager)
 	Command.init(self, entity)
@@ -11,11 +13,11 @@ end;
 
 function ItemCommand:start(turnManager)
 	local projectileMade = function(projectile)
-		table.insert(entity.projectiles, projectile)
+		table.insert(self.entity.projectiles, projectile)
 	end
 	local despawnProjectile = function(index)
 		local i = index or 1
-		table.remove(entity.projectiles, i)
+		table.remove(self.entity.projectiles, i)
 	end
 	self:registerSignal('ProjectileMade', projectileMade)
 	self:registerSignal('DespawnProjectile', despawnProjectile)
@@ -48,3 +50,5 @@ function ItemCommand:update(dt)
 		self.qteManager:update(dt)
 	end
 end;
+
+return ItemCommand

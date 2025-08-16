@@ -1,7 +1,6 @@
--- filename: progress_bar
-Class = require 'libs.hump.class'
+local Class = require 'libs.hump.class'
 
-ProgressBar = Class{}
+local ProgressBar = Class{}
 
 function ProgressBar:init(targetPos, options, isOffensive)
 	self.active = true
@@ -33,8 +32,8 @@ function ProgressBar:init(targetPos, options, isOffensive)
 	end
 end;
 
---[[	When using buffs/heals we want the 
-			Progress Bar to display near the entity using the skill, 
+--[[	When using buffs/heals we want the
+			Progress Bar to display near the entity using the skill,
 			rather than the target of the skill ]]
 function ProgressBar:reversePosOffsets()
 	self.pos.x = self.pos.x - 2 * self.offsets.x
@@ -61,10 +60,12 @@ function ProgressBar:reset()
 end;
 
 function ProgressBar:draw()
-	love.graphics.rectangle(self.containerOptions.mode, self.pos.x, self.pos.y, self.containerOptions.width, self.containerOptions.height)
+	love.graphics.rectangle(self.containerOptions.mode, self.pos.x, self.pos.y,
+		self.containerOptions.width, self.containerOptions.height)
 	love.graphics.setColor(self.meterOptions.color[1], self.meterOptions.color[2], self.meterOptions.color[3])
-	love.graphics.rectangle(self.meterOptions.mode, self.pos.x, self.pos.y, self.meterOptions.width, self.meterOptions.height)
+	love.graphics.rectangle(self.meterOptions.mode, self.pos.x, self.pos.y,
+		self.meterOptions.width, self.meterOptions.height)
 	love.graphics.setColor(1, 1, 1)
 end;
 
-
+return ProgressBar

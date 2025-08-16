@@ -1,7 +1,11 @@
 --! filename: hold_sbp_qte
-require('class.ui.progress_bar')
-require('class.qte.qte')
-HoldSBP = Class{__includes = QTE}
+local ProgressBar = require('class.ui.progress_bar')
+local QTE = require('class.qte.qte')
+local Class = require('libs.hump.class')
+local Signal = require('libs.hump.signal')
+local flux = require('libs.flux')
+
+local HoldSBP = Class{__includes = QTE}
 
 function HoldSBP:init(data)
 	-- progress bar
@@ -16,10 +20,10 @@ function HoldSBP:init(data)
 	self.waitTween = nil
 	self.progressTween = nil
 	self.progressBarComplete = false
-	
+
 	self.actionButton = nil
 	self.isActionButtonPressed = false
-	
+
 	self.waitForPlayer = {
 		curr = 0,
 		fin = data.waitDuration
@@ -84,7 +88,7 @@ function HoldSBP:handleQTE()
 	if self.isActionButtonPressed then
 		local goalWidth = self.progressBar.containerOptions.width
 		print('starting progress tween')
-		
+
 		-- Start here because QTE happens alongside movement dictated by action's logic
 		self.onComplete()
 
@@ -172,6 +176,9 @@ function HoldSBP:draw()
 		-- love.graphics.setColor(0, 0, 0)
 		love.graphics.circle('fill', self.buttonUIPos.x + 32, self.buttonUIPos.y + 32, 25)
 		love.graphics.setColor(1,1,1)
-		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.buttonUIPos.x + 14, self.buttonUIPos.y + 14, 0, self.buttonUIScale, self.buttonUIScale)
+		love.graphics.draw(self.buttonUI[self.buttonUIIndex], self.buttonUIPos.x + 14, self.buttonUIPos.y + 14, 0,
+			self.buttonUIScale, self.buttonUIScale)
 	end
 end;
+
+return HoldSBP

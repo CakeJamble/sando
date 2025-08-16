@@ -1,0 +1,1 @@
+globals = { "love", "Gamestate", "states", "font", "push", "input" }

@@ -1,9 +1,6 @@
---! filename: button
-
-require('class.ui.button')
-
-Class = require 'libs.hump.class'
-SoloButton = Class{__includes = Button}
+local Button = require('class.ui.button')
+local Class = require 'libs.hump.class'
+local SoloButton = Class{__includes = Button}
 
 function SoloButton:init(pos, index, basicAttack)
   Button.init(self, pos, index, 'solo_lame.png')
@@ -11,3 +8,5 @@ function SoloButton:init(pos, index, basicAttack)
   self.active = false
   self.description = 'Attack with a basic attack'
 end;
+
+return SoloButton

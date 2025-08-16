@@ -1,8 +1,9 @@
 --! filename: flour button
-require('class.ui.button')
-require('class.ui.submenu_button')
-Class = require 'libs.hump.class'
-FlourButton = Class{__includes = SubMenuButton}
+local SubMenuButton = require('class.ui.submenu_button')
+local Signal = require('libs.hump.signal')
+local Class = require 'libs.hump.class'
+
+local FlourButton = Class{__includes = SubMenuButton}
 
 function FlourButton:init(pos, index, skillList, actionButton)
   SubMenuButton.init(self, pos, index, 'flour.png', actionButton, skillList)
@@ -11,7 +12,7 @@ end;
 
 function FlourButton:skillListToStr() -- override
   local result = ''
-  for i,skill in ipairs(self.actionList) do
+  for _,skill in ipairs(self.actionList) do
     result = result .. skill.name .. '\t' .. self.actionList.cost .. '\n'
   end
   return result
@@ -24,7 +25,7 @@ function FlourButton:validateSkillCosts(currentFP)
 end;
 
 function FlourButton:keypressed(key)
-  if key == 'down' or key == 'right' then 
+  if key == 'down' or key == 'right' then
     self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
   elseif key == 'up' or key == 'left' then
     if self.skillIndex <= 1 then
@@ -44,3 +45,5 @@ function FlourButton:gamepadpressed(joystick, button)
     Signal.emit('SkillDeselected')
   end
 end;
+
+return FlourButton

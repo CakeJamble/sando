@@ -1,4 +1,6 @@
-Projectile = Class{drawHitboxes = false}
+local flux = require('libs.flux')
+local Class = require('libs.hump.class')
+local Projectile = Class{drawHitboxes = false}
 
 function Projectile:init(x, y, castsShadow, index)
 	self.pos = {x=x, y=y}
@@ -54,3 +56,5 @@ function Projectile:draw()
     love.graphics.setColor(1, 1, 1)
   end
 end;
+
+return Projectile

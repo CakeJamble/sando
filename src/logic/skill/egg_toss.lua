@@ -1,5 +1,5 @@
 require('util.globals')
-require('class.entities.projectile')
+local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 
@@ -9,7 +9,7 @@ return function(ref, qteManager)
   local damage = ref.battleStats['attack'] + skill.damage
 
   local tPos = {}
-  for i,target in ipairs(targets) do
+  for _,target in ipairs(targets) do
     local pos = {
       x = target.hitbox.x + target.hitbox.w / 2,
       y = target.hitbox.y + target.hitbox.h / 3

@@ -1,7 +1,7 @@
 --! filename: qte
 
-Class = require 'libs.hump.class'
-QTE = Class{
+local Class = require 'libs.hump.class'
+local QTE = Class{
 	feedbackDir = 'asset/sprites/combat/qte/feedback/',
 	inputDir = 'asset/sprites/input_icons/'
 }
@@ -18,7 +18,7 @@ function QTE:init(data)
 
 	self.instructions = data.instructions
 	self.instructionsPos = {x = 200, y = 80}
-	
+
 	self.buttonUI = nil
 	self.buttonUIPos = {x=0,y=0}
 	self.buttonUIScale = 2.5
@@ -32,10 +32,10 @@ function QTE:init(data)
 end;
 
 function QTE:readyCamera(isOffensive)
-	if isOffensive then 
-		self.focusSelf = false 
-	else 
-		self.focusSelf = true 
+	if isOffensive then
+		self.focusSelf = false
+	else
+		self.focusSelf = true
 	end
 end;
 
@@ -59,3 +59,5 @@ function QTE:draw()
 		love.graphics.setColor(1,1,1,1)
 	end
 end;
+
+return QTE

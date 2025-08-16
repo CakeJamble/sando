@@ -10,7 +10,7 @@ local function loadCharacterData(entityName)
 	data.basic = basicAttack
 
 	local skillPool = {}
-	for i,skillName in ipairs(data.skillPool) do
+	for _,skillName in ipairs(data.skillPool) do
 		local skill = loadSkill(skillName)
 		table.insert(skillPool, skill)
 	end

@@ -1,8 +1,8 @@
-require('class.ui.button')
-require('class.ui.submenu_button')
-Class = require('libs.hump.class')
+local SubMenuButton = require('class.ui.submenu_button')
+local Signal = require('libs.hump.signal')
+local Class = require('libs.hump.class')
 
-ItemButton = Class{__includes = SubMenuButton}
+local ItemButton = Class{__includes = SubMenuButton}
 
 function ItemButton:init(pos, index, itemList, actionButton)
   SubMenuButton.init(self, pos, index, 'item.png', actionButton, itemList)
@@ -18,3 +18,5 @@ function ItemButton:gamepadpressed(joystick, button)
     Signal.emit('ItemDeselected')
   end
 end;
+
+return ItemButton

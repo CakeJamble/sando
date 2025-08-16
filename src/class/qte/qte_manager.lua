@@ -1,12 +1,11 @@
 --! filename: qte_manager
-require('class.qte.qte')
-require('class.qte.sbp_qte')
-require('class.qte.hold_sbp_qte')
-require('class.qte.mbp_qte')
-require('class.qte.rand_sbp_qte')
-require('class.qte.ring_qte')
-require('class.qte.combo_ring_qte')
-require('class.qte.tap_analog_left_qte')
+-- require('class.qte.sbp_qte')
+local HoldSBP = require('class.qte.hold_sbp_qte')
+local mbpQTE = require('class.qte.mbp_qte')
+local randSBP = require('class.qte.rand_sbp_qte')
+local RingQTE = require('class.qte.ring_qte')
+local ComboRingQTE = require('class.qte.combo_ring_qte')
+local TapAnalogLeftQTE = require('class.qte.tap_analog_left_qte')
 
 local loadQTE = require 'util.qte_loader'
 
@@ -19,14 +18,15 @@ local QTEClasses = {
 	tap_analog_left_qte = TapAnalogLeftQTE
 }
 
-Class = require 'libs.hump.class'
-QTEManager = Class{}
+local Signal = require('libs.hump.signal')
+local Class = require 'libs.hump.class'
+local QTEManager = Class{}
 
 function QTEManager:init(characterTeam)
 	self.qteInits = self:defineQTESetup()
 	self.buttons = self:loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
 	self.qteTable = self:loadQTEData(characterTeam.members)
-	
+
 	self.activeQTE = nil
 
 	Signal.register('QTESuccess',
@@ -127,9 +127,9 @@ end;
 
 function QTEManager:loadQTEData(members)
 	local result = {}
-	for i,member in ipairs(members) do
+	for _,member in ipairs(members) do
 		local skillPool = member.skillPool
-		for i,skill in ipairs(skillPool) do
+		for _,skill in ipairs(skillPool) do
 			local qteName = skill.qteType
 			if not result[qteName] then
 				-- result[qteName] = loadQTE(qteName)
@@ -164,6 +164,7 @@ function QTEManager:getInstructions(qteType, actionButton)
 		result = 'Press ' .. string.upper(actionButton) .. ' just before hitting the enemy!'
 	elseif qteType == 'stick_move' then
 	    --do
+	    print('hello')
 	elseif qteType == 'mbp' then
 		result = 'Press the buttons in order!'
 	elseif qteType == 'hold_sbp' then
@@ -200,3 +201,5 @@ function QTEManager:draw()
 		camera:attach()
 	end
 end;
+
+return QTEManager

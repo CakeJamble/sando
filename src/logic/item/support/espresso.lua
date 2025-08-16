@@ -1,6 +1,6 @@
 require('util.globals')
 local flux = require('libs.flux')
-local Collision = require('libs.collision')
+local Projectile = require('class.entities.projectile')
 
 return function(item, entity)
 	local target = entity.targets[1]
@@ -20,7 +20,7 @@ return function(item, entity)
   table.insert(entity.projectiles, espresso)
 
       -- Tween projectile to the target in an arc (quadout then quad in for feel of gravity)
-  local item = flux.to(espresso.pos, projectileFlyingTime / 2, {x = xMidPoint, y = arcHeight})
+  local action = flux.to(espresso.pos, projectileFlyingTime / 2, {x = xMidPoint, y = arcHeight})
     :ease('quadout')
     :after(espresso.pos, projectileFlyingTime / 2, {x = goalX, y = goalY})
       :ease('quadin')
@@ -30,5 +30,5 @@ return function(item, entity)
           table.remove(entity.projectiles, 1)
           entity:endTurn(item.duration)
         end)
-    entity.tweens['item'] = item
+    entity.tweens['item'] = action
 end;

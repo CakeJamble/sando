@@ -1,6 +1,6 @@
---! filename: button
-Class = require 'libs.hump.class'
-Button = Class{BASE_DX = 300, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/',
+local flux = require('libs.flux')
+local Class = require 'libs.hump.class'
+local Button = Class{BASE_DX = 300, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/',
 moveDuration = 0.25, SIDE_BUTTON_SCALE = 0.75, BACK_BUTTON_SCALE = 0.5, MOVE_SCALE=0.5}
 
 function Button:init(pos, index, path)
@@ -33,15 +33,14 @@ function Button:init(pos, index, path)
     self.descriptionPos = {x = 200, y = 300}
     self.moveDuration = Button.moveDuration
     self.easeType = 'linear'
-    
 end;
 
 function Button:tween(landingPos, duration, easeType)
-  flux.to(self.pos, duration, 
+  flux.to(self.pos, duration,
     {
       x     = landingPos.x,
       y     = landingPos.y,
-      scale = landingPos.scale 
+      scale = landingPos.scale
     })
     :ease(easeType)
 end;
@@ -74,15 +73,8 @@ function Button:setIsActiveButton(isActive)
   end
 end;
 
-
--- function Button:update(dt)
---   if Button.isRotatingRight(self) then
---     Button.rotateRight(self, dt)
---   elseif Button.isRotatingLeft(self) then
---     Button.rotateLeft(self, dt)
---   end
--- end;
-
 function Button:draw()
     love.graphics.draw(self.button, self.pos.x, self.pos.y, 0, self.pos.scale, self.pos.scale)
 end;
+
+return Button

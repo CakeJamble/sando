@@ -1,6 +1,7 @@
 require('util.globals')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
+local Timer = require('libs.hump.timer')
 
 return function(ref)
 	local skill = ref.skill
@@ -28,7 +29,7 @@ return function(ref)
 
   -- Move from starting position to staging position before changing to animation assoc with skill
   local stage = flux.to(ref.pos, skill.stagingTime, {x = stagingPos.x, y = stagingPos.y})
-  
+
   ref.currentAnimTag = 'move'
   ref.tweens['stage'] = stage
   stage:oncomplete(
@@ -40,7 +41,7 @@ return function(ref)
               :ease(skill.beginTweenType)
               :onupdate(function()
                 if not hasCollided and Collision.rectsOverlap(ref.hitbox, target.hitbox) then
-                  hasCollided = true  
+                  hasCollided = true
                   -- check counter-attack
                   if Collision.isOverhead(ref.hitbox, target.hitbox) then
                     ref:takeDamage(target.battleStats['attack'])
@@ -56,7 +57,7 @@ return function(ref)
                   end
                 end
               end)
-              :oncomplete(function() 
+              :oncomplete(function()
                 ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
               end)
               ref.tweens['attack'] = attack
