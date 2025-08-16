@@ -25,7 +25,7 @@ function pause:enter(previous, inventory)
 
     self.menuSprite = love.graphics.newImage('asset/sprites/pause/menu.png')
     self.menuCursor = love.graphics.newImage('asset/sprites/pause/cursor.png')
-    
+
     self.inventory = inventory
 end;
 

@@ -1,12 +1,12 @@
 --! file: gamestates/combat
 local Entity = require('class.entities.entity')
-local Enemy = require("class.entities.enemy")
-local ActionUI = require("class.ui.action_ui")
+-- local Enemy = require("class.entities.enemy")
+-- local ActionUI = require("class.ui.action_ui")
 local Projectile = require('class.entities.projectile')
-local character_select = require('gamestates.character_select')
+-- local character_select = require('gamestates.character_select')
 require("util.globals")
-local CharacterTeam = require('class.entities.character_team')
-local EnemyTeam = require('class.entities.enemy_team')
+-- local CharacterTeam = require('class.entities.character_team')
+-- local EnemyTeam = require('class.entities.enemy_team')
 -- require('class.input.command_manager')
 -- require('class.scheduler.turn_manager')
 local ATBScheduler = require('class.scheduler.atb_scheduler')
@@ -27,11 +27,6 @@ local atbSystem = ffi.new("bool[1]", false)
 local combat = {}
 local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
--- local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
--- local BAKE_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'bake_portrait.png'
--- local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
--- local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
--- local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 local COMBAT_UI_PATH = 'asset/sprites/combat/'
 local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
 local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
@@ -89,7 +84,8 @@ function combat:init()
 
       local delay = 0.25
       local newHP = math.min(character.totalHP, math.max(0, character.currHP - amount))
-      flux.to(self.characterTeamHP[self.targetedCharacterIndex], healthDropDuration, {currHP = newHP}):ease('linear'):delay(delay)
+      flux.to(self.characterTeamHP[self.targetedCharacterIndex], healthDropDuration, {currHP = newHP})
+        :ease('linear'):delay(delay)
     end
   )
 end;
