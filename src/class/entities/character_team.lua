@@ -1,14 +1,14 @@
 --! filename: character team
-require('class.entities.team')
-require('class.item.inventory')
-require('class.entities.character')
-require('class.ui.action_ui')
+local Team = require('class.entities.team')
+local Inventory = require('class.item.inventory')
+local Character = require('class.entities.character')
+local ActionUI = require('class.ui.action_ui')
+local Class = require('libs.hump.class')
 
 local loadItem = require 'util.item_loader'
 local espresso = loadItem('espresso')
 
-Class = require 'libs.hump.class'
-CharacterTeam = Class{__includes = Team}
+local CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters)
     Team.init(self, characters)
@@ -38,25 +38,27 @@ function CharacterTeam:startDefense(incomingSkill)
 end;
 
 function CharacterTeam:keypressed(key)
-  for i,member in pairs(self.members) do
+  for _,member in pairs(self.members) do
     member:keypressed(key)
   end
 end;
 
 function CharacterTeam:gamepadpressed(joystick, button)
-  for i,member in pairs(self.members) do
+  for _,member in pairs(self.members) do
     member:gamepadpressed(joystick, button)
   end
 end;
 
 function CharacterTeam:gamepadreleased(joystick, button)
-  for i,member in ipairs(self.members) do
+  for _,member in ipairs(self.members) do
     member:gamepadreleased(joystick, button)
   end
 end;
 
 function CharacterTeam:registerKO(koCharacters)
-  for i,character in ipairs(koCharacters) do
+  for _,character in ipairs(koCharacters) do
     table.insert(self.koCharacters, character)
   end
 end;
+
+return CharacterTeam
