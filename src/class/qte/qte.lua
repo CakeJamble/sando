@@ -1,6 +1,5 @@
---! filename: qte
-
 local Class = require 'libs.hump.class'
+
 local QTE = Class{
 	feedbackDir = 'asset/sprites/combat/qte/feedback/',
 	inputDir = 'asset/sprites/input_icons/'

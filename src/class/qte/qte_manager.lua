@@ -24,7 +24,7 @@ local QTEManager = Class{}
 
 function QTEManager:init(characterTeam)
 	self.qteInits = self:defineQTESetup()
-	self.buttons = self:loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
+	self.buttons = self.loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
 	self.qteTable = self:loadQTEData(characterTeam.members)
 
 	self.activeQTE = nil
@@ -38,9 +38,9 @@ function QTEManager:init(characterTeam)
 	Signal.register('OnEndTurn', function() self.activeQTE = nil end)
 end;
 
-function QTEManager:loadButtonImages(buttonDir)
+function QTEManager.loadButtonImages(buttonDir)
 	local blackButtonsDir = buttonDir .. 'buttons_black/'
-	local pressedButtonsDir = buttonDir .. 'buttons_pressed/' 
+	local pressedButtonsDir = buttonDir .. 'buttons_pressed/'
 
 	local buttonPaths = {
 		aRaised = blackButtonsDir 		.. 'btn_a.png',
@@ -80,20 +80,20 @@ end;
 
 function QTEManager:defineQTESetup()
 	local qteInits = {
-		hold_sbp = function(self, actionButton)
+		hold_sbp = function(actionButton)
 			local qte = self.qteTable.hold_sbp
 			qte:setActionButton(actionButton, self.buttons[actionButton])
 			qte.instructions = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
 			return qte
 		end,
 
-		mbp = function(self)
+		mbp = function()
 			local qte = self.qteTable.mbp
 			qte:createInputSequence(self.buttons)
 			return qte
 		end,
 
-		rand_sbp = function(self)
+		rand_sbp = function()
 			local buttons = {'a', 'b', 'x', 'y'}
 			local randIndex = buttons[love.math.random(1, #buttons)]
 			local qte = self.qteTable.rand_sbp
@@ -103,19 +103,19 @@ function QTEManager:defineQTESetup()
 			return qte
 		end,
 
-		ring_qte = function(self, actionButton)
+		ring_qte = function(actionButton)
 			local qte = self.qteTable.ring_qte
-			qte:setActionButton(actionButton, buttonUI)
+			qte:setActionButton(actionButton)
 			return qte
 		end,
 
-		combo_ring_qte = function(self, actionButton)
+		combo_ring_qte = function(actionButton)
 			local qte = self.qteTable.combo_ring_qte
-			qte:setActionButton(actionButton, buttonUI)
+			qte:setActionButton(actionButton)
 			return qte
 		end,
 
-		tap_analog_left_qte = function(self)
+		tap_analog_left_qte = function()
 			local qte = self.qteTable.tap_analog_left_qte
 			-- set joystick UI here
 			return qte
@@ -125,7 +125,7 @@ function QTEManager:defineQTESetup()
 	return qteInits
 end;
 
-function QTEManager:loadQTEData(members)
+function QTEManager.loadQTEData(members)
 	local result = {}
 	for _,member in ipairs(members) do
 		local skillPool = member.skillPool
@@ -149,7 +149,7 @@ function QTEManager:reset()
 	end
 end;
 
-function QTEManager:setQTE(qteType, actionButton, skill)
+function QTEManager:setQTE(qteType, actionButton)
 	local init = self.qteInits[qteType]
 	if init then
 		self.activeQTE = init(self, actionButton)
@@ -158,7 +158,7 @@ function QTEManager:setQTE(qteType, actionButton, skill)
 	end
 end;
 
-function QTEManager:getInstructions(qteType, actionButton)
+function QTEManager.getInstructions(qteType, actionButton)
 	local result
 	if qteType == 'sbp' then
 		result = 'Press ' .. string.upper(actionButton) .. ' just before hitting the enemy!'

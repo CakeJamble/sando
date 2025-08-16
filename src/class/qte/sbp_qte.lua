@@ -3,7 +3,7 @@ local QTE = require('class.qte.qte')
 local Class = require 'libs.hump.class'
 
 --[[ sbpQTE : Single Button Press QTE
-	- QTE for skills and basic attacks that only require a single buttons press at a given interval. 
+	- QTE for skills and basic attacks that only require a single buttons press at a given interval.
 ]]
 local sbpQTE = Class{__includes = QTE}
 
@@ -16,7 +16,7 @@ function sbpQTE:init()
 	self.frameWindow = nil
 
 	-- face buttons
-	self.buttons = self:loadButtonImages(QTE.inputDir .. 'face_buttons/')
+	self.buttons = self.loadButtonImages(QTE.inputDir .. 'face_buttons/')
 	self.actionButton = nil
 	self.actionButtonQTE = nil
 
@@ -25,7 +25,7 @@ function sbpQTE:init()
 	self.showGreatText = false
 end;
 
-function sbpQTE:loadButtonImages(buttonDir)
+function sbpQTE.loadButtonImages(buttonDir)
 	local buttonPaths = {
 		aRaised = buttonDir .. 'a_raised.png',
 		bRaised = buttonDir .. 'b_raised.png',

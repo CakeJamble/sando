@@ -1,6 +1,6 @@
 -- -- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
-
+Camera = require('libs.hump.camera')
 -- Push globals (Screen Size)
 push = require "libs.push"
 local gameWidth, gameHeight = 640, 360
@@ -27,6 +27,7 @@ function love.load()
   love.graphics.setFont(font)
   Gamestate.registerEvents()
   Gamestate.switch(states['main_menu'])
+  camera = Camera()
   local joysticks = love.joystick.getJoysticks()
   if joysticks[1] then
     input.joystick = joysticks[1]
