@@ -1,6 +1,7 @@
 require('util.globals')
-require('class.entities.projectile')
+local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
+local Signal = require('libs.hump.signal')
 local Collision = require('libs.collision')
 
 return function(ref, qteManager)
@@ -20,6 +21,7 @@ return function(ref, qteManager)
   ref.currentAnimTag = skill.tag
   -- Tween the scone projectile through the target
   local cam = flux.to(camera, skill.duration, {x = goalX}):ease('quadout')
+  ref.tweens['camera'] = cam
   local attack = flux.to(wok.pos, skill.duration, {x = goalX}):ease(skill.beginTweenType)
     :onstart(function() wok:tweenShadow(skill.duration, goalShadowY); end)
     :onupdate(function()
@@ -35,7 +37,7 @@ return function(ref, qteManager)
       end
     end)
     :oncomplete(function()
-      ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
+      ref:endTurn(skill.duration, nil, skill.returnTweenType)
     end)
     ref.tweens['attack'] = attack
 end;

@@ -7,7 +7,7 @@ local function loadEnemyData(entityName)
 	local data = json.decode(raw)
 
 	local skillPool = {}
-	for i,skillName in ipairs(data.skillPool) do
+	for _,skillName in ipairs(data.skillPool) do
 		local skill = loadSkill(skillName)
 		table.insert(skillPool, skill)
 	end

@@ -1,9 +1,6 @@
 -- -- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
 Camera = require "libs.hump.camera"
-Signal = require "libs.hump.signal"
-Timer = require 'libs.hump.timer'
-flux = require 'libs.flux'
 
 -- Push globals (Screen Size)
 push = require "libs.push"
