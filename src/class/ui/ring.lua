@@ -1,5 +1,6 @@
-Class = require 'libs.hump.class'
-Ring = Class{}
+local Class = require 'libs.hump.class'
+local flux = require('libs.flux')
+local Ring = Class{}
 
 function Ring:init(options, flipDuration, slicesData, qteDuration)
 	self.options = {
@@ -44,8 +45,8 @@ function Ring:flipRing()
 
 	flux.to(self.offset, self.flipDuration/2, {y = -100})
 		:ease('quadout')
-		:oncomplete(function() 
-			self.showSlices = true 
+		:oncomplete(function()
+			self.showSlices = true
 			self.line.isActive = true
 		end)
 		:after(self.offset, self.flipDuration/2, {y = 0})
@@ -78,7 +79,7 @@ function Ring:buildSlices()
 			end
 
 			local aEnd = (aStart + arcLen) % twoPi
-			local vertices = self:buildArc(self.options.r, aStart, aEnd)
+			local vertices = self.buildArc(self.options.r, aStart, aEnd)
 
 			table.insert(slices, {
 				vertices = vertices,
@@ -91,9 +92,9 @@ function Ring:buildSlices()
 	return slices
 end;
 
-function Ring:buildArc(radius, angleStart, angleEnd, segments)
+function Ring.buildArc(radius, angleStart, angleEnd, numSegments)
     local vertices = { 0, 0 }
-    local segments = segments or 32
+    local segments = numSegments or 32
     local totalAngle = (angleEnd - angleStart) % (2 * math.pi)
     for i = 0, segments do
         local angle = angleStart + i * totalAngle / segments
@@ -107,7 +108,7 @@ end
 
 function Ring:startRevolution()
 	self.flipTween = self:flipRing()
-	self.flipTween:oncomplete(function() 
+	self.flipTween:oncomplete(function()
 		self.line.angle = 0
 
 		self.revolutionTween = flux.to(self.line, self.line.duration, {angle = 2 * math.pi})
@@ -125,17 +126,17 @@ end;
 function Ring:isInHitBox()
 	local angle = self.line.angle % (2 * math.pi)
 
-	for i,slice in ipairs(self.slices) do
+	for _,slice in ipairs(self.slices) do
 		local start = slice.angleStart
 		local stop = slice.angleEnd
-		if self:angleInSlice(angle, start, stop) then
+		if self.angleInSlice(angle, start, stop) then
 			return true
 		end
 	end
 	return false
 end;
 
-function Ring:angleInSlice(angle, start, stop)
+function Ring.angleInSlice(angle, start, stop)
 	local twoPi = 2 * math.pi
 	angle = angle % twoPi
 	start = start % twoPi
@@ -159,12 +160,12 @@ function Ring:draw()
 
     if self.shear.scale > 0 then
 	    love.graphics.setColor(0.2, 0.2, 0.2, 0.4)
-   	 	love.graphics.circle("fill", 0, 0, self.options.r * 0.4)
-    	love.graphics.setColor(1, 1, 1, 1)
+		love.graphics.circle("fill", 0, 0, self.options.r * 0.4)
+		love.graphics.setColor(1, 1, 1, 1)
     end
 
 	if self.showSlices then
-		for i,slice in ipairs(self.slices) do
+		for _,slice in ipairs(self.slices) do
 			love.graphics.polygon('fill', slice.vertices)
 		end
 	end
@@ -184,3 +185,5 @@ function Ring:draw()
 
 	love.graphics.pop()
 end;
+
+return Ring

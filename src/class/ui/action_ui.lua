@@ -1,21 +1,24 @@
 --! filename: combat_ui
-require('class.ui.solo_button')
-require('class.ui.flour_button')
-require('class.ui.duo_button')
-require('class.ui.item_button')
-require('class.ui.back_button')
-require('class.ui.pass_button')
-require('util.globals')
+local Button = require('class.ui.button')
+local SoloButton = require('class.ui.solo_button')
+local FlourButton = require('class.ui.flour_button')
+local DuoButton = require('class.ui.duo_button')
+local ItemButton = require('class.ui.item_button')
+local BackButton = require('class.ui.back_button')
+local PassButton = require('class.ui.pass_button')
 local JoystickUtils = require('util.joystick_utils')
+local Signal = require('libs.hump.signal')
+local Timer = require('libs.hump.timer')
+require('util.globals')
 
-Class = require 'libs.hump.class'
-ActionUI = Class{
+local Class = require 'libs.hump.class'
+local ActionUI = Class{
   ICON_SPACER = 50,
   X_OFFSET = 20,
   Y_OFFSET = -45,
   TARGET_CURSOR_PATH = 'asset/sprites/combat/target_cursor.png'}
-local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
-local CURSOR_PATH = CHARACTER_SELECT_PATH .. 'cursor.png'
+-- local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
+-- local CURSOR_PATH = CHARACTER_SELECT_PATH .. 'cursor.png'
   -- ActionUI constructor
     -- preconditions: name of the character
     -- postconditions: initializes action ui icons for the character
@@ -77,12 +80,12 @@ function ActionUI:set(charRef)
   self.buttons = {self.soloButton, self.flourButton, self.duoButton, self.itemButton, self.passButton}
   self.activeButton = self.soloButton
   sortLayers(self.buttons)
-  
+
   self.backButton = BackButton(self.landingPositions[1])
 
   -- consider removing if you use observer pattern to refactor keypress
   self.uiState = 'actionSelect'
-  
+
   -- consider removing after refactoring with Command Pattern
 
   -- self.selectedSkill = self.skillList[1]
@@ -95,12 +98,12 @@ function ActionUI:setButtonLandingPositions()
   local backOffsets = {x = self.buttonDims.w, y = self.buttonDims.h}
   local landingPositions = {
     { -- 1
-      x     = self.x, 
+      x     = self.x,
       y     = self.y,
       scale = 1
     },
     { -- 2
-      x     = self.x - sideOffsets.x, 
+      x     = self.x - sideOffsets.x,
       y     = self.y - sideOffsets.y,
       scale = Button.SIDE_BUTTON_SCALE
     },
@@ -126,14 +129,14 @@ end;
 -- button indexes and layers get changed before this tween goes off, so we know where they will land
 function ActionUI:tweenButtons()
   self.uiState = 'rotating'
-  for i,button in ipairs(self.buttons) do
+  for _,button in ipairs(self.buttons) do
     local landingPos = self.landingPositions[button.index]
     button:tween(landingPos, self.buttonTweenDuration, self.easeType)
     if button.index == 1 then self.activeButton = button end
   end
 
-  Timer.after(self.buttonTweenDuration + 0.1, 
-    function() 
+  Timer.after(self.buttonTweenDuration + 0.1,
+    function()
       self.uiState = 'actionSelect'
     end)
 end;
@@ -168,9 +171,9 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.activeButton:gamepadpressed(joystick, button)
           self.uiState = 'actionSelect'
         end
-        for i,button in ipairs(self.buttons) do
-          button.index = (button.index % #self.buttons) + 1
-          button.layer = button:idxToLayer()
+        for _,b in ipairs(self.buttons) do
+          b.index = (b.index % #self.buttons) + 1
+          b.layer = b:idxToLayer()
         end
         sortLayers(self.buttons)
         self:tweenButtons()
@@ -179,10 +182,10 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           self.activeButton:gamepadpressed(joystick, button)
           self.uiState = 'actionSelect'
         end
-        for i,button in ipairs(self.buttons) do
-          button.index = button.index - 1
-          if button.index == 0 then button.index = #self.buttons end
-          button.layer = button:idxToLayer()
+        for _,b in ipairs(self.buttons) do
+          b.index = b.index - 1
+          if b.index == 0 then b.index = #self.buttons end
+          b.layer = b:idxToLayer()
         end
         sortLayers(self.buttons)
         self:tweenButtons()
@@ -221,7 +224,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           end
         elseif button == 'dpdown' then
           self.tIndex = math.min(#self.targets, self.tIndex + 1)
-        elseif button == self.actionButton then 
+        elseif button == self.actionButton then
           if self.highlightBack then
             Signal.emit('SkillDeselected')
             self.highlightBack = false
@@ -297,3 +300,5 @@ function ActionUI:draw()
     end
   end
 end;
+
+return ActionUI

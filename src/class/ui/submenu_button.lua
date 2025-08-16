@@ -1,4 +1,7 @@
-SubMenuButton = Class{__includes = Button}
+local Button = require('class.ui.button')
+local Class = require('libs.hump.class')
+
+local SubMenuButton = Class{__includes = Button}
 
 function SubMenuButton:init(pos, index, path, actionButton, actionList)
 	Button.init(self, pos, index, path)
@@ -32,7 +35,7 @@ function SubMenuButton:populateList()
   local textSpacing = result.container.height / self.numItemsInPreview
   local x, y = result.container.x, result.container.y
   local width, height = result.container.width, result.container.height
-  for i, item in ipairs(self.actionList) do
+  for i,_ in ipairs(self.actionList) do
     table.insert(result.separator, {
     x1 = x, y1 = y + textSpacing * i,
     x2 = x + width, y2 = y + textSpacing * i
@@ -57,10 +60,10 @@ function SubMenuButton:populatePreviews()
 end;
 
 function SubMenuButton:drawListUI()
-  love.graphics.rectangle(self.listOptions.container.mode, 
-    self.listOptions.container.x, 
-    self.listOptions.container.y, 
-    self.listOptions.container.width, 
+  love.graphics.rectangle(self.listOptions.container.mode,
+    self.listOptions.container.x,
+    self.listOptions.container.y,
+    self.listOptions.container.width,
     self.listOptions.container.height)
 
   love.graphics.setColor(0, 0, 0)
@@ -80,7 +83,7 @@ end;
 
 function SubMenuButton:actionListToStr()
   local result = ''
-  for i, elem in ipairs(self.actionList) do
+  for _, elem in ipairs(self.actionList) do
     result = result .. elem.name .. '\n'
   end
   return result
@@ -121,7 +124,11 @@ function SubMenuButton:draw()
 		self:drawElems()
 
     love.graphics.setColor(0,0,1)
-    love.graphics.rectangle('line', self.previewPos.x, self.previewPos.y + ((self.listIndex - 1) * (self.listOptions.container.height / self.numItemsInPreview)), 100, 25)
+
+    local y = self.previewPos.y + ((self.listIndex - 1) * (self.listOptions.container.height / self.numItemsInPreview))
+    love.graphics.rectangle('line', self.previewPos.x, y, 100, 25)
     love.graphics.setColor(1, 1, 1)
   end
 end;
+
+return SubMenuButton
