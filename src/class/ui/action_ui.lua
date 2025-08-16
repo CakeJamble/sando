@@ -158,7 +158,6 @@ function ActionUI:deactivate()
   print('action ui is no longer active')
 end
 
--- deprecated
 function ActionUI:keypressed(key) --> void
 end;
 
@@ -279,7 +278,6 @@ end;
 
 function ActionUI:draw()
   if self.active then
-      -- To make the wheel convincing, we have to draw the activeButton last so it appears to rotate in front of the other icons
     if self.uiState == 'targeting' then
       self.backButton:draw()
       local target
@@ -295,7 +293,8 @@ function ActionUI:draw()
         self.buttons[i]:draw()
       end
       love.graphics.setColor(0, 0, 0)
-      love.graphics.print(self.activeButton.description, self.activeButton.descriptionPos.x, self.activeButton.descriptionPos.y)
+      love.graphics.print(self.activeButton.description,
+        self.activeButton.descriptionPos.x, self.activeButton.descriptionPos.y)
       love.graphics.setColor(1, 1, 1)
     end
   end
