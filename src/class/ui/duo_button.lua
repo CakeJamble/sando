@@ -1,5 +1,5 @@
 --! filename: dup button
-local SubMenuButton = require("classes.ui.submenu_button")
+local SubMenuButton = require("class.ui.submenu_button")
 local Class = require('libs.hump.class')
 local DuoButton = Class{__includes = SubMenuButton}
 

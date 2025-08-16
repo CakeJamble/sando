@@ -3,9 +3,9 @@
 --[[
   Base Clase for Command Design Pattern
 ]]
-
-Class = require 'libs.hump.class'
-Command = Class{}
+local Signal = require('libs.hump.signal')
+local Class = require 'libs.hump.class'
+local Command = Class{}
 
 function Command:init(entity)
   self.entity = entity
@@ -30,3 +30,5 @@ end;
 
 function Command:update(dt, battle) -- = 0;
 end;
+
+return Command
