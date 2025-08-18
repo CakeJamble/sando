@@ -19,7 +19,6 @@ function randSBP:init(data)
 	self.waitDuration = data.waitDuration
 	self.actionButton = nil
 	self.buttonUI = nil
-	-- self.duration = self.timeBtwnLights * 3
 	self.buttonUIIndex = 'raised'
 	self.numSmallCircles = data.numSmallCircles
 	self.waitTimer = nil
