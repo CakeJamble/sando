@@ -283,9 +283,14 @@ function Character:beginGuard()
   self.canJump = false
   self.canGuard = false -- for cooldown
   self.guardCooldownFinished = false
+  local originalDefense = self.battleStats.defense
+  self:modifyBattleStat('defense', 1)
+  Signal.emit('OnGuard', self)
 
   Timer.after(Character.guardActiveDur, function()
     self.isGuarding = false
+    self.battleStats.defense = originalDefense
+    print('defense is back to ' .. originalDefense)
   end)
 
   Timer.after(Character.guardCooldownDur, function()

@@ -289,12 +289,8 @@ function Entity:modifyBattleStat(stat, stage) --> void
     mult = 2 / (2 - self.statStages[stat])
   end
 
-  local prev = self.battleStats[stat]
+  -- local prev = self.battleStats[stat]
   self.battleStats[stat] = math.floor((self.battleStats[stat] * mult) + 0.5)
-
-  -- testing
-  print(self.entityName .. "'s " .. stat .. ' went up')
-  print(prev .. ' -> ' .. self.battleStats[stat])
 end;
 
 function Entity:heal(amount) --> void

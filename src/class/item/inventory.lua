@@ -10,7 +10,9 @@
 ]]
 
 -- local Gear = require('class.item.gear')
-local ItemManager = require('class.item.item_manager')
+local ToolManager = require('class.item.tool_manager')
+-- local EquipManager = require('class.item.equip_manager')
+-- local AccessoryManager = require('class.item.accessory_manager')
 
 local Class = require 'libs.hump.class'
 local Inventory = Class{
@@ -20,7 +22,9 @@ local Inventory = Class{
 
 function Inventory:init(characterTeam)
     self.gears = {}
-    self.itemManager = ItemManager(characterTeam)
+    self.toolManager = ToolManager(characterTeam)
+    -- self.equipManager = EquipManager(characterTeam)
+    -- self.accessoryManager = AccessoryManager(characterTeam)
     self.consumables = {}
     self.numConsumableSlots = 3
     self.numEquipSlots = 2
@@ -68,16 +72,12 @@ function Inventory:popConsumable(index)
     return table.remove(self.consumables, index)
 end;
 
-function Inventory:addItem(item)
-    self.itemManager:addItem(item)
+function Inventory:addTool(tool)
+    self.toolManager:addTool(tool)
 end;
 
-function Inventory:popItem(item)
-    if #self.tools == 0 then
-        error('cannot pop off empty table')
-    else
-        return self.itemManager:popItem(item)
-    end
+function Inventory:popTool(tool)
+    return self.toolManager:popTool(tool)
 end;
 
 --[[ Given an item that has been unequipped, returns the value of that item if

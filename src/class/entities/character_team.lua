@@ -10,10 +10,10 @@ local Class = require('libs.hump.class')
 local loadItem = require 'util.item_loader'
 local loadTool = require('util.tool_loader')
 local espresso = loadItem('espresso')
--- local halfMuffin = loadTool('half_muffin')
+local halfMuffin = loadTool('half_muffin')
 -- local energyDrink = loadTool('energy_drink')
 local waterBottle = loadTool('water_bottle')
-
+local splatterGuard = loadTool('splatter_guard')
 local CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters)
@@ -28,8 +28,9 @@ function CharacterTeam:init(characters)
 
     -- Adding items for testing
     self.inventory:addConsumable(espresso)
-    -- self.inventory:addTool(halfMuffin)
-    self.inventory:addItem(waterBottle)
+    self.inventory:addTool(halfMuffin)
+    self.inventory:addTool(waterBottle)
+    self.inventory:addTool(splatterGuard)
 end;
 
 function CharacterTeam:distributeExperience(amount)
