@@ -1,7 +1,6 @@
---! tool_manager
-
-Class = require 'libs.hump.class'
-ToolManager = Class{}
+local Signal = require('libs.hump.signal')
+local Class = require 'libs.hump.class'
+local ToolManager = Class{}
 
 function ToolManager:init(characterTeam)
 	self.toolList = {}
@@ -17,7 +16,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnStartTurn',
 		function(character)
-			for i,tool in pairs(self.startTurnToolList) do
+			for _,tool in pairs(self.startTurnToolList) do
 				tool.proc(character)
 			end
 		end
@@ -32,7 +31,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnStartBattle',
 		function()
-			for i,tool in ipairs(#self.onStartBattleList) do
+			for _,tool in ipairs(#self.onStartBattleList) do
 				tool.proc(self.characterTeam, self.enemyTeam)
 			end
 		end
@@ -40,7 +39,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnAttack',
 		function(skill)
-			for i,tool in pairs(self.onAttackList) do
+			for _,tool in ipairs(self.onAttackList) do
 				tool.proc(skill)
 			end
 		end
@@ -48,7 +47,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnDefend',
 		function(character)
-			for i,tool in pairs(self.onDamagedToolList) do
+			for _,tool in ipairs(self.onDamagedToolList) do
 				tool.proc(character)
 			end
 		end
@@ -56,7 +55,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnEnemyAttack',
 		function(enemy)
-			for i,tool in pairs(self.onEnemyAttackList) do
+			for _,tool in ipairs(self.onEnemyAttackList) do
 				tool.proc(enemy)
 			end
 		end
@@ -64,7 +63,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnKO',
 		function()
-			for i,tool in pairs(self.onKOList) do
+			for _,tool in ipairs(self.onKOList) do
 				tool.proc(self.characterTeam, self.enemyTeam)
 			end
 		end
@@ -72,7 +71,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnLevelUp',
 		function(character)
-			for i,tool in pairs(self.onLevelList) do
+			for _,tool in ipairs(self.onLevelList) do
 				tool.proc(character)
 			end
 		end
@@ -80,7 +79,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnPurchase',
 		function(characterTeam)
-			for i,tool in pairs(self.onPurchaseList) do
+			for _,tool in ipairs(self.onPurchaseList) do
 				-- do
 			end
 		end
@@ -88,7 +87,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnEquipSell',
 		function(equip)
-			for i,tool in pairs(self.onEquipSellList) do
+			for _,tool in ipairs(self.onEquipSellList) do
 				tool.proc(equip, self.characterTeam)
 			end
 		end
@@ -96,7 +95,7 @@ function ToolManager:init(characterTeam)
 
 	Signal.register('OnAccSell',
 		function(accessory)
-			for i,tool in pairs(self.onAccSellList) do
+			for _,tool in ipairs(self.onAccSellList) do
 				tool.proc(accessory, self.characterTeam.inventory)
 			end
 		end
@@ -128,3 +127,5 @@ function ToolManager:draw()
 		tool:draw()
 	end
 end;
+
+return ToolManager

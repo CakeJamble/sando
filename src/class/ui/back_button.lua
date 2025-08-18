@@ -1,6 +1,6 @@
-Class = require('libs.hump.class')
+local Class = require('libs.hump.class')
 
-BackButton = Class{}
+local BackButton = Class{}
 
 function BackButton:init(pos)
 	self.pos = {x=pos.x, y=pos.y}
@@ -13,6 +13,8 @@ function BackButton:draw()
 	local offset = {x=0,y=0}
 	if self.playerUsingNonOffensiveSkill then
 		offset.x = 50; offset.y = 50
-	end	
+	end
 	love.graphics.draw(self.button, self.pos.x + offset.x, self.pos.y + offset.y)
 end;
+
+return BackButton

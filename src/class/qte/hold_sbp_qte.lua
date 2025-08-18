@@ -31,6 +31,7 @@ function HoldSBP:init(data)
 end;
 
 function HoldSBP:setActionButton(actionButton, buttonUI)
+	print(actionButton)
 	self.actionButton = actionButton
 	self.buttonUI = buttonUI
 	self.instructions = "Hold " .. string.upper(actionButton) .. " until the meter is filled!"

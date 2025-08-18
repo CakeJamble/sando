@@ -38,7 +38,7 @@ function SkillCommand:start(turnManager)
   if self.qteManager and qteType then
     -- Begin QTE for player skills that require it
     self.waitingForQTE = true
-    self.qteManager:setQTE(qteType, self.entity.actionButton, self.entity.skill)
+    self.qteManager:setQTE(qteType, self.entity.actionButton)
     self.qteManager.activeQTE:setUI(self.entity)
     self.qteManager.activeQTE:beginQTE(function()
       -- self.qteResult = result
