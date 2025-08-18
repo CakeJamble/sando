@@ -25,7 +25,7 @@ local QTEManager = Class{}
 function QTEManager:init(characterTeam)
 	self.qteInits = self:defineQTESetup()
 	self.buttons = self.loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
-	self.qteTable = self:loadQTEData(characterTeam.members)
+	self.qteTable = self.loadQTEData(characterTeam.members)
 
 	self.activeQTE = nil
 
@@ -152,7 +152,7 @@ end;
 function QTEManager:setQTE(qteType, actionButton)
 	local init = self.qteInits[qteType]
 	if init then
-		self.activeQTE = init(self, actionButton)
+		self.activeQTE = init(actionButton)
 	else
 		error("Could not initialize QTE of type: " .. tostring(qteType))
 	end
