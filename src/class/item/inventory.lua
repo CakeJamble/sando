@@ -9,7 +9,7 @@
     to manage that functionality.
 ]]
 
-local Gear = require('class.item.gear')
+-- local Gear = require('class.item.gear')
 local ToolManager = require('class.item.tool_manager')
 
 local Class = require 'libs.hump.class'
@@ -17,9 +17,9 @@ local Inventory = Class{
     cabinetPath = 'asset/sprites/pause/2cabinet.png'
 }
 
-function Inventory:init(team)
+function Inventory:init(members)
     self.gears = {}
-    self.toolManager = ToolManager(team)
+    self.toolManager = ToolManager(members)
     self.consumables = {}
     self.numConsumableSlots = 3
     self.numEquipSlots = 2
@@ -29,7 +29,7 @@ function Inventory:init(team)
     self.cabinetImage = love.graphics.newImage(Inventory.cabinetPath)
 
     local width,height = 640,360
-    width,height = width * 0.8, height * 0.8 
+    width,height = width * 0.8, height * 0.8
     self.window = {
         mode = 'line',
         x = 60, y = 20,
@@ -42,7 +42,7 @@ end
 
 --[[ Equips a piece of equipment to a character's equip slot.
 If there is an equipment piece there, it will unequip it and return the gear
-to the calling fcn. Otherwise returns nil if the equipSlot is nil. 
+to the calling fcn. Otherwise returns nil if the equipSlot is nil.
 note: equipSlot is an int for the index in character.equips to get the existing gear]]
 function Inventory:equip(character, equipSlot, equipment) --> Gear or nil
     local replacedEquip = character.equips[equipSlot]
@@ -67,11 +67,17 @@ function Inventory:popConsumable(index)
 end;
 
 function Inventory:addTool(tool)
-    local procType = tool.dict.procType
-    table.insert(self.tools[procType], tool)
+    self.toolManager:addTool(tool)
 end;
 
---[[ Given an item that has been unequipped, returns the value of that item if 
+function Inventory:popTool(index)
+    if #self.tools == 0 then
+        error('cannot pop off empty table')
+    end
+    return table.remove(self.tools, index)
+end;
+
+--[[ Given an item that has been unequipped, returns the value of that item if
 the character argument is nil. If not, then asks the user to decide whether or not
 to equip it to that character. If not, then returns the value.]]
 function Inventory:unequip(equipment, character) --> number

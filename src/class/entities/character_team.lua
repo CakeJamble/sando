@@ -5,15 +5,23 @@ local Character = require('class.entities.character')
 local ActionUI = require('class.ui.action_ui')
 local Class = require('libs.hump.class')
 
+
+-- testing functionality of different items (REMOVE LATER)
 local loadItem = require 'util.item_loader'
+local loadTool = require('util.tool_loader')
 local espresso = loadItem('espresso')
+local halfMuffin = loadTool('half_muffin')
 
 local CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters)
     Team.init(self, characters)
     self.inventory = Inventory(self.members)
+
+    -- Adding items for testing
     self.inventory:addConsumable(espresso)
+    self.inventory:addTool(halfMuffin)
+
     self.koCharacters = {}
     Character.inventory = self.inventory
     ActionUI.consumables = self.inventory.consumables
