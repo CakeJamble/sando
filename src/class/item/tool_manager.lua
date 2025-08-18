@@ -2,7 +2,7 @@ local Signal = require('libs.hump.signal')
 local Class = require 'libs.hump.class'
 local ToolManager = Class{}
 
-function ToolManager:init(members)
+function ToolManager:init(characterTeam)
 	self.tools = {
 		OnStartTurn = {},
 		OnStartCombat = {},
@@ -17,7 +17,7 @@ function ToolManager:init(members)
 		OnAccSell = {}
 	}
 
-	self.members = members
+	self.characterTeam = characterTeam
 	self.enemyTeam = nil
 
 	Signal.register('OnStartTurn',
@@ -108,7 +108,7 @@ end;
 function ToolManager:addTool(tool)
 	table.insert(self.tools[tool.signal], tool)
 	if tool.signal == 'OnPickup' then
-		tool.proc(self.members)
+		tool.proc(self.characterTeam)
 	end
 end;
 

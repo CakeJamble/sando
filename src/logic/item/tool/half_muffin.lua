@@ -1,4 +1,5 @@
-return function(members)
+return function(characterTeam)
+	local members = characterTeam.members
 	local percentIncrease = 0.08
 	for _,member in ipairs(members) do
 		local ratio = member.battleStats.hp / member.baseStats.hp

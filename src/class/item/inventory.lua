@@ -14,12 +14,13 @@ local ToolManager = require('class.item.tool_manager')
 
 local Class = require 'libs.hump.class'
 local Inventory = Class{
-    cabinetPath = 'asset/sprites/pause/2cabinet.png'
+    cabinetPath = 'asset/sprites/pause/2cabinet.png',
+    consumableMult = 1
 }
 
-function Inventory:init(members)
+function Inventory:init(characterTeam)
     self.gears = {}
-    self.toolManager = ToolManager(members)
+    self.toolManager = ToolManager(characterTeam)
     self.consumables = {}
     self.numConsumableSlots = 3
     self.numEquipSlots = 2
@@ -54,6 +55,7 @@ function Inventory:addConsumable(item)
     if #self.consumables >= self.numConsumableSlots then
         return false
     else
+        item.amount = item.amount * Inventory.consumableMult
         table.insert(self.consumables, item)
         return true
     end

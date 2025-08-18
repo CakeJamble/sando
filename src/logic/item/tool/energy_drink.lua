@@ -1,4 +1,5 @@
-return function(members)
+return function(characterTeam)
+	local members = characterTeam.members
 	local randIndex = love.math.random(1, #members)
 	local member = members[randIndex]
 

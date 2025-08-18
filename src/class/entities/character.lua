@@ -29,7 +29,7 @@ local Character = Class{__includes = Entity,
   guardCooldownDur = 0.75,
   jumpDur = 0.5,
   landingLag = 0.25,
-  inventory = nil
+  inventory = nil,
 }
 
 -- Character constructor
