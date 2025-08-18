@@ -9,8 +9,9 @@ local Class = require('libs.hump.class')
 -- testing functionality of different items (REMOVE LATER)
 local loadItem = require 'util.item_loader'
 local loadTool = require('util.tool_loader')
-local espresso = loadItem('espresso')
-local halfMuffin = loadTool('half_muffin')
+-- local espresso = loadItem('espresso')
+-- local halfMuffin = loadTool('half_muffin')
+local energyDrink = loadTool('energy_drink')
 
 local CharacterTeam = Class{__includes = Team}
 
@@ -19,8 +20,9 @@ function CharacterTeam:init(characters)
     self.inventory = Inventory(self.members)
 
     -- Adding items for testing
-    self.inventory:addConsumable(espresso)
-    self.inventory:addTool(halfMuffin)
+    -- self.inventory:addConsumable(espresso)
+    -- self.inventory:addTool(halfMuffin)
+    self.inventory:addTool(energyDrink)
 
     self.koCharacters = {}
     Character.inventory = self.inventory

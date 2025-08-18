@@ -3,6 +3,7 @@ local ProgressBar = require('class.ui.progress_bar')
 local Class = require "libs.hump.class"
 local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
+require('util.globals')
 
 local Entity = Class{
   movementTime = 2,
@@ -18,8 +19,9 @@ local Entity = Class{
     -- postconditions: Valid Entity object and added to global table of Entities
 function Entity:init(data, x, y)
   self.entityName = data.entityName
-  self.baseStats = Entity.copyStats(data)
-  self.battleStats = Entity.copyStats(data)
+  self.baseStats = self.copyStats(data)
+  self.battleStats = self.copyStats(data)
+  self.statStages = self.setStatStages(self.baseStats)
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
@@ -112,6 +114,26 @@ function Entity:init(data, x, y)
   end)
 end;
 
+function Entity.copyStats(stats)
+  return {
+    hp = stats.hp,
+    fp = stats.fp,
+    attack = stats.attack,
+    defense = stats.defense,
+    speed = stats.speed,
+    luck = stats.luck,
+    growthRate = stats.growthRate
+  }
+end;
+
+function Entity.setStatStages(stats)
+  local stages = {}
+  for stat,_ in pairs(stats) do
+    stages[stat] = 0
+  end
+  return stages
+end;
+
 function Entity:startTurn()
   self.isFocused = true
   self.hasUsedAction = false
@@ -159,12 +181,12 @@ function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType
       :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
     :oncomplete(
       function()
-        self:reset(); Signal.emit('OnEndTurn', 0); 
+        self:reset(); Signal.emit('OnEndTurn', 0);
       end)
     self.tweens['stageBack'] = stageBack
   else
-    Timer.after(delay, function() 
-      self:reset(); Signal.emit('OnEndTurn', 0) 
+    Timer.after(delay, function()
+      self:reset(); Signal.emit('OnEndTurn', 0)
     end)
   end
 end;
@@ -212,19 +234,6 @@ function Entity:resetDmgDisplay()
   self.opacity = 0
 end;
 
--- COPY
-function Entity.copyStats(stats)
-  return {
-    hp = stats.hp,
-    fp = stats.fp,
-    attack = stats.attack,
-    defense = stats.defense,
-    speed = stats.speed,
-    luck = stats.luck,
-    growthRate = stats.growthRate
-  }
-end;
-
 -- ACCESSORS (only write an accessor if it simplifies access to data)
 
 function Entity:getPos() --> {int, int}
@@ -266,8 +275,26 @@ function Entity:goToStagingPosition(t, displacement)
   flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
 end;
 
-function Entity:modifyBattleStat(stat_name, amount) --> void
-  self.battleStats[stat_name] = math.ceil(self.battleStats[stat_name] * (amount * self.statUpScaler))
+function Entity:modifyBattleStat(stat, stage) --> void
+  -- clamping
+  local maxStage = statStageCap
+  local minStage = -statStageCap
+  stage = self.statStages[stat] + stage
+  self.statStages[stat] = math.min(maxStage, math.max(minStage, stage))
+
+  local mult
+  if self.statStages[stat] >= 0 then
+    mult = (2 + self.statStages[stat]) / 2
+  else
+    mult = 2 / (2 - self.statStages[stat])
+  end
+
+  local prev = self.battleStats[stat]
+  self.battleStats[stat] = math.floor((self.battleStats[stat] * mult) + 0.5)
+
+  -- testing
+  print(self.entityName .. "'s " .. stat .. ' went up')
+  print(prev .. ' -> ' .. self.battleStats[stat])
 end;
 
 function Entity:heal(amount) --> void

@@ -1,5 +1,3 @@
--- On pickup, increase all member's HP by 8%
-
 return function(members)
 	local percentIncrease = 0.08
 	for _,member in ipairs(members) do

@@ -6,6 +6,8 @@ SEED = math.randomseed(math.random(1, math.huge))
 CHARACTER_TEAM = {}
 turnCounter = 1
 
+statStageCap = 6
+
 -- global functions
 function saveCharacterTeam(team)
   CHARACTER_TEAM = team
@@ -42,7 +44,7 @@ function calcSpacingFromTarget(tweenType, entityType)
   local space = {x = 0, y = 0}
   local isCharacter = entityType == 'character'
   local baseSpace = 80
-  
+
   if tweenType == 'near' then
     space.x = baseSpace
   elseif tweenType == 'mid' then

@@ -28,9 +28,9 @@ function ToolManager:init(members)
 		end
 	)
 
-	Signal.register('OnStartBattle',
+	Signal.register('OnStartCombat',
 		function()
-			for _,tool in ipairs(self.tools.onStartBattleList) do
+			for _,tool in ipairs(self.tools.OnStartCombat) do
 				tool.proc(self.characterTeam, self.enemyTeam)
 			end
 		end
