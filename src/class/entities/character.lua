@@ -290,7 +290,6 @@ function Character:beginGuard()
   Timer.after(Character.guardActiveDur, function()
     self.isGuarding = false
     self.battleStats.defense = originalDefense
-    print('defense is back to ' .. originalDefense)
   end)
 
   Timer.after(Character.guardCooldownDur, function()

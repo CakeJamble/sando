@@ -4,7 +4,7 @@ local ToolManager = Class{}
 
 function ToolManager:init(characterTeam)
 	self.characterTeam = characterTeam
-	self.items = self.initItemLists()
+	self.tools = self.initToolLists()
 	self.indices = self.initIndices()
 	self.signalHandlers = {}
 	self:registerSignals()
@@ -14,8 +14,8 @@ function ToolManager:addTool(tool)
 	local signal = tool.signal
 	tool.index = self.indices[signal]
 	self.indices[signal] = self.indices[signal] + 1
-	table.insert(self.items[signal], tool)
-	print('added ' .. tool.name .. ' to list: items.' .. signal)
+	table.insert(self.tools[signal], tool)
+	print('added ' .. tool.name .. ' to list: tools.' .. signal)
 	if signal == 'OnPickup' then
 		tool.proc(self.characterTeam)
 	end
@@ -24,18 +24,18 @@ end;
 function ToolManager:popTool(tool)
 	if tool.index == 0 then
 		error(tool.name .. "'s index was never overwritten when added to the inventory")
-	elseif #self.items[tool.signal] == 0 then
+	elseif #self.tools[tool.signal] == 0 then
 		error('Attempted to pop off an empty table')
 	else
 		local signal = tool.signal
 		local i = tool.index
-		local result = table.remove(self.items[signal][i])
+		local result = table.remove(self.tools[signal][i])
 		self.indices[signal] = self.indices[signal] - 1
 		return result
 	end
 end;
 
-function ToolManager.initItemLists()
+function ToolManager.initToolLists()
 	local result = {
 		OnStartTurn = {},
 		OnStartCombat = {},
@@ -78,70 +78,70 @@ end;
 function ToolManager:registerSignals()
 	self:registerSignal('OnStartTurn',
 		function(character)
-			for _,item in ipairs(self.items.OnStartTurn) do
+			for _,item in ipairs(self.tools.OnStartTurn) do
 				item.proc(character)
 			end
 		end)
 
 	self:registerSignal('OnStartCombat',
 		function()
-			for _,item in ipairs(self.items.OnStartCombat) do
+			for _,item in ipairs(self.tools.OnStartCombat) do
 				item.proc()
 			end
 		end)
 
 	self:registerSignal('OnAttack',
 		function(skill)
-			for _,item in ipairs(self.items.OnAttack) do
+			for _,item in ipairs(self.tools.OnAttack) do
 				item.proc(skill)
 			end
 		end)
 
 	self:registerSignal('OnGuard',
 		function(character)
-			for _,item in ipairs(self.items.OnGuard) do
+			for _,item in ipairs(self.tools.OnGuard) do
 				item.proc(character)
 			end
 		end)
 
 	self:registerSignal('OnEnemyAttack',
 		function(enemy)
-			for _,item in ipairs(self.items.OnEnemyAttack) do
+			for _,item in ipairs(self.tools.OnEnemyAttack) do
 				item.proc(enemy)
 			end
 		end)
 
 	self:registerSignal('OnKO',
 		function()
-			for _,item in ipairs(self.items.OnKO) do
+			for _,item in ipairs(self.tools.OnKO) do
 				item.proc()
 			end
 		end)
 
 	self:registerSignal('OnLevelUp',
 		function(character)
-			for _,item in ipairs(self.items.OnLevelUp) do
+			for _,item in ipairs(self.tools.OnLevelUp) do
 				item.proc(character)
 			end
 		end)
 
 	self:registerSignal('OnPurchase',
 		function()
-			for _,item in ipairs(self.items.OnPurchase) do
+			for _,item in ipairs(self.tools.OnPurchase) do
 				item.proc()
 			end
 		end)
 
 	self:registerSignal('OnEquipSell',
 		function(equip)
-			for _,item in ipairs(self.items.OnEquipSell) do
+			for _,item in ipairs(self.tools.OnEquipSell) do
 				item.proc(equip)
 			end
 		end)
 
 	self:registerSignal('OnAccSell',
 		function(accessory)
-			for _,item in ipairs(self.items.OnAccSell) do
+			for _,item in ipairs(self.tools.OnAccSell) do
 				item.proc(accessory)
 			end
 		end)
