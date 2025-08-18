@@ -29,7 +29,7 @@ function CharacterTeam:init(characters)
     -- Adding items for testing
     self.inventory:addConsumable(espresso)
     -- self.inventory:addTool(halfMuffin)
-    self.inventory:addTool(waterBottle)
+    self.inventory:addItem(waterBottle)
 end;
 
 function CharacterTeam:distributeExperience(amount)

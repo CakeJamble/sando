@@ -13,6 +13,9 @@ local function loadTool(toolName)
 		error('Failed to find implementation for tool named \'' .. toolName .. '\': ' .. tostring(proc))
 	end
 
+	data.itemType = 'tool'
+	data.index = 0
+
 	return data
 end;
 
