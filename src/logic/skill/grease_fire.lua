@@ -4,7 +4,7 @@ local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
 local Collision = require('libs.collision')
 
-return function(ref, qteManager)
+return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local target = ref.targets[1]
   local tPos = target.hitbox
@@ -12,6 +12,10 @@ return function(ref, qteManager)
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
   local goalShadowY = tPos.y + tPos.h
+  local burnChance = 0.3
+  if qteBonus then
+    burnChance = qteBonus(burnChance)
+  end
 
   -- Create a Scone Projectile
   local wok = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
@@ -31,6 +35,10 @@ return function(ref, qteManager)
 
       if not hasCollided and Collision.rectsOverlap(wok.hitbox, target.hitbox) then
         target:takeDamage(damage)
+        local rand = love.math.random()
+        if burnChance >= rand then
+          target:applyStatus('burn')
+        end
         hasCollided = true
         flux.to(wok.dims, 0.25, {r = 0}):ease('linear')
           :oncomplete(function() Signal.emit('DespawnProjectile') end)

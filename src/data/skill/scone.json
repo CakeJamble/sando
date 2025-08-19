@@ -12,7 +12,7 @@
 	"stagingTime": 1,
 	"stagingType": "far",
 	"qteType": "mbp",
-	"qteBonus": ["damage"],
+	"qteBonus": "damage",
 	"description": "Deals physical damage to a single target.",
 	"unlockedAtLvl": 1,
 	"beginTweenType": "linear",

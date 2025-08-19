@@ -2,7 +2,7 @@ require('util.globals')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 
-return function(ref, qteManager)
+return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local target = ref.targets[1]
   local xOffset = 40
@@ -21,8 +21,8 @@ return function(ref, qteManager)
   local hasCollided = false
 
   local damage = ref.battleStats['attack'] + skill.damage
-  if ref.qteSuccess then
-    damage = damage + math.ceil(ref.battleStats.attack * 0.1)
+  if qteBonus then
+    damage = qteBonus(damage)
   end
 
   -- Move from starting position to staging position before changing to animation assoc with skill use
@@ -41,7 +41,7 @@ return function(ref, qteManager)
           -- check collision
           function()
             if not hasCollided and Collision.rectsOverlap(ref.hitbox, target.hitbox) then
-              target:takeDamage(damage)
+              target:takeDamage(damage, target.battleStats.luck)
               hasCollided = true
             end
           end)

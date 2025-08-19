@@ -3,10 +3,13 @@ local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 
-return function(ref, qteManager)
+return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local targets = ref.targets
   local damage = ref.battleStats['attack'] + skill.damage
+  if qteBonus then
+    damage = qteBonus(damage)
+  end
 
   local tPos = {}
   for _,target in ipairs(targets) do

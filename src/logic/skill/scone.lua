@@ -4,13 +4,16 @@ local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local Timer = require('libs.hump.timer')
 
-return function(ref, qteManager)
+return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local target = ref.targets[1]
   local tPos = target.hitbox
   local goalX, goalY = tPos.x + tPos.w / 2, tPos.y + tPos.h / 2
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
+  if qteBonus then
+    damage = qteBonus(damage)
+  end
   local sconeFlyingTime = 0.4
   local peakHeight = -tPos.h/2
 

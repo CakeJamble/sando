@@ -12,7 +12,7 @@
 	"stagingTime": 1,
 	"stagingType": "far",
 	"qteType": "rand_sbp",
-	"qteBonus": ["burn"],
+	"qteBonus": "burn",
 	"description": "Throw a pillar of fire at an enemy.",
 	"unlockedAtLvl": 1,
 	"beginTweenType": "linear",

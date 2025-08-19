@@ -12,10 +12,10 @@ function SkillCommand:init(entity, qteManager)
 end
 
 function SkillCommand:start(turnManager)
-  local qteResolve = function(isSuccess)
-    self.entity.skill.isSuccess = isSuccess
-  end
-  self:registerSignal('OnQTEResolved', qteResolve)
+  -- local qteResolve = function(isSuccess)
+  --   self.entity.skill.isSuccess = isSuccess
+  -- end
+  -- self:registerSignal('OnQTEResolved', qteResolve)
 
   local projectileMade = function(projectile)
     table.insert(self.entity.projectiles, projectile)
@@ -39,14 +39,34 @@ function SkillCommand:start(turnManager)
     self.waitingForQTE = true
     self.qteManager:setQTE(qteType, self.entity.actionButton)
     self.qteManager.activeQTE:setUI(self.entity)
-    self.qteManager.activeQTE:beginQTE(function() self:executeSkill() end)
+    self.qteManager.activeQTE:beginQTE(function(qteSuccess)
+      local bonus
+      if qteSuccess then
+        bonus = self.getQTEBonuses(self.entity.skill)
+      end
+      self:executeSkill(bonus)
+    end)
   else
     self:executeSkill()
   end
 end;
 
-function SkillCommand:executeSkill()
-  self.entity.skill.proc(self.entity, self.qteManager)
+function SkillCommand.getQTEBonuses(qteBonus)
+  local result
+  if qteBonus == 'damage' then
+    result = function(damage)
+      return damage + math.floor(0.5 + (0.25 * damage))
+    end
+  elseif qteBonus == 'burn' then
+    result = function(burnChance)
+      return burnChance + (burnChance * 0.25)
+    end
+  end
+  return result
+end;
+
+function SkillCommand:executeSkill(qteBonus)
+  self.entity.skill.proc(self.entity, qteBonus, qteManager)
 end
 
 function SkillCommand:update(dt)

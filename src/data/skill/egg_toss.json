@@ -12,7 +12,7 @@
 	"stagingTime": 1,
 	"stagingType": "far",
 	"qteType": "rand_sbp",
-	"qteBonus": ["damage"],
+	"qteBonus": "damage",
 	"description": "Deals damage to random targets.",
 	"unlockedAtLvl": 1,
 	"beginTweenType": "linear",
