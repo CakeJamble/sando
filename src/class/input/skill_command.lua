@@ -5,7 +5,6 @@ local SkillCommand = Class{__includes = Command}
 function SkillCommand:init(entity, qteManager)
   Command.init(self, entity)
   self.qteManager = qteManager
-
   self.done = false
   self.qteResult = nil
   self.waitingForQTE = false
@@ -40,11 +39,7 @@ function SkillCommand:start(turnManager)
     self.waitingForQTE = true
     self.qteManager:setQTE(qteType, self.entity.actionButton)
     self.qteManager.activeQTE:setUI(self.entity)
-    self.qteManager.activeQTE:beginQTE(function()
-      -- self.qteResult = result
-      -- self.waitingForQTE = false
-      self:executeSkill()
-    end)
+    self.qteManager.activeQTE:beginQTE(function() self:executeSkill() end)
   else
     self:executeSkill()
   end

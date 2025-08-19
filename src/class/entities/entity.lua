@@ -302,8 +302,13 @@ function Entity:heal(amount) --> void
   Signal.emit('OnHPChanged', amount, isDamage, Entity.tweenHP)
 end;
 
-function Entity:takeDamage(amount) --> void
+function Entity:takeDamage(amount, targetLuck) --> void
+  local isCrit = self:isCrit(targetLuck)
   local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
+  if isCrit then
+    amount = amount * 2
+    -- Signal.emit('OnCrit')
+  end
   self.amount = math.max(0, amount - self.battleStats['defense'])
   self.countFrames = true
   local newHP = math.max(0, self.battleStats["hp"] - self.amount)
@@ -334,6 +339,20 @@ function Entity:takeDamagePierce(amount) --> void
   else
     self.currentAnimTag = 'ko'
   end
+end;
+
+function Entity:isCrit(targetLuck)
+  local chance = self:calcCritChance(targetLuck)
+  local rand = love.math.random()
+
+  return rand <= chance
+end;
+
+function Entity:calcCritChance(targetLuck)
+  local luck = self.battleStats.luck
+  local chance = math.min(100, math.max(1, (luck / 4) - (targetLuck / 8)))
+  chance = chance / 100
+  return chance
 end;
 
 -- Called after setting current_stats HP to reflect damage taken during battle
