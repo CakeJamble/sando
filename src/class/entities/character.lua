@@ -55,9 +55,9 @@ function Character:init(data, actionButton)
   local baseSFXTypes = {'jump'}
   self.sfx = self:setSFX('character/', baseSFXTypes)
   Character.yPos = Character.yPos + Character.yOffset
-  -- self.currentFP = stats.fp
+  self.currentFP = data.fp
   -- self.currentDP = stats.dp
-
+  self.fpCostMod = 0
   self.cannotLose = false
   self.equips = {}
 
@@ -125,6 +125,14 @@ function Character:endTurn(duration, stagingPos, tweenType)
   self.qteSuccess = false
   self.canJump = true
   self.canGuard = false
+end;
+
+function Character:validateSkillCost(cost)
+  return self.currentFP >= cost - self.fpCostMod
+end;
+
+function Character:deductFP(cost)
+  self.currentFP = math.min(math.max(0, cost - self.fpCostMod), self.currentFP)
 end;
 
 function Character:setAnimations()

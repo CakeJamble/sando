@@ -1,6 +1,6 @@
 {
 	"name": "Piping Bag",
-	"signal": "OnPickup",
+	"signal": "OnEquip",
 	"description": "Skills consume 1 less FP",
 	"flavorText": "Full of custard",
 	"rarity": "common"

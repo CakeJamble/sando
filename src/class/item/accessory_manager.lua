@@ -1,5 +1,5 @@
 local Class = require('libs.hump.class')
--- local Signal = require('libs.hump.signal')
+local Signal = require('libs.hump.signal')
 local AccessoryManager = Class{}
 
 function AccessoryManager:init(characterTeam)
@@ -41,6 +41,7 @@ end;
 
 function AccessoryManager.initItemLists()
 	local result = {
+		OnEquip = {},
 		OnStartTurn = {},
 		OnStartCombat = {},
 		OnAttack = {},
@@ -66,60 +67,65 @@ function AccessoryManager.initIndices()
 	return result
 end;
 
--- function AccessoryManager:registerSignal(name, f)
--- 	self.signalHandlers[name] = f
--- 	Signal.register(name, f)
--- end;
+function AccessoryManager:registerSignal(name, f)
+	self.signalHandlers[name] = f
+	Signal.register(name, f)
+end;
 
--- function AccessoryManager:registerSignals()
--- 	self:registerSignal('OnStartTurn',
--- 		function(character)
--- 			for _,item in ipairs(self.accessories.OnStartTurn) do
--- 				item.proc(character)
--- 			end
--- 		end)
+function AccessoryManager:registerSignals()
+	self:registerSignal('OnEquip',
+		function(character, item)
+			item.proc(character)
+		end)
 
--- 	self:registerSignal('OnStartCombat',
--- 		function()
--- 			for _,item in ipairs(self.accessories.OnStartCombat) do
--- 				item.proc()
--- 			end
--- 		end)
+	self:registerSignal('OnStartTurn',
+		function(character)
+			for _,item in ipairs(self.accessories.OnStartTurn) do
+				item.proc(character)
+			end
+		end)
 
--- 	self:registerSignal('OnAttack',
--- 		function(skill)
--- 			for _,item in ipairs(self.accessories.OnAttack) do
--- 				item.proc(skill)
--- 			end
--- 		end)
+	self:registerSignal('OnStartCombat',
+		function()
+			for _,item in ipairs(self.accessories.OnStartCombat) do
+				item.proc()
+			end
+		end)
 
--- 	self:registerSignal('OnGuard',
--- 		function(character)
--- 			for _,item in ipairs(self.accessories.OnGuard) do
--- 				item.proc(character)
--- 			end
--- 		end)
+	self:registerSignal('OnAttack',
+		function(skill)
+			for _,item in ipairs(self.accessories.OnAttack) do
+				item.proc(skill)
+			end
+		end)
 
--- 	self:registerSignal('OnEnemyAttack',
--- 		function(enemy)
--- 			for _,item in ipairs(self.accessories.OnEnemyAttack) do
--- 				item.proc(enemy)
--- 			end
--- 		end)
+	self:registerSignal('OnGuard',
+		function(character)
+			for _,item in ipairs(self.accessories.OnGuard) do
+				item.proc(character)
+			end
+		end)
 
--- 	self:registerSignal('OnKO',
--- 		function()
--- 			for _,item in ipairs(self.accessories.OnKO) do
--- 				item.proc()
--- 			end
--- 		end)
+	self:registerSignal('OnEnemyAttack',
+		function(enemy)
+			for _,item in ipairs(self.accessories.OnEnemyAttack) do
+				item.proc(enemy)
+			end
+		end)
 
--- 	self:registerSignal('OnLevelUp',
--- 		function(character)
--- 			for _,item in ipairs(self.accessories.OnLevelUp) do
--- 				item.proc(character)
--- 			end
--- 		end)
--- end;
+	self:registerSignal('OnKO',
+		function()
+			for _,item in ipairs(self.accessories.OnKO) do
+				item.proc()
+			end
+		end)
+
+	self:registerSignal('OnLevelUp',
+		function(character)
+			for _,item in ipairs(self.accessories.OnLevelUp) do
+				item.proc(character)
+			end
+		end)
+end;
 
 return AccessoryManager
