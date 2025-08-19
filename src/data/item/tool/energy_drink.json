@@ -1,7 +1,7 @@
 {
 	"name": "Energy Drink",
 	"signal": "OnPickup",
-	"description": "On pickup, assigned character has a 50% chance to take their turn first.",
+	"description": "At the start of battle, raise a random character's speed.",
 	"flavorText": "For the baker with nothing left to give!",
 	"rarity": "common"
 }

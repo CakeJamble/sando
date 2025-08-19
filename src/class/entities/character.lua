@@ -29,7 +29,7 @@ local Character = Class{__includes = Entity,
   guardCooldownDur = 0.75,
   jumpDur = 0.5,
   landingLag = 0.25,
-  inventory = nil
+  inventory = nil,
 }
 
 -- Character constructor
@@ -55,10 +55,9 @@ function Character:init(data, actionButton)
   local baseSFXTypes = {'jump'}
   self.sfx = self:setSFX('character/', baseSFXTypes)
   Character.yPos = Character.yPos + Character.yOffset
-  -- self.currentFP = stats.fp
+  self.currentFP = data.fp
   -- self.currentDP = stats.dp
-
-  -- self.actionUI = ActionUI(self)
+  self.fpCostMod = 0
   self.cannotLose = false
   self.equips = {}
 
@@ -126,6 +125,14 @@ function Character:endTurn(duration, stagingPos, tweenType)
   self.qteSuccess = false
   self.canJump = true
   self.canGuard = false
+end;
+
+function Character:validateSkillCost(cost)
+  return self.currentFP >= cost - self.fpCostMod
+end;
+
+function Character:deductFP(cost)
+  self.currentFP = math.min(math.max(0, cost - self.fpCostMod), self.currentFP)
 end;
 
 function Character:setAnimations()
@@ -284,9 +291,13 @@ function Character:beginGuard()
   self.canJump = false
   self.canGuard = false -- for cooldown
   self.guardCooldownFinished = false
+  local originalDefense = self.battleStats.defense
+  self:modifyBattleStat('defense', 1)
+  Signal.emit('OnGuard', self)
 
   Timer.after(Character.guardActiveDur, function()
     self.isGuarding = false
+    self.battleStats.defense = originalDefense
   end)
 
   Timer.after(Character.guardCooldownDur, function()

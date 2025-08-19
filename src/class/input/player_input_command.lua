@@ -39,14 +39,16 @@ end;
 function PlayerInputCommand:start()
 	self.entity:startTurn()
 	local skillSelected = function(skill)
-		self.entity.skill = skill
-		self.action = skill
-		local validTargets = self.turnManager:getValidTargets()
-		self.commandKey = 'skill_command'
-		self.entity:setTargets(validTargets, self.action.targetType)
-		self.awaitingInput = false
-		self.waitingForTarget = true
-		self.entity.actionUI.uiState = 'targeting'
+		if self.entity:validateSkillCost(skill.cost) then
+			self.entity.skill = skill
+			self.action = skill
+			local validTargets = self.turnManager:getValidTargets()
+			self.commandKey = 'skill_command'
+			self.entity:setTargets(validTargets, self.action.targetType)
+			self.awaitingInput = false
+			self.waitingForTarget = true
+			self.entity.actionUI.uiState = 'targeting'
+		end
 	end
 	self:registerSignal('SkillSelected', skillSelected)
 
@@ -76,6 +78,11 @@ function PlayerInputCommand:start()
 	self:registerSignal('ItemDeselected', itemDeselected)
 
 	local targetConfirm = function(targetType, tIndex)
+		if self.commandKey == 'skill_command' then
+			self.entity:deductFP(self.action.cost)
+		elseif self.commandKey == 'item_command' then
+			self.turnManager.characterTeam.inventory:popItem(self.action)
+		end
 		if self.action.isSingleTarget then
 			table.insert(self.entity.targets, self.entity.targetableEntities[tIndex])
 			table.insert(self.targets, self.entity.targetableEntities[tIndex])

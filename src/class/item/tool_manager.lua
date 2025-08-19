@@ -1,131 +1,150 @@
+local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
-local Class = require 'libs.hump.class'
 local ToolManager = Class{}
 
 function ToolManager:init(characterTeam)
-	self.toolList = {}
-	self.startTurnToolList = {}
-	self.onStartBattleList = {}
-	self.pickupToolList = {}
-	self.onAttackList = {}
-	self.onDefendList = {}
-	self.onEnemyAttackList = {}
-	self.onLevelList = {}
 	self.characterTeam = characterTeam
-	self.enemyTeam = nil
+	self.tools = self.initToolLists()
+	self.indices = self.initIndices()
+	self.signalHandlers = {}
+	self:registerSignals()
+end;
 
-	Signal.register('OnStartTurn',
+function ToolManager:addTool(tool)
+	local signal = tool.signal
+	tool.index = self.indices[signal]
+	self.indices[signal] = self.indices[signal] + 1
+	table.insert(self.tools[signal], tool)
+	print('added ' .. tool.name .. ' to list: tools.' .. signal)
+	if signal == 'OnPickup' then
+		tool.proc(self.characterTeam)
+	end
+end;
+
+function ToolManager:popTool(tool)
+	if tool.index == 0 then
+		error(tool.name .. "'s index was never overwritten when added to the inventory")
+	elseif #self.tools[tool.signal] == 0 then
+		error('Attempted to pop off an empty table')
+	else
+		local signal = tool.signal
+		local i = tool.index
+		local result = table.remove(self.tools[signal][i])
+		self.indices[signal] = self.indices[signal] - 1
+		return result
+	end
+end;
+
+function ToolManager.initToolLists()
+	local result = {
+		OnStartTurn = {},
+		OnStartCombat = {},
+		OnAttack = {},
+		OnGuard = {},
+		OnEnemyAttack = {},
+		OnLevelUp = {},
+		OnKO = {},
+		OnPickup = {},
+		OnPurchase = {},
+		OnEquipSell = {},
+		OnAccSell = {},
+	}
+
+	return result
+end;
+
+function ToolManager.initIndices()
+	local result = {
+		OnStartTurn = 1,
+		OnStartCombat = 1,
+		OnAttack = 1,
+		OnGuard = 1,
+		OnEnemyAttack = 1,
+		OnLevelUp = 1,
+		OnKO = 1,
+		OnPickup = 1,
+		OnPurchase = 1,
+		OnEquipSell = 1,
+		OnAccSell = 1,
+	}
+	return result
+end;
+
+function ToolManager:registerSignal(name, f)
+	self.signalHandlers[name] = f
+	Signal.register(name, f)
+end;
+
+function ToolManager:registerSignals()
+	self:registerSignal('OnStartTurn',
 		function(character)
-			for _,tool in pairs(self.startTurnToolList) do
-				tool.proc(character)
+			for _,item in ipairs(self.tools.OnStartTurn) do
+				item.proc(character)
 			end
-		end
-	)
+		end)
 
-	-- OnPickup Tools only proc once, so they pass self as an argument to manager
-	Signal.register('OnPickup',
-		function(tool)
-			tool.proc(self.characterTeam)
-		end
-	)
-
-	Signal.register('OnStartBattle',
+	self:registerSignal('OnStartCombat',
 		function()
-			for _,tool in ipairs(#self.onStartBattleList) do
-				tool.proc(self.characterTeam, self.enemyTeam)
+			for _,item in ipairs(self.tools.OnStartCombat) do
+				item.proc()
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnAttack',
+	self:registerSignal('OnAttack',
 		function(skill)
-			for _,tool in ipairs(self.onAttackList) do
-				tool.proc(skill)
+			for _,item in ipairs(self.tools.OnAttack) do
+				item.proc(skill)
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnDefend',
+	self:registerSignal('OnGuard',
 		function(character)
-			for _,tool in ipairs(self.onDamagedToolList) do
-				tool.proc(character)
+			for _,item in ipairs(self.tools.OnGuard) do
+				item.proc(character)
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnEnemyAttack',
+	self:registerSignal('OnEnemyAttack',
 		function(enemy)
-			for _,tool in ipairs(self.onEnemyAttackList) do
-				tool.proc(enemy)
+			for _,item in ipairs(self.tools.OnEnemyAttack) do
+				item.proc(enemy)
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnKO',
+	self:registerSignal('OnKO',
 		function()
-			for _,tool in ipairs(self.onKOList) do
-				tool.proc(self.characterTeam, self.enemyTeam)
+			for _,item in ipairs(self.tools.OnKO) do
+				item.proc()
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnLevelUp',
+	self:registerSignal('OnLevelUp',
 		function(character)
-			for _,tool in ipairs(self.onLevelList) do
-				tool.proc(character)
+			for _,item in ipairs(self.tools.OnLevelUp) do
+				item.proc(character)
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnPurchase',
-		function(characterTeam)
-			for _,tool in ipairs(self.onPurchaseList) do
-				-- do
+	self:registerSignal('OnPurchase',
+		function()
+			for _,item in ipairs(self.tools.OnPurchase) do
+				item.proc()
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnEquipSell',
+	self:registerSignal('OnEquipSell',
 		function(equip)
-			for _,tool in ipairs(self.onEquipSellList) do
-				tool.proc(equip, self.characterTeam)
+			for _,item in ipairs(self.tools.OnEquipSell) do
+				item.proc(equip)
 			end
-		end
-	)
+		end)
 
-	Signal.register('OnAccSell',
+	self:registerSignal('OnAccSell',
 		function(accessory)
-			for _,tool in ipairs(self.onAccSellList) do
-				tool.proc(accessory, self.characterTeam.inventory)
+			for _,item in ipairs(self.tools.OnAccSell) do
+				item.proc(accessory)
 			end
-		end
-	)
-end;
-
-function ToolManager:set(enemyTeam)
-	self.enemyTeam = enemyTeam
-end;
-
-function ToolManager:reset()
-	self.enemyTeam  = nil
-end;
-
---[[Present the prompt for the player to choose which character they will apply the buff to.
-Once selected, apply the buff and close the prompt.]]
-function ToolManager:chooseCharacter(tool, buff)
-	--do
-end;
-
-function ToolManager:update(dt)
-	for _,tool in pairs(self.toolList) do
-		tool:update(dt)
-	end
-end;
-
-function ToolManager:draw()
-	for _,tool in pairs(self.toolList) do
-		tool:draw()
-	end
+		end)
 end;
 
 return ToolManager
