@@ -24,11 +24,11 @@ return function(ref, qteBonus, qteManager)
 
 
   -- Move from starting position to staging position before changing to animation assoc with skill use
-  local stage = flux.to(ref.pos, qteManager.activeQTE.duration, {x = stagingPos.x, y = stagingPos.y})
-  ref.tweens['stage'] = stage
+  -- local stage = flux.to(ref.pos, qteManager.activeQTE.duration, {x = stagingPos.x, y = stagingPos.y})
+  -- ref.tweens['stage'] = stage
 
-  stage:oncomplete(
-    function()
+  -- stage:oncomplete(
+  --   function()
 
       ref.currentAnimTag = skill.tag
       -- Attack by charging from left to right
@@ -54,5 +54,5 @@ return function(ref, qteBonus, qteManager)
             ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
           end)
         ref.tweens['attack'] = attack
-    end)
+    -- end)
 end;

@@ -4,6 +4,7 @@ local QTE = require('class.qte.qte')
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
+require('util.globals')
 
 local HoldSBP = Class{__includes = QTE}
 
@@ -38,6 +39,7 @@ function HoldSBP:setActionButton(actionButton, buttonUI)
 end;
 
 function HoldSBP:setUI(activeEntity)
+	self.entity = activeEntity
 	local isOffensive = activeEntity.skill.isOffensive
 	local targetPos = activeEntity.pos
 	self:readyCamera(targetPos)
@@ -88,10 +90,9 @@ end;
 function HoldSBP:handleQTE()
 	if self.isActionButtonPressed then
 		local goalWidth = self.progressBar.containerOptions.width
-		print('starting progress tween')
 
 		-- Start here because QTE happens alongside movement dictated by action's logic
-		self.onComplete()
+		-- self.onComplete()
 
 		local goalPosX = self.cameraReturnPos.x
 		local goalPosY = self.cameraReturnPos.y
@@ -103,7 +104,16 @@ function HoldSBP:handleQTE()
 			goalPosX = goalPosX + 100
 			goalPosY = goalPosY - 30
 		end
-		self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY,scale = 1.25}):ease('linear')
+		local target = self.entity.targets[1]
+		local yOffset = self.entity.hitbox.h - target.hitbox.h 
+		local tPos = target.hitbox
+		local spaceFromTarget = calcSpacingFromTarget('near', 'character')
+		local stagingPos = {
+			x = tPos.x + spaceFromTarget.x,
+			y = tPos.y - yOffset + spaceFromTarget.y
+		}
+		self.stagingTween = flux.to(self.entity.pos, self.duration, {x = stagingPos.x, y = stagingPos.y})
+		self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY, scale = 1.25}):ease('linear')
 		self.progressTween = flux.to(self.progressBar.meterOptions, self.duration, {width = goalWidth}):ease('linear')
 			:onupdate(function()
 				if self.progressBar.meterOptions.width >= goalWidth * 0.9 then
@@ -121,6 +131,7 @@ function HoldSBP:handleQTE()
 							print('Failed to end in time. Attacking now')
 							Signal.emit('OnQTEResolved', false)
 							self.signalEmitted = true
+							self.onComplete(false)
 						end
 					end)
 			end)
@@ -128,7 +139,7 @@ function HoldSBP:handleQTE()
 end;
 
 function HoldSBP:gamepadpressed(joystick, button)
-	if button == self.actionButton then
+	if button == self.actionButton and not self.signalEmitted then
 		self.isActionButtonPressed = true
 		self.buttonUIIndex = 'pressed'
 
@@ -143,7 +154,7 @@ end;
 
 function HoldSBP:gamepadreleased(joystick, button)
 	if button == self.actionButton then
-		self.isActionButtonPressed = true
+		self.isActionButtonPressed = false
 		if self.progressTween then
 			print('stopping progress tween')
 			self.progressTween:stop()
@@ -153,18 +164,18 @@ function HoldSBP:gamepadreleased(joystick, button)
 					local qteSuccess = false
 					Signal.emit('OnQTEResolved', qteSuccess)
 					self.signalEmitted = true
+					self.onComplete(false)
 				end
-			elseif not self.qteComplete then
+			else
 				print('Hold SBP QTE Success')
 				self.waitTween:stop()
 				self.showFeedback = true
 				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
 					:oncomplete(function() self.feedbackPos.a = 1 end)
-				if not self.signalEmitted then
-					local qteSuccess = true
-					Signal.emit('OnQTEResolved', qteSuccess)
-					self.signalEmitted = true
-				end
+				local qteSuccess = true
+				Signal.emit('OnQTEResolved', qteSuccess)
+				self.signalEmitted = true
+				self.onComplete(qteSuccess)
 			end
 		end
 	end
