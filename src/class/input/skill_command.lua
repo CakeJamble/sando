@@ -42,7 +42,7 @@ function SkillCommand:start(turnManager)
     self.qteManager.activeQTE:beginQTE(function(qteSuccess)
       local bonus
       if qteSuccess then
-        bonus = self.getQTEBonuses(self.entity.skill)
+        bonus = self.getQTEBonus(self.entity.skill.qteBonus)
       end
       self:executeSkill(bonus)
     end)
@@ -51,8 +51,9 @@ function SkillCommand:start(turnManager)
   end
 end;
 
-function SkillCommand.getQTEBonuses(qteBonus)
+function SkillCommand.getQTEBonus(qteBonus)
   local result
+  print(qteBonus)
   if qteBonus == 'damage' then
     result = function(damage)
       return damage + math.floor(0.5 + (0.25 * damage))
@@ -66,7 +67,7 @@ function SkillCommand.getQTEBonuses(qteBonus)
 end;
 
 function SkillCommand:executeSkill(qteBonus)
-  self.entity.skill.proc(self.entity, qteBonus, qteManager)
+  self.entity.skill.proc(self.entity, qteBonus, self.qteManager)
 end
 
 function SkillCommand:update(dt)

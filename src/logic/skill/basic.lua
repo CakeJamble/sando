@@ -17,13 +17,11 @@ return function(ref, qteBonus, qteManager)
     x = tPos.x + spaceFromTarget.x,
     y = goalY + spaceFromTarget.y
   }
-
   local hasCollided = false
 
   local damage = ref.battleStats['attack'] + skill.damage
-  if qteBonus then
-    damage = qteBonus(damage)
-  end
+  local luck = ref.battleStats['luck'] + 0
+
 
   -- Move from starting position to staging position before changing to animation assoc with skill use
   local stage = flux.to(ref.pos, qteManager.activeQTE.duration, {x = stagingPos.x, y = stagingPos.y})
@@ -41,7 +39,12 @@ return function(ref, qteBonus, qteManager)
           -- check collision
           function()
             if not hasCollided and Collision.rectsOverlap(ref.hitbox, target.hitbox) then
-              target:takeDamage(damage, target.battleStats.luck)
+              if qteBonus then
+                print('damage pre bonus:', damage)
+                damage = qteBonus(damage)
+                print('new damage:', damage)
+              end
+              target:takeDamage(damage, luck)
               hasCollided = true
             end
           end)
