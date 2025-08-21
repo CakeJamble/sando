@@ -316,6 +316,15 @@ function Entity:cleanse()
   end
 end;
 
+function Entity:cleanseOne(statusToCleanse)
+  for i, status in ipairs(self.statuses) do
+    if statusToCleanse == status then
+      table.remove(self.statuses, i)
+      return
+    end
+  end
+end;
+
 function Entity:takeDamage(amount, attackerLuck) --> void
   local isCrit = self:isCrit(attackerLuck)
   local damageDuration = 15 -- generous rn, should be a fcn of the damage taken

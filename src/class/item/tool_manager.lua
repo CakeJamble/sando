@@ -39,6 +39,7 @@ function ToolManager.initToolLists()
 	local result = {
 		OnStartTurn = {},
 		OnStartCombat = {},
+		OnEndCombat = {},
 		OnAttack = {},
 		OnGuard = {},
 		OnEnemyAttack = {},
@@ -57,6 +58,7 @@ function ToolManager.initIndices()
 	local result = {
 		OnStartTurn = 1,
 		OnStartCombat = 1,
+		OnEndCombat = 1,
 		OnAttack = 1,
 		OnGuard = 1,
 		OnEnemyAttack = 1,
@@ -89,6 +91,15 @@ function ToolManager:registerSignals()
 				item.proc()
 			end
 		end)
+
+-- consider making it OnRewardEnter or something?
+	self:registerSignal('OnEndCombat',
+		function(characterTeam)
+			for _,item in ipairs(self.tools.OnEndCombat) do
+				item.proc(characterTeam)
+			end
+		end)
+
 
 	self:registerSignal('OnAttack',
 		function(skill)
