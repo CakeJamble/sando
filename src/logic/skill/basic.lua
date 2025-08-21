@@ -2,7 +2,7 @@ require('util.globals')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 
-return function(ref, qteManager)
+return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local target = ref.targets[1]
   local xOffset = 40
@@ -17,20 +17,18 @@ return function(ref, qteManager)
     x = tPos.x + spaceFromTarget.x,
     y = goalY + spaceFromTarget.y
   }
-
   local hasCollided = false
 
   local damage = ref.battleStats['attack'] + skill.damage
-  if ref.qteSuccess then
-    damage = damage + math.ceil(ref.battleStats.attack * 0.1)
-  end
+  local luck = ref.battleStats['luck'] + 0
+
 
   -- Move from starting position to staging position before changing to animation assoc with skill use
-  local stage = flux.to(ref.pos, qteManager.activeQTE.duration, {x = stagingPos.x, y = stagingPos.y})
-  ref.tweens['stage'] = stage
+  -- local stage = flux.to(ref.pos, qteManager.activeQTE.duration, {x = stagingPos.x, y = stagingPos.y})
+  -- ref.tweens['stage'] = stage
 
-  stage:oncomplete(
-    function()
+  -- stage:oncomplete(
+  --   function()
 
       ref.currentAnimTag = skill.tag
       -- Attack by charging from left to right
@@ -41,7 +39,12 @@ return function(ref, qteManager)
           -- check collision
           function()
             if not hasCollided and Collision.rectsOverlap(ref.hitbox, target.hitbox) then
-              target:takeDamage(damage)
+              if qteBonus then
+                print('damage pre bonus:', damage)
+                damage = qteBonus(damage)
+                print('new damage:', damage)
+              end
+              target:takeDamage(damage, luck)
               hasCollided = true
             end
           end)
@@ -51,5 +54,5 @@ return function(ref, qteManager)
             ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
           end)
         ref.tweens['attack'] = attack
-    end)
+    -- end)
 end;

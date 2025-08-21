@@ -12,7 +12,7 @@
 	"stagingTime": 1,
 	"stagingType": "near",
 	"qteType": "hold_sbp",
-	"qteBonus": ["damage"],
+	"qteBonus": "damage",
 	"description": "Heals a target.",
 	"unlockedAtLvl": 1,
 	"beginTweenType": "linear",

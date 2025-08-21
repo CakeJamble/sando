@@ -34,8 +34,8 @@ function Enemy:setTargets(targets, targetType)
   end
 end;
 
-function Enemy:takeDamage(amount)
-  Entity.takeDamage(self, amount)
+function Enemy:takeDamage(amount, attackerLuck)
+  Entity.takeDamage(self, amount, attackerLuck)
 
   if self.currentAnimTag == 'ko' then
     flux.to(self.pos, 1.5, {a = 0})

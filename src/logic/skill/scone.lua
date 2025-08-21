@@ -4,13 +4,18 @@ local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local Timer = require('libs.hump.timer')
 
-return function(ref, qteManager)
+return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local target = ref.targets[1]
   local tPos = target.hitbox
   local goalX, goalY = tPos.x + tPos.w / 2, tPos.y + tPos.h / 2
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
+  if qteBonus ~= nil then
+    print('old damage:', damage)
+    damage = qteBonus(damage)
+    print('new damage:', damage)
+  end
   local sconeFlyingTime = 0.4
   local peakHeight = -tPos.h/2
 
@@ -28,7 +33,8 @@ return function(ref, qteManager)
       scone.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)
 
         if not hasCollided and Collision.rectsOverlap(scone.hitbox, target.hitbox) then
-          target:takeDamage(damage)
+          local attackerLuck = ref.battleStats.luck
+          target:takeDamage(damage, attackerLuck)
           hasCollided = true
           flux.to(scone.dims, 0.25, {r = 0}):ease('linear')
             -- :oncomplete(function() Signal.emit('DespawnProjectile') end)

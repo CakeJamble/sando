@@ -3,7 +3,7 @@ local flux = require('libs.flux')
 local Projectile = require('class.entities.projectile')
 local Timer = require('libs.hump.timer')
 
-return function(ref, qteManager)
+return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local target = ref.targets[1]
   local goalX, goalY = target.hitbox.x + (target.hitbox.w / 2), target.hitbox.y + (target.hitbox.h / 3)
@@ -12,6 +12,12 @@ return function(ref, qteManager)
     xMidPoint = ref.hitbox.x + (target.hitbox.w/ 2) - xMidPoint
   else
     xMidPoint = ref.hitbox.x + (target.hitbox.w/ 2) + xMidPoint
+  end
+
+  -- temp: using defense stat to determine heal amount
+  local amount = ref.battleStats.defense
+  if qteBonus then
+    amount = qteBonus(amount)
   end
 
 
@@ -32,7 +38,7 @@ return function(ref, qteManager)
           :ease('quadin')
           :oncomplete(
             function()
-              target:heal(5)
+              target:heal(amount)
               table.remove(ref.projectiles, 1)
               ref:endTurn(skill.duration, nil, skill.returnTweenType)
             end)

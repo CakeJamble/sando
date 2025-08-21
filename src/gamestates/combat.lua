@@ -197,6 +197,7 @@ end;
 
 function combat:draw()
   push:start()
+  camera:attach()
   love.graphics.draw(self.background, 0, 0, 0, 1, 1.2)
   love.graphics.draw(self.combatTeamUI, 0, 0, 0, 1, 0.75)
   for i,entity in ipairs(self.characterTeamHP) do
@@ -208,7 +209,7 @@ function combat:draw()
   if self.turnManager then
     self.turnManager:draw()
   end
-
+  camera:detach()
   push:finish()
   imgui.Render()
   imgui.love.RenderDrawLists()

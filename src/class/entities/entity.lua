@@ -302,8 +302,8 @@ function Entity:heal(amount) --> void
   Signal.emit('OnHPChanged', amount, isDamage, Entity.tweenHP)
 end;
 
-function Entity:takeDamage(amount, targetLuck) --> void
-  local isCrit = self:isCrit(targetLuck)
+function Entity:takeDamage(amount, attackerLuck) --> void
+  local isCrit = self:isCrit(attackerLuck)
   local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
   if isCrit then
     amount = amount * 2
@@ -341,16 +341,16 @@ function Entity:takeDamagePierce(amount) --> void
   end
 end;
 
-function Entity:isCrit(targetLuck)
-  local chance = self:calcCritChance(targetLuck)
+function Entity:isCrit(attackerLuck)
+  local chance = self:calcCritChance(attackerLuck)
   local rand = love.math.random()
 
   return rand <= chance
 end;
 
-function Entity:calcCritChance(targetLuck)
+function Entity:calcCritChance(attackerLuck)
   local luck = self.battleStats.luck
-  local chance = math.min(100, math.max(1, (luck / 4) - (targetLuck / 8)))
+  local chance = math.min(100, math.max(1, (attackerLuck / 4) - (luck / 8)))
   chance = chance / 100
   return chance
 end;
