@@ -22,6 +22,7 @@ function Entity:init(data, x, y)
   self.baseStats = self.copyStats(data)
   self.battleStats = self.copyStats(data)
   self.statStages = self.setStatStages(self.baseStats)
+  self.statuses = {}
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
@@ -293,6 +294,11 @@ function Entity:modifyBattleStat(stat, stage) --> void
   self.battleStats[stat] = math.floor((self.battleStats[stat] * mult) + 0.5)
 end;
 
+function Entity:applyStatus(status)
+  table.insert(self.statuses, status)
+end;
+
+
 function Entity:heal(amount) --> void
   local isDamage = false
   if self.tweens['damage'] then
@@ -300,6 +306,14 @@ function Entity:heal(amount) --> void
   end
   self.battleStats["hp"] = math.min(self.baseStats["hp"], self.battleStats["hp"] + amount)
   Signal.emit('OnHPChanged', amount, isDamage, Entity.tweenHP)
+end;
+
+function Entity:cleanse()
+  for i,_ in ipairs(self.statuses) do
+    local status = table.remove(self.statuses, i)
+    -- play effect(s) for heal (use a tween and self-assign using after() to chain visuals)
+    print(status) -- temp
+  end
 end;
 
 function Entity:takeDamage(amount, attackerLuck) --> void
