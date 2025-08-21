@@ -30,6 +30,7 @@ local Character = Class{__includes = Entity,
   jumpDur = 0.5,
   landingLag = 0.25,
   inventory = nil,
+  canBeDebuffed = true
 }
 
 -- Character constructor
@@ -125,6 +126,7 @@ function Character:endTurn(duration, stagingPos, tweenType)
   self.qteSuccess = false
   self.canJump = true
   self.canGuard = false
+  Character.canBeDebuffed = true
 end;
 
 function Character:validateSkillCost(cost)
@@ -134,6 +136,23 @@ end;
 function Character:deductFP(cost)
   self.currentFP = math.min(math.max(0, cost - self.fpCostMod), self.currentFP)
 end;
+
+function Character:applyStatus(status)
+  if Character.canBeDebuffed then
+    Entity.applyStatus(self, status)
+  end
+end;
+
+function Character:modifyBattleStat(stat, stage)
+  if stage < 0 then
+    if Character.canBeDebuffed then
+      Entity.modifyBattleStat(self, stat, stage)
+    end
+  else
+    Entity.modifyBattleStat(stat, stage)
+  end
+end;
+
 
 function Character:setAnimations()
   local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'

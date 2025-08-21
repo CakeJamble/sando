@@ -29,7 +29,7 @@ function Inventory:init(characterTeam)
     self.numConsumableSlots = 3
     self.numEquipSlots = 2
     self.numAccessories = 2
-    self.money = {}
+    self.money = 0
     self.displaySellOption = false
     self.cabinetImage = love.graphics.newImage(Inventory.cabinetPath)
 
@@ -44,6 +44,12 @@ function Inventory:init(characterTeam)
     self.textOffset = 170
     self.cabinetRotate = math.pi/2
 end
+
+function Inventory:setMoney(amount)
+    self.money = math.max(0, amount)
+
+    -- then play animation or sound something (or in a purchase/sell fcn that calls this)
+end;
 
 --[[ Equips a piece of equipment to a character's equip slot.
 If there is an equipment piece there, it will unequip it and return the gear
