@@ -1,7 +1,7 @@
 {
 	"name": "Grease of Ruin",
 	"signal": "OnAttacked",
-	"description": "Slight chance to lower attack of grounded enemies when they attack",
+	"description": "Slight chance to lower attack of enemies after they attack",
 	"flavorText": "Non-slip shoes required.",
 	"rarity": "common"
 }
