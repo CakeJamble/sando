@@ -3,6 +3,8 @@ local Entity = require("class.entities.entity")
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 local flux = require('libs.flux')
+local starParticles = require('asset.particle.ko')
+local Timer = require('libs.hump.timer')
 
 local Enemy = Class{__includes = Entity,
   -- for testing
@@ -18,6 +20,7 @@ function Enemy:init(data)
   self.moneyReward = data.moneyReward
   self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
+  self.drawKOStars = false
 
   Signal.register('OnStartCombat',
     function()
@@ -40,6 +43,9 @@ function Enemy:takeDamage(amount, attackerLuck)
   if self.currentAnimTag == 'ko' then
     flux.to(self.pos, 1.5, {a = 0})
     -- Timer.after(1.5, function() self.drawSelf = false end)
+    self.drawKOStars = true
+    -- local lifetime = starParticles[1].system:getEmitterLifetime()
+    -- Timer.after(lifetime, function() self.drawKOStars = false; end)
   end
 end;
 
@@ -88,6 +94,25 @@ function Enemy:knockOut()
   reward.money = self.moneyReward
   reward.loot = self.lootReward
   return reward
+end;
+
+function Enemy:update(dt)
+  Entity.update(self, dt)
+
+  if self.drawKOStars then
+    for _,ps in ipairs(starParticles) do
+      ps.system:update(dt)
+    end
+  end
+end;
+
+function Enemy:draw()
+  Entity.draw(self)
+  if self.drawKOStars then
+    for _,ps in ipairs(starParticles) do
+      love.graphics.draw(ps.system, self.pos.x + self.frameWidth / 2, self.pos.y + self.frameHeight / 2)
+    end
+  end
 end;
 
 return Enemy

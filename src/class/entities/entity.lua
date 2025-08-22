@@ -473,16 +473,18 @@ function Entity:draw() --> void
     love.graphics.setColor(1, 1, 1, 1)
   end
 
+  -- feedback text
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)
-    love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
+    love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0,
+      self.dmgDisplayScale, self.dmgDisplayScale)
     love.graphics.setColor(1,1,1, 1)
   end
 
+  -- Entity sprite
   local animation = self.animations[self.currentAnimTag]
   local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   spriteNum = math.min(spriteNum, #animation.quads)
-
   love.graphics.setColor(1,1,1,self.pos.a)
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
   love.graphics.setColor(1,1,1,1)

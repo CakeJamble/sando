@@ -1,6 +1,6 @@
 --! filename: reward
-require('class.entities.character_team')
-require('class.entities.character')
+-- local CharacterTeam = require('class.entities.character_team')
+-- local Character = require('class.entities.character')
 -- require('util.equipment_pool')
 -- require('util.consumable_pool')
 
@@ -11,7 +11,7 @@ function reward:init()
   self.windowWidth, self.windowHeight = love.window.getDesktopDimensions()
   self.windowWidth, self.windowHeight = self.windowWidth * 0.75, self.windowHeight * 0.75
   self.wOffset, self.hOffset = self.windowWidth * 0.1, self.windowHeight * 0.1
-  
+
   self.toolPools = {}
   self.rareChanceDelta = 0.2
   self.uncommonChanceDelta = 0.3
@@ -24,6 +24,7 @@ end;
   -- the amount of money rewarded from the fight.
 function reward:enter(previous, rewards)
   if previous == states['combat'] then
+    self:distributeEXP(rewards.expReward)
     self.combatState = previous
     self.lootRewardOptions = {}
     local reward
