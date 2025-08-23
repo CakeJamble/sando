@@ -4,6 +4,9 @@
 -- require('util.equipment_pool')
 -- require('util.consumable_pool')
 -- local loadTool = require('util.tool_loader')
+local LevelUpUI = require('class.ui.level_up_ui')
+local Signal = require('libs.hump.signal')
+local flux = require('libs.flux')
 local loadItem = require('util.item_loader')
 local json = require('libs.json')
 
@@ -26,11 +29,23 @@ end;
 -- Each time the Reward state is entered, given that we are not coming from a combat state,
   -- the reward state expects 2 integers for the amount of EXP rewarded from the fight, and
   -- the amount of money rewarded from the fight.
-function reward:enter(previous, rewards)
+function reward:enter(previous, rewards, characterTeam)
   if previous == states['combat'] then
-    self.expReward = self.sumEXP(rewards)
-    self.rewards = self:getRewards(rewards)
+    self.expReward = self.sumReward(rewards, 'exp')
+    self.moneyReward = self.sumReward(rewards, 'money')
+    self.rewards = self:getItemRewards(rewards)
     self.combatState = previous
+
+    self.levelUpUI = LevelUpUI(characterTeam)
+    self:distributeExperience(characterTeam)
+    characterTeam:increaseMoney(self.moneyReward)
+  end
+end;
+
+function reward:distributeExperience(characterTeam)
+  for i,member in ipairs(characterTeam.members) do
+    local numLevels = member:gainExp(self.expReward)
+    self.levelUpUIs[i]:tweenExp(numLevels, self.expReward)
   end
 end;
 
@@ -64,15 +79,15 @@ function reward.initRewardPools()
 end;
 
 
-function reward.sumEXP(rewards)
+function reward.sumReward(rewards, rewardType)
   local result = 0
   for _,rwd in ipairs(rewards) do
-    result = result + rwd.exp
+    result = result + rwd[rewardType]
   end
   return result
 end;
 
-function reward:getRewards(rewards)
+function reward:getItemRewards(rewards)
   local result = {}
   for _,rwd in ipairs(rewards) do
     local rewardOptions = self:getRewardOptions(rwd.rarities)
