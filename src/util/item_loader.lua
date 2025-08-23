@@ -1,16 +1,10 @@
 local json = require('libs.json')
 
-local function loadItem(itemName)
-	local jsonPath = 'data/item/' .. itemName .. '.json'
+local function loadItem(itemName, itemType)
+	local jsonPath = 'data/item/' .. itemType .. '/'
+	jsonPath = jsonPath .. itemName .. '.json'
 	local raw = love.filesystem.read(jsonPath)
 	local data = json.decode(raw)
-
-	local itemType
-	if data.itemType then
-		itemType = data.itemType .. '.'
-	else
-		error('The item: ' .. itemName .. ', did not have an itemType field defined')
-	end
 
 	local logicPath = 'logic.item.' .. itemType .. itemName
 	local proc = require(logicPath)

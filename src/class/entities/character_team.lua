@@ -8,12 +8,12 @@ local Class = require('libs.hump.class')
 
 -- testing functionality of different items (REMOVE LATER)
 local loadItem = require 'util.item_loader'
-local loadTool = require('util.tool_loader')
-local espresso = loadItem('espresso')
-local halfMuffin = loadTool('half_muffin')
+-- local loadTool = require('util.tool_loader')
+local espresso = loadItem('espresso', 'consumable')
+local halfMuffin = loadItem('half_muffin', 'tool')
 -- local energyDrink = loadTool('energy_drink')
-local waterBottle = loadTool('water_bottle')
-local splatterGuard = loadTool('splatter_guard')
+local waterBottle = loadItem('water_bottle', 'tool')
+local splatterGuard = loadItem('splatter_guard', 'tool')
 local CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters)

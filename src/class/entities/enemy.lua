@@ -19,6 +19,7 @@ function Enemy:init(data)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)
+
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
   self.drawKOStars = false
 
@@ -42,10 +43,12 @@ function Enemy:takeDamage(amount, attackerLuck)
 
   if self.currentAnimTag == 'ko' then
     flux.to(self.pos, 1.5, {a = 0})
-    -- Timer.after(1.5, function() self.drawSelf = false end)
     self.drawKOStars = true
-    -- local lifetime = starParticles[1].system:getEmitterLifetime()
-    -- Timer.after(lifetime, function() self.drawKOStars = false; end)
+    local lifetime = starParticles[1].system:getEmitterLifetime()
+    Timer.after(lifetime, function() self.drawKOStars = false; end)
+
+    local reward = self:knockOut()
+    Signal.emit('OnEnemyKO', reward)
   end
 end;
 
@@ -92,7 +95,7 @@ function Enemy:knockOut()
   local reward = {}
   reward.exp = self.expReward
   reward.money = self.moneyReward
-  reward.loot = self.lootReward
+  reward.rarities = self.lootReward
   return reward
 end;
 

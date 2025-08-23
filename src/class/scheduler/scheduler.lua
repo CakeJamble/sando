@@ -22,10 +22,15 @@ function Scheduler:init(characterTeam, enemyTeam)
 		enemyHazards = {}
 	}
 	self.signalHandlers = {}
+	self.rewards = {}
 end;
 
 function Scheduler:enter()
 	-- for Signal registration that is shared amongst all Scheduler classes
+	self:registerSignal('OnEnemyKO',
+		function(reward)
+			table.insert(self.rewards, reward)
+		end)
 end;
 
 function Scheduler:registerSignal(name, f)
