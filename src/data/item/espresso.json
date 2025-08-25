@@ -1,8 +1,0 @@
-{
-	"name": "Espresso",
-	"itemType": "support",
-	"isSingleTarget": true,
-	"effects": ["heal"],
-	"amount": 10,
-	"duration": 3
-}

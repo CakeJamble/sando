@@ -6,7 +6,7 @@ local function loadItem(itemName, itemType)
 	local raw = love.filesystem.read(jsonPath)
 	local data = json.decode(raw)
 
-	local logicPath = 'logic.item.' .. itemType .. itemName
+	local logicPath = 'logic.item.' .. itemType .. '.' .. itemName
 	local proc = require(logicPath)
 	if proc then
 		data.proc = proc

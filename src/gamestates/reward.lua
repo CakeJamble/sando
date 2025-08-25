@@ -4,9 +4,7 @@
 -- require('util.equipment_pool')
 -- require('util.consumable_pool')
 -- local loadTool = require('util.tool_loader')
-local LevelUpUI = require('class.ui.level_up_ui')
-local Signal = require('libs.hump.signal')
-local flux = require('libs.flux')
+local LevelUpManager = require('class.entities.level_up_manager')
 local loadItem = require('util.item_loader')
 local json = require('libs.json')
 
@@ -36,16 +34,9 @@ function reward:enter(previous, rewards, characterTeam)
     self.rewards = self:getItemRewards(rewards)
     self.combatState = previous
 
-    self.levelUpUI = LevelUpUI(characterTeam)
-    self:distributeExperience(characterTeam)
+    self.levelUpManager = LevelUpManager(characterTeam)
+    self.levelUpManager:distributeExperience(self.expReward)
     characterTeam:increaseMoney(self.moneyReward)
-  end
-end;
-
-function reward:distributeExperience(characterTeam)
-  for i,member in ipairs(characterTeam.members) do
-    local numLevels = member:gainExp(self.expReward)
-    self.levelUpUIs[i]:tweenExp(numLevels, self.expReward)
   end
 end;
 
@@ -60,9 +51,12 @@ function reward.initRewardPools()
 
   local result = {}
   for itemType,path in pairs(jsonPaths) do
+    print(path)
     local rawCommon = love.filesystem.read(path .. 'common_pool.json')
     local rawUncommon = love.filesystem.read(path .. 'uncommon_pool.json')
     local rawRare = love.filesystem.read(path .. 'rare_pool.json')
+
+    print(rawCommon)
 
     local common = json.decode(rawCommon)
     local uncommon = json.decode(rawUncommon)
@@ -141,10 +135,15 @@ end;
 
 function reward:draw()
   self.combatState:draw()
+  love.graphics.push()
+  love.graphics.translate(self.wOffset, self.hOffset)
 
   love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
-  love.graphics.rectangle("fill", self.wOffset, self.hOffset, self.windowWidth, self.windowHeight)
+  love.graphics.rectangle("fill", 0, 0, self.windowWidth, self.windowHeight)
   love.graphics.setColor(1, 1, 1)
+
+  self.levelUpUI:draw()
+  love.graphics.pop()
 end;
 
 return reward

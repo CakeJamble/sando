@@ -57,6 +57,7 @@ end;
 
 function ProgressBar:reset()
 	self.meterOptions.width = self.meterStartingWidth
+	self.meterOptions.value = 0
 end;
 
 function ProgressBar:draw()

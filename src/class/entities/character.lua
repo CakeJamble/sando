@@ -211,21 +211,17 @@ end;
       - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
           Continues this until self.experience is less that self.experienceRequired ]]
 function Character:gainExp(amount)
-  local numLevels = 0
   self.totalExp = self.totalExp + amount
   self.experience = self.experience + amount
 
   -- leveling up until exp is less than exp required for next level
   while self.experience >= self.experienceRequired do
     self.level = self.level + 1
-    numLevels = numLevels + 1
     print(Entity:getEntityName() .. ' reached level ' .. self.level .. '!')
     self.experienceRequired = Character:getRequiredExperience()
     Character:updateSkills()
     -- TODO: need to signal to current gamestate to push new level up reward state
   end
-
-  return numLevels
 end;
 
 -- Gets the required exp for the next level
