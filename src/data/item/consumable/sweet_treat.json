@@ -1,0 +1,8 @@
+{
+	"name": "Sweet Treat",
+	"itemType": "support",
+	"isSingleTarget": true,
+	"effects": ["lvl_up"],
+	"amount": 1,
+	"duration": 3
+}

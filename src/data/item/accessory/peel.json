@@ -1,0 +1,7 @@
+{
+	"name": "Piping Bag",
+	"signal": "OnAttack",
+	"description": "Physical attacks hit flying enemies",
+	"flavorText": "Helps with reach",
+	"rarity": "common"
+}

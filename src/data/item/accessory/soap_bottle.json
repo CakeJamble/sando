@@ -1,0 +1,7 @@
+{
+	"name": "Soap Bottle",
+	"signal": "OnEquip",
+	"description": "Lower chance of status effects",
+	"flavorText": "Sing happy birthday twice",
+	"rarity": "uncommon"
+}

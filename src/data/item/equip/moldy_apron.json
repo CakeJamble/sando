@@ -1,0 +1,14 @@
+{
+	"name": "Moldy Apron",
+	"cost": 10,
+	"rarity": "common",
+	"effects": "poison",
+	"stats": {
+		"hp": 0.2,
+		"fp": 0.2,
+		"attack": 0,
+		"defense": 0,
+		"speed": 0,
+		"luck": 0
+	}
+}

@@ -1,0 +1,7 @@
+{
+	"name": "Bag of Sugar",
+	"itemType": "support",
+	"isSingleTarget": true,
+	"effects": ["attack_up", "speed_up", "defense_down", "luck_down"],
+	"duration": 3
+}

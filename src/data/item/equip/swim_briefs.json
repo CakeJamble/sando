@@ -1,0 +1,14 @@
+{
+	"name": "Swim Briefs",
+	"cost": 10,
+	"rarity": "common",
+	"effects": null,
+	"stats": {
+		"hp": 0.2,
+		"fp": 0.2,
+		"attack": 0.2,
+		"defense": -0.2,
+		"speed": 0,
+		"luck": 0
+	}
+}

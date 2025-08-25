@@ -1,0 +1,7 @@
+{
+	"name": "Name Tag",
+	"signal": "OnStartBattle",
+	"description": "See enemy info during combat",
+	"flavorText": "Who is you",
+	"rarity": "common"
+}

@@ -1,0 +1,14 @@
+{
+	"name": "Hairnet",
+	"cost": 10,
+	"rarity": "common",
+	"effects": null,
+	"stats": {
+		"hp": 0,
+		"fp": 0.3,
+		"attack": 0,
+		"defense": 0,
+		"speed": 0,
+		"luck": 0
+	}
+}
