@@ -153,6 +153,13 @@ function Character:modifyBattleStat(stat, stage)
   end
 end;
 
+function Character:raiseMaxHP(pct)
+  local ratio = self.battleStats.hp / self.baseStats.hp
+  local amount = math.floor(0.5 + self.baseStats.hp * pct)
+  self.baseStats.hp = self.baseStats.hp + amount
+  local newCurrHP = math.floor(0.5 + self.baseStats.hp * ratio)
+  self.battleStats.hp = newCurrHP
+end;
 
 function Character:setAnimations()
   local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'

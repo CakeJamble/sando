@@ -1,7 +1,8 @@
 {
 	"name": "Donut Hole",
 	"itemType": "support",
-	"isSingleTarget": true,
+	"isSingleTarget": false,
+	"numProcs": 5,
 	"effects": ["heal"],
 	"amount": 10,
 	"duration": 3
