@@ -2,7 +2,7 @@
 	"name": "Basic Apron",
 	"cost": 10,
 	"rarity": "common",
-	"effects": null,
+	"effects": "ohko",
 	"stats": {
 		"hp": 0.2,
 		"fp": 0.2,

@@ -2,7 +2,7 @@
 	"name": "Hairnet",
 	"cost": 10,
 	"rarity": "common",
-	"effects": null,
+	"effects": "poison_resist",
 	"stats": {
 		"hp": 0,
 		"fp": 0.3,

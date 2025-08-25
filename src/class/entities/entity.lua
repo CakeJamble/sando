@@ -27,8 +27,10 @@ function Entity:init(data, x, y)
     burn = 0,
     poison = 0,
     sleep = 0,
-    lactose = 0
+    lactose = 0,
+    ohko = 0
   }
+  self.critMult = 2
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
@@ -352,7 +354,7 @@ function Entity:takeDamage(amount, attackerLuck) --> void
   local isCrit = self:isCrit(attackerLuck)
   local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
   if isCrit then
-    amount = amount * 2
+    amount = amount * self.critMult
     -- Signal.emit('OnCrit')
   end
   self.amount = math.max(0, amount - self.battleStats['defense'])
