@@ -23,6 +23,12 @@ function Entity:init(data, x, y)
   self.battleStats = self.copyStats(data)
   self.statStages = self.setStatStages(self.baseStats)
   self.statuses = {}
+  self.statusResist = {
+    burn = 0,
+    poison = 0,
+    sleep = 0,
+    lactose = 0
+  }
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
@@ -295,9 +301,26 @@ function Entity:modifyBattleStat(stat, stage) --> void
 end;
 
 function Entity:applyStatus(status)
-  table.insert(self.statuses, status)
+  local chance = love.math.random()
+
+  if chance > self.statusResist[status] then
+    table.insert(self.statuses, status)
+  else
+    print('resisted!')
+  end
 end;
 
+function Entity:raiseResist(statuses, amount)
+  if statuses == 'all' then
+    for status,resistChance in pairs(self.statusResist) do
+      self.statusResist[status] = resistChance + amount
+    end
+  else
+    for _,status in ipairs(statuses) do
+      self.statusResist[status] = self.statusResist[status] + amount
+    end
+  end
+end;
 
 function Entity:heal(amount) --> void
   local isDamage = false
