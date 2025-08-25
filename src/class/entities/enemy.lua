@@ -92,10 +92,11 @@ function Enemy:targetSelect(targetType, isSingleTarget)
 end;
 
 function Enemy:knockOut()
-  local reward = {}
-  reward.exp = self.expReward
-  reward.money = self.moneyReward
-  reward.rarities = self.lootReward
+  local reward = {
+    exp = self.expReward,
+    money = self.moneyReward,
+    rarities = self.lootReward  -- table(uncommon: number, rare: number)
+  }
   return reward
 end;
 

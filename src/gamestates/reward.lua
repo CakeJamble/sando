@@ -51,12 +51,9 @@ function reward.initRewardPools()
 
   local result = {}
   for itemType,path in pairs(jsonPaths) do
-    print(path)
     local rawCommon = love.filesystem.read(path .. 'common_pool.json')
     local rawUncommon = love.filesystem.read(path .. 'uncommon_pool.json')
     local rawRare = love.filesystem.read(path .. 'rare_pool.json')
-
-    print(rawCommon)
 
     local common = json.decode(rawCommon)
     local uncommon = json.decode(rawUncommon)
@@ -107,8 +104,8 @@ end;
 function reward:getRarityResult(rarities)
   local result = 'common'
   local rand = love.math.random()
-  local uncommonChance = rarities[1]
-  local rareChance = rarities[2]
+  local uncommonChance = rarities.uncommon
+  local rareChance = rarities.rare
 
   if rand <= rareChance + (self.numFloorsWithoutRare * self.rareChanceDelta) then
     result = 'rare'
