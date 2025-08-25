@@ -3,5 +3,5 @@
 	"signal": "OnRecoil",
 	"description": "Heal a small amount of health back after taking recoil",
 	"flavorText": "The kitchen can't move when the sink is full.",
-	"rarity": "common"
+	"rarity": "uncommon"
 }
