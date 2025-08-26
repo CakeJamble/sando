@@ -33,7 +33,6 @@ function reward:enter(previous, rewards, characterTeam)
     self.moneyReward = self.sumReward(rewards, 'money')
     self.rewards = self:getItemRewards(rewards)
     self.combatState = previous
-
     self.levelUpManager = LevelUpManager(characterTeam)
     self.levelUpManager:distributeExperience(self.expReward)
     characterTeam:increaseMoney(self.moneyReward)
@@ -105,8 +104,8 @@ end;
 function reward:getRarityResult(rarities)
   local result = 'common'
   local rand = love.math.random()
-  local uncommonChance = rarities.uncommon
-  local rareChance = rarities.rare
+  local uncommonChance = rarities.uncommon + self.characterTeam.rarityMod
+  local rareChance = rarities.rare + self.characterTeam.rarityMod
 
   if rand <= rareChance + (self.numFloorsWithoutRare * self.rareChanceDelta) then
     result = 'rare'
