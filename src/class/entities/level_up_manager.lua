@@ -18,7 +18,7 @@ function LevelUpManager:distributeExperience(amount)
 		local exp = member.experience
 		local expReq = member.experienceRequired
 		local expToGain = math.min(exp + amount, expReq)
-		local pb = self.levelUpUI[i]
+		local pb = self.levelUpUI[i].progressBar
 		local expResult = pb:increaseMeter(expToGain)
 		local expTween = flux.to(pb.meterOptions, self.duration, {width = expResult})
 			:oncomplete(function() member:gainExp(expResult); end)
@@ -52,13 +52,17 @@ function LevelUpManager.initUI(members)
 		}
 
 		local pb = ProgressBar(pbPos, pbOptions)
-		table.insert(uiTable, pb)
+		uiTable[member.entityName] = {character = member, expBar = pb}
 	end
 
 	return uiTable
 end;
 
 function LevelUpManager:draw()
+	for _,member in ipairs(self.levelUpUI) do
+		member.character:draw()
+		member.progressBar:draw()
+	end
 end;
 
 return LevelUpManager
