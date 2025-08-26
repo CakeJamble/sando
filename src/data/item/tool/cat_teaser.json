@@ -1,7 +1,0 @@
-{
-	"name": "Cat Teaser",
-	"signal": "OnLevelUp",
-	"description": "After choosing a stat to bonus roll, speed also gets a bonus roll.",
-	"flavorText": "More feathers is more fun.",
-	"rarity": "uncommon"
-}

@@ -213,6 +213,11 @@ end;
 --   -- play cleanse animation
 -- end;
 
+-- restores FP (similar to Entity:heal())
+function Character:refresh(amount)
+  self.battleStats.fp = math.min(self.baseStats.fp, self.battleStats.fp + amount)
+end;
+
 --[[ Gains exp, leveling up when applicable
       - preconditions: an amount of exp to gain
       - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
