@@ -1,7 +1,7 @@
 {
 	"name": "Mini Whiteboard",
 	"signal": "OnPickup",
-	"description": "Enemy intents are visible",
+	"description": "Shop items are slightly cheaper",
 	"flavorText": "The percentages add up to more than 100...",
 	"rarity": "uncommon"
 }

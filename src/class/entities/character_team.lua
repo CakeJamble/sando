@@ -17,20 +17,20 @@ local splatterGuard = loadItem('splatter_guard', 'tool')
 local CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters)
-    Team.init(self, characters)
-    self.rarityMod = 0
+  Team.init(self, characters)
+  self.rarityMod = 0
 
-    self.koCharacters = {}
-    self.inventory = Inventory(self)
+  self.koCharacters = {}
+  self.inventory = Inventory(self)
 
-    Character.inventory = self.inventory
-    ActionUI.consumables = self.inventory.consumables
+  Character.inventory = self.inventory
+  ActionUI.consumables = self.inventory.consumables
 
-    -- Adding items for testing
-    self.inventory:addConsumable(espresso)
-    self.inventory:addTool(halfMuffin)
-    self.inventory:addTool(waterBottle)
-    self.inventory:addTool(splatterGuard)
+  -- Adding items for testing
+  self.inventory:addConsumable(espresso)
+  self.inventory:addTool(halfMuffin)
+  self.inventory:addTool(waterBottle)
+  self.inventory:addTool(splatterGuard)
 end;
 
 function CharacterTeam:distributeExperience(amount)

@@ -1,7 +1,7 @@
 {
 	"name": "Potted Plant",
 	"signal": "OnLevelUp",
-	"description": "After choosing a stat to bonus roll, luck also gets a bonus roll.",
+	"description": "Slightly increase FP on level up.",
 	"flavorText": "It's plastic, but the mental health benefits are undeniable!",
 	"rarity": "uncommon"
 }

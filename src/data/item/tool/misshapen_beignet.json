@@ -1,7 +1,7 @@
 {
 	"name": "Misshapen Beignet",
-	"signal": "PLACEHOLDER",
-	"description": "PLACEHOLDER",
-	"flavorText": "PLACEHOLDER",
+	"signal": "OnPickup",
+	"description": "Slightly increase the value of all items currently in your inventory",
+	"flavorText": "Is it really worth more just because it's shaped like this?",
 	"rarity": "common"
 }

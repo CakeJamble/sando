@@ -28,7 +28,9 @@ function Entity:init(data, x, y)
     poison = 0,
     sleep = 0,
     lactose = 0,
-    ohko = 0
+    paralyze = 0,
+    ohko = 0,
+    late = 0
   }
   self.critMult = 2
   self.basic = data.basic
@@ -284,22 +286,36 @@ function Entity:goToStagingPosition(t, displacement)
   flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
 end;
 
-function Entity:modifyBattleStat(stat, stage) --> void
+function Entity:modifyBattleStat(statName, stage) --> void
   -- clamping
   local maxStage = statStageCap
   local minStage = -statStageCap
-  stage = self.statStages[stat] + stage
-  self.statStages[stat] = math.min(maxStage, math.max(minStage, stage))
+  local stats = {}
 
-  local mult
-  if self.statStages[stat] >= 0 then
-    mult = (2 + self.statStages[stat]) / 2
+  if statName == 'all' then
+    stats = {'attack', 'defense', 'speed', 'luck'}
   else
-    mult = 2 / (2 - self.statStages[stat])
+    if statName == 'random' then
+      local i = love.math.random(#stats)
+      statName = stats[i]
+    end
+    table.insert(stats, statName)
   end
 
-  -- local prev = self.battleStats[stat]
-  self.battleStats[stat] = math.floor((self.battleStats[stat] * mult) + 0.5)
+  for _,stat in ipairs(stats) do
+    stage = self.statStages[stat] + stage
+    self.statStages[stat] = math.min(maxStage, math.max(minStage, stage))
+
+    local mult
+    if self.statStages[stat] >= 0 then
+      mult = (2 + self.statStages[stat]) / 2
+    else
+      mult = 2 / (2 - self.statStages[stat])
+    end
+
+    -- local prev = self.battleStats[stat]
+    self.battleStats[stat] = math.floor((self.battleStats[stat] * mult) + 0.5)
+  end
 end;
 
 function Entity:applyStatus(status)

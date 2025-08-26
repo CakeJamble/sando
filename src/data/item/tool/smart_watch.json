@@ -1,7 +1,0 @@
-{
-	"name": "Smart Watch",
-	"signal": "OnPickup",
-	"description": "On pickup, assigned character has a 50% chance to take their turn first.",
-	"flavorText": "For the baker with nothing left to give!",
-	"rarity": "common"
-}

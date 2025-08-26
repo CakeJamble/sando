@@ -1,7 +1,7 @@
 {
 	"name": "Soft Water",
 	"signal": "OnPickup",
-	"description": "On pickup, cleanse all curses",
+	"description": "On pickup, cleanse all curses and statuses",
 	"flavorText": "The good stuff. Only for the dough, not for us.",
 	"rarity": "uncommon"
 }
