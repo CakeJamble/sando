@@ -108,7 +108,7 @@ function Scheduler:winLossConsMet()
   print('checking win loss cons')
   if self.enemyTeam:isWipedOut() then
     print('end combat')
-    Gamestate.switch(states['reward'], self.rewards)
+    Gamestate.switch(states['reward'], self.rewards, self.characterTeam)
     result = true
   end
   if self.characterTeam:isWipedOut() then

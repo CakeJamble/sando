@@ -139,7 +139,7 @@ function reward:draw()
   love.graphics.rectangle("fill", 0, 0, self.windowWidth, self.windowHeight)
   love.graphics.setColor(1, 1, 1)
 
-  self.levelUpUI:draw()
+  self.levelUpManager:draw()
   love.graphics.pop()
 end;
 

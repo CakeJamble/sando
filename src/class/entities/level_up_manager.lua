@@ -54,6 +54,11 @@ function LevelUpManager.initUI(members)
 		local pb = ProgressBar(pbPos, pbOptions)
 		table.insert(uiTable, pb)
 	end
+
+	return uiTable
+end;
+
+function LevelUpManager:draw()
 end;
 
 return LevelUpManager
