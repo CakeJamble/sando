@@ -18,7 +18,7 @@ function LevelUpManager:distributeExperience(amount)
 		local exp = member.experience
 		local expReq = member.experienceRequired
 		local expToGain = math.min(exp + amount, expReq)
-		local pb = self.levelUpUI[i].progressBar
+		local pb = self.levelUpUI[member.entityName].expBar
 		local expResult = pb:increaseMeter(expToGain)
 		local expTween = flux.to(pb.meterOptions, self.duration, {width = expResult})
 			:oncomplete(function() member:gainExp(expResult); end)
