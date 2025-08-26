@@ -4,6 +4,7 @@
 -- local AICommand = require('class.input.ai_command')
 local QTEManager = require('class.qte.qte_manager')
 require('util.globals')
+local Timer = require('libs.hump.timer')
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
@@ -108,8 +109,17 @@ function Scheduler:winLossConsMet()
   print('checking win loss cons')
   if self.enemyTeam:isWipedOut() then
     print('end combat')
-    Gamestate.switch(states['reward'], self.rewards, self.characterTeam)
-    result = true
+    self:resetCamera(0.5)
+    Timer.after(1, function()
+			for _,member in ipairs(self.characterTeam.members) do
+				if member.actionUI then
+					member.actionUI.active = false
+				end
+			end
+			Gamestate.switch(states['reward'], self.rewards, self.characterTeam)
+			result = true
+    end)
+
   end
   if self.characterTeam:isWipedOut() then
     print('you lose')

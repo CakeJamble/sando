@@ -7,14 +7,18 @@
 local LevelUpManager = require('class.entities.level_up_manager')
 local loadItem = require('util.item_loader')
 local json = require('libs.json')
+local flux = require('libs.flux')
 
 local reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
 function reward:init()
-  self.windowWidth, self.windowHeight = love.window.getDesktopDimensions()
+  self.windowWidth, self.windowHeight = push:getDimensions()
+  self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
   self.windowWidth, self.windowHeight = self.windowWidth * 0.75, self.windowHeight * 0.75
+  -- self.windowWidth, self.windowHeight = 640, 360
   self.wOffset, self.hOffset = self.windowWidth * 0.1, self.windowHeight * 0.1
+  -- print('wOffset: ' .. self.wOffset, 'hOffset: ' .. self.hOffset)
 
   self.rewardPools = self.initRewardPools()
   self.rareChanceDelta = 0.2
@@ -31,7 +35,7 @@ function reward:enter(previous, rewards, characterTeam)
   if previous == states['combat'] then
     self.expReward = self.sumReward(rewards, 'exp')
     self.moneyReward = self.sumReward(rewards, 'money')
-    self.rewards = self:getItemRewards(rewards)
+    self.rewards = self:getItemRewards(rewards, characterTeam.rarityMod)
     self.combatState = previous
     self.levelUpManager = LevelUpManager(characterTeam)
     self.levelUpManager:distributeExperience(self.expReward)
@@ -77,21 +81,21 @@ function reward.sumReward(rewards, rewardType)
   return result
 end;
 
-function reward:getItemRewards(rewards)
+function reward:getItemRewards(rewards, rarityMod)
   local result = {}
   for _,rwd in ipairs(rewards) do
-    local rewardOptions = self:getRewardOptions(rwd.rarities)
+    local rewardOptions = self:getRewardOptions(rwd.rarities, rarityMod)
     table.insert(result, rewardOptions)
   end
 
   return result
 end;
 
-function reward:getRewardOptions(rarities)
+function reward:getRewardOptions(rarities, rarityMod)
   local options = {}
   for i=1, self.numRewardOptions do
     local rewardType = self:getRewardType()
-    local rarity = self:getRarityResult(rarities)
+    local rarity = self:getRarityResult(rarities, rarityMod)
     local itemIndex = love.math.random(1, #self.rewardPools[rewardType][rarity])
     local itemName = table.remove(self.rewardPools[rewardType][rarity], itemIndex)
     print(itemName)
@@ -101,11 +105,11 @@ function reward:getRewardOptions(rarities)
   return options
 end;
 
-function reward:getRarityResult(rarities)
+function reward:getRarityResult(rarities, rarityMod)
   local result = 'common'
   local rand = love.math.random()
-  local uncommonChance = rarities.uncommon + self.characterTeam.rarityMod
-  local rareChance = rarities.rare + self.characterTeam.rarityMod
+  local uncommonChance = rarities.uncommon + rarityMod
+  local rareChance = rarities.rare + rarityMod
 
   if rand <= rareChance + (self.numFloorsWithoutRare * self.rareChanceDelta) then
     result = 'rare'
@@ -130,7 +134,14 @@ function reward:getRewardType()
   return result
 end;
 
+function reward:update(dt)
+  flux.update(dt)
+  self.levelUpManager:update(dt)
+end;
+
 function reward:draw()
+  push:start()
+  camera:attach()
   self.combatState:draw()
   love.graphics.push()
   love.graphics.translate(self.wOffset, self.hOffset)
@@ -141,6 +152,8 @@ function reward:draw()
 
   self.levelUpManager:draw()
   love.graphics.pop()
+  camera:detach()
+  push:finish()
 end;
 
 return reward

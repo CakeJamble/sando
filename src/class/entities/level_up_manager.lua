@@ -58,6 +58,10 @@ function LevelUpManager.initUI(members)
 	return uiTable
 end;
 
+function LevelUpManager:update(dt)
+	self.characterTeam:update(dt)
+end;
+
 function LevelUpManager:draw()
 	for _,member in ipairs(self.levelUpUI) do
 		member.character:draw()

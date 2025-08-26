@@ -5,8 +5,8 @@ Camera = require('libs.hump.camera')
 push = require "libs.push"
 local gameWidth, gameHeight = 640, 360
 local windowWidth, windowHeight = love.window.getDesktopDimensions()
-windowWidth, windowHeight = windowWidth * 0.5, windowHeight * 0.5
-push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
+windowWidth, windowHeight = windowWidth * 0.9, windowHeight * 0.9
+push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight)
 
 states = {
   main_menu         = require 'gamestates.main_menu',
