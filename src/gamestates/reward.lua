@@ -94,7 +94,7 @@ function reward:getRewardOptions(rarities)
     local rewardType = self:getRewardType()
     local rarity = self:getRarityResult(rarities)
     local itemIndex = love.math.random(1, #self.rewardPools[rewardType][rarity])
-    local itemName = self.rewardPools[rewardType][rarity][itemIndex]
+    local itemName = table.remove(self.rewardPools[rewardType][rarity], itemIndex)
     print(itemName)
     local item = loadItem(itemName, rewardType)
     table.insert(options, item)
