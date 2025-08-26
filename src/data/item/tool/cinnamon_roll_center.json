@@ -1,7 +1,0 @@
-{
-	"name": "Cinnamon Roll Center",
-	"signal": "OnPickup",
-	"description": "Choose a character. They dodge multihit attacks automatically.",
-	"flavorText": "Expired.",
-	"rarity": "shop"
-}

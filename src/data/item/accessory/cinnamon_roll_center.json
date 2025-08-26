@@ -1,0 +1,7 @@
+{
+	"name": "Cinnamon Roll Center",
+	"signal": "OnEnemyAttack",
+	"description": "Raise defense stat when targeted by multihit attacks.",
+	"flavorText": "Expired.",
+	"rarity": "shop"
+}
