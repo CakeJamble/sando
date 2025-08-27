@@ -8,6 +8,7 @@ local QTE = Class{
 	inputDir = 'asset/sprites/input_icons/'
 }
 
+---@param data table
 function QTE:init(data)
 	self.duration = data.duration
 	self.qteComplete = false
@@ -33,6 +34,7 @@ function QTE:init(data)
 	self.qteSuccess = false
 end;
 
+---@param isOffensive? boolean
 function QTE:readyCamera(isOffensive)
 	if isOffensive then
 		self.focusSelf = false
