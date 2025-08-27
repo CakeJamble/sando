@@ -15,6 +15,8 @@ local ToolManager = require('class.item.tool_manager')
 -- local AccessoryManager = require('class.item.accessory_manager')
 
 local Class = require 'libs.hump.class'
+
+---@class Inventory
 local Inventory = Class{
     cabinetPath = 'asset/sprites/pause/2cabinet.png',
     consumableMult = 1
