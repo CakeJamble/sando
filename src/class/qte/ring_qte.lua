@@ -6,6 +6,7 @@ local flux = require('libs.flux')
 ---@class RingQTE: QTE
 local RingQTE = Class{__includes =  QTE}
 
+---@param data table
 function RingQTE:init(data)
 	QTE.init(self, data)
 	self.data = data
@@ -29,16 +30,20 @@ function RingQTE:reset()
 	self.sliceIndex = 1
 end;
 
+---@return Ring
 function RingQTE:setUI()
 	return Ring(self.options, self.flipDuration, self.slicesData, self.revDur)
 end;
 
+---@param actionButton string
+---@param buttonUI table
 function RingQTE:setActionButton(actionButton, buttonUI)
 	self.actionButton = actionButton
 	self.buttonUI = buttonUI
 	self.instructions = "Press " .. string.upper(actionButton) .. " in the highlighted positions."
 end;
 
+---@param callback fun(qteSuccess: boolean)
 function RingQTE:beginQTE(callback)
 	self.ring = self:setUI()
 	self.ring:startRevolution()
@@ -52,6 +57,8 @@ function RingQTE:beginQTE(callback)
 	end)
 end;
 
+---@param joystick string
+---@param button string
 function RingQTE:gamepadpressed(joystick, button)
 	if button == self.actionButton then
 		if self.ring.revActive then
@@ -89,9 +96,12 @@ function RingQTE:gamepadpressed(joystick, button)
 
 end;
 
+---@param joystick string
+---@param button string
 function RingQTE:gamepadreleased(joystick, button)
 end;
 
+---@param dt number
 function RingQTE:update(dt)
 end;
 
