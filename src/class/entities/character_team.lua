@@ -10,9 +10,10 @@ local Class = require('libs.hump.class')
 local loadItem = require 'util.item_loader'
 local espresso = loadItem('espresso', 'consumable')
 
----@class CharacterTeam
+---@class CharacterTeam: Team
 local CharacterTeam = Class{__includes = Team}
 
+---@param characters Character[]
 function CharacterTeam:init(characters)
   Team.init(self, characters)
   self.rarityMod = 0
@@ -27,16 +28,20 @@ function CharacterTeam:init(characters)
   self.inventory:addConsumable(espresso)
 end;
 
+---@param amount integer
 function CharacterTeam:distributeExperience(amount)
   for _,member in pairs(self.members) do
     if member:isAlive() then  member:gainExp(amount) end
   end
 end;
 
+---@param amount integer
 function CharacterTeam:increaseMoney(amount)
   self.money = self.money + amount
 end;
 
+---@param incomingSkill table
+---@deprecated
 function CharacterTeam:startDefense(incomingSkill)
   for _,character in pairs(self.members) do
     if character:isAlive() then
@@ -51,18 +56,23 @@ function CharacterTeam:keypressed(key)
   end
 end;
 
+---@param joystick string
+---@param button string
 function CharacterTeam:gamepadpressed(joystick, button)
   for _,member in pairs(self.members) do
     member:gamepadpressed(joystick, button)
   end
 end;
 
+---@param joystick string
+---@param button string
 function CharacterTeam:gamepadreleased(joystick, button)
   for _,member in ipairs(self.members) do
     member:gamepadreleased(joystick, button)
   end
 end;
 
+---@param koCharacters Character[]
 function CharacterTeam:registerKO(koCharacters)
   for _,character in ipairs(koCharacters) do
     table.insert(self.koCharacters, character)
