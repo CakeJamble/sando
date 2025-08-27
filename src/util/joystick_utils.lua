@@ -161,11 +161,16 @@ end
 
 ---@param joystick table
 ---@param direction string
+---@return boolean
 function M.isAxisRepeaterTriggered(joystick, direction)
     if not M.axisRepeaterStates[joystick] then return false end
     return M.axisRepeaterStates[joystick][direction].triggered
 end
 
+---@param joystick table
+---@param direction string
+---@param config? { [string]: number }
+---@return boolean
 function M.isLatchedDirectionPressed(joystick, direction, config)
     if not joystick or not joystick:isConnected() then return false end
 
