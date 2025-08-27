@@ -9,7 +9,8 @@ local Timer = require('libs.hump.timer')
 local STBScheduler = Class{__includes = Scheduler}
 
 -- Standard Turn Based Scheduler
-
+---@param characterTeam CharacterTeam
+---@param enemyTeam EnemyTeam
 function STBScheduler:init(characterTeam, enemyTeam)
 	Scheduler.init(self, characterTeam, enemyTeam)
 	self:sortQueue(self.combatants)
@@ -68,6 +69,8 @@ function STBScheduler:exit()
 	self:removeSignals()
 end;
 
+---@param t Entity[]
+---@return Entity[]
 function STBScheduler:sortQueue(t)
   table.sort(t,
     function(entity1, entity2)
@@ -86,6 +89,7 @@ function STBScheduler:sortWaitingCombatants()
   end
 end;
 
+---@param command Command
 function STBScheduler:enqueueCommand(command)
   print('enqueuing command from ' .. command.entity.entityName .. ' in command queue')
   table.insert(self.commandQueue, command)
