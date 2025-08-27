@@ -2,6 +2,8 @@ local Ring = require('class.ui.ring')
 local Class = require('libs.hump.class')
 local QTE = require('class.qte.qte')
 local flux = require('libs.flux')
+
+---@class RingQTE: QTE
 local RingQTE = Class{__includes =  QTE}
 
 function RingQTE:init(data)

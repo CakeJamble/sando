@@ -1,5 +1,8 @@
 local Class = require 'libs.hump.class'
 
+---@class QTE
+---@field feedbackDir string
+---@field inputDir string
 local QTE = Class{
 	feedbackDir = 'asset/sprites/combat/qte/feedback/',
 	inputDir = 'asset/sprites/input_icons/'
