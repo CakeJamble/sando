@@ -51,11 +51,11 @@ function LevelUpManager.initUI(members)
 		local pbOptions = {
 			xOffset = 0, yOffset = 0,
 			min = 0, max = member.experienceRequired,
-			w = 250, h = 100,
+			w = 100, h = 25,
 			wModifier = 0
 		}
-
-		local pb = ProgressBar(pbPos, pbOptions)
+		local blue = {0, 0, 1}
+		local pb = ProgressBar(pbPos, pbOptions, false, blue)
 		uiTable[member.entityName] = {character = member, expBar = pb}
 	end
 
@@ -67,9 +67,7 @@ function LevelUpManager:update(dt)
 end;
 
 function LevelUpManager:draw()
-  -- love.graphics.push()
-  -- push:start()
-
+  love.graphics.push()
 
   love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
   love.graphics.rectangle("fill", 0, 0, self.windowWidth, self.windowHeight)
@@ -83,8 +81,7 @@ function LevelUpManager:draw()
 		love.graphics.print(exp, 100, 100)
 	end
 
-	-- push:finish()
-  -- love.graphics.pop()
+  love.graphics.pop()
 end;
 
 return LevelUpManager

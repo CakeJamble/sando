@@ -2,7 +2,7 @@ local Class = require 'libs.hump.class'
 
 local ProgressBar = Class{}
 
-function ProgressBar:init(targetPos, options, isOffensive)
+function ProgressBar:init(targetPos, options, isOffensive, color)
 	self.active = true
 	self.pos = {
 		x = targetPos.x + options.xOffset,
@@ -20,7 +20,7 @@ function ProgressBar:init(targetPos, options, isOffensive)
 
 	self.meterStartingWidth = options.w * options.wModifier
 	self.meterOptions = {
-		color = {0, 1, 0},
+		color = color or {0, 1, 0},
 		mode = 'fill',
 		width = self.meterStartingWidth,
 		height = options.h * 0.95,
