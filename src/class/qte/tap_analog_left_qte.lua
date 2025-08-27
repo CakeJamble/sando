@@ -5,8 +5,10 @@ local JoystickUtils = require('util.joystick_utils')
 local Class = require('libs.hump.class')
 local flux = require('libs.flux')
 
+---@class TapAnalogLeftQTE: QTE
 local TapAnalogLeftQTE = Class{__includes = QTE}
 
+---@param data table
 function TapAnalogLeftQTE:init(data)
 	QTE.init(self, data)
 	self.progressBarOptions = data.progressBarOptions
@@ -31,10 +33,11 @@ function TapAnalogLeftQTE:init(data)
 end;
 
 -- idea: set progress bar fill rate as a function of activeEntity's speed?
+---@param activeEntity Character
 function TapAnalogLeftQTE:setUI(activeEntity)
 	local isOffensive = activeEntity.skill.isOffensive
 	local targetPos = activeEntity.pos
-	self:readyCamera(targetPos)
+	self:readyCamera(isOffensive)
 	self.progressBar = ProgressBar(targetPos, self.progressBarOptions, isOffensive)
 	self.buttonUIPos.x = self.progressBar.pos.x + self.buttonUIOffsets.x
 	self.buttonUIPos.y = self.progressBar.pos.y + self.buttonUIOffsets.y
@@ -55,6 +58,7 @@ function TapAnalogLeftQTE:reset()
 	self.onComplete = nil
 end;
 
+---@param callback fun(qteSuccess: boolean)
 function TapAnalogLeftQTE:beginQTE(callback)
 	self.onComplete = callback
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
@@ -69,6 +73,8 @@ function TapAnalogLeftQTE:beginQTE(callback)
 		end)
 end;
 
+---@param joystick string
+---@param button string
 function TapAnalogLeftQTE:gamepadpressed(joystick, button)
 	if button == 'dpleft' and not self.signalEmitted then
 		local goalWidth = self.progressBar:increaseMeter(self.increaseAmount)
@@ -77,9 +83,12 @@ function TapAnalogLeftQTE:gamepadpressed(joystick, button)
 	end
 end;
 
+---@param joystick string
+---@param button string
 function TapAnalogLeftQTE:gamepadreleased(joystick, button)
 end;
 
+---@param dt number
 function TapAnalogLeftQTE:update(dt)
 	if input.joystick then
 		if JoystickUtils.isLatchedDirectionPressed(input.joystick, 'left') then
