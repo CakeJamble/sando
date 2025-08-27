@@ -4,6 +4,7 @@ local SkillCommand = require('class.input.skill_command')
 local ItemCommand = require('class.input.item_command')
 local Class = require('libs.hump.class')
 
+---@class PlayerInputCommand: Command
 local PlayerInputCommand = Class{__includes = Command}
 
 local CommandClasses = {
@@ -11,6 +12,8 @@ local CommandClasses = {
 	item_command = ItemCommand
 }
 
+---@param entity Character
+---@param turnManager Scheduler
 function PlayerInputCommand:init(entity, turnManager)
 	Command.init(self, entity)
 	self.targets = entity.targets
@@ -23,13 +26,14 @@ function PlayerInputCommand:init(entity, turnManager)
 	self.commandKey = ''
 end;
 
+---@return { [string]: Command }
 function PlayerInputCommand:defineCommands()
 	local commandInits = {
-		skill_command = function(self)
+		skill_command = function()
 			return CommandClasses.skill_command(self.entity, self.turnManager.qteManager)
 		end,
 
-		item_command = function(self)
+		item_command = function()
 			return CommandClasses.item_command(self.entity, self.action, self.turnManager.qteManager)
 		end
 	}
@@ -128,6 +132,7 @@ function PlayerInputCommand:interrupt()
 	self.entity.actionUI.active = false
 end;
 
+---@param dt number
 function PlayerInputCommand:update(dt)
 	if self.done then
 		self:cleanupSignals()
