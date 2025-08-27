@@ -24,6 +24,7 @@ local Class = require 'libs.hump.class'
 ---@class QTEManager
 local QTEManager = Class{}
 
+---@param characterTeam CharacterTeam
 function QTEManager:init(characterTeam)
 	self.qteInits = self:defineQTESetup()
 	self.buttons = self.loadButtonImages('asset/sprites/input_icons/xbox-one/full_color/')
@@ -40,6 +41,7 @@ function QTEManager:init(characterTeam)
 	Signal.register('OnEndTurn', function() self.activeQTE = nil end)
 end;
 
+---@param buttonDir string
 function QTEManager.loadButtonImages(buttonDir)
 	local blackButtonsDir = buttonDir .. 'buttons_black/'
 	local pressedButtonsDir = buttonDir .. 'buttons_pressed/'
@@ -80,6 +82,7 @@ function QTEManager.loadButtonImages(buttonDir)
 	return buttons
 end;
 
+---@return { [string]: fun(...) }
 function QTEManager:defineQTESetup()
 	local qteInits = {
 		hold_sbp = function(actionButton)
@@ -127,6 +130,8 @@ function QTEManager:defineQTESetup()
 	return qteInits
 end;
 
+---@param members Character[]
+---@return { [string]: QTE }
 function QTEManager.loadQTEData(members)
 	local result = {}
 	for _,member in ipairs(members) do
@@ -151,6 +156,8 @@ function QTEManager:reset()
 	end
 end;
 
+---@param qteType string
+---@param actionButton string
 function QTEManager:setQTE(qteType, actionButton)
 	local init = self.qteInits[qteType]
 	if init then
@@ -160,6 +167,8 @@ function QTEManager:setQTE(qteType, actionButton)
 	end
 end;
 
+---@param qteType string
+---@param actionButton string
 function QTEManager.getInstructions(qteType, actionButton)
 	local result
 	if qteType == 'sbp' then
@@ -177,18 +186,23 @@ function QTEManager.getInstructions(qteType, actionButton)
 	return result
 end;
 
+---@param joystick string
+---@param button string
 function QTEManager:gamepadpressed(joystick, button)
 	if self.activeQTE then
 		self.activeQTE:gamepadpressed(joystick, button)
 	end
 end;
 
+---@param joystick string
+---@param button string
 function QTEManager:gamepadreleased(joystick, button)
 	if self.activeQTE then
 		self.activeQTE:gamepadreleased(joystick, button)
 	end
 end;
 
+---@param dt number
 function QTEManager:update(dt)
 	if self.activeQTE then
 		self.activeQTE:update(dt)
