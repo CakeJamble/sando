@@ -1,8 +1,14 @@
 local Button = require('class.ui.button')
 local Class = require('libs.hump.class')
 
+---@class SubMenuButton: Button
 local SubMenuButton = Class{__includes = Button}
 
+---@param pos { [string]: number }
+---@param index integer
+---@param path string
+---@param actionButton string
+---@param actionList table[]
 function SubMenuButton:init(pos, index, path, actionButton, actionList)
 	Button.init(self, pos, index, path)
 	self.actionButton = actionButton
@@ -20,6 +26,7 @@ function SubMenuButton:init(pos, index, path, actionButton, actionList)
 	self.selectedAction = nil
 end;
 
+---@return { [string]: table }
 function SubMenuButton:populateList()
   local result = {container = {}, separator = {}}
 
@@ -44,6 +51,7 @@ function SubMenuButton:populateList()
   return result
 end;
 
+---@return { [string]: string }[]
 function SubMenuButton:populatePreviews()
   local result = {}
   local preview = {}
@@ -81,6 +89,8 @@ function SubMenuButton:drawElems()
   love.graphics.setColor(1, 1, 1)
 end;
 
+-- Should be refactored to return a list of strings instead of 1 big string
+---@return string
 function SubMenuButton:actionListToStr()
   local result = ''
   for _, elem in ipairs(self.actionList) do
@@ -93,6 +103,8 @@ function SubMenuButton:setDescription()
 	self.preview = self.actionList[self.index].description
 end;
 
+---@param joystick string
+---@param button string
 function SubMenuButton:gamepadpressed(joystick, button)
 ----------------------- Action Selection -------------------------
   if button == 'dpdown' then

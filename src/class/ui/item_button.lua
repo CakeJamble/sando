@@ -2,13 +2,20 @@ local SubMenuButton = require('class.ui.submenu_button')
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 
+---@class ItemButton: SubMenuButton
 local ItemButton = Class{__includes = SubMenuButton}
 
+---@param pos { [string]: number }
+---@param index integer
+---@param itemList table[]
+---@param actionButton string
 function ItemButton:init(pos, index, itemList, actionButton)
   SubMenuButton.init(self, pos, index, 'item.png', actionButton, itemList)
   self.description = 'Use an item to gain an advantage'
 end;
 
+---@param joystick string
+---@param button string
 function ItemButton:gamepadpressed(joystick, button)
   SubMenuButton.gamepadpressed(self, joystick, button)
 

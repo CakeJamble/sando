@@ -3,13 +3,20 @@ local SubMenuButton = require('class.ui.submenu_button')
 local Signal = require('libs.hump.signal')
 local Class = require 'libs.hump.class'
 
+---@class FlourButton: SubMenuButton
 local FlourButton = Class{__includes = SubMenuButton}
 
+---@param pos { [string]: number }
+---@param index integer
+---@param skillList table[]
+---@param actionButton string
 function FlourButton:init(pos, index, skillList, actionButton)
   SubMenuButton.init(self, pos, index, 'flour.png', actionButton, skillList)
   self.description = 'Consume FP to use a powerful skill'
+  self.pickableSkillIndices = {}
 end;
 
+---@return string
 function FlourButton:skillListToStr() -- override
   local result = ''
   for _,skill in ipairs(self.actionList) do
@@ -18,12 +25,15 @@ function FlourButton:skillListToStr() -- override
   return result
 end;
 
+---@param currentFP integer
 function FlourButton:validateSkillCosts(currentFP)
   for i,skill in ipairs(self.actionList) do
     self.pickableSkillIndices[i] = skill.cost < currentFP
   end
 end;
 
+---@param key string
+---@deprecated
 function FlourButton:keypressed(key)
   if key == 'down' or key == 'right' then
     self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
@@ -36,6 +46,8 @@ function FlourButton:keypressed(key)
   end
 end;
 
+---@param joystick string
+---@param button string
 function FlourButton:gamepadpressed(joystick, button)
   SubMenuButton.gamepadpressed(self, joystick, button)
 
