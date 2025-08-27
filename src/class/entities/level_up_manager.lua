@@ -11,10 +11,8 @@ function LevelUpManager:init(characterTeam)
 	self.duration = 2
   self.windowWidth, self.windowHeight = push:getDimensions()
   self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
-  self.windowWidth, self.windowHeight = self.windowWidth * 0.75, self.windowHeight * 0.75
-  -- self.windowWidth, self.windowHeight = 640, 360
-  self.wOffset, self.hOffset = self.windowWidth * 0.1, self.windowHeight * 0.1
-  -- print('wOffset: ' .. self.wOffset, 'hOffset: ' .. self.hOffset)
+  self.windowWidth, self.windowHeight = self.windowWidth, self.windowHeight
+  self.tx, self.ty = 250, 250
 end;
 
 function LevelUpManager:distributeExperience(amount)
@@ -69,21 +67,24 @@ function LevelUpManager:update(dt)
 end;
 
 function LevelUpManager:draw()
-  love.graphics.push()
+  -- love.graphics.push()
+  -- push:start()
 
 
-	love.graphics.translate(self.wOffset, self.hOffset)
   love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
   love.graphics.rectangle("fill", 0, 0, self.windowWidth, self.windowHeight)
   love.graphics.setColor(1, 1, 1)
 
+	love.graphics.translate(self.tx, self.ty)
 	for _,member in pairs(self.levelUpUI) do
 		member.character:draw()
 		member.expBar:draw()
+		local exp = math.floor(0.5 + member.expBar.meterOptions.width)
+		love.graphics.print(exp, 100, 100)
 	end
 
-
-  love.graphics.pop()
+	-- push:finish()
+  -- love.graphics.pop()
 end;
 
 return LevelUpManager
