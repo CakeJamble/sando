@@ -1,5 +1,7 @@
 local json = require('libs.json')
 
+---@param toolName string
+---@return { [string]: any }
 local function loadTool(toolName)
 	local jsonPath = 'data/item/tool/' .. toolName .. '.json'
 	local raw = love.filesystem.read(jsonPath)

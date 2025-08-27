@@ -5,6 +5,10 @@ M.activeRumbles = {}
 M.axisRepeaterStates = {}
 M.latchStates = {}
 
+---@param joystick table
+---@param stick string
+---@param deadzone number
+---@return { [string]: number }
 function M.getDeadzoneVector(joystick, stick, deadzone)
 	deadzone = deadzone or 0.25
 	local stick = stick or 'left'
@@ -27,6 +31,10 @@ function M.getDeadzoneVector(joystick, stick, deadzone)
 	return rawV:normalized() * remappedMag
 end;
 
+---@param joystick table
+---@param id string
+---@param strength? number
+---@param duration? number
 function M.startRumble(joystick, id, strength, duration)
 	if not joystick or not joystick:isGamepad() then return end
 
@@ -41,12 +49,15 @@ function M.startRumble(joystick, id, strength, duration)
 	}
 end;
 
+---@param joystick table
+---@param id string
 function M.stopRumble(joystick, id)
 	if M.activeRumbles[joystick] and M.activeRumbles[joystick][id] then
 		M.activeRumbles[joystick][id] = nil
 	end
 end;
 
+---@param dt number
 function M.update(dt)
 	for joystick, effects in pairs(M.activeRumbles) do
 		local maxStrength = 0
@@ -74,12 +85,14 @@ function M.update(dt)
 end;
 
 -- For getting the angle in radians
+---@param vec { [string]: number }
 function M.getAngleVec(vec)
 	if vec:len2() == 0 then return nil end -- using squared len
 	return math.atan2(vec.y,vec.x)
 end;
 
 -- 8-way input, when emulating d-pad input on joystick
+---@param vec { [string]: number }
 function M.get8WayDirection(vec)
 	local angle = M.getAngle(vec)
 	if not angle then return Vector(0,0) end
@@ -90,6 +103,9 @@ function M.get8WayDirection(vec)
 end;
 
 -- Limits the number of consecutive analog stick inputs recognized
+---@param joystick table
+---@param dt number
+---@param config? { [string]: number }
 function M.updateAxisRepeater(joystick, dt, config)
     if not joystick or not joystick:isConnected() then return end
 
@@ -143,6 +159,8 @@ function M.updateAxisRepeater(joystick, dt, config)
     end
 end
 
+---@param joystick table
+---@param direction string
 function M.isAxisRepeaterTriggered(joystick, direction)
     if not M.axisRepeaterStates[joystick] then return false end
     return M.axisRepeaterStates[joystick][direction].triggered
