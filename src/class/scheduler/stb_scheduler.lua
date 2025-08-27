@@ -5,6 +5,7 @@ local PlayerInputCommand = require('class.input.player_input_command')
 local AICommand = require('class.input.ai_command')
 local Timer = require('libs.hump.timer')
 
+---@class STBScheduler: Scheduler
 local STBScheduler = Class{__includes = Scheduler}
 
 -- Standard Turn Based Scheduler

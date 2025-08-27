@@ -9,6 +9,7 @@ local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
 
+---@class Scheduler
 local Scheduler = Class{}
 
 function Scheduler:init(characterTeam, enemyTeam)

@@ -4,6 +4,7 @@ local Signal = require('libs.hump.signal')
 local PlayerInputCommand = require('class.input.player_input_command')
 local AICommand = require('class.input.ai_command')
 
+---@class ATBScheduler: Scheduler
 local ATBScheduler = Class{__includes = Scheduler}
 
 -- Active Timer Battle Scheduler
