@@ -15,6 +15,8 @@ local flux = require('libs.flux')
 
 
 local Class = require "libs.hump.class"
+
+---@class Character
 local Character = Class{__includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing

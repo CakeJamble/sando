@@ -6,6 +6,7 @@ local flux = require('libs.flux')
 local starParticles = require('asset.particle.ko')
 local Timer = require('libs.hump.timer')
 
+---@class Enemy
 local Enemy = Class{__includes = Entity,
   -- for testing
   xPos = 450, yPos = 150, yOffset = 40}

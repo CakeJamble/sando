@@ -1,10 +1,7 @@
---! filename: command
-
---[[
-  Base Clase for Command Design Pattern
-]]
 local Signal = require('libs.hump.signal')
 local Class = require 'libs.hump.class'
+
+---@class Command
 local Command = Class{}
 
 function Command:init(entity)

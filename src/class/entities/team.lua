@@ -1,5 +1,7 @@
 --! filename: team
 local Class = require 'libs.hump.class'
+
+---@class Team
 local Team = Class{}
 
 function Team:init(entities)

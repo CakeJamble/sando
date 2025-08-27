@@ -3,6 +3,7 @@ local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 
+---@class LevelUpManager
 local LevelUpManager = Class{}
 
 function LevelUpManager:init(characterTeam)
@@ -12,7 +13,7 @@ function LevelUpManager:init(characterTeam)
   self.windowWidth, self.windowHeight = push:getDimensions()
   self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
   self.windowWidth, self.windowHeight = self.windowWidth, self.windowHeight
-  self.tx, self.ty = 250, 250
+  -- self.tx, self.ty = 250, 250
 end;
 
 function LevelUpManager:distributeExperience(amount)
@@ -47,7 +48,10 @@ function LevelUpManager.initUI(members)
 	local uiTable = {}
 
 	for _,member in ipairs(members) do
-		local pbPos = {x=0,y=0}
+		local pbPos = {
+			x=member.pos.x + (2 * member.frameWidth),
+			y=member.pos.y + (member.frameHeight / 2)
+		}
 		local pbOptions = {
 			xOffset = 0, yOffset = 0,
 			min = 0, max = member.experienceRequired,
@@ -62,6 +66,9 @@ function LevelUpManager.initUI(members)
 	return uiTable
 end;
 
+function LevelUpManager:gamepadpressed(joystick, button)
+end;
+
 function LevelUpManager:update(dt)
 	self.characterTeam:update(dt)
 end;
@@ -73,12 +80,13 @@ function LevelUpManager:draw()
   love.graphics.rectangle("fill", 0, 0, self.windowWidth, self.windowHeight)
   love.graphics.setColor(1, 1, 1)
 
-	love.graphics.translate(self.tx, self.ty)
+	-- love.graphics.translate(self.tx, self.ty)
 	for _,member in pairs(self.levelUpUI) do
 		member.character:draw()
 		member.expBar:draw()
 		local exp = math.floor(0.5 + member.expBar.meterOptions.width)
-		love.graphics.print(exp, 100, 100)
+		local pos = member.expBar.pos
+		love.graphics.print(exp, pos.x, pos.y + 25)
 	end
 
   love.graphics.pop()

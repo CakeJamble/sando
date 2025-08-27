@@ -1,6 +1,8 @@
 local Command = require('class.input.command')
 local Class = require('libs.hump.class')
 local SkillCommand = require('class.input.skill_command')
+
+---@class AICommand
 local AICommand = Class{__includes = Command}
 
 function AICommand:init(entity, turnManager)

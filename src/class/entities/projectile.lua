@@ -1,5 +1,7 @@
 local flux = require('libs.flux')
 local Class = require('libs.hump.class')
+
+---@class Projectile
 local Projectile = Class{drawHitboxes = false}
 
 function Projectile:init(x, y, castsShadow, index)

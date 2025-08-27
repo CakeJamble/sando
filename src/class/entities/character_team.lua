@@ -10,6 +10,7 @@ local Class = require('libs.hump.class')
 local loadItem = require 'util.item_loader'
 local espresso = loadItem('espresso', 'consumable')
 
+---@class CharacterTeam
 local CharacterTeam = Class{__includes = Team}
 
 function CharacterTeam:init(characters)

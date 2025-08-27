@@ -23,9 +23,12 @@ function reward:init()
   self.numRewardOptions = 3
 end;
 
--- Each time the Reward state is entered, given that we are not coming from a combat state,
-  -- the reward state expects 2 integers for the amount of EXP rewarded from the fight, and
-  -- the amount of money rewarded from the fight.
+--- Each time the Reward state is entered, given that we are not coming from a combat state,
+-- the reward state expects 2 integers for the amount of EXP rewarded from the fight, and
+-- the amount of money rewarded from the fight.
+---@param previous table Previous gamestate
+---@param rewards table[] Array of rewards from combat, 1 for each enemy
+---@param characterTeam CharacterTeam
 function reward:enter(previous, rewards, characterTeam)
   if previous == states['combat'] then
     self.expReward = self.sumReward(rewards, 'exp')
@@ -38,6 +41,7 @@ function reward:enter(previous, rewards, characterTeam)
   end
 end;
 
+---@return { [string]: table }
 function reward.initRewardPools()
   local pref = 'data/item/'
   local jsonPaths = {
@@ -67,7 +71,8 @@ function reward.initRewardPools()
   return result
 end;
 
-
+---@param rewards table[]
+---@param rewardType string
 function reward.sumReward(rewards, rewardType)
   local result = 0
   for _,rwd in ipairs(rewards) do
@@ -76,6 +81,8 @@ function reward.sumReward(rewards, rewardType)
   return result
 end;
 
+---@param rewards table[]
+---@param rarityMod number
 function reward:getItemRewards(rewards, rarityMod)
   local result = {}
   for _,rwd in ipairs(rewards) do
@@ -86,6 +93,9 @@ function reward:getItemRewards(rewards, rarityMod)
   return result
 end;
 
+---@param rarities { [string]: number}
+---@param rarityMod number
+---@return table
 function reward:getRewardOptions(rarities, rarityMod)
   local options = {}
   for i=1, self.numRewardOptions do
@@ -100,6 +110,9 @@ function reward:getRewardOptions(rarities, rarityMod)
   return options
 end;
 
+---@param rarities { [string]: number}
+---@param rarityMod number
+---@return string
 function reward:getRarityResult(rarities, rarityMod)
   local result = 'common'
   local rand = love.math.random()
@@ -118,7 +131,9 @@ function reward:getRarityResult(rarities, rarityMod)
   return result
 end;
 
+---@return string
 function reward:getRewardType()
+  ---@type string[]
   local types = {}
   for k,_ in pairs(self.rewardPools) do
     table.insert(types, k)
