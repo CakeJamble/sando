@@ -6,6 +6,7 @@ local Class = require('libs.hump.class')
 ---@class LevelUpManager
 local LevelUpManager = Class{}
 
+---@param characterTeam CharacterTeam
 function LevelUpManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.levelUpUI = self.initUI(characterTeam.members)
@@ -16,6 +17,7 @@ function LevelUpManager:init(characterTeam)
   -- self.tx, self.ty = 250, 250
 end;
 
+---@param amount integer
 function LevelUpManager:distributeExperience(amount)
 	for i,member in ipairs(self.characterTeam.members) do
 		local previousLevel = member.level
@@ -44,6 +46,8 @@ function LevelUpManager:distributeExperience(amount)
 	end
 end;
 
+---@param members Character[]
+---@return { [string]: table }
 function LevelUpManager.initUI(members)
 	local uiTable = {}
 
@@ -66,9 +70,12 @@ function LevelUpManager.initUI(members)
 	return uiTable
 end;
 
+---@param joystick string
+---@param button string
 function LevelUpManager:gamepadpressed(joystick, button)
 end;
 
+---@param dt number
 function LevelUpManager:update(dt)
 	self.characterTeam:update(dt)
 end;
