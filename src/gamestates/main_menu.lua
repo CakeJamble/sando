@@ -38,6 +38,7 @@ function main_menu:init()
     :oncomplete(function() self.bounceFinished = true end)
 end;
 
+---@param key string
 function main_menu:keypressed(key)
   if self.bounceFinished then
     if key == 'up' or key == 'left' then
@@ -48,7 +49,9 @@ function main_menu:keypressed(key)
   end
 end;
 
-function main_menu:keyreleased(key, code)
+---@param key string
+---@param scancode love.Scancode
+function main_menu:keyreleased(key, scancode)
   if self.bounceFinished then
     if key == 'z' then
       main_menu:validate_selection()
@@ -56,6 +59,8 @@ function main_menu:keyreleased(key, code)
   end
 end;
 
+---@param joystick string
+---@param button string
 function main_menu:gamepadpressed(joystick, button)
   if self.bounceFinished then
     if button == 'dpup' or button == 'dpleft' then
@@ -66,6 +71,8 @@ function main_menu:gamepadpressed(joystick, button)
   end
 end;
 
+---@param joystick string
+---@param button string
 function main_menu:gamepadreleased(joystick, button)
   if self.bounceFinished then
     if button == 'a' then
@@ -94,6 +101,7 @@ function main_menu:set_down()
   end
 end;
 
+---@param dt number
 function main_menu:update(dt)
   flux.update(dt)
   Timer.update(dt)
@@ -132,6 +140,8 @@ function main_menu:validate_selection()
   end
 end;
 
+---@deprecated
+---@return boolean
 function main_menu:saveExists()
   return false
 end;

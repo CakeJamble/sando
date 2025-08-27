@@ -90,6 +90,7 @@ function combat:init()
   )
 end;
 
+---@param previous table
 function combat:enter(previous)
   self.lockCamera = false
   self.characterTeam = loadCharacterTeam()
@@ -114,6 +115,8 @@ function combat:enter(previous)
   Signal.emit('OnEnterScene')
 end;
 
+---@param key string
+---@deprecated
 function combat:keypressed(key)
   if key == '`' then
     showDebugWindow = not showDebugWindow
@@ -124,18 +127,35 @@ function combat:keypressed(key)
   end
 end;
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
+---@param istouch boolean
 function combat:mousemoved(x, y, dx, dy, istouch)
   imgui.love.MouseMoved(x, y)
 end;
 
+---@param x number
+---@param y number
+---@param button string
+---@param istouch boolean
+---@param presses number
 function combat:mousepressed(x, y, button, istouch, presses)
   imgui.love.MousePressed(button)
 end;
 
+---@param x number
+---@param y number
+---@param button string
+---@param istouch boolean
+---@param presses number
 function combat:mousereleased(x, y, button, istouch, presses)
   imgui.love.MouseReleased(button)
 end;
 
+---@param joystick string
+---@param button string
 function combat:gamepadpressed(joystick, button)
   if button == 'start' then
     Gamestate.push(states['pause'])
@@ -147,6 +167,8 @@ function combat:gamepadpressed(joystick, button)
   end
 end;
 
+---@param joystick string
+---@param button string
 function combat:gamepadreleased(joystick, button)
   if self.turnManager and self.turnManager.qteManager.activeQTE then
     self.turnManager.qteManager:gamepadreleased(joystick, button)
@@ -155,6 +177,7 @@ function combat:gamepadreleased(joystick, button)
   end
 end;
 
+---@param dt number
 function combat:update(dt)
   flux.update(dt)
   if self.turnManager then
