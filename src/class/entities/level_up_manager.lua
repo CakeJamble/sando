@@ -9,6 +9,12 @@ function LevelUpManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.levelUpUI = self.initUI(characterTeam.members)
 	self.duration = 2
+  self.windowWidth, self.windowHeight = push:getDimensions()
+  self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
+  self.windowWidth, self.windowHeight = self.windowWidth * 0.75, self.windowHeight * 0.75
+  -- self.windowWidth, self.windowHeight = 640, 360
+  self.wOffset, self.hOffset = self.windowWidth * 0.1, self.windowHeight * 0.1
+  -- print('wOffset: ' .. self.wOffset, 'hOffset: ' .. self.hOffset)
 end;
 
 function LevelUpManager:distributeExperience(amount)
@@ -63,10 +69,21 @@ function LevelUpManager:update(dt)
 end;
 
 function LevelUpManager:draw()
-	for _,member in ipairs(self.levelUpUI) do
+  love.graphics.push()
+
+
+	love.graphics.translate(self.wOffset, self.hOffset)
+  love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
+  love.graphics.rectangle("fill", 0, 0, self.windowWidth, self.windowHeight)
+  love.graphics.setColor(1, 1, 1)
+
+	for _,member in pairs(self.levelUpUI) do
 		member.character:draw()
-		member.progressBar:draw()
+		member.expBar:draw()
 	end
+
+
+  love.graphics.pop()
 end;
 
 return LevelUpManager

@@ -13,12 +13,7 @@ local reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
 function reward:init()
-  self.windowWidth, self.windowHeight = push:getDimensions()
-  self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
-  self.windowWidth, self.windowHeight = self.windowWidth * 0.75, self.windowHeight * 0.75
-  -- self.windowWidth, self.windowHeight = 640, 360
-  self.wOffset, self.hOffset = self.windowWidth * 0.1, self.windowHeight * 0.1
-  -- print('wOffset: ' .. self.wOffset, 'hOffset: ' .. self.hOffset)
+
 
   self.rewardPools = self.initRewardPools()
   self.rareChanceDelta = 0.2
@@ -143,15 +138,7 @@ function reward:draw()
   push:start()
   camera:attach()
   self.combatState:draw()
-  love.graphics.push()
-  love.graphics.translate(self.wOffset, self.hOffset)
-
-  love.graphics.setColor(0, 0, 0, 0.6) -- dark transparent background
-  love.graphics.rectangle("fill", 0, 0, self.windowWidth, self.windowHeight)
-  love.graphics.setColor(1, 1, 1)
-
   self.levelUpManager:draw()
-  love.graphics.pop()
   camera:detach()
   push:finish()
 end;
