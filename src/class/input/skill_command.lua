@@ -1,7 +1,11 @@
 local Command = require('class.input.command')
 local Class = require('libs.hump.class')
+
+---@class SkillCommand: Command
 local SkillCommand = Class{__includes = Command}
 
+---@param entity Entity
+---@param qteManager? QTEManager
 function SkillCommand:init(entity, qteManager)
   Command.init(self, entity)
   self.qteManager = qteManager
@@ -11,6 +15,7 @@ function SkillCommand:init(entity, qteManager)
   self.isInterruptible = false
 end
 
+---@param turnManager Scheduler
 function SkillCommand:start(turnManager)
   -- local qteResolve = function(isSuccess)
   --   self.entity.skill.isSuccess = isSuccess
@@ -51,6 +56,8 @@ function SkillCommand:start(turnManager)
   end
 end;
 
+---@param qteBonus string
+---@return fun(number): number
 function SkillCommand.getQTEBonus(qteBonus)
   local result
   print(qteBonus)
@@ -66,10 +73,12 @@ function SkillCommand.getQTEBonus(qteBonus)
   return result
 end;
 
+---@param qteBonus string
 function SkillCommand:executeSkill(qteBonus)
   self.entity.skill.proc(self.entity, qteBonus, self.qteManager)
 end
 
+---@param dt number
 function SkillCommand:update(dt)
   -- If waiting on QTE, update QTE manager
   if self.qteManager and self.waitingForQTE then
@@ -77,6 +86,7 @@ function SkillCommand:update(dt)
   end
 end
 
+---@deprecated
 function SkillCommand:isDone()
   return self.done
 end
