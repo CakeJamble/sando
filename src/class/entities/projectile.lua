@@ -2,8 +2,13 @@ local flux = require('libs.flux')
 local Class = require('libs.hump.class')
 
 ---@class Projectile
+---@field drawHitboxes boolean
 local Projectile = Class{drawHitboxes = false}
 
+---@param x integer
+---@param y integer
+---@param castsShadow boolean
+---@param index integer
 function Projectile:init(x, y, castsShadow, index)
 	self.pos = {x=x, y=y}
 	self.dims = {r = 10}
@@ -21,6 +26,7 @@ function Projectile:init(x, y, castsShadow, index)
 	self.tweens = {}
 end;
 
+---@param dt number
 function Projectile:update(dt)
 	local r = self.dims.r
 	self.hitbox.x = self.pos.x - r
@@ -28,6 +34,8 @@ function Projectile:update(dt)
 	self.shadowPos.x = self.pos.x
 end
 
+---@param duration integer
+---@param targetYPos integer
 function Projectile:tweenShadow(duration, targetYPos)
 	flux.to(self.shadowPos, duration, {y = targetYPos})
 	local tween = flux.to(self.shadowPos, duration / 2, {w = self.hitbox.w / 3})
@@ -37,6 +45,7 @@ function Projectile:tweenShadow(duration, targetYPos)
 	self.tweens['shadow'] = tween
 end;
 
+---@param tweenKey string
 function Projectile:interruptTween(tweenKey)
 	self.tweens[tweenKey]:stop()
 end;
