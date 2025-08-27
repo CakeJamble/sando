@@ -20,6 +20,8 @@ local QTEClasses = {
 
 local Signal = require('libs.hump.signal')
 local Class = require 'libs.hump.class'
+
+---@class QTEManager
 local QTEManager = Class{}
 
 function QTEManager:init(characterTeam)

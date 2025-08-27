@@ -1,8 +1,12 @@
 local Command = require('class.input.command')
 local Class = require('libs.hump.class')
 
+---@class ItemCommand: Command
 local ItemCommand = Class{__includes = Command}
 
+---@param entity Entity
+---@param item table
+---@param qteManager QTEManager
 function ItemCommand:init(entity, item, qteManager)
 	Command.init(self, entity)
 	self.qteManager = qteManager
@@ -11,6 +15,7 @@ function ItemCommand:init(entity, item, qteManager)
 	self.isInterruptible = false
 end;
 
+---@param turnManager Scheduler
 function ItemCommand:start(turnManager)
 	local projectileMade = function(projectile)
 		table.insert(self.entity.projectiles, projectile)
@@ -45,6 +50,7 @@ function ItemCommand:executeItemAction()
 	self.item.proc(self.item, self.entity)
 end;
 
+---@param dt number
 function ItemCommand:update(dt)
 	if self.qteManager and self.waitingForQTE then
 		self.qteManager:update(dt)
