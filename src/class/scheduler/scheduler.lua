@@ -12,6 +12,8 @@ local flux = require('libs.flux')
 ---@class Scheduler
 local Scheduler = Class{}
 
+---@param characterTeam CharacterTeam
+---@param enemyTeam EnemyTeam
 function Scheduler:init(characterTeam, enemyTeam)
 	self.characterTeam = characterTeam
 	self.enemyTeam = enemyTeam
@@ -35,6 +37,8 @@ function Scheduler:enter()
 		end)
 end;
 
+---@param name string
+---@param f fun(...)
 function Scheduler:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)
@@ -47,6 +51,9 @@ function Scheduler:removeSignals()
 	self.signalHandlers = {}
 end;
 
+---@param characterMembers Character[]
+---@param enemyMembers Enemy[]
+---@return Entity[]
 function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	local queue = {}
 	for _,character in ipairs(characterMembers) do
@@ -59,6 +66,7 @@ function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	return queue
 end;
 
+---@return { [string]: Entity[] }
 function Scheduler:getValidTargets()
 	local result = {}
 	result.characters = self.characterTeam:getLivingMembers()
@@ -66,6 +74,7 @@ function Scheduler:getValidTargets()
 	return result
 end;
 
+---@param duration integer
 function Scheduler:resetCamera(duration)
 	flux.to(camera, duration, {x = self.cameraPosX, y = self.cameraPosY, scale = 1})
 end;
@@ -105,6 +114,7 @@ function Scheduler:removeKOs()
   self.characterTeam:registerKO(koCharacters)
 end;
 
+---@return boolean
 function Scheduler:winLossConsMet()
   local result = false
   print('checking win loss cons')
@@ -130,6 +140,7 @@ function Scheduler:winLossConsMet()
   return result
 end;
 
+---@param dt number
 function Scheduler:update(dt)
 	for _,entity in pairs(self.combatants) do
 		entity:update(dt)

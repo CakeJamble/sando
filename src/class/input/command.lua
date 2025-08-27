@@ -12,7 +12,7 @@ function Command:init(entity)
 end;
 
 ---@param name string
----@param f fun()
+---@param f fun(...)
 function Command:registerSignal(name, f)
   self.signalHandlers[name] = f
   Signal.register(name, f)
