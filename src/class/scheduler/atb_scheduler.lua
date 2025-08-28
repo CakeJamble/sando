@@ -4,10 +4,12 @@ local Signal = require('libs.hump.signal')
 local PlayerInputCommand = require('class.input.player_input_command')
 local AICommand = require('class.input.ai_command')
 
+---@class ATBScheduler: Scheduler
 local ATBScheduler = Class{__includes = Scheduler}
 
 -- Active Timer Battle Scheduler
-
+---@param characterTeam CharacterTeam
+---@param enemyTeam EnemyTeam
 function ATBScheduler:init(characterTeam, enemyTeam)
 	Scheduler.init(self, characterTeam, enemyTeam)
 	self.commandQueue = {
@@ -78,6 +80,8 @@ function ATBScheduler:exit()
 	self:removeSignals()
 end;
 
+---@param command Command
+---@param isInterruptible boolean
 function ATBScheduler:enqueueCommand(command, isInterruptible)
 	print(command.entity.entityName, 'pb width / 50 =', command.entity.progressBar.meterOptions.width )
   if isInterruptible then
@@ -144,6 +148,7 @@ function ATBScheduler:removeKOs()
 	end
 end;
 
+---@param dt number
 function ATBScheduler:update(dt)
 	if self.activeCommand then
 		if not self.activeCommand.done then

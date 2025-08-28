@@ -1,10 +1,14 @@
 local Class = require 'libs.hump.class'
 
+---@class QTE
+---@field feedbackDir string
+---@field inputDir string
 local QTE = Class{
 	feedbackDir = 'asset/sprites/combat/qte/feedback/',
 	inputDir = 'asset/sprites/input_icons/'
 }
 
+---@param data table
 function QTE:init(data)
 	self.duration = data.duration
 	self.qteComplete = false
@@ -30,6 +34,7 @@ function QTE:init(data)
 	self.qteSuccess = false
 end;
 
+---@param isOffensive? boolean
 function QTE:readyCamera(isOffensive)
 	if isOffensive then
 		self.focusSelf = false

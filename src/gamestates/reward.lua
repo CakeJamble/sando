@@ -13,8 +13,6 @@ local reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
 function reward:init()
-
-
   self.rewardPools = self.initRewardPools()
   self.rareChanceDelta = 0.2
   self.uncommonChanceDelta = 0.3
@@ -144,6 +142,7 @@ function reward:getRewardType()
   return result
 end;
 
+---@param dt number
 function reward:update(dt)
   flux.update(dt)
   self.levelUpManager:update(dt)

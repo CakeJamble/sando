@@ -5,8 +5,10 @@ local Timer = require('libs.hump.timer')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
 
+---@class randSBP: QTE
 local randSBP = Class{__includes = QTE}
 
+---@param data table
 function randSBP:init(data)
 	QTE.init(self, data)
 	self.type = 'randSBP'
@@ -24,11 +26,14 @@ function randSBP:init(data)
 	self.waitTimer = nil
 end;
 
+---@param actionButton string
+---@param buttonUI table
 function randSBP:setActionButton(actionButton, buttonUI)
 	self.actionButton = actionButton
 	self.buttonUI = buttonUI
 end;
 
+---@param activeEntity Character
 function randSBP:setUI(activeEntity)
 	self:readyCamera(false)
 
@@ -50,6 +55,7 @@ function randSBP:reset()
 	self.doneWaiting = false
 end;
 
+---@param callback fun(qteSuccess: boolean)
 function randSBP:beginQTE(callback)
 	self.onComplete = callback
 	-- Hardcoded values that need to be determined dynamically!
@@ -83,6 +89,8 @@ function randSBP:beginQTE(callback)
 		end)
 end;
 
+---@param joystick string
+---@param button string
 function randSBP:gamepadpressed(joystick, button)
 	if self.displayButton and not self.qteComplete then
 		local qteSuccess = false
@@ -103,9 +111,12 @@ function randSBP:gamepadpressed(joystick, button)
 	end
 end;
 
+---@param joystick string
+---@param button string
 function randSBP:gamepadreleased(joystick, button)
 end;
 
+---@param dt number
 function randSBP:update(dt)
 	for _,ps in ipairs(fireParticles) do
 		ps.system:update(dt)

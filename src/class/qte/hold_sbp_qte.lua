@@ -6,8 +6,10 @@ local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
 require('util.globals')
 
+---@class HoldSBP: QTE
 local HoldSBP = Class{__includes = QTE}
 
+---@param data table
 function HoldSBP:init(data)
 	-- progress bar
 	QTE.init(self, data)
@@ -31,6 +33,8 @@ function HoldSBP:init(data)
 	}
 end;
 
+---@param actionButton string
+---@param buttonUI table
 function HoldSBP:setActionButton(actionButton, buttonUI)
 	print(actionButton)
 	self.actionButton = actionButton
@@ -38,11 +42,12 @@ function HoldSBP:setActionButton(actionButton, buttonUI)
 	self.instructions = "Hold " .. string.upper(actionButton) .. " until the meter is filled!"
 end;
 
+---@param activeEntity Character
 function HoldSBP:setUI(activeEntity)
 	self.entity = activeEntity
 	local isOffensive = activeEntity.skill.isOffensive
 	local targetPos = activeEntity.pos
-	self:readyCamera(targetPos)
+	self:readyCamera(isOffensive)
 
 	self.progressBar = ProgressBar(targetPos, self.progressBarOptions, isOffensive)
 	self.buttonUIPos.x = self.progressBar.pos.x + self.buttonUIOffsets.x
@@ -63,17 +68,11 @@ function HoldSBP:reset()
 	self.progressTween = nil
 end;
 
-function HoldSBP:update(dt)
-	if self.doneWaiting and not self.signalEmitted then
-		Signal.emit('Attack')
-		self.signalEmitted = true
-	end
-end;
-
 --[[
 1. Wait a x seconds for player to press button
 	1a. If they haven't pressed it, they fail the QTE
 2. After pressing, cancel the waitTween ]]
+---@param callback fun(qteSuccess: boolean)
 function HoldSBP:beginQTE(callback)
 	self.onComplete = callback
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
@@ -138,6 +137,8 @@ function HoldSBP:handleQTE()
 	end
 end;
 
+---@param joystick string
+---@param button string
 function HoldSBP:gamepadpressed(joystick, button)
 	if button == self.actionButton and not self.signalEmitted then
 		self.isActionButtonPressed = true
@@ -152,6 +153,8 @@ function HoldSBP:gamepadpressed(joystick, button)
 	end
 end;
 
+---@param joystick string
+---@param button string
 function HoldSBP:gamepadreleased(joystick, button)
 	if button == self.actionButton then
 		self.isActionButtonPressed = false
@@ -178,6 +181,14 @@ function HoldSBP:gamepadreleased(joystick, button)
 				self.onComplete(qteSuccess)
 			end
 		end
+	end
+end;
+
+---@param dt number
+function HoldSBP:update(dt)
+	if self.doneWaiting and not self.signalEmitted then
+		Signal.emit('Attack')
+		self.signalEmitted = true
 	end
 end;
 

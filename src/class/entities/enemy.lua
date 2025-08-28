@@ -6,11 +6,15 @@ local flux = require('libs.flux')
 local starParticles = require('asset.particle.ko')
 local Timer = require('libs.hump.timer')
 
----@class Enemy
+---@class Enemy: Entity
+---@field xPos integer
+---@field yPos integer
+---@field yOffset integer
 local Enemy = Class{__includes = Entity,
   -- for testing
   xPos = 450, yPos = 150, yOffset = 40}
 
+---@param data table
 function Enemy:init(data)
   self.type = 'enemy'
   self.enemyType = data.enemyType
@@ -31,6 +35,8 @@ function Enemy:init(data)
     end)
 end;
 
+---@param targets { [string]: Entity[] }
+---@param targetType string
 function Enemy:setTargets(targets, targetType)
   if targetType == 'any' then
     Entity.setTargets(self, targets)
@@ -39,6 +45,8 @@ function Enemy:setTargets(targets, targetType)
   end
 end;
 
+---@param amount integer
+---@param attackerLuck integer
 function Enemy:takeDamage(amount, attackerLuck)
   Entity.takeDamage(self, amount, attackerLuck)
 
@@ -53,6 +61,7 @@ function Enemy:takeDamage(amount, attackerLuck)
   end
 end;
 
+---@param amount integer
 function Enemy:takeDamagePierce(amount)
   Entity.takeDamagePierce(self, amount)
   if self.currentAnimTag == 'ko' then
@@ -60,6 +69,8 @@ function Enemy:takeDamagePierce(amount)
   end
 end;
 
+---@param rewardsDistribution integer[]
+---@return { [string]: integer}
 function Enemy.setRewardsDistribution(rewardsDistribution)
   return {
     uncommon = rewardsDistribution[1],
@@ -67,6 +78,7 @@ function Enemy.setRewardsDistribution(rewardsDistribution)
   }
 end;
 
+---@param validTargets { [string]: Entity[]}
 function Enemy:setupOffense(validTargets)
   local skillIndex = love.math.random(1, #self.skillPool)
   self.skill = self.skillPool[skillIndex]
@@ -77,6 +89,8 @@ function Enemy:setupOffense(validTargets)
   Signal.emit('TargetConfirm')
 end;
 
+---@param targetType string
+---@param  isSingleTarget boolean
 function Enemy:targetSelect(targetType, isSingleTarget)
   local targets = {}
 
@@ -92,6 +106,7 @@ function Enemy:targetSelect(targetType, isSingleTarget)
   return targets
 end;
 
+---@return table
 function Enemy:knockOut()
   local reward = {
     exp = self.expReward,
@@ -101,6 +116,7 @@ function Enemy:knockOut()
   return reward
 end;
 
+---@param dt number
 function Enemy:update(dt)
   Entity.update(self, dt)
 

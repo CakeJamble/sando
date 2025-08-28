@@ -2,9 +2,11 @@ local Command = require('class.input.command')
 local Class = require('libs.hump.class')
 local SkillCommand = require('class.input.skill_command')
 
----@class AICommand
+---@class AICommand: Command
 local AICommand = Class{__includes = Command}
 
+---@param entity Entity
+---@param turnManager Scheduler
 function AICommand:init(entity, turnManager)
 	Command.init(self, entity)
 	self.targets = entity.targets
@@ -33,6 +35,7 @@ function AICommand:start()
 	self.entity:setupOffense(validTargets)
 end;
 
+---@param dt number
 function AICommand:update(dt)
 	if self.done then
 		self:cleanupSignals()

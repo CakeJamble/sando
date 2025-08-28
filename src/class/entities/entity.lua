@@ -8,7 +8,7 @@ require('util.globals')
 ---@class Entity
 ---@field movementTime integer
 ---@field drawHitboxes boolean
----@field drawHitboxesPositions boolean
+---@field drawHitboxPositions boolean
 ---@field tweenHP boolean
 ---@field isATB boolean
 ---@field hideProgressBar boolean

@@ -1,16 +1,19 @@
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 
+---@class EquipManager
 local EquipManager = Class{}
 
+---@param characterTeam CharacterTeam
 function EquipManager:init(characterTeam)
 	self.characterTeam = characterTeam
-	self.equipment = self.initItemLists
+	self.equipment = self.initItemLists()
 	self.indices = self.initIndices()
 	self.signalHandlers = {}
 	self:registerSignals()
 end;
 
+---@param equip table
 function EquipManager:addAccessory(equip)
 	if equip.signal then
 		local signal = equip.signal
@@ -23,27 +26,31 @@ function EquipManager:addAccessory(equip)
 	end
 end;
 
+---@param accessory table
 function EquipManager:popAccessory(accessory)
 	if accessory.index == 0 then
 		error(accessory.name .. "'s index was never overwritten when added to the inventory")
-	elseif #self.accessories[accessory.signal] == 0 then
+	elseif #self.equipment[accessory.signal] == 0 then
 		error('Attempted to pop off an empty table')
 	else
 		local signal = accessory.signal
 		local i = accessory.index
-		local result = table.remove(self.accessories[signal][i])
+		local result = table.remove(self.equipment[signal][i])
 		self.indices[signal] = self.indices[signal] - 1
 		return result
 	end
 end;
 
+---@param character Character
+---@param accIndex integer
 function EquipManager:equip(character, accIndex)
-	local accessory = table.remove(self.accessories, accIndex)
-	local isAccessory = true
+	local accessory = table.remove(self.equipment, accIndex)
+	local isAccessory = false
 	local oldAccessory = character:equip(accessory, isAccessory)
 	return oldAccessory
 end;
 
+---@return { [string]: table}
 function EquipManager.initItemLists()
 	local result = {
 		OnEquip = {},
@@ -59,6 +66,7 @@ function EquipManager.initItemLists()
 	return result
 end;
 
+---@return { [string]: integer }
 function EquipManager.initIndices()
 	local result = {
 		OnStartTurn = 1,
@@ -72,6 +80,8 @@ function EquipManager.initIndices()
 	return result
 end;
 
+---@param name string
+---@param f fun(...)
 function EquipManager:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)
@@ -85,49 +95,49 @@ function EquipManager:registerSignals()
 
 	self:registerSignal('OnStartTurn',
 		function(character)
-			for _,item in ipairs(self.accessories.OnStartTurn) do
+			for _,item in ipairs(self.equipment.OnStartTurn) do
 				item.proc(character)
 			end
 		end)
 
 	self:registerSignal('OnStartCombat',
 		function()
-			for _,item in ipairs(self.accessories.OnStartCombat) do
+			for _,item in ipairs(self.equipment.OnStartCombat) do
 				item.proc()
 			end
 		end)
 
 	self:registerSignal('OnAttack',
 		function(skill)
-			for _,item in ipairs(self.accessories.OnAttack) do
+			for _,item in ipairs(self.equipment.OnAttack) do
 				item.proc(skill)
 			end
 		end)
 
 	self:registerSignal('OnGuard',
 		function(character)
-			for _,item in ipairs(self.accessories.OnGuard) do
+			for _,item in ipairs(self.equipment.OnGuard) do
 				item.proc(character)
 			end
 		end)
 
 	self:registerSignal('OnEnemyAttack',
 		function(enemy)
-			for _,item in ipairs(self.accessories.OnEnemyAttack) do
+			for _,item in ipairs(self.equipment.OnEnemyAttack) do
 				item.proc(enemy)
 			end
 		end)
 
 	self:registerSignal('OnKO',
 		function()
-			for _,item in ipairs(self.accessories.OnKO) do
+			for _,item in ipairs(self.equipment.OnKO) do
 				item.proc()
 			end
 		end)
 
 	self:registerSignal('OnLevelUp',
 		function(character)
-			for _,item in ipairs(self.accessories.OnLevelUp) do
+			for _,item in ipairs(self.equipment.OnLevelUp) do
 				item.proc(character)
 			end
 		end)

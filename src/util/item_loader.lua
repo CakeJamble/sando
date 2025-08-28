@@ -1,5 +1,8 @@
 local json = require('libs.json')
 
+---@param itemName string
+---@param itemType string
+---@return { [string]: any }
 local function loadItem(itemName, itemType)
 	local jsonPath = 'data/item/' .. itemType .. '/'
 	jsonPath = jsonPath .. itemName .. '.json'

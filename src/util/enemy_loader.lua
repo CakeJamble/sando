@@ -2,6 +2,8 @@ local json = require('libs.json')
 local loadSkill = require('util.skill_loader')
 local dataDir = 'data/entity/enemy_stats/'
 
+---@param entityName string
+---@return { [string]: any }
 local function loadEnemyData(entityName)
 	local raw = love.filesystem.read(dataDir .. entityName .. '.json')
 	local data = json.decode(raw)
