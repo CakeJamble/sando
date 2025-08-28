@@ -116,13 +116,15 @@ function main_menu:update(dt)
 end;
 
 function main_menu:draw()
-  push:start()
+  -- push:start()
+  shove.beginDraw()
   love.graphics.draw(self.background, 0, 0)
   for i=1,#self.mmButtons do
     love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), self.pos.y)
   end
   love.graphics.draw(self.cursor, self.cursorPos.x, self.pos.y)
-  push:finish()
+  -- push:finish()
+  shove.endDraw()
 end;
 
 function main_menu:validate_selection()

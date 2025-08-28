@@ -1,5 +1,3 @@
---! filename: qte_manager
--- require('class.qte.sbp_qte')
 local HoldSBP = require('class.qte.hold_sbp_qte')
 local mbpQTE = require('class.qte.mbp_qte')
 local randSBP = require('class.qte.rand_sbp_qte')
@@ -88,7 +86,7 @@ function QTEManager:defineQTESetup()
 		hold_sbp = function(actionButton)
 			local qte = self.qteTable.hold_sbp
 			qte:setActionButton(actionButton, self.buttons[actionButton])
-			qte.instructions = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
+			qte.instructions = 'Hold ' .. string.upper(actionButton) .. ' until the meter fills!'
 			return qte
 		end,
 
