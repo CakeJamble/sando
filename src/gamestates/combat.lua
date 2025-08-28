@@ -33,7 +33,9 @@ local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
 
 function combat:init()
   imgui.love.Init()
-
+  shove.createLayer('background')
+  shove.createLayer('entity', {zIndex = 10})
+  shove.createLayer('ui', {zIndex = 100})
   self.background = love.graphics.newImage(TEMP_BG)
   self.combatTeamUI = love.graphics.newImage(COMBAT_TEAM_UI_PATH)
   self.hpHolder1 = love.graphics.newImage(HP_HOLDER)
@@ -219,21 +221,31 @@ function combat:update(dt)
 end;
 
 function combat:draw()
-  push:start()
+  shove.beginDraw()
   camera:attach()
+
+  shove.beginLayer('background')
   love.graphics.draw(self.background, 0, 0, 0, 1, 1.2)
   love.graphics.draw(self.combatTeamUI, 0, 0, 0, 1, 0.75)
   for i,entity in ipairs(self.characterTeamHP) do
     local text = entity.name .. ': ' .. math.ceil(entity.currHP) .. ' / ' .. entity.totalHP
     love.graphics.print(text, self.hpUIDims.x, self.hpUIDims.y + ((i-1) * self.hpUIDims.offset))
   end
-  self.characterTeam:draw()
-  self.enemyTeam:draw()
+  shove.endLayer()
+
+  shove.beginLayer('ui')
   if self.turnManager then
     self.turnManager:draw()
   end
+  shove.endLayer()
+
+  shove.beginLayer('entity')
+  self.characterTeam:draw()
+  self.enemyTeam:draw()
+  shove.endLayer()
+
   camera:detach()
-  push:finish()
+  shove.endDraw()
   imgui.Render()
   imgui.love.RenderDrawLists()
 end;

@@ -24,6 +24,8 @@ local JoystickUtils = require('util.joystick_utils')
 local flux = require('libs.flux')
 
 function main_menu:init()
+  shove.createLayer('background')
+  shove.createLayer('ui', {zIndex = 100})
   self.background = love.graphics.newImage(TEMP_BG)
   self.cursor = love.graphics.newImage(CURSOR_PATH)
   self.cursorPos = {x = BUTTONS_START_X, y = BUTTONS_START_Y}
@@ -116,14 +118,17 @@ function main_menu:update(dt)
 end;
 
 function main_menu:draw()
-  -- push:start()
   shove.beginDraw()
-  love.graphics.draw(self.background, 0, 0)
-  for i=1,#self.mmButtons do
-    love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), self.pos.y)
-  end
-  love.graphics.draw(self.cursor, self.cursorPos.x, self.pos.y)
-  -- push:finish()
+    shove.beginLayer("ui")
+      for i=1,#self.mmButtons do
+        love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), self.pos.y)
+      end
+      love.graphics.draw(self.cursor, self.cursorPos.x, self.pos.y)
+    shove.endLayer()
+
+    shove.beginLayer('background')
+      love.graphics.draw(self.background, 0, 0)
+    shove.endLayer()
   shove.endDraw()
 end;
 

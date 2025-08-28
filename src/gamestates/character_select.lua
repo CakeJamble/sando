@@ -1,10 +1,9 @@
---! file: gamestates/character_select
+local character_select = {}
 local CharacterTeam = require("class.entities.character_team")
 require("util.globals")
 local Character = require("class.entities.character")
 local loadCharacterData = require('util.character_loader')
 local JoystickUtils = require('util.joystick_utils')
-local character_select = {}
 
 local TEAM_CAP = 2
 local SELECT_START = 100
@@ -19,6 +18,8 @@ local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
 function character_select:init()
+  shove.createLayer('background')
+  shove.createLayer('ui')
   self.cursor = love.graphics.newImage(CURSOR_PATH)
   self.bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
   self.marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
@@ -223,7 +224,9 @@ function character_select:update(dt)
 end;
 
 function character_select:draw()
-  push:start()
+  shove.beginDraw()
+
+  shove.beginLayer('ui')
   -- Character Select Grid and Stats
   love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10,
     OFFSET * (GRID_LENGTH + 1) + 10)
@@ -245,7 +248,8 @@ function character_select:draw()
   love.graphics.rectangle(self.selectedContainerOptions.mode,
     self.selectedContainerOptions.x, self.selectedContainerOptions.y,
     self.selectedContainerOptions.width, self.selectedContainerOptions.height)
-  push:finish()
+  shove.endLayer()
+  shove.endDraw()
 end;
 
 return character_select

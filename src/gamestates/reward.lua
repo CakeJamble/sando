@@ -1,9 +1,3 @@
---! filename: reward
--- local CharacterTeam = require('class.entities.character_team')
--- local Character = require('class.entities.character')
--- require('util.equipment_pool')
--- require('util.consumable_pool')
--- local loadTool = require('util.tool_loader')
 local LevelUpManager = require('class.entities.level_up_manager')
 local loadItem = require('util.item_loader')
 local json = require('libs.json')
@@ -13,6 +7,9 @@ local reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
 function reward:init()
+  shove.createLayer('background')
+  shove.createLayer('entity', {zIndex = 10})
+  shove.createLayer('ui', {zIndex = 100})
   self.rewardPools = self.initRewardPools()
   self.rareChanceDelta = 0.2
   self.uncommonChanceDelta = 0.3
@@ -150,11 +147,13 @@ end;
 
 function reward:draw()
   self.combatState:draw()
-  push:start()
+  shove.beginDraw()
   camera:attach()
+  shove.beginLayer('ui')
   self.levelUpManager:draw()
+  shove.endLayer()
   camera:detach()
-  push:finish()
+  shove.endDraw()
 end;
 
 return reward

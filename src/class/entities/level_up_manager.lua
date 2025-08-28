@@ -11,9 +11,8 @@ function LevelUpManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.levelUpUI = self.initUI(characterTeam.members)
 	self.duration = 2
-  self.windowWidth, self.windowHeight = push:getDimensions()
-  self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
-  self.windowWidth, self.windowHeight = self.windowWidth, self.windowHeight
+  self.windowWidth, self.windowHeight = shove.getViewportDimensions()
+  -- self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
   -- self.tx, self.ty = 250, 250
 end;
 
