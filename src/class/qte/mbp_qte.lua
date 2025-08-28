@@ -62,6 +62,7 @@ end;
 ---@param activeEntity Character
 function mbpQTE:setUI(activeEntity)
 	local isOffensive = activeEntity.skill.isOffensive
+	self.entity = activeEntity
 	self:readyCamera(isOffensive)
 
 	local tPos = activeEntity.pos
@@ -80,20 +81,33 @@ end;
 ---@param callback fun(qteSuccess: boolean)
 function mbpQTE:beginQTE(callback)
 	self.onComplete = callback
-	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
-		:oncomplete(function()
-				print('Failed to start in time. Attacking now.')
-				local qteSuccess = false
-				self.doneWaiting = true
-				self.qteComplete = true
-				self.instructions = nil
-				self.onComplete(qteSuccess)
+
+	flux.to(self.entity.pos, 0.5, {x = 100, y = 170})
+	:oncomplete(function()
+		self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
+			:oncomplete(function()
+					print('Failed to start in time. Attacking now.')
+					local qteSuccess = false
+					self.doneWaiting = true
+					self.qteComplete = true
+					self.instructions = nil
+					self.onComplete(qteSuccess)
+			end)
 		end)
 end;
 
 function mbpQTE:handleQTE()
 	local goalWidth = 0
 	print('starting progress tween')
+
+	-- Zoom down and to the left slightly
+	local cameraGoalPos = {
+		x = camera.x - self.entity.pos.x * 2,
+		y = camera.y + self.entity.pos.y / 2
+	}
+	self.cameraTween = flux.to(camera, self.duration,
+		{x = cameraGoalPos.x, y = cameraGoalPos.y, scale = 1.25})
+
 	self.progressTween = flux.to(self.progressBar.meterOptions, self.duration, {width = goalWidth}):ease('linear')
 		:oncomplete(function()
 			self.progressBarComplete = true
@@ -162,13 +176,17 @@ function mbpQTE:draw()
 	-- end
 	QTE.draw(self)
 	if not self.qteComplete then
+		love.graphics.push()
+		love.graphics.translate(0, 100) -- slight adjustment
 		self.progressBar:draw()
-		love.graphics.rectangle('fill', self.inputSequenceContainerDims.x, self.inputSequenceContainerDims.y, 
+		love.graphics.rectangle('fill', self.inputSequenceContainerDims.x, self.inputSequenceContainerDims.y,
 			self.inputSequenceContainerDims.w, self.inputSequenceContainerDims.h)
 		love.graphics.setColor(0,1,0)
-		love.graphics.circle('fill', self.currentInputContainerDims.x, self.currentInputContainerDims.y, self.currentInputContainerDims.r)
+		love.graphics.circle('fill', self.currentInputContainerDims.x, self.currentInputContainerDims.y,
+			self.currentInputContainerDims.r)
 		love.graphics.setColor(1,1,1)
 		self:drawInputButtons()
+		love.graphics.pop()
 	end
 end;
 

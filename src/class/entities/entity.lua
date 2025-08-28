@@ -180,9 +180,13 @@ end;
 ---@param tweenType? string
 function Entity:endTurn(duration, stagingPos, tweenType)
   if self:isAlive() then
-    self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
+    flux.to(self.pos, 0.75, {x = self.oPos.x, y = self.oPos.y})
+      :delay(0.75)
+    Signal.emit('OnEndTurn', 1.5)
+    -- self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   else
     self:reset()
+    flux.to(self.pos, 0.5, {x = self.oPos.x, y = self.oPos.y})
     Signal.emit('OnEndTurn', 0)
   end
 end;
@@ -200,6 +204,7 @@ end;
 ---@param duration integer
 ---@param stagingPos? { [string]: number }
 ---@param tweenType? string
+---@deprecated
 function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   local delay = 0.5
   if stagingPos then
@@ -208,24 +213,26 @@ function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType
       :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
     :oncomplete(
       function()
-        self:reset(); Signal.emit('OnEndTurn', 0);
+        self:reset(); Signal.emit('OnEndTurn', 0.5);
       end)
     self.tweens['stageBack'] = stageBack
   else
     Timer.after(delay, function()
-      self:reset(); Signal.emit('OnEndTurn', 0)
+      self:reset(); Signal.emit('OnEndTurn', 0.5)
     end)
   end
 end;
 
 function Entity:attackInterrupt()
   self.tweens['attack']:stop()
-  if self:isAlive() then
-    self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
-  else
-    self:reset()
-    Signal.emit('NextTurn')
-  end
+  self:endTurn(0)
+  -- if self:isAlive() then
+    -- self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
+
+  -- else
+    -- self:reset()
+    -- Signal.emit('NextTurn')
+  -- end
 end;
 
 function Entity:reset()
