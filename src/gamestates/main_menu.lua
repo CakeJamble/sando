@@ -24,7 +24,7 @@ local JoystickUtils = require('util.joystick_utils')
 local flux = require('libs.flux')
 
 function main_menu:init()
-  shove.createLayer('background', {zIndex = 0})
+  shove.createLayer('background')
   shove.createLayer('ui', {zIndex = 100})
   self.background = love.graphics.newImage(TEMP_BG)
   self.cursor = love.graphics.newImage(CURSOR_PATH)

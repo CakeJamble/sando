@@ -17,16 +17,13 @@ local JoystickUtils = require 'util.joystick_utils'
 
 function love.load()
   shove.setResolution(640, 360, {
-    fitMethod = "aspect",
-    renderMode = "layer"
-  })
+      fitMethod = "aspect",
+      renderMode = "layer",
+    })
   local windowWidth, windowHeight = love.window.getDesktopDimensions()
   windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
   shove.setWindowMode(windowWidth, windowHeight, {
-    resizable = true,
-    vsync = true,
-    minwidth = 640,
-    minheight = 360
+    resizable = true
   })
 
   input = {joystick = nil}
