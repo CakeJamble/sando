@@ -1,7 +1,7 @@
 {
 	"name": "Pastry Brush",
-	"signal": "OnQTESuccess",
-	"description": "Double crit chance for skills with crit bonuses",
+	"signal": "OnAttack",
+	"description": "Deal additional pierce damage to pastry enemies",
 	"flavorText": "Delicate, elegant, egg-washed.",
 	"rarity": "rare"
 }

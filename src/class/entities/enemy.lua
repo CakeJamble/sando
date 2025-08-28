@@ -3,11 +3,18 @@ local Entity = require("class.entities.entity")
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 local flux = require('libs.flux')
+local starParticles = require('asset.particle.ko')
+local Timer = require('libs.hump.timer')
 
+---@class Enemy: Entity
+---@field xPos integer
+---@field yPos integer
+---@field yOffset integer
 local Enemy = Class{__includes = Entity,
   -- for testing
   xPos = 450, yPos = 150, yOffset = 40}
 
+---@param data table
 function Enemy:init(data)
   self.type = 'enemy'
   self.enemyType = data.enemyType
@@ -17,7 +24,9 @@ function Enemy:init(data)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)
+
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
+  self.drawKOStars = false
 
   Signal.register('OnStartCombat',
     function()
@@ -26,6 +35,8 @@ function Enemy:init(data)
     end)
 end;
 
+---@param targets { [string]: Entity[] }
+---@param targetType string
 function Enemy:setTargets(targets, targetType)
   if targetType == 'any' then
     Entity.setTargets(self, targets)
@@ -34,15 +45,23 @@ function Enemy:setTargets(targets, targetType)
   end
 end;
 
+---@param amount integer
+---@param attackerLuck integer
 function Enemy:takeDamage(amount, attackerLuck)
   Entity.takeDamage(self, amount, attackerLuck)
 
   if self.currentAnimTag == 'ko' then
     flux.to(self.pos, 1.5, {a = 0})
-    -- Timer.after(1.5, function() self.drawSelf = false end)
+    self.drawKOStars = true
+    local lifetime = starParticles[1].system:getEmitterLifetime()
+    Timer.after(lifetime, function() self.drawKOStars = false; end)
+
+    local reward = self:knockOut()
+    Signal.emit('OnEnemyKO', reward)
   end
 end;
 
+---@param amount integer
 function Enemy:takeDamagePierce(amount)
   Entity.takeDamagePierce(self, amount)
   if self.currentAnimTag == 'ko' then
@@ -50,6 +69,8 @@ function Enemy:takeDamagePierce(amount)
   end
 end;
 
+---@param rewardsDistribution integer[]
+---@return { [string]: integer}
 function Enemy.setRewardsDistribution(rewardsDistribution)
   return {
     uncommon = rewardsDistribution[1],
@@ -57,6 +78,7 @@ function Enemy.setRewardsDistribution(rewardsDistribution)
   }
 end;
 
+---@param validTargets { [string]: Entity[]}
 function Enemy:setupOffense(validTargets)
   local skillIndex = love.math.random(1, #self.skillPool)
   self.skill = self.skillPool[skillIndex]
@@ -67,6 +89,8 @@ function Enemy:setupOffense(validTargets)
   Signal.emit('TargetConfirm')
 end;
 
+---@param targetType string
+---@param  isSingleTarget boolean
 function Enemy:targetSelect(targetType, isSingleTarget)
   local targets = {}
 
@@ -82,12 +106,34 @@ function Enemy:targetSelect(targetType, isSingleTarget)
   return targets
 end;
 
+---@return table
 function Enemy:knockOut()
-  local reward = {}
-  reward.exp = self.expReward
-  reward.money = self.moneyReward
-  reward.loot = self.lootReward
+  local reward = {
+    exp = self.expReward,
+    money = self.moneyReward,
+    rarities = self.lootReward  -- table(uncommon: number, rare: number)
+  }
   return reward
+end;
+
+---@param dt number
+function Enemy:update(dt)
+  Entity.update(self, dt)
+
+  if self.drawKOStars then
+    for _,ps in ipairs(starParticles) do
+      ps.system:update(dt)
+    end
+  end
+end;
+
+function Enemy:draw()
+  Entity.draw(self)
+  if self.drawKOStars then
+    for _,ps in ipairs(starParticles) do
+      love.graphics.draw(ps.system, self.pos.x + self.frameWidth / 2, self.pos.y + self.frameHeight / 2)
+    end
+  end
 end;
 
 return Enemy

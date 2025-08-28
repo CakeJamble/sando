@@ -8,8 +8,10 @@ local flux = require('libs.flux')
 	- QTE for skills that require multiple button presses within a given duration
 	]]
 
+---@class mbpQTE: QTE
 local mbpQTE = Class{__includes = QTE}
 
+---@param data table
 function mbpQTE:init(data)
 	QTE.init(self, data)
 	self.inputSequenceLength = 4
@@ -45,6 +47,7 @@ function mbpQTE:init(data)
 end;
 
 --[[Creates input sequence and inserts the face button images into input sequence]]
+---@param buttons table[]
 function mbpQTE:createInputSequence(buttons)
 	-- local faceButtons = {'a','b','x','y'}
 	for i=1,self.inputSequenceLength do
@@ -56,6 +59,7 @@ function mbpQTE:createInputSequence(buttons)
 	end
 end;
 
+---@param activeEntity Character
 function mbpQTE:setUI(activeEntity)
 	local isOffensive = activeEntity.skill.isOffensive
 	self:readyCamera(isOffensive)
@@ -73,6 +77,7 @@ function mbpQTE:setUI(activeEntity)
 	self.feedbackPos.y = self.baseY - 5
 end;
 
+---@param callback fun(qteSuccess: boolean)
 function mbpQTE:beginQTE(callback)
 	self.onComplete = callback
 	self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
@@ -96,6 +101,8 @@ function mbpQTE:handleQTE()
 		end)
 end;
 
+---@param joystick string
+---@param button string
 function mbpQTE:gamepadpressed(joystick, button)
 	if not self.qteComplete and button == self.inputSequence[self.buttonsIndex].val then
 		self.alphas[self.buttonsIndex] = 0
@@ -123,6 +130,8 @@ function mbpQTE:gamepadpressed(joystick, button)
 	end
 end;
 
+---@param joystick string
+---@param button string
 function mbpQTE:gamepadreleased(joystick, button)
 end;
 
@@ -139,6 +148,7 @@ function mbpQTE:reset()
 	-- self.actionButton = nil
 end;
 
+---@param dt number
 function mbpQTE:update(dt)
 	if self.doneWaiting and not self.signalEmitted then
 		Signal.emit('Attack')

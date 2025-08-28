@@ -1,0 +1,7 @@
+{
+	"name": "Egg Timer",
+	"signal": "OnEndTurn",
+	"description": "Heal slightly at the end of your turn",
+	"flavorText": "It's about to hatch!",
+	"rarity": "uncommon"
+}

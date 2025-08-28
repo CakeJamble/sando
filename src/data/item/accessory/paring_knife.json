@@ -1,0 +1,7 @@
+{
+	"name": "Paring Knife",
+	"signal": "OnStartBattle",
+	"description": "Increase luck at the start of battle",
+	"flavorText": "You need to be prepared to take advantage of luck",
+	"rarity": "common"
+}

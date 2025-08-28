@@ -1,5 +1,7 @@
 local json = require('libs.json')
 
+---@param skillName string
+---@return { [string]: any }
 local function loadSkill(skillName)
 	local jsonPath = 'data/skill/' .. skillName .. '.json'
 	local logicPath = 'logic.skill.' .. skillName

@@ -1,7 +1,7 @@
 {
 	"name": "Scraper",
 	"signal": "OnQTESuccess",
-	"description": "+40% to crit bonuses",
+	"description": "+1% to crit bonuses whenever you greatly perform a QTE",
 	"flavorText": "Never leave home without it.",
 	"rarity": "rare"
 }

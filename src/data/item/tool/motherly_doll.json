@@ -1,6 +1,6 @@
 {
 	"name": "Motherly Doll",
-	"signal": "O",
+	"signal": "OnStatusProc",
 	"description": "You cannot be KO'd by status effects",
 	"flavorText": "You can do this better than mama!",
 	"rarity": "rare"

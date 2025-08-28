@@ -1,7 +1,10 @@
 local Class = require('libs.hump.class')
 local RingQTE = require('class.qte.ring_qte')
+
+---@class ComoRingQTE: RingQTE
 local ComboRingQTE = Class{__includes = RingQTE}
 
+---@param data table
 function ComboRingQTE:init(data)
 	RingQTE.init(self, data)
 	self.combo = 0
@@ -20,6 +23,7 @@ function ComboRingQTE:reset()
 	self.rings = {}
 end;
 
+---@return Ring[]
 function ComboRingQTE:makeRings()
 	local rings = {}
 	self.maxCombo = love.math.random(self.min, self.max)
@@ -29,6 +33,7 @@ function ComboRingQTE:makeRings()
 	return rings
 end;
 
+---@param callback fun(qteSuccess: boolean)
 function ComboRingQTE:beginQTE(callback)
 	if callback then
 		self.rings = self:makeRings()
@@ -41,12 +46,13 @@ function ComboRingQTE:beginQTE(callback)
 	ring.flipTween:oncomplete(function()
 		ring.revolutionTween:oncomplete(function()
 			self.signalEmitted = true
-			callback(false)
+			self.onComplete(false)
 		end)
 	end)
-
 end;
 
+---@param joystick string
+---@param button string
 function ComboRingQTE:gamepadpressed(joystick, button)
 	if button == self.actionButton then
 		local ring = self.rings[self.index]

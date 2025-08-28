@@ -1,0 +1,8 @@
+{
+	"name": "Latte",
+	"itemType": "support",
+	"isSingleTarget": true,
+	"effects": ["heal"],
+	"amount": 0.33,
+	"duration": 3
+}

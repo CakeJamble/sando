@@ -5,6 +5,13 @@ local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
 require('util.globals')
 
+---@class Entity
+---@field movementTime integer
+---@field drawHitboxes boolean
+---@field drawHitboxPositions boolean
+---@field tweenHP boolean
+---@field isATB boolean
+---@field hideProgressBar boolean
 local Entity = Class{
   movementTime = 2,
   drawHitboxes = false,
@@ -14,15 +21,25 @@ local Entity = Class{
   hideProgressBar = false
 }
 
-  -- Entity constructor
-    -- preconditions: defined stats and skills tables
-    -- postconditions: Valid Entity object and added to global table of Entities
+---@param data table
+---@param x integer
+---@param y integer
 function Entity:init(data, x, y)
   self.entityName = data.entityName
   self.baseStats = self.copyStats(data)
   self.battleStats = self.copyStats(data)
   self.statStages = self.setStatStages(self.baseStats)
   self.statuses = {}
+  self.statusResist = {
+    burn = 0,
+    poison = 0,
+    sleep = 0,
+    lactose = 0,
+    paralyze = 0,
+    ohko = 0,
+    late = 0
+  }
+  self.critMult = 2
   self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
@@ -50,7 +67,7 @@ function Entity:init(data, x, y)
   self.currentFrame = 1
   self.isFocused = false
   self.targets = {}
-  -- self.target = nil
+  self.target = nil
   self.targetableEntities = {}
   self.hasUsedAction = false
   self.turnFinish = false
@@ -115,6 +132,7 @@ function Entity:init(data, x, y)
   end)
 end;
 
+---@param stats table
 function Entity.copyStats(stats)
   return {
     hp = stats.hp,
@@ -127,6 +145,7 @@ function Entity.copyStats(stats)
   }
 end;
 
+---@param stats table
 function Entity.setStatStages(stats)
   local stages = {}
   for stat,_ in pairs(stats) do
@@ -156,6 +175,9 @@ function Entity:startTurn()
   print('starting turn for ' .. self.entityName)
 end;
 
+---@param duration integer Length of time the tween(s) take
+---@param stagingPos? {[string]: number}
+---@param tweenType? string
 function Entity:endTurn(duration, stagingPos, tweenType)
   if self:isAlive() then
     self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
@@ -165,6 +187,7 @@ function Entity:endTurn(duration, stagingPos, tweenType)
   end
 end;
 
+---@param targets { [string]: Entity }
 function Entity:setTargets(targets)
   self.targets = {
     ['characters'] = targets.characters,
@@ -174,6 +197,9 @@ function Entity:setTargets(targets)
   print('targets set for ' .. self.entityName)
 end;
 
+---@param duration integer
+---@param stagingPos? { [string]: number }
+---@param tweenType? string
 function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   local delay = 0.5
   if stagingPos then
@@ -214,10 +240,13 @@ function Entity:reset()
   print('ending turn for ', self.entityName)
 end;
 
+---@param tag string
+---@param tween fun()
 function Entity:addTween(tag, tween)
   self.tweens[tag] = tween
 end;
 
+---@param tag string
 function Entity:stopTween(tag)
   if self.tweens[tag] then
     self.tweens[tag]:stop()
@@ -263,6 +292,8 @@ end;
 
 -- MUTATORS
 
+---@param t integer?
+---@param displacement integer
 function Entity:goToStagingPosition(t, displacement)
   local stagingPos = {x=0,y=0}
   if self.skill.stagingType == 'near' then
@@ -276,29 +307,66 @@ function Entity:goToStagingPosition(t, displacement)
   flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
 end;
 
-function Entity:modifyBattleStat(stat, stage) --> void
+---@param statName string
+---@param stage integer
+function Entity:modifyBattleStat(statName, stage) --> void
   -- clamping
   local maxStage = statStageCap
   local minStage = -statStageCap
-  stage = self.statStages[stat] + stage
-  self.statStages[stat] = math.min(maxStage, math.max(minStage, stage))
+  local stats = {}
 
-  local mult
-  if self.statStages[stat] >= 0 then
-    mult = (2 + self.statStages[stat]) / 2
+  if statName == 'all' then
+    stats = {'attack', 'defense', 'speed', 'luck'}
   else
-    mult = 2 / (2 - self.statStages[stat])
+    if statName == 'random' then
+      local i = love.math.random(#stats)
+      statName = stats[i]
+    end
+    table.insert(stats, statName)
   end
 
-  -- local prev = self.battleStats[stat]
-  self.battleStats[stat] = math.floor((self.battleStats[stat] * mult) + 0.5)
+  for _,stat in ipairs(stats) do
+    stage = self.statStages[stat] + stage
+    self.statStages[stat] = math.min(maxStage, math.max(minStage, stage))
+
+    local mult
+    if self.statStages[stat] >= 0 then
+      mult = (2 + self.statStages[stat]) / 2
+    else
+      mult = 2 / (2 - self.statStages[stat])
+    end
+
+    -- local prev = self.battleStats[stat]
+    self.battleStats[stat] = math.floor((self.battleStats[stat] * mult) + 0.5)
+  end
 end;
 
+---@param status string
 function Entity:applyStatus(status)
-  table.insert(self.statuses, status)
+  local chance = love.math.random()
+
+  if chance > self.statusResist[status] then
+    table.insert(self.statuses, status)
+  else
+    print('resisted!')
+  end
 end;
 
+---@param statuses string[]
+---@param amount integer
+function Entity:raiseResist(statuses, amount)
+  if statuses == 'all' then
+    for status,resistChance in pairs(self.statusResist) do
+      self.statusResist[status] = resistChance + amount
+    end
+  else
+    for _,status in ipairs(statuses) do
+      self.statusResist[status] = self.statusResist[status] + amount
+    end
+  end
+end;
 
+---@param amount integer
 function Entity:heal(amount) --> void
   local isDamage = false
   if self.tweens['damage'] then
@@ -316,6 +384,7 @@ function Entity:cleanse()
   end
 end;
 
+---@param statusToCleanse string
 function Entity:cleanseOne(statusToCleanse)
   for i, status in ipairs(self.statuses) do
     if statusToCleanse == status then
@@ -325,11 +394,13 @@ function Entity:cleanseOne(statusToCleanse)
   end
 end;
 
+---@param amount integer
+---@param attackerLuck integer
 function Entity:takeDamage(amount, attackerLuck) --> void
   local isCrit = self:isCrit(attackerLuck)
   local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
   if isCrit then
-    amount = amount * 2
+    amount = amount * self.critMult
     -- Signal.emit('OnCrit')
   end
   self.amount = math.max(0, amount - self.battleStats['defense'])
@@ -355,6 +426,7 @@ function Entity:takeDamage(amount, attackerLuck) --> void
   -- Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
 end;
 
+---@param amount integer
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
   if self:isAlive() then
@@ -364,6 +436,8 @@ function Entity:takeDamagePierce(amount) --> void
   end
 end;
 
+---@param attackerLuck integer
+---@return boolean
 function Entity:isCrit(attackerLuck)
   local chance = self:calcCritChance(attackerLuck)
   local rand = love.math.random()
@@ -371,6 +445,8 @@ function Entity:isCrit(attackerLuck)
   return rand <= chance
 end;
 
+---@param attackerLuck integer
+---@return number
 function Entity:calcCritChance(attackerLuck)
   local luck = self.battleStats.luck
   local chance = math.min(100, math.max(1, (attackerLuck / 4) - (luck / 8)))
@@ -387,8 +463,9 @@ function Entity:resetStatModifiers() --> void
   end
 end;
 
-  --[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
+--[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
   Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
+---@param path string
 function Entity:setAnimations(path)
   local baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
   for _,anim in ipairs(baseAnimationTypes) do
@@ -403,6 +480,8 @@ function Entity:setAnimations(path)
   end
 end;
 
+---@param path string
+---@param baseSFXTypes string[]
 function Entity:setSFX(path, baseSFXTypes)
   local sfxList = {}
   for _,sfx in ipairs(baseSFXTypes) do
@@ -413,6 +492,9 @@ function Entity:setSFX(path, baseSFXTypes)
   return sfxList
 end;
 
+---@param image table
+---@param duration? integer
+---@return table
 function Entity:populateFrames(image, duration)
   local animation = {}
   animation.spriteSheet = image
@@ -431,6 +513,7 @@ function Entity:populateFrames(image, duration)
   return animation
 end;
 
+---@param dt number
 function Entity:update(dt) --> void
   self.hitbox.x = self.pos.x + self.hbXOffset
   self.hitbox.y = self.pos.y + self.hbYOffset
@@ -473,16 +556,18 @@ function Entity:draw() --> void
     love.graphics.setColor(1, 1, 1, 1)
   end
 
+  -- feedback text
   if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
     love.graphics.setColor(0,0,0, 1 - self.opacity)
-    love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0, self.dmgDisplayScale, self.dmgDisplayScale)
+    love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0,
+      self.dmgDisplayScale, self.dmgDisplayScale)
     love.graphics.setColor(1,1,1, 1)
   end
 
+  -- Entity sprite
   local animation = self.animations[self.currentAnimTag]
   local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   spriteNum = math.min(spriteNum, #animation.quads)
-
   love.graphics.setColor(1,1,1,self.pos.a)
   love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
   love.graphics.setColor(1,1,1,1)
@@ -512,6 +597,7 @@ function Entity:draw() --> void
 end;
 
 -- ATB Functionality
+---@param onComplete fun() Emits OnTurnReady(entity) signal
 function Entity:tweenProgressBar(onComplete)
   local goalWidth = self.progressBar.containerOptions.width
   local currWidth = self.progressBar.meterOptions.width

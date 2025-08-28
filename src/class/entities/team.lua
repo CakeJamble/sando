@@ -1,18 +1,23 @@
 --! filename: team
 local Class = require 'libs.hump.class'
+
+---@class Team
 local Team = Class{}
 
+---@param entities Entity[]
 function Team:init(entities)
   self.members = entities
   self.membersIndex = 1
   self.money = 0
 end;
 
+---@param entity Entity
 function Team:addMember(entity) --> void
   self.numMembers = self.numMembers + 1
   self.members[self.numMembers] = entity
 end;
 
+---@param entities Entity[]
 function Team:removeMembers(entities) --> void
   local removeIndices = {}
   for i=1, #self.members do
@@ -29,6 +34,7 @@ function Team:removeMembers(entities) --> void
   end
 end;
 
+---@return Entity[]
 function Team:getLivingMembers()
   local result = {}
   for _,member in ipairs(self.members) do
@@ -39,10 +45,7 @@ function Team:getLivingMembers()
   return result
 end;
 
-
-  -- Iterates over team members to check if they are all knocked out
-    -- preconditions: none
-    -- postcondition: returns true if team wiped, false otherwise
+---@return boolean
 function Team:isWipedOut() --> bool
   for _,c in pairs(self.members) do
     if c:isAlive() then return false end
@@ -57,6 +60,7 @@ function Team:printMembers()
   end
 end;
 
+---@param dt number
 function Team:update(dt)
   for i=1,#self.members do
     self.members[i]:update(dt)

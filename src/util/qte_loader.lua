@@ -1,5 +1,7 @@
 local json = require('libs.json')
 
+---@param qteName string
+---@return { [string]: any }
 local function loadQTE(qteName)
 	local jsonPath = 'data/qte/' .. qteName .. '.json'
 

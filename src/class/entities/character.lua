@@ -15,6 +15,22 @@ local flux = require('libs.flux')
 
 
 local Class = require "libs.hump.class"
+
+---@class Character: Entity
+---@field EXP_POW_SCALE number
+---@field EXP_MULT_SCALE integer
+---@field EXP_BASE_ADD integer
+---@field xCombatStart integer
+---@field yPos integer
+---@field xPos integer
+---@field yOffset integer
+---@field combatStartEnterDuration number
+---@field guardActiveDur number
+---@field guardCooldownDur number
+---@field jumpDur number
+---@field landingLag number
+---@field inventory Inventory
+---@field canBeDebuffed boolean
 local Character = Class{__includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
@@ -22,7 +38,6 @@ local Character = Class{__includes = Entity,
   xPos = 80,
   yOffset = 90,
   xCombatStart = -20,
-  ACTION_ICON_STEM = 'asset/sprites/input_icons/xbox_double/',
   statRollsOnLevel = 1,
   combatStartEnterDuration = 0.75,
   guardActiveDur = 0.25,
@@ -33,9 +48,8 @@ local Character = Class{__includes = Entity,
   canBeDebuffed = true
 }
 
--- Character constructor
-  -- preconditions: stats dict and skills dict
-  -- postconditions: Creates a valid characters
+---@param data table
+---@param actionButton string
 function Character:init(data, actionButton)
   self.type = 'character'
   Entity.init(self, data, Character.xCombatStart, Character.yPos)
@@ -50,8 +64,7 @@ function Character:init(data, actionButton)
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
-  -- Entity.setAnimations(self, 'character/')
-  self:setAnimations('character/')
+  self:setAnimations()
 
   local baseSFXTypes = {'jump'}
   self.sfx = self:setSFX('character/', baseSFXTypes)
@@ -98,6 +111,8 @@ function Character:startTurn()
   -- )
 end
 
+---@param targets { [string]: Entity[]}
+---@param targetType string
 function Character:setTargets(targets, targetType)
   -- Entity.setTargets(self, targets[targetType])
   -- self.actionUI.targets = {
@@ -119,6 +134,9 @@ function Character:setTargets(targets, targetType)
 
 end;
 
+---@param duration integer
+---@param stagingPos? table
+---@param tweenType? string
 function Character:endTurn(duration, stagingPos, tweenType)
   Entity.endTurn(self, duration, stagingPos, tweenType)
   self.actionUI:unset()
@@ -129,30 +147,43 @@ function Character:endTurn(duration, stagingPos, tweenType)
   Character.canBeDebuffed = true
 end;
 
+---@param cost integer
 function Character:validateSkillCost(cost)
   return self.currentFP >= cost - self.fpCostMod
 end;
 
+---@param cost integer
 function Character:deductFP(cost)
   self.currentFP = math.min(math.max(0, cost - self.fpCostMod), self.currentFP)
 end;
 
+---@param status string
 function Character:applyStatus(status)
   if Character.canBeDebuffed then
     Entity.applyStatus(self, status)
   end
 end;
 
+---@param stat string
+---@param stage integer
 function Character:modifyBattleStat(stat, stage)
   if stage < 0 then
     if Character.canBeDebuffed then
       Entity.modifyBattleStat(self, stat, stage)
     end
   else
-    Entity.modifyBattleStat(stat, stage)
+    Entity.modifyBattleStat(self, stat, stage)
   end
 end;
 
+---@param pct number
+function Character:raiseMaxHP(pct)
+  local ratio = self.battleStats.hp / self.baseStats.hp
+  local amount = math.floor(0.5 + self.baseStats.hp * pct)
+  self.baseStats.hp = self.baseStats.hp + amount
+  local newCurrHP = math.floor(0.5 + self.baseStats.hp * ratio)
+  self.battleStats.hp = newCurrHP
+end;
 
 function Character:setAnimations()
   local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'
@@ -164,6 +195,7 @@ function Character:setAnimations()
   self:setDefenseAnimations(path)
 end;
 
+---@param path string
 function Character:setDefenseAnimations(path)
   local block = love.graphics.newImage(path .. 'block.png')
   local jump = love.graphics.newImage(path .. 'jump.png')
@@ -171,7 +203,9 @@ function Character:setDefenseAnimations(path)
   self.animations['jump'] = self:populateFrames(jump)
 end;
 
-function Character:takeDamage(amount)
+---@param amount integer
+---@param attackerLuck integer
+function Character:takeDamage(amount, attackerLuck)
   local bonusApplied = false
   if self.isGuarding then
     self.battleStats.defense = self.battleStats.defense + self.blockMod
@@ -179,7 +213,7 @@ function Character:takeDamage(amount)
     print('taking less damage')
   end
 
-  Entity.takeDamage(self, amount)
+  Entity.takeDamage(self, amount, attackerLuck)
   local isDamage = true
   -- For Status Effect that prevents KO on own turn
   if self.cannotLose and self.isFocused then
@@ -193,23 +227,26 @@ function Character:takeDamage(amount)
   self:recoil()
 end;
 
+---@param amount integer
 function Character:takeDamagePierce(amount)
-  Entity.takeDamagePierce(amount)
+  Entity.takeDamagePierce(self, amount)
   -- For Status Effect that prevents KO on own turn
   if self.cannotLose and self.isFocused then
     self.battleStats['hp'] = math.max(1, self.battleStats['hp'])
   end
 end;
 
--- function Character:cleanse()
---   -- cleanse all curses
---   -- play cleanse animation
--- end;
+-- restores FP (similar to Entity:heal())
+---@param amount integer
+function Character:refresh(amount)
+  self.battleStats.fp = math.min(self.baseStats.fp, self.battleStats.fp + amount)
+end;
 
 --[[ Gains exp, leveling up when applicable
       - preconditions: an amount of exp to gain
       - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
           Continues this until self.experience is less that self.experienceRequired ]]
+---@param amount integer
 function Character:gainExp(amount)
   self.totalExp = self.totalExp + amount
   self.experience = self.experience + amount
@@ -217,9 +254,9 @@ function Character:gainExp(amount)
   -- leveling up until exp is less than exp required for next level
   while self.experience >= self.experienceRequired do
     self.level = self.level + 1
-    print(Entity:getEntityName() .. ' reached level ' .. self.level .. '!')
-    self.experienceRequired = Character:getRequiredExperience()
-    Character:updateSkills()
+    print(self.entityName .. ' reached level ' .. self.level .. '!')
+    self.experienceRequired = self:getRequiredExperience()
+    self:updateSkills()
     -- TODO: need to signal to current gamestate to push new level up reward state
   end
 end;
@@ -238,9 +275,6 @@ function Character:getRequiredExperience() --> int
   return result
 end;
 
---[[ Checks for new learnable skills on lvl up from a table of the character's skills
-      - preconditions: none
-      - postconditions: updates self.current_skills ]]
 function Character:updateSkills()
   for _,skill in pairs(self.skillPool) do
     if self.level == skill.unlockedAtLvl then
@@ -249,6 +283,7 @@ function Character:updateSkills()
   end
 end;
 
+---@deprecated
 function Character:applyGear()
   for _, equip in pairs(self.gear:getEquips()) do
     local statMod = equip:getStatModifiers()
@@ -256,6 +291,7 @@ function Character:applyGear()
   end
 end;
 
+---@deprecated
 function Character:keypressed(key)
   -- if self.state == 'offense' then
   --   self.offenseState:keypressed(key)
@@ -270,6 +306,8 @@ function Character:keypressed(key)
   -- if in movement state, does nothing
 end;
 
+---@param joystick string
+---@param button string
 function Character:gamepadpressed(joystick, button)
   if self.actionUI and self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
@@ -285,6 +323,8 @@ function Character:gamepadpressed(joystick, button)
   end
 end;
 
+---@param joystick string
+---@param button string
 function Character:gamepadreleased(joystick, button)
   if button == 'rightshoulder' then
       self.canGuard = false
@@ -362,6 +402,7 @@ function Character:beginJump()
   self.sfx.jump:play()
 end;
 
+---@param additionalPenalty integer
 function Character:recoil(additionalPenalty)
   if not additionalPenalty then additionalPenalty = 0 end
   self.currentAnimTag = 'flinch'
@@ -383,6 +424,7 @@ function Character:interruptJump()
   self.tweens['tumble'] = tumble
 end;
 
+---@param dt number
 function Character:update(dt)
   Entity.update(self, dt)
 

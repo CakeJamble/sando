@@ -54,6 +54,8 @@ function character_select:enter()
 
 end;
 
+---@deprecated
+---@param key string
 function character_select:keypressed(key)
   if key == 'right' then
     character_select:set_right()
@@ -69,6 +71,8 @@ function character_select:keypressed(key)
   -- statPreview = character_select:setStatPreview()
 end;
 
+---@param joystick string
+---@param button string
 function character_select:gamepadpressed(joystick, button)
   if button == 'dpright' then
     character_select:set_right()
@@ -182,6 +186,7 @@ function character_select:indicesToCharacters()
   saveCharacterTeam(characterTeam)
 end;
 
+---@return string
 function character_select:setStatPreview()
   local statPreview
   if self.spriteRow == 0 and self.spriteCol == 0 then
@@ -196,10 +201,13 @@ function character_select:setStatPreview()
   return statPreview
 end;
 
+---@param stats { [string]: string|integer }
+---@return string
 function character_select:statsToString(stats)
   return 'Name: ' .. stats['entityName'] .. '\n' .. 'HP: ' .. stats['hp'] .. '\n' .. 'FP: ' .. stats['fp'] .. '\n' .. 'Attack: ' .. stats['attack'] .. '\n' .. 'Defense: ' .. stats['defense'] .. '\n' .. 'Speed: ' .. stats['speed'] .. '\n' .. 'Luck: ' .. stats['luck']
 end;
 
+---@param dt number
 function character_select:update(dt)
   if input.joystick then
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then

@@ -4,12 +4,16 @@
 -- local AICommand = require('class.input.ai_command')
 local QTEManager = require('class.qte.qte_manager')
 require('util.globals')
+local Timer = require('libs.hump.timer')
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
 
+---@class Scheduler
 local Scheduler = Class{}
 
+---@param characterTeam CharacterTeam
+---@param enemyTeam EnemyTeam
 function Scheduler:init(characterTeam, enemyTeam)
 	self.characterTeam = characterTeam
 	self.enemyTeam = enemyTeam
@@ -22,12 +26,19 @@ function Scheduler:init(characterTeam, enemyTeam)
 		enemyHazards = {}
 	}
 	self.signalHandlers = {}
+	self.rewards = {}
 end;
 
 function Scheduler:enter()
 	-- for Signal registration that is shared amongst all Scheduler classes
+	self:registerSignal('OnEnemyKO',
+		function(reward)
+			table.insert(self.rewards, reward)
+		end)
 end;
 
+---@param name string
+---@param f fun(...)
 function Scheduler:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)
@@ -40,6 +51,9 @@ function Scheduler:removeSignals()
 	self.signalHandlers = {}
 end;
 
+---@param characterMembers Character[]
+---@param enemyMembers Enemy[]
+---@return Entity[]
 function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	local queue = {}
 	for _,character in ipairs(characterMembers) do
@@ -52,6 +66,7 @@ function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	return queue
 end;
 
+---@return { [string]: Entity[] }
 function Scheduler:getValidTargets()
 	local result = {}
 	result.characters = self.characterTeam:getLivingMembers()
@@ -59,6 +74,7 @@ function Scheduler:getValidTargets()
 	return result
 end;
 
+---@param duration integer
 function Scheduler:resetCamera(duration)
 	flux.to(camera, duration, {x = self.cameraPosX, y = self.cameraPosY, scale = 1})
 end;
@@ -98,13 +114,23 @@ function Scheduler:removeKOs()
   self.characterTeam:registerKO(koCharacters)
 end;
 
+---@return boolean
 function Scheduler:winLossConsMet()
   local result = false
   print('checking win loss cons')
   if self.enemyTeam:isWipedOut() then
     print('end combat')
-    Gamestate.switch(states['reward'], self.rewards)
-    result = true
+    self:resetCamera(0.5)
+    Timer.after(1, function()
+			for _,member in ipairs(self.characterTeam.members) do
+				if member.actionUI then
+					member.actionUI.active = false
+				end
+			end
+			Gamestate.switch(states['reward'], self.rewards, self.characterTeam)
+			result = true
+    end)
+
   end
   if self.characterTeam:isWipedOut() then
     print('you lose')
@@ -114,6 +140,7 @@ function Scheduler:winLossConsMet()
   return result
 end;
 
+---@param dt number
 function Scheduler:update(dt)
 	for _,entity in pairs(self.combatants) do
 		entity:update(dt)

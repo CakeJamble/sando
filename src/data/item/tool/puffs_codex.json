@@ -1,7 +1,7 @@
 {
 	"name": "Puff's Codex",
 	"signal": "OnConsumableUse",
-	"description": "The first consumable you use each battle is twice as effectvie",
+	"description": "The first consumable you use each battle is twice as effective",
 	"flavorText": "A cookbook from a distant kingdom that loves mushrooms.",
 	"rarity": "event"
 }

@@ -4,6 +4,8 @@ local json = require('libs.json')
 local loadEnemy = require('util.enemy_loader')
 local dataDir = 'data/encounter_pools/'
 
+---@param floorNumber integer
+---@return EnemyTeam
 local function generateEncounter(floorNumber)
 	local poolName
 	--[[ Uncomment later after pools have been implemented as data

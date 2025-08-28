@@ -1,0 +1,8 @@
+{
+	"name": "Fruit Juice",
+	"itemType": "support",
+	"isSingleTarget": true,
+	"effects": ["max_hp"],
+	"amount": 0.07,
+	"duration": 3
+}

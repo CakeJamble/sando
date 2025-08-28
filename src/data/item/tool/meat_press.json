@@ -1,7 +1,7 @@
 {
 	"name": "Meat Press",
 	"signal": "OnAttack",
-	"description": "Vulnerable enemies take more damage.",
+	"description": "Deal more damage for every vulnerable target.",
 	"flavorText": "It's just a small cast iron pan.",
 	"rarity": "uncommon"
 }

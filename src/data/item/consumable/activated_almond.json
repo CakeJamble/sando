@@ -1,0 +1,8 @@
+{
+	"name": "Activated Almond",
+	"itemType": "support",
+	"isSingleTarget": true,
+	"effects": ["fp"],
+	"amount": 0.33,
+	"duration": 3
+}

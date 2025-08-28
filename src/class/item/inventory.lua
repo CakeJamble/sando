@@ -15,11 +15,16 @@ local ToolManager = require('class.item.tool_manager')
 -- local AccessoryManager = require('class.item.accessory_manager')
 
 local Class = require 'libs.hump.class'
+
+---@class Inventory
+---@field cabinetPath string
+---@field consumableMult number
 local Inventory = Class{
     cabinetPath = 'asset/sprites/pause/2cabinet.png',
     consumableMult = 1
 }
 
+---@param characterTeam CharacterTeam
 function Inventory:init(characterTeam)
     self.gears = {}
     self.toolManager = ToolManager(characterTeam)
@@ -55,12 +60,18 @@ end;
 If there is an equipment piece there, it will unequip it and return the gear
 to the calling fcn. Otherwise returns nil if the equipSlot is nil.
 note: equipSlot is an int for the index in character.equips to get the existing gear]]
+---@param character Character
+---@param equipSlot integer
+---@param equipment table
+---@return table
 function Inventory:equip(character, equipSlot, equipment) --> Gear or nil
     local replacedEquip = character.equips[equipSlot]
     character.equips[equipSlot] = equipment
     return replacedEquip
 end;
 
+---@param item table
+---@return boolean
 function Inventory:addConsumable(item)
     if #self.consumables >= self.numConsumableSlots then
         return false
@@ -71,6 +82,8 @@ function Inventory:addConsumable(item)
     end
 end;
 
+---@param index integer
+---@return table
 function Inventory:popConsumable(index)
     if #self.consumables == 0 then
         error('cannot pop off empty table')
@@ -78,10 +91,13 @@ function Inventory:popConsumable(index)
     return table.remove(self.consumables, index)
 end;
 
+---@param tool table
 function Inventory:addTool(tool)
     self.toolManager:addTool(tool)
 end;
 
+---@param tool table
+---@return table
 function Inventory:popTool(tool)
     return self.toolManager:popTool(tool)
 end;
@@ -89,6 +105,8 @@ end;
 --[[ Given an item that has been unequipped, returns the value of that item if
 the character argument is nil. If not, then asks the user to decide whether or not
 to equip it to that character. If not, then returns the value.]]
+---@param equipment table
+---@param character Character
 function Inventory:unequip(equipment, character) --> number
     local value = 0
     if equipment ~= nil then
@@ -98,6 +116,7 @@ function Inventory:unequip(equipment, character) --> number
     return value
 end;
 
+---@deprecated
 function Inventory:sellGear(gear)
     --do
 end;

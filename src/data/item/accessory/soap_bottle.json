@@ -1,0 +1,7 @@
+{
+	"name": "Soap Bottle",
+	"signal": "OnStartBattle",
+	"description": "Lower chance of status effects at the start of battle",
+	"flavorText": "Sing happy birthday twice",
+	"rarity": "uncommon"
+}

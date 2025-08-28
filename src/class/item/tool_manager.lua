@@ -1,7 +1,10 @@
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
+
+---@class ToolManager
 local ToolManager = Class{}
 
+---@param characterTeam CharacterTeam
 function ToolManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.tools = self.initToolLists()
@@ -10,6 +13,7 @@ function ToolManager:init(characterTeam)
 	self:registerSignals()
 end;
 
+---@param tool table
 function ToolManager:addTool(tool)
 	local signal = tool.signal
 	tool.index = self.indices[signal]
@@ -21,6 +25,8 @@ function ToolManager:addTool(tool)
 	end
 end;
 
+---@param tool table
+---@return table
 function ToolManager:popTool(tool)
 	if tool.index == 0 then
 		error(tool.name .. "'s index was never overwritten when added to the inventory")
@@ -35,6 +41,7 @@ function ToolManager:popTool(tool)
 	end
 end;
 
+---@return { [string]: table}
 function ToolManager.initToolLists()
 	local result = {
 		OnStartTurn = {},
@@ -54,6 +61,7 @@ function ToolManager.initToolLists()
 	return result
 end;
 
+---@return { [string]: integer }
 function ToolManager.initIndices()
 	local result = {
 		OnStartTurn = 1,
@@ -72,6 +80,8 @@ function ToolManager.initIndices()
 	return result
 end;
 
+---@param name string
+---@param f fun(...)
 function ToolManager:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)

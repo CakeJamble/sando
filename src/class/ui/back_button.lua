@@ -1,7 +1,9 @@
 local Class = require('libs.hump.class')
 
+---@class BackButton
 local BackButton = Class{}
 
+---@param pos { [string]: number }
 function BackButton:init(pos)
 	self.pos = {x=pos.x, y=pos.y}
 	local path = 'asset/sprites/combat/back_button.png'

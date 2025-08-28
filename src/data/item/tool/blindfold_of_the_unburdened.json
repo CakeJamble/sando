@@ -3,5 +3,5 @@
 	"signal": "OnStartBattle",
 	"description": "Boosts the crit rate and speed of characters with empty armor and accessory slots",
 	"flavorText": "See without eyes, fight without resin",
-	"rarity": "common"
+	"rarity": "uncommon"
 }

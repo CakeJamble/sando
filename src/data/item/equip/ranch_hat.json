@@ -1,0 +1,14 @@
+{
+	"name": "Ranch Hat",
+	"cost": 10,
+	"rarity": "rare",
+	"effects": "crit_down",
+	"stats": {
+		"hp": 0.2,
+		"fp": 0.2,
+		"attack": 0,
+		"defense": 0,
+		"speed": 0,
+		"luck": 0
+	}
+}

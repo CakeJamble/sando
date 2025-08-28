@@ -1,0 +1,8 @@
+{
+	"name": "Bread Crust",
+	"itemType": "support",
+	"isSingleTarget": true,
+	"effects": ["negate_damage"],
+	"amount": null,
+	"duration": 2
+}

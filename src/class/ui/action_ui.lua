@@ -12,18 +12,22 @@ local Timer = require('libs.hump.timer')
 require('util.globals')
 
 local Class = require 'libs.hump.class'
+
+---@class ActionUI
+---@field ICON_SPACER integer
+---@field X_OFFSET integer
+---@field Y_OFFSET integer
+---@field TARGET_CURSOR_PATH string
 local ActionUI = Class{
   ICON_SPACER = 50,
   X_OFFSET = 20,
   Y_OFFSET = -45,
   TARGET_CURSOR_PATH = 'asset/sprites/combat/target_cursor.png'}
--- local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
--- local CURSOR_PATH = CHARACTER_SELECT_PATH .. 'cursor.png'
-  -- ActionUI constructor
-    -- preconditions: name of the character
-    -- postconditions: initializes action ui icons for the character
--- function ActionUI:init(x, y, skillList, currentFP, currentDP) -- needs enemy positions list?
+
 -- The ActionUI position (self.x, self.y) is at the coordinates of the center of the button wheel
+---@param charRef Character
+---@param characterMembers Character[]
+---@param enemyMembers Enemy[]
 function ActionUI:init(charRef, characterMembers, enemyMembers)
   self.active = false
   self.x = nil
@@ -55,6 +59,8 @@ function ActionUI:init(charRef, characterMembers, enemyMembers)
   self:set(charRef)
 end;
 
+---@param characterMembers Character[]
+---@param enemyMembers Enemy[]
 function ActionUI:setTargets(characterMembers, enemyMembers)
   self.targets = {
     ['characters'] = characterMembers,
@@ -62,6 +68,7 @@ function ActionUI:setTargets(characterMembers, enemyMembers)
   }
 end;
 
+---@param charRef Character
 function ActionUI:set(charRef)
   self.x = charRef.pos.x + ActionUI.X_OFFSET
   self.y = charRef.pos.y + ActionUI.Y_OFFSET
@@ -93,31 +100,32 @@ function ActionUI:set(charRef)
   self.easeType = 'linear'
 end;
 
+---@return table[]
 function ActionUI:setButtonLandingPositions()
   local sideOffsets = {x = 1.5 * self.buttonDims.w, y = self.buttonDims.h / 1.5}
   local backOffsets = {x = self.buttonDims.w, y = self.buttonDims.h}
   local landingPositions = {
-    { -- 1
+    {
       x     = self.x,
       y     = self.y,
       scale = 1
     },
-    { -- 2
+    {
       x     = self.x - sideOffsets.x,
       y     = self.y - sideOffsets.y,
       scale = Button.SIDE_BUTTON_SCALE
     },
-    { -- 3
+    {
       x     = self.x - backOffsets.x,
       y     = self.y - backOffsets.y,
       scale = Button.BACK_BUTTON_SCALE,
     },
-    { -- 4
+    {
       x     = self.x + backOffsets.x,
       y     = self.y - backOffsets.y,
       scale = Button.BACK_BUTTON_SCALE,
     },
-    { -- 5
+    {
       x     = self.x + sideOffsets.x,
       y     = self.y - sideOffsets.y,
       scale = Button.SIDE_BUTTON_SCALE,
@@ -161,6 +169,8 @@ end
 function ActionUI:keypressed(key) --> void
 end;
 
+---@param joystick string
+---@param button string
 function ActionUI:gamepadpressed(joystick, button) --> void
   if self.active then
 ----------------------- Button Tweening ---------------------------
@@ -262,6 +272,7 @@ function ActionUI:gamepadpressed(joystick, button) --> void
   end
 end;
 
+---@param dt number
 function ActionUI:update(dt)
   if input.joystick then
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then

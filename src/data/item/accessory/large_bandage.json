@@ -1,0 +1,7 @@
+{
+	"name": "Large Bandage",
+	"signal": "OnStartTurn",
+	"description": "Slightly restore HP at the start of your turn",
+	"flavorText": "It has a cute bear on it",
+	"rarity": "common"
+}
