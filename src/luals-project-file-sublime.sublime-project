@@ -22,6 +22,14 @@
 						"${3rd}/love2d/library",
 					],
 					"Lua.workspace.checkThirdParty": "Disable",
+					"Lua.diagnostics.globals":
+					[
+						"states",
+						"shove",
+						"input",
+						"font",
+						"camera",
+					],
 				},
 			},
 		},
