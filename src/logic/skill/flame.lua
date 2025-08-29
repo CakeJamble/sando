@@ -74,7 +74,7 @@ return function(ref, qteManager)
     if i == #goalPos then
       attack = attack:oncomplete(function()
         if flawlessDodge then
-          ref:takeDamage(damage)
+          ref:takeDamage(damage, luck)
         end
         table.remove(ref.projectiles, 1)
         ref:endTurn(skill.duration)

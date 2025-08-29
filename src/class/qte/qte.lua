@@ -1,3 +1,4 @@
+local flux = require('libs.flux')
 local Class = require 'libs.hump.class'
 
 ---@class QTE
@@ -48,6 +49,17 @@ function QTE:reset()
 	self.qteComplete = false
 	self.signalEmitted = false
 	self.instructions = nil
+end;
+
+---@param duration? number
+function QTE:tweenFeedback(duration)
+	local t = duration or 1
+	self.showFeedback = true
+	flux.to(self.feedbackPos, t, {a = 0})
+		:oncomplete(function()
+			self.showFeedback = false
+			self.feedbackPos.a = 1
+		end)
 end;
 
 function QTE:draw()

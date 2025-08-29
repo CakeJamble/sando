@@ -23,6 +23,7 @@ function HoldSBP:init(data)
 	self.waitTween = nil
 	self.progressTween = nil
 	self.progressBarComplete = false
+	self.setupComplete = false
 
 	self.actionButton = nil
 	self.isActionButtonPressed = false
@@ -59,16 +60,18 @@ end;
 
 function HoldSBP:reset()
 	QTE.reset(self)
+	self.onComplete = nil
 	self.actionButton = nil
 	self.isActionButtonPressed = false
+	self.progressBar:reset()
 	self.progressBar = nil
-	-- self.progressBar:reset()
 	self.waitForPlayer.curr = 0
 	self.progressBarComplete = false
 	self.doneWaiting = false
 	self.progressTween = nil
 	self.signalEmitted = false
 	self.qteComplete = false
+	self.setupComplete = false
 end;
 
 --[[
@@ -78,9 +81,14 @@ end;
 ---@param callback fun(qteSuccess: boolean)
 function HoldSBP:beginQTE(callback)
 	self.onComplete = callback
-
+	self.setupComplete = false
+	-- print('setup complete was reset')
 	flux.to(self.entity.pos, 0.5, {x = 100, y = 170})
 	:oncomplete(function()
+		print('ready')
+		self.setupComplete = true
+		self.signalEmitted = false
+		self.isActionButtonPressed = false
 		self.waitTween = flux.to(self.waitForPlayer, self.waitForPlayer.fin, {curr = self.waitForPlayer.fin})
 			:oncomplete(function()
 					print('Failed to start in time. Attacking now.')
@@ -136,16 +144,18 @@ function HoldSBP:handleQTE()
 						end
 					end)
 			end)
+	else
+		print('uh oh')
 	end
 end;
 
 ---@param joystick string
 ---@param button string
 function HoldSBP:gamepadpressed(joystick, button)
-	if button == self.actionButton and not self.signalEmitted then
+	print(self.actionButton, button)
+	if button == self.actionButton and self.setupComplete and not self.signalEmitted and not self.isActionButtonPressed then
 		self.isActionButtonPressed = true
 		self.buttonUIIndex = 'pressed'
-
 		if self.waitForPlayer.curr < self.waitForPlayer.fin then
 			self.waitTween:stop()
 			print('stopped wait tween')
@@ -158,8 +168,8 @@ end;
 ---@param joystick string
 ---@param button string
 function HoldSBP:gamepadreleased(joystick, button)
-	if button == self.actionButton then
-		self.isActionButtonPressed = false
+	if button == self.actionButton and self.setupComplete and self.isActionButtonPressed then
+		self.isActionButtonPressed = true
 		if self.progressTween then
 			print('stopping progress tween')
 			self.progressTween:stop()
@@ -174,9 +184,7 @@ function HoldSBP:gamepadreleased(joystick, button)
 			else
 				print('Hold SBP QTE Success')
 				self.waitTween:stop()
-				self.showFeedback = true
-				flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
-					:oncomplete(function() self.feedbackPos.a = 1 end)
+				self:tweenFeedback()
 				local qteSuccess = true
 				Signal.emit('OnQTEResolved', qteSuccess)
 				self.signalEmitted = true
@@ -188,10 +196,6 @@ end;
 
 ---@param dt number
 function HoldSBP:update(dt)
-	if self.doneWaiting and not self.signalEmitted then
-		Signal.emit('Attack')
-		self.signalEmitted = true
-	end
 end;
 
 function HoldSBP:draw()
