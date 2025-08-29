@@ -48,11 +48,22 @@ end;
 
 function randSBP:reset()
 	QTE.reset(self)
+	self.qteComplete = false
+	self.qteSuccess = false
 	self.feedbackPos.a = 1
 	for i=1,#self.circleGreenVals do
-		self.circleGreenVals = 0
+		self.circleGreenVals[i] = 0
 	end
 	self.doneWaiting = false
+	self.displayButton = false
+
+	self.smallCircleOptions.x = self.smallCircleOptions.x - self.targetPos.x
+	self.smallCircleOptions.x = -self.smallCircleOptions.x
+
+	self.smallCircleOptions.y = self.smallCircleOptions.y - self.targetPos.y
+	self.feedbackPos.x = self.targetPos.x - self.feedbackOffsets.x
+	self.feedbackPos.y = self.targetPos.y + self.feedbackOffsets.y
+	self.buttonUIIndex = 'raised'
 end;
 
 ---@param callback fun(qteSuccess: boolean)
@@ -105,10 +116,6 @@ function randSBP:gamepadpressed(joystick, button)
 		end
 		self.onComplete(qteSuccess)
 		self.signalEmitted = true
-
-		self.doneWaiting = true
-		self.displayButton = false
-		self.qteComplete = true
 	end
 end;
 

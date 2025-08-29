@@ -103,7 +103,7 @@ function QTEManager:defineQTESetup()
 			local qte = self.qteTable.rand_sbp
 			qte:setActionButton(self.buttons[randIndex].val, self.buttons[randIndex])
 			qte.qteButton = self.buttons[randIndex]
-			qte.button = self.buttons[randIndex].raised
+			-- qte.button = self.buttons[randIndex].raised
 			return qte
 		end,
 
