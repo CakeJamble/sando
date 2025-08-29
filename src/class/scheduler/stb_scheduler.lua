@@ -26,7 +26,6 @@ function STBScheduler:enter()
 	Entity.isATB = false
 
 	local turnStart = function()
-		self.qteManager:reset()
 		self:removeKOs()
 		if self:winLossConsMet() then
 			-- transition to rewards

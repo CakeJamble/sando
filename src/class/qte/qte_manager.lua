@@ -92,6 +92,7 @@ function QTEManager:defineQTESetup()
 
 		mbp = function()
 			local qte = self.qteTable.mbp
+			-- qte.buttons = self.buttons
 			qte:createInputSequence(self.buttons)
 			return qte
 		end,

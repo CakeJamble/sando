@@ -25,7 +25,7 @@ return function(ref, qteBonus, qteManager)
   Signal.emit('ProjectileMade', wok)
   ref.currentAnimTag = skill.tag
   -- Tween the scone projectile through the target
-  local cam = flux.to(camera, skill.duration, {x = goalX}):ease('quadout')
+  local cam = flux.to(camera, skill.duration, {x = camera.x + goalX / 8}):ease('quadout')
   ref.tweens['camera'] = cam
   local attack = flux.to(wok.pos, skill.duration, {x = goalX}):ease(skill.beginTweenType)
     :onstart(function() wok:tweenShadow(skill.duration, goalShadowY); end)
