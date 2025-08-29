@@ -11,7 +11,7 @@
 	"duration": 1,
 	"stagingTime": 1,
 	"stagingType": "far",
-	"qteType": "rand_sbp",
+	"qteType": "combo_ring_qte",
 	"qteBonus": "burn",
 	"description": "Throw a pillar of fire at an enemy.",
 	"unlockedAtLvl": 1,

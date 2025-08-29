@@ -12,7 +12,7 @@ local Timer = require('libs.hump.timer')
 ---@field yOffset integer
 local Enemy = Class{__includes = Entity,
   -- for testing
-  xPos = 450, yPos = 150, yOffset = 40}
+  xPos = 450, yPos = 150, yOffset = 90}
 
 ---@param data table
 function Enemy:init(data)

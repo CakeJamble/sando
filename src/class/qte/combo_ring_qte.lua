@@ -33,7 +33,7 @@ function ComboRingQTE:makeRings()
 	return rings
 end;
 
----@param callback fun(qteSuccess: boolean)
+---@param callback? fun(qteSuccess: boolean)
 function ComboRingQTE:beginQTE(callback)
 	if callback then
 		self.rings = self:makeRings()
@@ -64,8 +64,8 @@ function ComboRingQTE:gamepadpressed(joystick, button)
 			else
 				print('bad')
 				-- stop QTE
-				self.onComplete(false)
 				self.signalEmitted = true
+				self.onComplete(false)
 			end
 
 			if self.sliceIndex > ring.numSlices then
@@ -76,8 +76,8 @@ function ComboRingQTE:gamepadpressed(joystick, button)
 					-- good
 					self.combo = self.combo + 1
 					if self.combo >= self.maxCombo then
-						self.onComplete(true)
 						self.signalEmitted = true
+						self.onComplete(true)
 					else
 						self.successCount = 0
 						self.index = self.index + 1

@@ -11,7 +11,7 @@
 	"duration": 2,
 	"stagingTime": 1,
 	"stagingType": "far",
-	"qteType": "mbp",
+	"qteType": "combo_ring_qte",
 	"qteBonus": "damage",
 	"description": "Deals physical damage to a single target.",
 	"unlockedAtLvl": 1,

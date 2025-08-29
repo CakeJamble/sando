@@ -39,7 +39,7 @@ Contains the libraries used for the game's implementation.
 - [flux](https://github.com/rxi/flux)
 - [cimgui-love](https://codeberg.org/apicici/cimgui-love)
 - [json.lua](https://github.com/rxi/json.lua)
-- [push](https://github.com/Ulydev/push)
+- [shove](https://github.com/Oval-Tutu/shove)
 
 ### 🛠️ `util`
 

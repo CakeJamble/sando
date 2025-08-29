@@ -49,6 +49,7 @@ function SkillCommand:start(turnManager)
       if qteSuccess then
         bonus = self.getQTEBonus(self.entity.skill.qteBonus)
       end
+      self.qteManager:reset()
       self:executeSkill(bonus)
     end)
   else

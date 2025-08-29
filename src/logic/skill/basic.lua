@@ -20,7 +20,7 @@ return function(ref, qteBonus, qteManager)
   local hasCollided = false
 
   local damage = ref.battleStats['attack'] + skill.damage
-  local luck = ref.battleStats['luck'] + 0
+  local luck = ref.battleStats['luck']
 
 
   -- Move from starting position to staging position before changing to animation assoc with skill use

@@ -45,6 +45,7 @@ function combat:init()
     y = 6,
     offset = 40
   }
+  self.bgYOffset = self.combatTeamUI:getHeight() * 0.75
   self.cursorX = 0
   self.cursorY = 0
   self.rewardExp = 0
@@ -225,8 +226,8 @@ function combat:draw()
   camera:attach()
 
   shove.beginLayer('background')
-  love.graphics.draw(self.background, 0, 0, 0, 1, 1.2)
-  love.graphics.draw(self.combatTeamUI, 0, 0, 0, 1, 0.75)
+  love.graphics.draw(self.background, 0, self.bgYOffset, 0, 1, 1.2)
+  love.graphics.draw(self.combatTeamUI, 0, 0, 0)
   for i,entity in ipairs(self.characterTeamHP) do
     local text = entity.name .. ': ' .. math.ceil(entity.currHP) .. ' / ' .. entity.totalHP
     love.graphics.print(text, self.hpUIDims.x, self.hpUIDims.y + ((i-1) * self.hpUIDims.offset))
@@ -239,6 +240,7 @@ function combat:draw()
   end
   shove.endLayer()
 
+  love.graphics.translate(0, self.bgYOffset)
   shove.beginLayer('entity')
   self.characterTeam:draw()
   self.enemyTeam:draw()

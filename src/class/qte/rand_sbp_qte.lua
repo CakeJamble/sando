@@ -36,7 +36,7 @@ end;
 ---@param activeEntity Character
 function randSBP:setUI(activeEntity)
 	self:readyCamera(false)
-
+	self.entity = activeEntity
 	self.targetPos = activeEntity.pos
 	self.smallCircleOptions.x = -self.smallCircleOptions.x
 
@@ -48,45 +48,57 @@ end;
 
 function randSBP:reset()
 	QTE.reset(self)
+	self.qteComplete = false
+	self.qteSuccess = false
 	self.feedbackPos.a = 1
 	for i=1,#self.circleGreenVals do
-		self.circleGreenVals = 0
+		self.circleGreenVals[i] = 0
 	end
 	self.doneWaiting = false
+	self.displayButton = false
+
+	self.smallCircleOptions.x = self.smallCircleOptions.x - self.targetPos.x
+	self.smallCircleOptions.x = -self.smallCircleOptions.x
+
+	self.smallCircleOptions.y = self.smallCircleOptions.y - self.targetPos.y
+	self.feedbackPos.x = self.targetPos.x - self.feedbackOffsets.x
+	self.feedbackPos.y = self.targetPos.y + self.feedbackOffsets.y
+	self.buttonUIIndex = 'raised'
 end;
 
 ---@param callback fun(qteSuccess: boolean)
 function randSBP:beginQTE(callback)
 	self.onComplete = callback
-	-- Hardcoded values that need to be determined dynamically!
-	local goalPosX = self.cameraReturnPos.x 
-	local goalPosY = self.cameraReturnPos.y
+	flux.to(self.entity.pos, 0.5, {x = 100, y = 170})
+	:oncomplete(function()
+		local cameraGoalPos = {
+			x = camera.x - self.entity.pos.x * 2,
+			y = camera.y + self.entity.pos.y / 4
+		}
+		self.cameraTween = flux.to(camera, self.duration,
+			{x = cameraGoalPos.x, y = cameraGoalPos.y, scale = 1.25}):ease('linear')
 
-	goalPosX = goalPosX - self.targetPos.x
-	goalPosY = goalPosY - self.targetPos.y / 4
+		for i=1,self.numSmallCircles do
+			Timer.after(i*self.timeBtwnLights, function() self.circleGreenVals[i] = 1 end)
+		end
 
-	self.cameraTween = flux.to(camera, self.duration, {x = goalPosX, y = goalPosY, scale = 1.25}):ease('linear')
+		-- Show random button and give player time to react, then end QTE
+		Timer.after(self.duration,
+			function()
+				self.displayButton = true
 
-	for i=1,self.numSmallCircles do
-		Timer.after(i*self.timeBtwnLights, function() self.circleGreenVals[i] = 1 end)
-	end
-
-	-- Show random button and give player time to react, then end QTE
-	Timer.after(self.duration,
-		function()
-			self.displayButton = true
-
-			-- Slight delay to give time to see the result
-			self.waitTimer = Timer.after(self.waitDuration,
-				function()
-					-- qte failed
-					self.qteComplete = true
-					self.doneWaiting = true
-					Signal.emit('Attack')
-					self.signalEmitted = true
-					self.displayButton = false
-				end)
-		end)
+				-- Slight delay to give time to see the result
+				self.waitTimer = Timer.after(self.waitDuration,
+					function()
+						-- qte failed
+						self.qteComplete = true
+						self.doneWaiting = true
+						Signal.emit('Attack')
+						self.signalEmitted = true
+						self.displayButton = false
+					end)
+			end)
+	end)
 end;
 
 ---@param joystick string
@@ -104,10 +116,6 @@ function randSBP:gamepadpressed(joystick, button)
 		end
 		self.onComplete(qteSuccess)
 		self.signalEmitted = true
-
-		self.doneWaiting = true
-		self.displayButton = false
-		self.qteComplete = true
 	end
 end;
 

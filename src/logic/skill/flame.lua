@@ -12,6 +12,7 @@ return function(ref, qteManager)
     table.insert(tPos, target.hitbox)
   end
   local damage = ref.battleStats['attack'] + skill.damage
+  local luck = ref.battleStats.luck
   local flameTravelTime = skill.duration
   local flawlessDodge = true
   local hasCollided = {}
@@ -47,7 +48,7 @@ return function(ref, qteManager)
   local checkCollision = function()
     for i,target in ipairs(targets) do
       if not hasCollided[i] and Collision.rectsOverlap(flame.hitbox, target.hitbox) then
-        target:takeDamage(damage)
+        target:takeDamage(damage, luck)
         hasCollided[i] = true
         flawlessDodge = false
       end
@@ -73,7 +74,7 @@ return function(ref, qteManager)
     if i == #goalPos then
       attack = attack:oncomplete(function()
         if flawlessDodge then
-          ref:takeDamage(damage)
+          ref:takeDamage(damage, luck)
         end
         table.remove(ref.projectiles, 1)
         ref:endTurn(skill.duration)
