@@ -11,6 +11,7 @@ return function(ref, qteBonus, qteManager)
   local goalX, goalY = tPos.x + tPos.w / 2, tPos.y
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
+  local luck = ref.battleStats.luck
   local goalShadowY = tPos.y + tPos.h
   local burnChance = 0.3
   if qteBonus then
@@ -34,7 +35,7 @@ return function(ref, qteBonus, qteManager)
       wok.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)
 
       if not hasCollided and Collision.rectsOverlap(wok.hitbox, target.hitbox) then
-        target:takeDamage(damage)
+        target:takeDamage(damage, luck)
         local rand = love.math.random()
         if burnChance >= rand then
           target:applyStatus('burn')

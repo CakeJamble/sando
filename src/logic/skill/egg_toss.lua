@@ -7,6 +7,7 @@ return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local targets = ref.targets
   local damage = ref.battleStats['attack'] + skill.damage
+  local luck = ref.battleStats.luck
   if qteBonus then
     damage = qteBonus(damage)
   end
@@ -49,7 +50,7 @@ return function(ref, qteBonus, qteManager)
         egg.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)
 
         if not hasCollided[i] and Collision.rectsOverlap(egg.hitbox, target.hitbox) then
-          target:takeDamage(damage)
+          target:takeDamage(damage, luck)
           hasCollided[i] = true
           table.remove(ref.projectiles, i)
         end

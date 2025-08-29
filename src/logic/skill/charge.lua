@@ -18,6 +18,8 @@ return function(ref)
 
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
+  local luck = ref.battleStats['luck']
+  local targetLuck = target.battleStats.luck
 
   local spaceFromTarget = calcSpacingFromTarget(skill.stagingType, ref.type)
   local stagingPos = {
@@ -44,12 +46,12 @@ return function(ref)
                   hasCollided = true
                   -- check counter-attack
                   if Collision.isOverhead(ref.hitbox, target.hitbox) then
-                    ref:takeDamage(target.battleStats['attack'])
+                    ref:takeDamage(target.battleStats.attack, targetLuck)
                     target:stopTween('jump')
                     ref:attackInterrupt()
                     target:beginJump()
                   else
-                    target:takeDamage(damage)
+                    target:takeDamage(damage, luck)
                     print('collision')
                     if target.isJumping then
                       target:interruptJump()
