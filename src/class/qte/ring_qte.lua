@@ -28,6 +28,8 @@ end;
 function RingQTE:reset()
 	QTE.reset(self)
 	self.sliceIndex = 1
+	self.successCount = 0
+	self.signalEmitted = false
 end;
 
 ---@return Ring
@@ -80,13 +82,12 @@ function RingQTE:gamepadpressed(joystick, button)
 					if self.successCount == self.ring.numSlices then
 						print('Ring QTE Success')
 						isSuccess = true
-						flux.to(self.feedbackPos, 1, {a = 0}):delay(1)
-							:oncomplete(function() self.feedbackPos.a = 1 end)
+						self:tweenFeedback()
 					else
 						print('Ring QTE Fail')
 					end
-					self.onComplete(isSuccess)
 					self.signalEmitted = true
+					self.onComplete(isSuccess)
 				end
 			end
 

@@ -21,8 +21,8 @@ return function(ref, qteBonus, qteManager)
   -- Create a Scone Projectile
   local wok = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
   local startX, startY = wok.pos.x, wok.pos.y
+  table.insert(ref.projectiles, wok)
   local peakHeight = -tPos.h
-  Signal.emit('ProjectileMade', wok)
   ref.currentAnimTag = skill.tag
   -- Tween the scone projectile through the target
   local cam = flux.to(camera, skill.duration, {x = camera.x + goalX / 8}):ease('quadout')
@@ -42,7 +42,7 @@ return function(ref, qteBonus, qteManager)
         end
         hasCollided = true
         flux.to(wok.dims, 0.25, {r = 0}):ease('linear')
-          :oncomplete(function() Signal.emit('DespawnProjectile') end)
+          :oncomplete(function() table.remove(ref.projectiles, 1) end)
       end
     end)
     :oncomplete(function()
