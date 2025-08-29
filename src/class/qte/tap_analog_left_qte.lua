@@ -56,6 +56,11 @@ function TapAnalogLeftQTE:reset()
 	self.progressTween = nil
 	self.waitTween = nil
 	self.onComplete = nil
+
+	self.buttonUIPos.x = self.buttonUIPos.x - self.buttonUIOffsets.x
+	self.buttonUIPos.y = self.buttonUIPos.y - self.buttonUIOffsets.y
+	self.feedbackPos.x = self.feedbackPos.x - self.feedbackOffsets.x
+	self.feedbackPos.y = self.feedbackPos.y - self.feedbackOffsets.y
 end;
 
 ---@param callback fun(qteSuccess: boolean)
@@ -68,8 +73,8 @@ function TapAnalogLeftQTE:beginQTE(callback)
 				self.qteComplete = true
 				print('qte success')
 			end
-			self.onComplete(self.qteSuccess)
 			self.signalEmitted = true
+			self.onComplete(self.qteSuccess)
 		end)
 end;
 
@@ -106,3 +111,5 @@ function TapAnalogLeftQTE:draw()
 		self.progressBar:draw()
 	end
 end;
+
+return TapAnalogLeftQTE
