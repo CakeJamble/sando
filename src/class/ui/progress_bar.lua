@@ -30,6 +30,7 @@ function ProgressBar:init(targetPos, options, isOffensive, color)
 	if not isOffensive then
 		self:reversePosOffsets()
 	end
+	self.mult = options.w / options.max
 end;
 
 --[[	When using buffs/heals we want the
@@ -42,7 +43,6 @@ end;
 
 function ProgressBar:increaseMeter(amount)
 	self.meterOptions.value = math.min(self.max, self.meterOptions.value + amount)
-
 	return self.meterOptions.value
 end;
 

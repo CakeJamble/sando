@@ -28,24 +28,35 @@ function LevelUpManager:distributeExperience(amount)
 		local expToGain = math.min(exp + amount, expReq)
 		local pb = self.levelUpUI[member.entityName].expBar
 		local expResult = pb:increaseMeter(expToGain)
-		local expTween = flux.to(pb.meterOptions, self.duration, {width = expResult})
-			:oncomplete(function() member:gainExp(expResult); end)
+		local expTween = flux.to(pb.meterOptions, self.duration, {width = expResult * pb.mult})
+			:oncomplete(function()
+				member:gainExp(expResult);
+				if pb.meterOptions.value >= pb.max then
+					pb:reset()
+				end
+			end)
 		totalExp = totalExp - expToGain
 
 		local hasLvlUp = false
 
-		--! infinite loop needs to be fixed
-		-- while totalExp > 0 do
-		-- 	hasLvlUp = true
-		-- 	pb:reset()
-		-- 	expToGain = math.min(totalExp, expReq)
-		-- 	expTween = expTween:after(self.duration, {width = pb:increaseMeter(expToGain)})
-		-- 		:oncomplete(function() member:gainExp(expToGain); end)
-		-- end
+		while totalExp > 0 do
+			hasLvlUp = true
+			local expReq = member.experienceRequired
+			pb.max = expReq
+			expToGain = math.min(totalExp, expReq)
+			expTween = expTween:after(self.duration, {width = pb:increaseMeter(expToGain * pb.mult)})
+				:oncomplete(function()
+					member:gainExp(expToGain)
+					if totalExp > 0 then
+						pb:reset()
+					end
+				end)
+			totalExp = totalExp - expToGain
+		end
 
-		-- if hasLvlUp then
-		-- 	Signal.emit('OnLevel', member, previousLevel)
-		-- end
+		if hasLvlUp then
+			Signal.emit('OnLevel', member, previousLevel)
+		end
 	end
 end;
 
@@ -96,7 +107,8 @@ function LevelUpManager:draw()
 		member.expBar:draw()
 		local exp = math.floor(0.5 + member.expBar.meterOptions.width)
 		local pos = member.expBar.pos
-		love.graphics.print(exp, pos.x, pos.y + 25)
+		local expStr = math.floor(0.5 + exp / member.expBar.mult)
+		love.graphics.print(expStr, pos.x, pos.y + 25)
 	end
 
   love.graphics.pop()
