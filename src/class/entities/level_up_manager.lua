@@ -19,7 +19,9 @@ end;
 ---@param amount integer
 function LevelUpManager:distributeExperience(amount)
 	for i,member in ipairs(self.characterTeam.members) do
+		print(member.entityName)
 		local previousLevel = member.level
+		print('previous level', previousLevel)
 		local totalExp = amount
 		local exp = member.experience
 		local expReq = member.experienceRequired
@@ -31,17 +33,17 @@ function LevelUpManager:distributeExperience(amount)
 		totalExp = totalExp - expToGain
 
 		local hasLvlUp = false
-		while totalExp > 0 do
-			hasLvlUp = true
-			pb:reset()
-			expToGain = math.min(totalExp, expReq)
-			expTween = expTween:after(self.duration, {width = pb:increaseMeter(expToGain)})
-				:oncomplete(function() member:gainExp(expToGain); end)
-		end
+		-- while totalExp > 0 do
+		-- 	hasLvlUp = true
+		-- 	pb:reset()
+		-- 	expToGain = math.min(totalExp, expReq)
+		-- 	expTween = expTween:after(self.duration, {width = pb:increaseMeter(expToGain)})
+		-- 		:oncomplete(function() member:gainExp(expToGain); end)
+		-- end
 
-		if hasLvlUp then
-			Signal.emit('OnLevel', member, previousLevel)
-		end
+		-- if hasLvlUp then
+		-- 	Signal.emit('OnLevel', member, previousLevel)
+		-- end
 	end
 end;
 

@@ -3,6 +3,6 @@
 	"itemType": "support",
 	"isSingleTarget": true,
 	"effects": ["negate_damage"],
-	"amount": null,
+	"amount": 0,
 	"duration": 2
 }

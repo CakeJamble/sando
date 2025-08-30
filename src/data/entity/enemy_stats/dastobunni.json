@@ -11,5 +11,5 @@
   "rewardsDistribution": [0.4, 0.2],
   "experienceReward": 10,
   "moneyReward": 8,
-  "skillPool": ["flame"]
+  "skillPool": ["charge", "flame"]
 }

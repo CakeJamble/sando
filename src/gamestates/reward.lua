@@ -29,11 +29,18 @@ function reward:enter(previous, rewards, characterTeam)
     self.expReward = self.sumReward(rewards, 'exp')
     self.moneyReward = self.sumReward(rewards, 'money')
     self.rewards = self:getItemRewards(rewards, characterTeam.rarityMod)
+    print('rewards were created before crashing')
     self.combatState = previous
+    print('combat state saved before crashing')
     self.levelUpManager = LevelUpManager(characterTeam)
+    print('level up manager created before crashing')
     self.levelUpManager:distributeExperience(self.expReward)
+    print('exp was distributed before crashing')
     characterTeam:increaseMoney(self.moneyReward)
+    print('money distributed before crashing')
   end
+
+  print('got this far')
 end;
 
 ---@return { [string]: table }
@@ -98,7 +105,7 @@ function reward:getRewardOptions(rarities, rarityMod)
     local rarity = self:getRarityResult(rarities, rarityMod)
     local itemIndex = love.math.random(1, #self.rewardPools[rewardType][rarity])
     local itemName = table.remove(self.rewardPools[rewardType][rarity], itemIndex)
-    print(rewardType, rarity, itemName)
+    print(rewardType, rarity, itemName, itemIndex)
     local item = loadItem(itemName, rewardType)
     table.insert(options, item)
   end

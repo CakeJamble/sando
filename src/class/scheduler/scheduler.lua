@@ -120,17 +120,17 @@ function Scheduler:winLossConsMet()
   print('checking win loss cons')
   if self.enemyTeam:isWipedOut() then
     print('end combat')
-    self:resetCamera(0.5)
-    Timer.after(1, function()
+    self:resetCamera(0)
+    result = true
+    -- Timer.after(1, function()
 			for _,member in ipairs(self.characterTeam.members) do
 				if member.actionUI then
 					member.actionUI.active = false
 				end
 			end
+			print('switching game states')
 			Gamestate.switch(states['reward'], self.rewards, self.characterTeam)
-			result = true
-    end)
-
+    -- end)
   end
   if self.characterTeam:isWipedOut() then
     print('you lose')
