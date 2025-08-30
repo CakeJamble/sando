@@ -33,6 +33,8 @@ function LevelUpManager:distributeExperience(amount)
 		totalExp = totalExp - expToGain
 
 		local hasLvlUp = false
+
+		--! infinite loop needs to be fixed
 		-- while totalExp > 0 do
 		-- 	hasLvlUp = true
 		-- 	pb:reset()

@@ -29,18 +29,11 @@ function reward:enter(previous, rewards, characterTeam)
     self.expReward = self.sumReward(rewards, 'exp')
     self.moneyReward = self.sumReward(rewards, 'money')
     self.rewards = self:getItemRewards(rewards, characterTeam.rarityMod)
-    print('rewards were created before crashing')
     self.combatState = previous
-    print('combat state saved before crashing')
     self.levelUpManager = LevelUpManager(characterTeam)
-    print('level up manager created before crashing')
     self.levelUpManager:distributeExperience(self.expReward)
-    print('exp was distributed before crashing')
     characterTeam:increaseMoney(self.moneyReward)
-    print('money distributed before crashing')
   end
-
-  print('got this far')
 end;
 
 ---@return { [string]: table }
