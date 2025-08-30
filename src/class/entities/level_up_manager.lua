@@ -14,49 +14,86 @@ function LevelUpManager:init(characterTeam)
   self.windowWidth, self.windowHeight = shove.getViewportDimensions()
   -- self.windowWidth, self.windowHeight = push:toReal(self.windowWidth, self.windowHeight)
   -- self.tx, self.ty = 250, 250
+  self.coroutines = {}
+  self.i = 1
 end;
 
 ---@param amount integer
 function LevelUpManager:distributeExperience(amount)
-	for i,member in ipairs(self.characterTeam.members) do
-		print(member.entityName)
-		local previousLevel = member.level
-		print('previous level', previousLevel)
+	self.coroutines = {}
+	for _,member in ipairs(self.characterTeam.members) do
+		local co = self:createExpCoroutine(member, amount)
+		table.insert(self.coroutines, co)
+	end
+
+	self.i = 1
+	self:resumeCurrent()
+end;
+
+---@param member Character
+---@param amount integer
+function LevelUpManager:createExpCoroutine(member, amount)
+	return coroutine.create(function()
 		local totalExp = amount
-		local exp = member.experience
-		local expReq = member.experienceRequired
-		local expToGain = math.min(exp + amount, expReq)
+		local previousLevel = member.level
 		local pb = self.levelUpUI[member.entityName].expBar
-		local expResult = pb:increaseMeter(expToGain)
-		local expTween = flux.to(pb.meterOptions, self.duration, {width = expResult * pb.mult})
-			:oncomplete(function()
-				member:gainExp(expResult);
-				if pb.meterOptions.value >= pb.max then
-					pb:reset()
-				end
-			end)
-		totalExp = totalExp - expToGain
 
-		local hasLvlUp = false
-
+		-- gain experience
 		while totalExp > 0 do
-			hasLvlUp = true
 			local expReq = member.experienceRequired
-			pb.max = expReq
-			expToGain = math.min(totalExp, expReq)
-			expTween = expTween:after(self.duration, {width = pb:increaseMeter(expToGain * pb.mult)})
+			local expToGain = math.min(totalExp, expReq - member.experienceRequired)
+			totalExp = totalExp - expToGain
+			local expResult = pb:increaseMeter(expToGain)
+			local done = false
+			flux.to(pb.meterOptions, self.duration, {width = expResult * pb.mult})
 				:oncomplete(function()
 					member:gainExp(expToGain)
-					if totalExp > 0 then
-						pb:reset()
-					end
+					done = true
 				end)
-			totalExp = totalExp - expToGain
-		end
 
-		if hasLvlUp then
-			Signal.emit('OnLevel', member, previousLevel)
+			while not done do coroutine.yield() end
+
+			-- trigger level up
+			if member.level > previousLevel then
+				Signal.emit('OnLevel', member, previousLevel)
+				coroutine.yield('levelup')
+				previousLevel = member.level
+
+				-- check for new skills
+				local newSkill = member:checkForNewSkill()
+				if newSkill then
+					Signal.emit("OnLearnSkill", member, newSkill)
+					coroutine.yield('learnskill')
+
+					if member:skillSlotFull() then
+						Signal.emit('OnOverwriteSkill', member, newSkill)
+						coroutine.yield('overwrite')
+					end
+				end
+
+				-- roll stat bonus
+				local statBonus = member:rollStatBonus()
+				Signal.emit('OnStatBonus', member, statBonus)
+				coroutine.yield("statbonus")
+			end
 		end
+	end)
+end;
+
+---@param ... any Additional args as required
+function LevelUpManager:resumeCurrent(...)
+	local co = self.coroutines[self.i]
+	if not co then
+		Signal.emit('OnExpDistributionComplete')
+		return
+	end
+
+	local ok, status = coroutine.resume(co, ...)
+	if not ok then error(status) end
+
+	if coroutine.status(co) == 'dead' then
+		self.i = self.i + 1
+		self:resumeCurrent()
 	end
 end;
 
