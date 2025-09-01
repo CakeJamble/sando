@@ -14,7 +14,7 @@
 	"qteType": "hold_sbp",
 	"qteBonus": "damage",
 	"description": "Heals a target.",
-	"unlockedAtLvl": 1,
+	"unlockedAtLvl": 2,
 	"beginTweenType": "linear",
 	"returnTweenType": "linear",
 	"isDodgeable": false,
