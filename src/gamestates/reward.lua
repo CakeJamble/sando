@@ -139,6 +139,10 @@ function reward:getRewardType()
   return result
 end;
 
+function reward:gamepadpressed(joystick, button)
+  self.levelUpManager:gamepadpressed(joystick, button)
+end;
+
 ---@param dt number
 function reward:update(dt)
   flux.update(dt)

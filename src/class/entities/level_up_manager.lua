@@ -16,6 +16,7 @@ function LevelUpManager:init(characterTeam)
   -- self.tx, self.ty = 250, 250
   self.coroutines = {}
   self.i = 1
+  self.isDisplayingNotification = false
 end;
 
 ---@param amount integer
@@ -54,26 +55,46 @@ function LevelUpManager:createExpCoroutine(member, amount)
 			print('done waiting', member.entityName, member.level, totalExp)
 			-- trigger level up
 			if member.level > previousLevel then
+				pb:reset()
 				print(member.entityName .. ' leveled up')
 				Signal.emit('OnLevel', member, previousLevel)
+				self:displayNotification(member, function()
+					print(member.entityName .. ' went from level '
+						.. previousLevel .. ' to ' .. member.level)
+				end)
 				coroutine.yield('levelup')
 				previousLevel = member.level
 
 				-- check for new skills
-				local newSkill = member:checkForNewSkill()
-				if newSkill then
-					Signal.emit("OnLearnSkill", member, newSkill)
+				local newSkills = member:updateSkills()
+				if newSkills then
+					Signal.emit("OnLearnSkill", member, newSkills)
+					self:displayNotification(member, function()
+						for _,skillName in ipairs(newSkills) do
+							print(member.entityName .. ' learned ' .. skillName)
+						end
+					end)
 					coroutine.yield('learnskill')
 
-					if member:skillSlotFull() then
-						Signal.emit('OnOverwriteSkill', member, newSkill)
-						coroutine.yield('overwrite')
-					end
+					-- -- add back in if needed
+					-- if member:skillSlotFull() then
+					-- 	Signal.emit('OnOverwriteSkill', member, newSkill)
+					-- 	coroutine.yield('overwrite')
+					-- end
 				end
 
 				-- roll stat bonus
-				local statBonus = member:rollStatBonus()
-				Signal.emit('OnStatBonus', member, statBonus)
+				-- local statBonus = member:rollStatBonus()
+				-- Signal.emit('OnStatBonus', member, statBonus)
+				self:displayNotification(member, function()
+					local stats = {'hp', 'fp', 'attack', 'defense', 'speed', 'luck'}
+					local i = love.math.random(1, #stats)
+					local j = love.math.random(1, 4)
+					local stat = stats[i]
+					local prevStat = member.baseStats[stat]
+					member.baseStats[stat] = member.baseStats[stat] + j
+					print(member.entityName .. "'s " .. stat .. ': ' .. prevStat .. ' -> ' .. member.baseStats[stat])
+				end)
 				coroutine.yield("statbonus")
 			end
 		end
@@ -98,6 +119,13 @@ function LevelUpManager:resumeCurrent()
 		self.i = self.i + 1
 		self:resumeCurrent()
 	end
+end;
+
+---@param character Character
+---@param callback fun()
+function LevelUpManager:displayNotification(character, callback)
+	self.isDisplayingNotification = true
+	callback()
 end;
 
 ---@param members Character[]
@@ -127,6 +155,12 @@ end;
 ---@param joystick string
 ---@param button string
 function LevelUpManager:gamepadpressed(joystick, button)
+	if button == 'a' then
+		if self.isDisplayingNotification then
+			self.isDisplayingNotification = false
+			self:resumeCurrent()
+		end
+	end
 end;
 
 ---@param dt number
@@ -149,6 +183,10 @@ function LevelUpManager:draw()
 		local pos = member.expBar.pos
 		local expStr = math.floor(0.5 + exp / member.expBar.mult)
 		love.graphics.print(expStr, pos.x, pos.y + 25)
+	end
+
+	if self.isDisplayingNotification then
+		love.graphics.circle('fill', 100, 100, 25)
 	end
 
   love.graphics.pop()

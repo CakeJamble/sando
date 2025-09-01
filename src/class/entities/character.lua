@@ -256,7 +256,6 @@ function Character:gainExp(amount)
     self.level = self.level + 1
     print(self.entityName .. ' reached level ' .. self.level .. '!')
     self.experienceRequired = self:getRequiredExperience()
-    self:updateSkills()
     -- TODO: need to signal to current gamestate to push new level up reward state
   end
 end;
@@ -276,11 +275,14 @@ function Character:getRequiredExperience() --> int
 end;
 
 function Character:updateSkills()
+  local result = {}
   for _,skill in pairs(self.skillPool) do
     if self.level == skill.unlockedAtLvl then
       table.insert(self.currentSkills, skill)
+      table.insert(result, skill.name)
     end
   end
+  return result
 end;
 
 ---@deprecated
