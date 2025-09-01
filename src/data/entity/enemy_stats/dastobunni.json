@@ -8,7 +8,7 @@
   "defense": 1,
   "speed": 1,
   "luck": 10,
-  "rewardsDistribution": [0.4, 0.2],
+  "rewardsDistribution": [0.4, 0.02],
   "experienceReward": 10,
   "moneyReward": 8,
   "skillPool": ["charge", "flame"]
