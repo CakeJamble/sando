@@ -1,6 +1,8 @@
 local ProgressBar = require('class.ui.progress_bar')
 local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
+local Text = require('libs.sysl-text.slog-text')
+local Frame = require('libs.sysl-text.slog-frame')
 local Class = require('libs.hump.class')
 
 ---@class LevelUpManager
@@ -17,6 +19,14 @@ function LevelUpManager:init(characterTeam)
   self.coroutines = {}
   self.i = 1
   self.isDisplayingNotification = false
+  self.textBox = Text.new("left",
+  {
+	    color = {0.9,0.9,0.9,0.95},
+	    shadow_color = {0.5,0.5,1,0.4},
+	    character_sound = true,
+	    sound_every = 2,
+	    -- sound_number = 1
+    })
 end;
 
 ---@param amount integer
@@ -59,20 +69,22 @@ function LevelUpManager:createExpCoroutine(member, amount)
 				print(member.entityName .. ' leveled up')
 				Signal.emit('OnLevel', member, previousLevel)
 				self:displayNotification(member, function()
-					print(member.entityName .. ' went from level '
-						.. previousLevel .. ' to ' .. member.level)
+					return member.entityName .. ' leveled up! [shake][color=#0000FF](' .. previousLevel
+						.. ' -> ' .. member.level .. ')[/color][/shake]'
 				end)
 				coroutine.yield('levelup')
 				previousLevel = member.level
 
 				-- check for new skills
 				local newSkills = member:updateSkills()
-				if newSkills then
+				if #newSkills > 0 then
 					Signal.emit("OnLearnSkill", member, newSkills)
 					self:displayNotification(member, function()
+						local result = ''
 						for _,skillName in ipairs(newSkills) do
-							print(member.entityName .. ' learned ' .. skillName)
+							result = result .. member.entityName .. ' learned [color=#90EE90]' .. skillName .."[/color]\n"
 						end
+						return result
 					end)
 					coroutine.yield('learnskill')
 
@@ -93,7 +105,8 @@ function LevelUpManager:createExpCoroutine(member, amount)
 					local stat = stats[i]
 					local prevStat = member.baseStats[stat]
 					member.baseStats[stat] = member.baseStats[stat] + j
-					print(member.entityName .. "'s " .. stat .. ': ' .. prevStat .. ' -> ' .. member.baseStats[stat])
+					return member.entityName .. "'s " .. stat .. ': [bounce][color=#0000FF]' .. prevStat
+						.. ' -> ' .. member.baseStats[stat] .. '[/color][/bounce]'
 				end)
 				coroutine.yield("statbonus")
 			end
@@ -122,10 +135,12 @@ function LevelUpManager:resumeCurrent()
 end;
 
 ---@param character Character
----@param callback fun()
+---@param callback fun(): string
 function LevelUpManager:displayNotification(character, callback)
 	self.isDisplayingNotification = true
-	callback()
+	-- self.notification = callback()
+	local text = callback()
+	self.textBox:send(text, 255)
 end;
 
 ---@param members Character[]
@@ -166,6 +181,9 @@ end;
 ---@param dt number
 function LevelUpManager:update(dt)
 	self.characterTeam:update(dt)
+	if self.isDisplayingNotification then
+		self.textBox:update(dt)
+	end
 end;
 
 function LevelUpManager:draw()
@@ -186,7 +204,9 @@ function LevelUpManager:draw()
 	end
 
 	if self.isDisplayingNotification then
-		love.graphics.circle('fill', 100, 100, 25)
+		-- love.graphics.print(self.notification, 100, 100)
+		Frame.draw("eb", 100, 102, 275, 58)
+		self.textBox:draw(105, 105)
 	end
 
   love.graphics.pop()

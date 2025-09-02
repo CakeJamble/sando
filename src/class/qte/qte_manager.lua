@@ -173,7 +173,6 @@ function QTEManager.getInstructions(qteType, actionButton)
 		result = 'Press ' .. string.upper(actionButton) .. ' just before hitting the enemy!'
 	elseif qteType == 'stick_move' then
 	    --do
-	    print('hello')
 	elseif qteType == 'mbp' then
 		result = 'Press the buttons in order!'
 	elseif qteType == 'hold_sbp' then

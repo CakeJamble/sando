@@ -1,1 +1,1 @@
-globals = { "love", "Gamestate", "states", "font", "push", "input", "Camera", "camera", "shove" }
+globals = { "love", "Gamestate", "states", "font", "push", "input", "Camera", "camera", "shove", "Text", "Frame", "images", "Audio" }

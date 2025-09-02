@@ -29,6 +29,7 @@
 						"input",
 						"font",
 						"camera",
+						"images",
 					],
 				},
 			},
