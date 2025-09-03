@@ -1,7 +1,9 @@
 local LevelUpManager = require('class.entities.level_up_manager')
+local LootManager = require('class.entities.loot_manager')
 local loadItem = require('util.item_loader')
 local json = require('libs.json')
 local flux = require('libs.flux')
+local Signal = require('libs.hump.signal')
 
 local reward = {}
 
@@ -16,6 +18,12 @@ function reward:init()
   self.numFloorsWithoutUncommon = 0
   self.numFloorsWithoutRare = 0
   self.numRewardOptions = 3
+
+  -- temp
+  Signal.register('OnLootDistributionComplete',
+    function(selectedReward)
+      print(selectedReward.name)
+    end)
 end;
 
 --- Each time the Reward state is entered, given that we are not coming from a combat state,
@@ -28,11 +36,13 @@ function reward:enter(previous, rewards, characterTeam)
   if previous == states['combat'] then
     self.expReward = self.sumReward(rewards, 'exp')
     self.moneyReward = self.sumReward(rewards, 'money')
-    self.rewards = self:getItemRewards(rewards, characterTeam.rarityMod)
+    local lootOptions = self:getItemRewards(rewards, characterTeam.rarityMod)
+    self.lootManager = LootManager(lootOptions)
     self.combatState = previous
     self.levelUpManager = LevelUpManager(characterTeam)
     self.levelUpManager:distributeExperience(self.expReward)
     characterTeam:increaseMoney(self.moneyReward)
+    print('increased money')
   end
 end;
 
