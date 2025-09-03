@@ -1,8 +1,6 @@
 local ProgressBar = require('class.ui.progress_bar')
 local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
-local Text = require('libs.sysl-text.slog-text')
-local Frame = require('libs.sysl-text.slog-frame')
 local Class = require('libs.hump.class')
 
 ---@class LevelUpManager
@@ -119,7 +117,6 @@ function LevelUpManager:resumeCurrent()
 	local co = self.coroutines[self.i]
 	if not co then
 		Signal.emit('OnExpDistributionComplete')
-		print('finished! Returning control back to the reward state')
 		return
 	end
 
