@@ -31,6 +31,8 @@ local Class = require "libs.hump.class"
 ---@field landingLag number
 ---@field inventory Inventory
 ---@field canBeDebuffed boolean
+---@field numEquipSlots integer
+---@field numAccessorySlots integer
 local Character = Class{__includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
@@ -45,7 +47,9 @@ local Character = Class{__includes = Entity,
   jumpDur = 0.5,
   landingLag = 0.25,
   inventory = nil,
-  canBeDebuffed = true
+  canBeDebuffed = true,
+  numEquipSlots = 2,
+  numAccessorySlots = 2
 }
 
 ---@param data table
@@ -73,7 +77,12 @@ function Character:init(data, actionButton)
   -- self.currentDP = stats.dp
   self.fpCostMod = 0
   self.cannotLose = false
-  self.equips = {}
+  self.equips = {
+    equip = {},
+    accessory = {}
+  }
+  self.numEquipSlots = Character.numEquipSlots
+  self.numAccessorySlots = Character.numAccessorySlots
 
   self.combatStartEnterDuration = Character.combatStartEnterDuration
   Character.combatStartEnterDuration = Character.combatStartEnterDuration + 0.1
@@ -99,6 +108,10 @@ function Character:init(data, actionButton)
   )
 end;
 
+--[[----------------------------------------------------------------------------------------------------
+        Turn Scheduling Logic
+----------------------------------------------------------------------------------------------------]]
+
 function Character:startTurn()
   Entity.startTurn(self)
   self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
@@ -114,12 +127,6 @@ end
 ---@param targets { [string]: Entity[]}
 ---@param targetType string
 function Character:setTargets(targets, targetType)
-  -- Entity.setTargets(self, targets[targetType])
-  -- self.actionUI.targets = {
-  --   ['characters'] = targets.characters,
-  --   ['enemies'] = targets.enemies
-  -- }
-
   if targetType == 'any' then
     Entity.setTargets(self, targets)
     self.actionUI.targetableEntities = {
@@ -131,7 +138,6 @@ function Character:setTargets(targets, targetType)
     self.actionUI.targets = targets[targetType]
     self.actionUI.targetType = targetType
   end
-
 end;
 
 ---@param duration integer
@@ -146,6 +152,10 @@ function Character:endTurn(duration, stagingPos, tweenType)
   self.canGuard = false
   Character.canBeDebuffed = true
 end;
+
+--[[----------------------------------------------------------------------------------------------------
+        Stats & Statuses
+----------------------------------------------------------------------------------------------------]]
 
 ---@param cost integer
 function Character:validateSkillCost(cost)
@@ -185,24 +195,6 @@ function Character:raiseMaxHP(pct)
   self.battleStats.hp = newCurrHP
 end;
 
-function Character:setAnimations()
-  local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'
-  Entity.setAnimations(self, path)
-
-  local basicSprite = love.graphics.newImage(path .. 'basic.png')
-  self.animations['basic'] = self:populateFrames(basicSprite)
-
-  self:setDefenseAnimations(path)
-end;
-
----@param path string
-function Character:setDefenseAnimations(path)
-  local block = love.graphics.newImage(path .. 'block.png')
-  local jump = love.graphics.newImage(path .. 'jump.png')
-  self.animations['block'] = self:populateFrames(block)
-  self.animations['jump'] = self:populateFrames(jump)
-end;
-
 ---@param amount integer
 ---@param attackerLuck integer
 function Character:takeDamage(amount, attackerLuck)
@@ -224,7 +216,6 @@ function Character:takeDamage(amount, attackerLuck)
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
   Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
-  self:recoil()
 end;
 
 ---@param amount integer
@@ -241,6 +232,40 @@ end;
 function Character:refresh(amount)
   self.battleStats.fp = math.min(self.baseStats.fp, self.battleStats.fp + amount)
 end;
+
+---@param additionalPenalty? integer
+function Character:recoil(additionalPenalty)
+  if not additionalPenalty then additionalPenalty = 0 end
+  self.currentAnimTag = 'flinch'
+  self.canJump = false
+  local recoilTime = 0.5 + additionalPenalty
+  Timer.after(recoilTime,
+    function()
+      self.canJump = true
+      self.currentAnimTag = 'idle'
+    end)
+end;
+
+
+--[[----------------------------------------------------------------------------------------------------
+        Equipped Items (Equips & Accessories)
+----------------------------------------------------------------------------------------------------]]
+
+function Character:equip(item, itemType)
+  table.insert(self.equips[itemType], item)
+end;
+
+---@deprecated
+function Character:applyGear()
+  for _, equip in pairs(self.gear:getEquips()) do
+    local statMod = equip:getStatModifiers()
+    Entity:modifyBattleStat(statMod['stat'], statMod['amount'])
+  end
+end;
+
+--[[----------------------------------------------------------------------------------------------------
+        Leveling & Move Pool
+----------------------------------------------------------------------------------------------------]]
 
 --[[ Gains exp, leveling up when applicable
       - preconditions: an amount of exp to gain
@@ -285,13 +310,31 @@ function Character:updateSkills()
   return result
 end;
 
----@deprecated
-function Character:applyGear()
-  for _, equip in pairs(self.gear:getEquips()) do
-    local statMod = equip:getStatModifiers()
-    Entity:modifyBattleStat(statMod['stat'], statMod['amount'])
-  end
+--[[----------------------------------------------------------------------------------------------------
+        Animation
+----------------------------------------------------------------------------------------------------]]
+
+function Character:setAnimations()
+  local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'
+  Entity.setAnimations(self, path)
+
+  local basicSprite = love.graphics.newImage(path .. 'basic.png')
+  self.animations['basic'] = self:populateFrames(basicSprite)
+
+  self:setDefenseAnimations(path)
 end;
+
+---@param path string
+function Character:setDefenseAnimations(path)
+  local block = love.graphics.newImage(path .. 'block.png')
+  local jump = love.graphics.newImage(path .. 'jump.png')
+  self.animations['block'] = self:populateFrames(block)
+  self.animations['jump'] = self:populateFrames(jump)
+end;
+
+--[[----------------------------------------------------------------------------------------------------
+        Input
+----------------------------------------------------------------------------------------------------]]
 
 ---@deprecated
 function Character:keypressed(key)
@@ -404,19 +447,6 @@ function Character:beginJump()
   self.sfx.jump:play()
 end;
 
----@param additionalPenalty integer
-function Character:recoil(additionalPenalty)
-  if not additionalPenalty then additionalPenalty = 0 end
-  self.currentAnimTag = 'flinch'
-  self.canJump = false
-  local recoilTime = 0.5 + additionalPenalty
-  Timer.after(recoilTime,
-    function()
-      self.canJump = true
-      self.currentAnimTag = 'idle'
-    end)
-end;
-
 function Character:interruptJump()
   local tumbleDuration = (Character.jumpDur/2)
   self:recoil(tumbleDuration)
@@ -425,6 +455,10 @@ function Character:interruptJump()
   local tumble = flux.to(self.pos, Character.jumpDur/2, {y=landY}):ease('bouncein')
   self.tweens['tumble'] = tumble
 end;
+
+--[[----------------------------------------------------------------------------------------------------
+        Update & Draw
+----------------------------------------------------------------------------------------------------]]
 
 ---@param dt number
 function Character:update(dt)
