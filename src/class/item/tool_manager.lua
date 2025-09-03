@@ -14,7 +14,7 @@ function ToolManager:init(characterTeam)
 end;
 
 ---@param tool table
-function ToolManager:addTool(tool)
+function ToolManager:addItem(tool)
 	local signal = tool.signal
 	tool.index = self.indices[signal]
 	self.indices[signal] = self.indices[signal] + 1
@@ -27,7 +27,7 @@ end;
 
 ---@param tool table
 ---@return table
-function ToolManager:popTool(tool)
+function ToolManager:popItem(tool)
 	if tool.index == 0 then
 		error(tool.name .. "'s index was never overwritten when added to the inventory")
 	elseif #self.tools[tool.signal] == 0 then

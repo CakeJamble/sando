@@ -18,12 +18,6 @@ function reward:init()
   self.numFloorsWithoutUncommon = 0
   self.numFloorsWithoutRare = 0
   self.numRewardOptions = 3
-
-  -- temp
-  Signal.register('OnLootDistributionComplete',
-    function(selectedReward)
-      print(selectedReward.name)
-    end)
 end;
 
 --- Each time the Reward state is entered, given that we are not coming from a combat state,
@@ -41,9 +35,29 @@ function reward:enter(previous, rewards, characterTeam)
     self.combatState = previous
     self.levelUpManager = LevelUpManager(characterTeam)
     self.levelUpManager:distributeExperience(self.expReward)
-    characterTeam:increaseMoney(self.moneyReward)
-    print('increased money')
+    self.moneyValues = {
+      rewardVal = self.moneyReward,
+      totalVal = characterTeam.inventory.money
+    }
+    self:increaseMoney(characterTeam)
   end
+
+  -- temp
+  Signal.register('OnExpDistributionComplete',
+    function()
+      print('finished distributing exp! Returning control back to the reward state')
+      self.lootManager:distributeLoot()
+    end)
+
+  Signal.register('OnLootChosen',
+    function(loot)
+      self:addToInventory(characterTeam, loot)
+    end)
+  Signal.register('OnLootDistributionComplete',
+    function(selectedReward)
+      print(selectedReward.name)
+      self:increaseMoney(characterTeam)
+  end)
 end;
 
 ---@return { [string]: table }
@@ -86,6 +100,7 @@ function reward.sumReward(rewards, rewardType)
   return result
 end;
 
+-- gets a set of reward options for every enemy in combat
 ---@param rewards table[]
 ---@param rarityMod number
 function reward:getItemRewards(rewards, rarityMod)
@@ -98,6 +113,7 @@ function reward:getItemRewards(rewards, rarityMod)
   return result
 end;
 
+-- gets n random items of any type (consumable, equip, accessory, tool) and returns that table
 ---@param rarities { [string]: number}
 ---@param rarityMod number
 ---@return table
@@ -108,7 +124,7 @@ function reward:getRewardOptions(rarities, rarityMod)
     local rarity = self:getRarityResult(rarities, rarityMod)
     local itemIndex = love.math.random(1, #self.rewardPools[rewardType][rarity])
     local itemName = table.remove(self.rewardPools[rewardType][rarity], itemIndex)
-    -- print(rewardType, rarity, itemName, itemIndex)
+    print(rewardType, rarity, itemName, itemIndex)
     local item = loadItem(itemName, rewardType)
     table.insert(options, item)
   end
@@ -149,6 +165,39 @@ function reward:getRewardType()
   return result
 end;
 
+-- adds item to inventory. Does not force it to be equipped at this time
+---@param characterTeam CharacterTeam
+---@param item table
+function reward:addToInventory(characterTeam, item)
+  local itemType = item.itemType
+  local itemManager
+
+  if itemType == 'accessory' then
+    itemManager = characterTeam.inventory.accessoryManager
+  elseif itemType == 'equip' then
+    itemManager = characterTeam.inventory.equipManager
+  elseif itemType == 'tool' then
+    itemManager = characterTeam.inventory.toolManager
+  else
+    characterTeam.inventory:addConsumable(item)
+  end
+
+  if itemManager then
+    itemManager:addItem(item)
+  end
+end;
+
+---@param characterTeam CharacterTeam
+function reward:increaseMoney(characterTeam)
+  local amount = self.moneyReward + characterTeam.inventory.money
+  flux.to(self.moneyValues, 1.5, {rewardVal = 0, totalVal = amount})
+    :oncomplete(function()
+      characterTeam:increaseMoney(self.moneyReward)
+    end)
+end;
+
+---@param joystick string
+---@param button string
 function reward:gamepadpressed(joystick, button)
   self.levelUpManager:gamepadpressed(joystick, button)
 end;
@@ -165,6 +214,15 @@ function reward:draw()
   camera:attach()
   shove.beginLayer('ui')
   self.levelUpManager:draw()
+  self.lootManager:draw()
+
+  love.graphics.push()
+  local rewardVal = math.floor(self.moneyValues.rewardVal)
+  local currVal = math.floor(0.5 + self.moneyValues.totalVal)
+  love.graphics.translate(250, 0)
+  love.graphics.print(rewardVal .. ' -> ' .. currVal, 0, 0)
+  love.graphics.pop()
+
   shove.endLayer()
   camera:detach()
   shove.endDraw()
