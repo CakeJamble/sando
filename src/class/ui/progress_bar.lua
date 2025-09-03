@@ -1,7 +1,12 @@
 local Class = require 'libs.hump.class'
 
+---@class ProgressBar
 local ProgressBar = Class{}
 
+---@param targetPos { [string]: integer }
+---@param options {[string]: any }
+---@param isOffensive boolean
+---@param color integer[]
 function ProgressBar:init(targetPos, options, isOffensive, color)
 	self.active = true
 	self.pos = {
@@ -41,15 +46,19 @@ function ProgressBar:reversePosOffsets()
 	self.pos.y = self.pos.y - self.offsets.y
 end;
 
+---@param amount integer
+---@return integer
 function ProgressBar:increaseMeter(amount)
 	self.meterOptions.value = math.min(self.max, self.meterOptions.value + amount)
 	return self.meterOptions.value
 end;
 
+---@param amount integer
 function ProgressBar:decreaseMeter(amount)
 	self.meterOptions.value = math.max(self.min, self.meterOptions.value - amount)
 end;
 
+---@param pos { [string]: integer }
 function ProgressBar:setPos(pos)
 	self.pos.x = pos.x + self.offsets.x
 	self.pos.y = pos.y + self.offsets.y

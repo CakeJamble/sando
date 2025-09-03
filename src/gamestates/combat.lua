@@ -71,7 +71,6 @@ function combat:init()
   )
   Signal.register('OnHPChanged',
     function(amount, isDamage, hpIsTweened)
-      print(self.targetedCharacterIndex)
       local character = self.characterTeamHP[self.targetedCharacterIndex]
       local healthDropDuration = 0.5
       if hpIsTweened then

@@ -37,7 +37,6 @@ end;
 ---@param actionButton string
 ---@param buttonUI table
 function HoldSBP:setActionButton(actionButton, buttonUI)
-	print(actionButton)
 	self.actionButton = actionButton
 	self.buttonUI = buttonUI
 	self.instructions = "Hold " .. string.upper(actionButton) .. " until the meter is filled!"
@@ -85,7 +84,6 @@ function HoldSBP:beginQTE(callback)
 	-- print('setup complete was reset')
 	flux.to(self.entity.pos, 0.5, {x = 100, y = 170})
 	:oncomplete(function()
-		print('ready')
 		self.setupComplete = true
 		self.signalEmitted = false
 		self.isActionButtonPressed = false
@@ -144,15 +142,12 @@ function HoldSBP:handleQTE()
 						end
 					end)
 			end)
-	else
-		print('uh oh')
 	end
 end;
 
 ---@param joystick string
 ---@param button string
 function HoldSBP:gamepadpressed(joystick, button)
-	print(self.actionButton, button)
 	if button == self.actionButton and self.setupComplete and not self.signalEmitted and not self.isActionButtonPressed then
 		self.isActionButtonPressed = true
 		self.buttonUIIndex = 'pressed'

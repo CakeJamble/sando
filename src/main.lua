@@ -3,6 +3,9 @@ Gamestate = require "libs.hump.gamestate"
 Camera = require('libs.hump.camera')
 shove = require('libs.shove')
 
+Text = require('libs.sysl-text.slog-text')
+Frame = require('libs.sysl-text.slog-frame')
+
 states = {
   main_menu         = require 'gamestates.main_menu',
   character_select  = require 'gamestates.character_select',
@@ -12,6 +15,35 @@ states = {
   combat            = require 'gamestates.combat',
   pause             = require 'gamestates.pause'
 }
+
+local framePath = 'asset/sprites/frame/'
+images = {}
+
+-- Text box frames
+images.frame = {}
+images.frame = {}
+images.frame.default_8 = love.graphics.newImage(framePath .. "default_8.png")
+images.frame.eb_8 = love.graphics.newImage(framePath .. "eb_8.png")
+images.frame.m3_8 = love.graphics.newImage(framePath .. "m3_8.png")
+images.frame.cart_8 = love.graphics.newImage(framePath .. "cart_8.png")
+images.frame.bubble_8 = love.graphics.newImage(framePath .. "bubble_8.png")
+images.frame.ff_8 = love.graphics.newImage(framePath .. "ff_8.png")
+images.frame.blk_8 = love.graphics.newImage(framePath .. "blk_8.png")
+images.frame.bk_32 = love.graphics.newImage(framePath .. "bk_24.png")
+images.frame.utp_8 = love.graphics.newImage(framePath .. "utp_8.png")
+Text.configure.image_table("images")
+Frame.load()
+
+-- Text box audio
+local audioPath = 'asset/audio/'
+Audio = {}
+Audio.text = {}
+Audio.text.default = love.audio.newSource(audioPath .. "text/default.ogg", "static")
+Audio.sfx = {}
+Audio.sfx.ui = love.audio.newSource(audioPath .. "sfx/Selection_Ukelele chord 04_mod.ogg", "static")
+Audio.sfx.ui:setVolume(0.3)
+Text.configure.audio_table("Audio")
+Text.configure.add_text_sound(Audio.text.default, 0.5)
 
 local JoystickUtils = require 'util.joystick_utils'
 
