@@ -17,6 +17,11 @@ local function loadItem(itemName, itemType)
 		error('Failed to find implementation for item named \'' .. itemName .. '\': ' .. tostring(proc))
 	end
 
+	data.itemType = itemType
+
+	-- local image = love.graphics.newImage('asset/item/' .. itemType .. '/' .. itemName .. '.png')
+	-- data.image = image
+
 	return data
 end
 
