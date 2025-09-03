@@ -43,6 +43,7 @@ end;
 
 ---@param member Character
 ---@param amount integer
+---@return thread
 function LevelUpManager:createExpCoroutine(member, amount)
 	return coroutine.create(function()
 		local totalExp = amount
@@ -118,6 +119,7 @@ function LevelUpManager:resumeCurrent()
 	local co = self.coroutines[self.i]
 	if not co then
 		Signal.emit('OnExpDistributionComplete')
+		print('finished! Returning control back to the reward state')
 		return
 	end
 
