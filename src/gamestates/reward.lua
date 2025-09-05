@@ -200,6 +200,7 @@ end;
 ---@param button string
 function reward:gamepadpressed(joystick, button)
   self.levelUpManager:gamepadpressed(joystick, button)
+  self.lootManager:gamepadpressed(joystick, button)
 end;
 
 ---@param dt number

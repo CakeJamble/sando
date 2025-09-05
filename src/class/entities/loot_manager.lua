@@ -74,6 +74,7 @@ function LootManager:createLootSelectCoroutine(loot)
 		end
 		self.highlightSelected = true
 		self.lootIndex = 1
+		self:raiseItemTween()
 
 		coroutine.yield('await loot select')
 		local selectedReward
@@ -111,42 +112,45 @@ function LootManager:raiseItemTween()
 	end
 
 	if self.lootIndex < 4 then
-		flux.to(self.pick3UI.images[self.lootIndex], 0.25, {scale = 1.5})
+		flux.to(self.pick3UI.images[self.lootIndex], 0.25, {scale = 2})
 	end
 end;
 
 ---@param joystick string
 ---@param button string
 function LootManager:gamepadpressed(joystick, button)
-	if button == 'dpleft' and self.lootIndex > 1 then
-		self.lootIndex = self.lootIndex - 1
-		self:raiseItemTween()
-	elseif button == 'dpright' and self.lootIndex < 4 then
-		self.lootIndex = self.lootIndex + 1
-		self:raiseItemTween()
-	elseif button == 'dpup' or 'b' then
-		if self.isRewardSelected then
-			self.isRewardSelected = false
-		else
-			self.lootIndex = 4
+	if self.isActive then
+		if button == 'dpleft' and self.lootIndex > 1 then
+			self.lootIndex = self.lootIndex - 1
 			self:raiseItemTween()
+		elseif button == 'dpright' and self.lootIndex < 4 then
+			self.lootIndex = self.lootIndex + 1
+			self:raiseItemTween()
+		elseif button == 'dpup' or 'b' then
+			if self.isRewardSelected then
+				self.isRewardSelected = false
+			else
+				self.lootIndex = 4
+				self:raiseItemTween()
+			end
+		elseif button == 'a' and not self.isRewardSelected then
+			self.isRewardSelected = true
+			self:resumeCurrent()
 		end
-	elseif button == 'a' and not self.isRewardSelected then
-		self.isRewardSelected = true
-		self:resumeCurrent()
 	end
-
 end;
 
 function LootManager:draw()
-	love.graphics.print('hi', 10, 10)
 	if self.isActive and self.pick3UI then
 		love.graphics.rectangle(self.pick3UI.mode, self.pick3UI.x, self.pick3UI.y,
 			self.pick3UI.w, self.pick3UI.h)
-		for i,image in ipairs(self.pick3UI) do
-			love.graphics.draw(image, image.x + (i-1) * self.pick3UI.offset, image.y, 0,
-				self.pick3UI.lootScale[i], self.pick3UI.lootScale[i])
+
+		for i,img in ipairs(self.pick3UI.images) do
+			love.graphics.draw(img.image, self.pick3UI.x + i * self.pick3UI.offset, self.pick3UI.y, 0,
+				img.scale, img.scale)
 		end
+
+		love.graphics.print(self.lootIndex, 10, 10)
 	end
 end;
 

@@ -19,8 +19,8 @@ local function loadItem(itemName, itemType)
 
 	data.itemType = itemType
 
-	-- local image = love.graphics.newImage('asset/item/' .. itemType .. '/' .. itemName .. '.png')
-	-- data.image = image
+	local image = love.graphics.newImage('asset/sprites/item/' .. itemType .. '/' .. itemName .. '.png')
+	data.image = image
 
 	return data
 end
