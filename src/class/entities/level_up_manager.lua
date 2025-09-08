@@ -25,10 +25,12 @@ function LevelUpManager:init(characterTeam)
 	    sound_every = 2,
 	    -- sound_number = 1
     })
+  self.isActive = false
 end;
 
 ---@param amount integer
 function LevelUpManager:distributeExperience(amount)
+	self.isActive = true
 	self.coroutines = {}
 	for _,member in ipairs(self.characterTeam.members) do
 		local co = self:createExpCoroutine(member, amount)
@@ -110,13 +112,14 @@ function LevelUpManager:createExpCoroutine(member, amount)
 				coroutine.yield("statbonus")
 			end
 		end
+			return 'finished'
 	end)
 end;
 
 function LevelUpManager:resumeCurrent()
 	local co = self.coroutines[self.i]
 	if not co then
-		Signal.emit('OnExpDistributionComplete')
+		self.isActive = false
 		return
 	end
 
@@ -124,12 +127,19 @@ function LevelUpManager:resumeCurrent()
 	if not code then
 		error(res)
 	else
-		print('starting coroutine ' .. self.i)
+		print('starting coroutine ' .. self.i, res)
 	end
 
 	if coroutine.status(co) == 'dead' then
 		self.i = self.i + 1
-		self:resumeCurrent()
+
+		if self.coroutines[self.i] then
+			self:resumeCurrent()
+		else
+			self.isActive = false
+			print('returning control to reward state')
+			Signal.emit('OnExpDistributionComplete')
+		end
 	end
 end;
 
@@ -169,7 +179,7 @@ end;
 ---@param joystick string
 ---@param button string
 function LevelUpManager:gamepadpressed(joystick, button)
-	if button == 'a' then
+	if button == 'a' and self.isActive then
 		if self.isDisplayingNotification then
 			self.isDisplayingNotification = false
 			self:resumeCurrent()

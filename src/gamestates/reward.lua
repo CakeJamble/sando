@@ -18,6 +18,22 @@ function reward:init()
   self.numFloorsWithoutUncommon = 0
   self.numFloorsWithoutRare = 0
   self.numRewardOptions = 3
+
+    -- temp
+  Signal.register('OnExpDistributionComplete',
+    function()
+      print('commencing loot distribution')
+      self.lootManager:distributeLoot()
+    end)
+  Signal.register('OnLootChosen',
+    function(loot)
+      print('On Loot Chosen signal emitted')
+      self:addToInventory(self.characterTeam, loot)
+    end)
+  Signal.register('OnLootDistributionComplete',
+    function()
+      self:increaseMoney(self.characterTeam)
+    end)
 end;
 
 --- Each time the Reward state is entered, given that we are not coming from a combat state,
@@ -28,6 +44,7 @@ end;
 ---@param characterTeam CharacterTeam
 function reward:enter(previous, rewards, characterTeam)
   if previous == states['combat'] then
+    self.characterTeam = characterTeam
     self.expReward = self.sumReward(rewards, 'exp')
     self.moneyReward = self.sumReward(rewards, 'money')
     local lootOptions = self:getItemRewards(rewards, characterTeam.rarityMod)
@@ -39,25 +56,7 @@ function reward:enter(previous, rewards, characterTeam)
       rewardVal = self.moneyReward,
       totalVal = characterTeam.inventory.money
     }
-    self:increaseMoney(characterTeam)
   end
-
-  -- temp
-  Signal.register('OnExpDistributionComplete',
-    function()
-      print('finished distributing exp! Returning control back to the reward state')
-      self.lootManager:distributeLoot()
-    end)
-
-  Signal.register('OnLootChosen',
-    function(loot)
-      self:addToInventory(characterTeam, loot)
-    end)
-  Signal.register('OnLootDistributionComplete',
-    function(selectedReward)
-      print(selectedReward.name)
-      self:increaseMoney(characterTeam)
-  end)
 end;
 
 ---@return { [string]: table }
@@ -184,6 +183,7 @@ function reward:addToInventory(characterTeam, item)
 
   if itemManager then
     itemManager:addItem(item)
+    print(item.name .. ' was added to the inventory')
   end
 end;
 

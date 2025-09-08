@@ -64,6 +64,9 @@ end;
 ---@return thread
 function LootManager:createLootSelectCoroutine(loot)
 	return coroutine.create(function()
+		for _,item in ipairs(loot) do
+			print(item.name)
+		end
 		self.pick3UI = self.initUI(loot)
 		self.isActive = true
 		-- Oven opens
@@ -80,8 +83,9 @@ function LootManager:createLootSelectCoroutine(loot)
 		local selectedReward
 		if self.lootIndex < 4 then
 			selectedReward = loot[self.lootIndex]
+			print(selectedReward.name)
 		end
-		Signal.emit('OnLootChosen', selectedReward)
+		return selectedReward
 	end)
 end;
 
@@ -89,7 +93,6 @@ function LootManager:resumeCurrent()
 	local co = self.coroutines[self.i]
 	if not co then
 		Signal.emit('OnLootDistributionComplete')
-		print('finished! returning control back to the reward state')
 		return
 	end
 
@@ -97,7 +100,11 @@ function LootManager:resumeCurrent()
 	if not code then
 		error(res)
 	else
-		print('starting loot manager coroutine ' .. self.i)
+		if type(res) ~= "string" then
+			Signal.emit('OnLootChosen', res)
+		else
+			print('Yielded thread ' .. self.i .. ', reason: ' .. res)
+		end
 	end
 
 	if coroutine.status(co) == 'dead' then
@@ -120,7 +127,10 @@ end;
 ---@param button string
 function LootManager:gamepadpressed(joystick, button)
 	if self.isActive then
-		if button == 'dpleft' and self.lootIndex > 1 then
+		print(button)
+		if button == 'a' then
+			self:resumeCurrent()
+		elseif button == 'dpleft' and self.lootIndex > 1 then
 			self.lootIndex = self.lootIndex - 1
 			self:raiseItemTween()
 		elseif button == 'dpright' and self.lootIndex < 4 then
@@ -133,9 +143,6 @@ function LootManager:gamepadpressed(joystick, button)
 				self.lootIndex = 4
 				self:raiseItemTween()
 			end
-		elseif button == 'a' and not self.isRewardSelected then
-			self.isRewardSelected = true
-			self:resumeCurrent()
 		end
 	end
 end;
@@ -149,8 +156,6 @@ function LootManager:draw()
 			love.graphics.draw(img.image, self.pick3UI.x + i * self.pick3UI.offset, self.pick3UI.y, 0,
 				img.scale, img.scale)
 		end
-
-		love.graphics.print(self.lootIndex, 10, 10)
 	end
 end;
 
