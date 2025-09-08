@@ -8,7 +8,7 @@ local AccessoryManager = Class{}
 function AccessoryManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.list = self.initItemLists()
-	self.indices = self.initIndices()
+	self.indices = self.initIndices(self.list)
 	self.signalHandlers = {}
 	self:registerSignals()
 	self.showSwapInterface = false
@@ -87,22 +87,19 @@ function AccessoryManager.initItemLists()
 		OnEnemyAttack = {},
 		OnLevelUp = {},
 		OnKO = {},
+		OnTargetConfirm = {}
 	}
 
 	return result
 end;
 
+---@param list { [string]: table }
 ---@return { [string]: integer }
-function AccessoryManager.initIndices()
-	local result = {
-		OnStartTurn = 1,
-		OnStartCombat = 1,
-		OnAttack = 1,
-		OnGuard = 1,
-		OnEnemyAttack = 1,
-		OnLevelUp = 1,
-		OnKO = 1,
-	}
+function AccessoryManager.initIndices(list)
+	local result = {}
+	for signal,_ in pairs(list) do
+		result[signal] = 1
+	end
 	return result
 end;
 

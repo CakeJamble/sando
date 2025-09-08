@@ -1,6 +1,6 @@
 {
 	"name": "Face Roller",
-	"signal": "OnBlock",
+	"signal": "OnGuard",
 	"description": "Blocking physical attacks nullifies status effects",
 	"flavorText": "Keeping up the streak.",
 	"rarity": "uncommon"

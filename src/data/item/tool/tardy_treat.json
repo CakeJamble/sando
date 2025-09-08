@@ -1,6 +1,6 @@
 {
 	"name": "Tardy Treat",
-	"signal": "OnStartBattle",
+	"signal": "OnStartCombat",
 	"description": "Start battles slowed, but boost all stats.",
 	"flavorText": "You were late, but you did the right thing.",
 	"rarity": "rare"

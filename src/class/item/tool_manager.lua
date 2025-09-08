@@ -8,7 +8,7 @@ local ToolManager = Class{}
 function ToolManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.tools = self.initToolLists()
-	self.indices = self.initIndices()
+	self.indices = self.initIndices(self.tools)
 	self.signalHandlers = {}
 	self:registerSignals()
 end;
@@ -41,42 +41,51 @@ function ToolManager:popItem(tool)
 	end
 end;
 
+
 ---@return { [string]: table}
 function ToolManager.initToolLists()
 	local result = {
 		OnStartTurn = {},
 		OnStartCombat = {},
-		OnEndCombat = {},
 		OnAttack = {},
 		OnGuard = {},
 		OnEnemyAttack = {},
 		OnLevelUp = {},
 		OnKO = {},
+		OnTargetConfirm = {},
+		OnEndTurn = {},
+		OnEndCombat = {},
 		OnPickup = {},
+		OnAttacked = {},
 		OnPurchase = {},
-		OnEquipSell = {},
-		OnAccSell = {},
+		OnSpeedRaise = {},
+		OnRecoil = {},
+		OnEnterShop = {},
+		OnCleanseCurse = {},
+		OnConsumableUse = {},
+		OnEscape = {},
+		OnFaint = {},
+		OnSummon = {},
+		OnDebuffed = {},
+		OnBuff = {},
+		OnStatusProc = {},
+		OnSellEquip = {},
+		OnSwapMembers = {},
+		OnQTESuccess = {},
+		OnSellAccessory = {},
+		OnEnemyBuffed = {}
 	}
 
 	return result
 end;
 
+---@param tools { [string]: table }
 ---@return { [string]: integer }
-function ToolManager.initIndices()
-	local result = {
-		OnStartTurn = 1,
-		OnStartCombat = 1,
-		OnEndCombat = 1,
-		OnAttack = 1,
-		OnGuard = 1,
-		OnEnemyAttack = 1,
-		OnLevelUp = 1,
-		OnKO = 1,
-		OnPickup = 1,
-		OnPurchase = 1,
-		OnEquipSell = 1,
-		OnAccSell = 1,
-	}
+function ToolManager.initIndices(tools)
+	local result = {}
+	for signal,_ in pairs(tools) do
+		result[signal] = 1
+	end
 	return result
 end;
 

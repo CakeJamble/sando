@@ -1,6 +1,6 @@
 {
 	"name": "Test Oracle",
-	"signal": "OnStartBattle",
+	"signal": "OnStartCombat",
 	"description": "Quack at the start of battle, reducing a random enemies stats",
 	"flavorText": "It provides the guidance you were seeking.",
 	"rarity": "event"

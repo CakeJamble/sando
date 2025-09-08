@@ -1,6 +1,6 @@
 {
 	"name": "Shutter Key",
-	"signal": "OnStartBattle",
+	"signal": "OnStartCombat",
 	"description": "Heal slightly at the beginning of battle",
 	"flavorText": "Unlocks a place to cool off during break.",
 	"rarity": "uncommon"

@@ -1,6 +1,6 @@
 {
 	"name": "LOVE",
-	"signal": "OnEndBattle",
+	"signal": "OnEndCombat",
 	"description": "Gain an additional amount of money at the end of battle",
 	"flavorText": "We take care of our own here!",
 	"rarity": "common"
