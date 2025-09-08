@@ -41,7 +41,7 @@ function LootManager.initUI(loot)
 		x = 100,
 		y = 100,
 		w = 450,
-		h = 250,
+		h = 150,
 		offset = 50,
 		images = images
 	}
@@ -64,9 +64,6 @@ end;
 ---@return thread
 function LootManager:createLootSelectCoroutine(loot)
 	return coroutine.create(function()
-		for _,item in ipairs(loot) do
-			print(item.name)
-		end
 		self.pick3UI = self.initUI(loot)
 		self.isActive = true
 		-- Oven opens
@@ -83,7 +80,6 @@ function LootManager:createLootSelectCoroutine(loot)
 		local selectedReward
 		if self.lootIndex < 4 then
 			selectedReward = loot[self.lootIndex]
-			print(selectedReward.name)
 		end
 		return selectedReward
 	end)
@@ -92,6 +88,7 @@ end;
 function LootManager:resumeCurrent()
 	local co = self.coroutines[self.i]
 	if not co then
+		self.isActive = false
 		Signal.emit('OnLootDistributionComplete')
 		return
 	end
@@ -103,7 +100,7 @@ function LootManager:resumeCurrent()
 		if type(res) ~= "string" then
 			Signal.emit('OnLootChosen', res)
 		else
-			print('Yielded thread ' .. self.i .. ', reason: ' .. res)
+			print('Returned from coroutine ' .. self.i .. ': ' .. res)
 		end
 	end
 

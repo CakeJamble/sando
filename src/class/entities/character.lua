@@ -279,7 +279,6 @@ function Character:gainExp(amount)
   -- leveling up until exp is less than exp required for next level
   while self.experience >= self.experienceRequired do
     self.level = self.level + 1
-    print(self.entityName .. ' reached level ' .. self.level .. '!')
     self.experienceRequired = self:getRequiredExperience()
     -- TODO: need to signal to current gamestate to push new level up reward state
   end

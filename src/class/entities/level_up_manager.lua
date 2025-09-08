@@ -58,16 +58,13 @@ function LevelUpManager:createExpCoroutine(member, amount)
 			flux.to(pb.meterOptions, self.duration, {width = expResult * pb.mult})
 				:oncomplete(function()
 					member:gainExp(expToGain)
-					print('tween finished')
 					self:resumeCurrent()
 				end)
 
 			coroutine.yield('await expbar tween')
-			print('done waiting', member.entityName, member.level, totalExp)
 			-- trigger level up
 			if member.level > previousLevel then
 				pb:reset()
-				print(member.entityName .. ' leveled up')
 				Signal.emit('OnLevel', member, previousLevel)
 				self:displayNotification(member, function()
 					return member.entityName .. ' leveled up! [shake][color=#0000FF](' .. previousLevel
@@ -127,7 +124,7 @@ function LevelUpManager:resumeCurrent()
 	if not code then
 		error(res)
 	else
-		print('starting coroutine ' .. self.i, res)
+		print('Returned from coroutine ' .. self.i .. ': ' .. res)
 	end
 
 	if coroutine.status(co) == 'dead' then

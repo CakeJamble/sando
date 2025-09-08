@@ -22,17 +22,15 @@ function reward:init()
     -- temp
   Signal.register('OnExpDistributionComplete',
     function()
-      print('commencing loot distribution')
       self.lootManager:distributeLoot()
     end)
   Signal.register('OnLootChosen',
     function(loot)
-      print('On Loot Chosen signal emitted')
-      self:addToInventory(self.characterTeam, loot)
+      self:addToInventory(loot)
     end)
   Signal.register('OnLootDistributionComplete',
     function()
-      self:increaseMoney(self.characterTeam)
+      self:increaseMoney()
     end)
 end;
 
@@ -165,20 +163,19 @@ function reward:getRewardType()
 end;
 
 -- adds item to inventory. Does not force it to be equipped at this time
----@param characterTeam CharacterTeam
 ---@param item table
-function reward:addToInventory(characterTeam, item)
+function reward:addToInventory(item)
   local itemType = item.itemType
   local itemManager
 
   if itemType == 'accessory' then
-    itemManager = characterTeam.inventory.accessoryManager
+    itemManager = self.characterTeam.inventory.accessoryManager
   elseif itemType == 'equip' then
-    itemManager = characterTeam.inventory.equipManager
+    itemManager = self.characterTeam.inventory.equipManager
   elseif itemType == 'tool' then
-    itemManager = characterTeam.inventory.toolManager
+    itemManager = self.characterTeam.inventory.toolManager
   else
-    characterTeam.inventory:addConsumable(item)
+    self.characterTeam.inventory:addConsumable(item)
   end
 
   if itemManager then
@@ -187,12 +184,11 @@ function reward:addToInventory(characterTeam, item)
   end
 end;
 
----@param characterTeam CharacterTeam
-function reward:increaseMoney(characterTeam)
-  local amount = self.moneyReward + characterTeam.inventory.money
+function reward:increaseMoney()
+  local amount = self.moneyReward + self.characterTeam.inventory.money
   flux.to(self.moneyValues, 1.5, {rewardVal = 0, totalVal = amount})
     :oncomplete(function()
-      characterTeam:increaseMoney(self.moneyReward)
+      self.characterTeam:increaseMoney(self.moneyReward)
     end)
 end;
 
