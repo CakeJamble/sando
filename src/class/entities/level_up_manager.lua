@@ -1,8 +1,6 @@
 local ProgressBar = require('class.ui.progress_bar')
 local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
-local Text = require('libs.sysl-text.slog-text')
-local Frame = require('libs.sysl-text.slog-frame')
 local Class = require('libs.hump.class')
 
 ---@class LevelUpManager
@@ -27,10 +25,12 @@ function LevelUpManager:init(characterTeam)
 	    sound_every = 2,
 	    -- sound_number = 1
     })
+  self.isActive = false
 end;
 
 ---@param amount integer
 function LevelUpManager:distributeExperience(amount)
+	self.isActive = true
 	self.coroutines = {}
 	for _,member in ipairs(self.characterTeam.members) do
 		local co = self:createExpCoroutine(member, amount)
@@ -58,16 +58,13 @@ function LevelUpManager:createExpCoroutine(member, amount)
 			flux.to(pb.meterOptions, self.duration, {width = expResult * pb.mult})
 				:oncomplete(function()
 					member:gainExp(expToGain)
-					print('tween finished')
 					self:resumeCurrent()
 				end)
 
 			coroutine.yield('await expbar tween')
-			print('done waiting', member.entityName, member.level, totalExp)
 			-- trigger level up
 			if member.level > previousLevel then
 				pb:reset()
-				print(member.entityName .. ' leveled up')
 				Signal.emit('OnLevel', member, previousLevel)
 				self:displayNotification(member, function()
 					return member.entityName .. ' leveled up! [shake][color=#0000FF](' .. previousLevel
@@ -112,14 +109,14 @@ function LevelUpManager:createExpCoroutine(member, amount)
 				coroutine.yield("statbonus")
 			end
 		end
+			return 'finished'
 	end)
 end;
 
 function LevelUpManager:resumeCurrent()
 	local co = self.coroutines[self.i]
 	if not co then
-		Signal.emit('OnExpDistributionComplete')
-		print('finished! Returning control back to the reward state')
+		self.isActive = false
 		return
 	end
 
@@ -127,12 +124,19 @@ function LevelUpManager:resumeCurrent()
 	if not code then
 		error(res)
 	else
-		print('starting coroutine ' .. self.i)
+		print('Returned from coroutine ' .. self.i .. ': ' .. res)
 	end
 
 	if coroutine.status(co) == 'dead' then
 		self.i = self.i + 1
-		self:resumeCurrent()
+
+		if self.coroutines[self.i] then
+			self:resumeCurrent()
+		else
+			self.isActive = false
+			print('returning control to reward state')
+			Signal.emit('OnExpDistributionComplete')
+		end
 	end
 end;
 
@@ -172,7 +176,7 @@ end;
 ---@param joystick string
 ---@param button string
 function LevelUpManager:gamepadpressed(joystick, button)
-	if button == 'a' then
+	if button == 'a' and self.isActive then
 		if self.isDisplayingNotification then
 			self.isDisplayingNotification = false
 			self:resumeCurrent()

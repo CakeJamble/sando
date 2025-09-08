@@ -1,6 +1,6 @@
 {
 	"name": "Thick Mittens",
-	"signal": "OnStartBattle",
+	"signal": "OnEquip",
 	"description": "You take less damage from recoil",
 	"flavorText": "Cozy",
 	"rarity": "uncommon"

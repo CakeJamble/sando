@@ -1,6 +1,6 @@
 {
 	"name": "Dough Hook",
-	"signal": "OnStartBattle",
+	"signal": "OnStartCombat",
 	"description": "Increase attack for the fight each empty or cursed skill slot",
 	"flavorText": "Everything starts with a good mix.",
 	"rarity": "common"
