@@ -41,6 +41,14 @@ Contains the libraries used for the game's implementation.
 - [json.lua](https://github.com/rxi/json.lua)
 - [shove](https://github.com/Oval-Tutu/shove)
 
+### 💯 `test`
+
+Unit tests with optional arguments when running from the command line. To run all tests then exit, run `love . --test=true` from the project's root directory (`src`). To run specific tests, you can add an argument for each test file or test directory you would like to run. See the examples below.
+
+1. Run all tool related tests: `love . --test=true test/tool`
+2. Run a single test file: `love . --test=true test/tool/onpickup_tools.lua`
+3. Run an arbitrary collection of tests `love . --test=true test/tool/onpickup_tools.lua test/accessory/onequip_acc.lua <...>`
+
 ### 🛠️ `util`
 
 Contains helper functions and globals for the game.
