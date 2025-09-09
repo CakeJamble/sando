@@ -1,4 +1,3 @@
---! file: gamestates/combat
 local Entity = require('class.entities.entity')
 -- local Enemy = require("class.entities.enemy")
 -- local ActionUI = require("class.ui.action_ui")

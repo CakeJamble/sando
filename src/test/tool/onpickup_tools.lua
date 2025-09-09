@@ -10,7 +10,7 @@ T('Given a Character Team', function(T)
 	local marco = Character(loadCharacterData('marco'), 'x')
 	local team = CharacterTeam({bake, marco})
 
-	T('Load every OnPickup Tool', function(T)
+	T('Load every Tool', function(T)
 		local OnPickup = {}
 		local pref = 'data/item/tool/'
 		local rawCommon = love.filesystem.read(pref .. 'common_pool.json')
@@ -24,6 +24,7 @@ T('Given a Character Team', function(T)
 
 		for pool,toolNames in pairs(toolPools) do
 			for _,toolName in ipairs(toolNames) do
+				-- Protected call to catch if image file does not exist
 				local success, tool = pcall(function() loadItem(toolName, 'tool') end)
 				T:assert(success, "Failed to load tool: " .. toolName .. "\nError: " .. tostring(tool))
 				if success and tool and tool.signal == "OnPickup" then
@@ -32,6 +33,7 @@ T('Given a Character Team', function(T)
 			end
 		end
 
+		-- Make sure every OnPickup tool has a proc() definition
 		local toolManager = team.inventory.toolManager
 		for _,tool in ipairs(OnPickup) do
 			local status, err = pcall(function() toolManager:addItem(tool) end)

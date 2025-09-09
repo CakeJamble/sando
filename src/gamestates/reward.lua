@@ -189,7 +189,7 @@ function reward:increaseMoney()
   flux.to(self.moneyValues, 1.5, {rewardVal = 0, totalVal = amount})
     :oncomplete(function()
       self.characterTeam:increaseMoney(self.moneyReward)
-      Gamestate:switch(states['combat'])
+      Gamestate.switch(states['combat'])
     end)
 end;
 
