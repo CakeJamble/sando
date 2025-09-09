@@ -32,7 +32,6 @@ T('Given a Character Team', function(T)
 			end
 		end
 
-		T('Then proc each OnPickup tool by adding to Inventory')
 		local toolManager = team.inventory.toolManager
 		for _,tool in ipairs(OnPickup) do
 			local status, err = pcall(function() toolManager:addItem(tool) end)

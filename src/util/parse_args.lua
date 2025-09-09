@@ -1,4 +1,4 @@
----@param args? string[]
+---@param args string[]
 ---@return table
 return function(args)
 	local parsed = {}
