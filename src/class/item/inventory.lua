@@ -64,6 +64,7 @@ function Inventory:popConsumable(index)
 end;
 
 ---@param tool table
+---@deprecated
 function Inventory:addTool(tool)
     self.toolManager:addTool(tool)
 end;
