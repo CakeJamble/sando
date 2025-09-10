@@ -1,6 +1,7 @@
 local Shop = {}
 local DialogManager = require('libs.ui.dialog_manager')
 local ItemRandomizer = require('util.item_randomizer')
+local SoundManager = require('class.ui.sound_manager')
 
 function Shop:init()
 	self.dialogManager = DialogManager()
@@ -24,6 +25,7 @@ end;
 ---@param previous table
 ---@param characterTeam CharacterTeam
 function Shop:enter(previous, characterTeam)
+	self.sfx = SoundManager(AllSounds.sfx.shop)
 	self.characterTeam = characterTeam
 	self.items = self.loadShopItems(self.numItems, self.shopRarities, characterTeam.rarityMod)
 end;
@@ -57,6 +59,19 @@ function Shop.loadShopItems(numItems, rarities, rarityMod)
 	end
 	return ItemRandomizer.getRandomItems(numItems, itemTypes,
 	rarityTypes, modRarities)
+end;
+
+---@param inventory Inventory
+---@param item { [string]: any }
+function Shop:processTransaction(inventory, item)
+	local money = inventory.money
+	local cost = item.value
+	if money >= cost then
+		inventory:setMoney(money - cost)
+		self.sfx:play("coins_drop")
+	else
+		self.sfx:play("laugh")
+	end
 end;
 
 ---@param dt number
