@@ -43,4 +43,4 @@ luac.out
 out
 
 build
-asset/*
+asset/
