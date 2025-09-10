@@ -151,7 +151,6 @@ end;
 
 ---@return string
 function reward:getRewardType()
-  ---@type string[]
   local types = {}
   for k,_ in pairs(self.rewardPools) do
     table.insert(types, k)

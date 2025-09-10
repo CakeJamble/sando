@@ -1,5 +1,4 @@
---! filename: globals
-
+local json = require('libs.json')
 -- global variables
 SEED = math.randomseed(math.random(1, math.huge))
 
@@ -7,6 +6,32 @@ CHARACTER_TEAM = {}
 turnCounter = 1
 
 statStageCap = 6
+
+---@return table
+local function initItemPool()
+  local pref = "data/item/"
+  local pools = {
+    "common", "uncommon", "rare",
+    "shop", "event"
+  }
+  local itemTypes = {"accessory", "consumable", "equip", "tool"}
+  local result = {}
+  for _,itemType in ipairs(itemTypes) do
+    result[itemType] = {}
+
+    for _,pool in ipairs(pools) do
+      local path = pref .. pool .. "_pool.json"
+      local raw = love.filesystem.read(path)
+      local data = json.decode(raw)
+
+      result[itemType][pool] = data
+    end
+  end
+
+  return result
+end;
+
+ItemPool = initItemPool()
 
 -- global functions
 ---@param team Team
@@ -65,4 +90,28 @@ function calcSpacingFromTarget(tweenType, entityType)
   end
 
   return space
+end;
+
+-- Sort a copy of the table by values and iterate over it
+---@param t table
+---@param f? function()
+function pairsByValues(t, f)
+  local a = {}
+  for k,v in pairs(t) do table.insert(a, {k,v}) end
+  table.sort(a,function(x, y)
+    if f then
+      return f(x[2], y[2])
+    else
+      return x[2] < y[2]
+    end
+  end)
+
+  local i = 0
+  local iter = function()
+    i = i + 1
+    if a[i] == nil then return nil
+    else return a[i][1], a[i][2]
+    end
+  end
+  return iter
 end;
