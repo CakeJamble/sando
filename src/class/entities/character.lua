@@ -6,6 +6,7 @@
 ]]
 -- require("util.skill_sheet")
 -- require("util.stat_sheet")
+local SoundManager = require('class.ui.sound_manager')
 local Entity = require("class.entities.entity")
 local ActionUI = require("class.ui.action_ui")
 local Signal = require('libs.hump.signal')
@@ -70,8 +71,8 @@ function Character:init(data, actionButton)
   self.experienceRequired = 15
   self:setAnimations()
 
-  local baseSFXTypes = {'jump'}
-  self.sfx = self:setSFX('character/', baseSFXTypes)
+  -- local baseSFXTypes = {'jump'}
+  -- self.sfx = self:setSFX('character/', baseSFXTypes)
   Character.yPos = Character.yPos + Character.yOffset
   self.currentFP = data.fp
   -- self.currentDP = stats.dp
@@ -96,6 +97,7 @@ function Character:init(data, actionButton)
   self.hasLCanceled = false
   self.canLCancel = false
 
+  self.sfx = SoundManager(AllSounds.sfx.entities.character[self.entityName])
   Signal.register('OnEnterScene',
     function()
       flux.to(self.pos, self.combatStartEnterDuration, {x = Character.xPos})
@@ -443,7 +445,7 @@ function Character:beginJump()
       end)
   self.tweens['jump'] = jump
   self.tweens['shadow'] = shadow
-  self.sfx.jump:play()
+  self.sfx:play("jump")
 end;
 
 function Character:interruptJump()

@@ -183,7 +183,7 @@ function character_select:indicesToCharacters()
     end
   end
 
-  local characterTeam = CharacterTeam(characterList, TEAM_CAP)
+  local characterTeam = CharacterTeam(characterList)
   saveCharacterTeam(characterTeam)
 end;
 

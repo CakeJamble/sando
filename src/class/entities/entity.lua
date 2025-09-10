@@ -124,6 +124,7 @@ function Entity:init(data, x, y)
   local normSpeed = math.min(speed/maxSpeed, 1)
   self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
 
+  
   Signal.register('TargetConfirm',
   function()
     if self.tweens['pbTween'] then
@@ -489,6 +490,7 @@ end;
 
 ---@param path string
 ---@param baseSFXTypes string[]
+---@deprecated
 function Entity:setSFX(path, baseSFXTypes)
   local sfxList = {}
   for _,sfx in ipairs(baseSFXTypes) do

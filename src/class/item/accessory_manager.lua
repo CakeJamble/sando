@@ -87,7 +87,8 @@ function AccessoryManager.initItemLists()
 		OnEnemyAttack = {},
 		OnLevelUp = {},
 		OnKO = {},
-		OnTargetConfirm = {}
+		OnTargetConfirm = {},
+		OnEndTurn = {},
 	}
 
 	return result

@@ -17,6 +17,7 @@ local CharacterTeam = Class{__includes = Team}
 function CharacterTeam:init(characters)
   Team.init(self, characters)
   self.rarityMod = 0
+  self.discount = 0
 
   self.koCharacters = {}
   self.inventory = Inventory(self)

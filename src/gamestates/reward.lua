@@ -151,7 +151,6 @@ end;
 
 ---@return string
 function reward:getRewardType()
-  ---@type string[]
   local types = {}
   for k,_ in pairs(self.rewardPools) do
     table.insert(types, k)
@@ -189,6 +188,7 @@ function reward:increaseMoney()
   flux.to(self.moneyValues, 1.5, {rewardVal = 0, totalVal = amount})
     :oncomplete(function()
       self.characterTeam:increaseMoney(self.moneyReward)
+      Gamestate.switch(states['combat'])
     end)
 end;
 

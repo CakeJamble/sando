@@ -6,6 +6,13 @@ shove = require('libs.shove')
 Text = require('libs.sysl-text.slog-text')
 Frame = require('libs.sysl-text.slog-frame')
 
+-- Testing
+local parseArgs = require('util.parse_args')
+local runTests = require('test.main_tests')
+
+local loadAudio = require('util.audio_loader')
+local loadItemPools = require('util.item_pool_loader')
+
 states = {
   main_menu         = require 'gamestates.main_menu',
   character_select  = require 'gamestates.character_select',
@@ -47,27 +54,51 @@ Text.configure.add_text_sound(Audio.text.default, 0.5)
 
 local JoystickUtils = require 'util.joystick_utils'
 
-function love.load()
-  shove.setResolution(640, 360, {
-      fitMethod = "aspect",
-      renderMode = "layer",
+function love.load(args)
+  local opts = parseArgs(args)
+  if opts.test == "true" then
+    print("Running tests only")
+    runTests(opts)
+  else
+    -- Screen Scaling
+    shove.setResolution(640, 360, {
+        fitMethod = "aspect",
+        renderMode = "layer",
+      })
+    local windowWidth, windowHeight = love.window.getDesktopDimensions()
+    windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
+    shove.setWindowMode(windowWidth, windowHeight, {
+      resizable = true
     })
-  local windowWidth, windowHeight = love.window.getDesktopDimensions()
-  windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
-  shove.setWindowMode(windowWidth, windowHeight, {
-    resizable = true
-  })
 
-  input = {joystick = nil}
-  font = love.graphics.newFont('asset/thin_sans.ttf')
-  love.graphics.setFont(font)
-  Gamestate.registerEvents()
-  Gamestate.switch(states['main_menu'])
-  camera = Camera()
-  local joysticks = love.joystick.getJoysticks()
-  if joysticks[1] then
-    input.joystick = joysticks[1]
-    print('added joystick')
+    -- Camera
+    camera = Camera()
+
+    -- Input
+    input = {joystick = nil}
+    local joysticks = love.joystick.getJoysticks()
+    if joysticks[1] then
+      input.joystick = joysticks[1]
+      print('added joystick')
+    end
+
+    -- Fonts
+    Font = love.graphics.newFont('asset/thin_sans.ttf')
+    love.graphics.setFont(Font)
+
+    -- Audio
+    AllSounds = {sfx = {}, music = {}}
+    local sfxDir = 'asset/audio/sfx'
+    local musicDir = 'asset/audio/music'
+    loadAudio(sfxDir, AllSounds.sfx, "static")
+    loadAudio(musicDir, AllSounds.music, "stream")
+
+    -- Item Pools
+    ItemPools = loadItemPools()
+
+    -- Gamestates
+    Gamestate.registerEvents()
+    Gamestate.switch(states['main_menu'])
   end
 end;
 

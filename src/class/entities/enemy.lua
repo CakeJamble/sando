@@ -5,6 +5,7 @@ local Class = require('libs.hump.class')
 local flux = require('libs.flux')
 local starParticles = require('asset.particle.ko')
 local Timer = require('libs.hump.timer')
+local SoundManager = require('class.ui.sound_manager')
 
 ---@class Enemy: Entity
 ---@field xPos integer
@@ -27,6 +28,8 @@ function Enemy:init(data)
 
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
   self.drawKOStars = false
+
+  self.sfx = SoundManager(AllSounds.sfx.entities.enemy[self.entityName])
 
   Signal.register('OnStartCombat',
     function()
@@ -58,6 +61,7 @@ function Enemy:takeDamage(amount, attackerLuck)
 
     local reward = self:knockOut()
     Signal.emit('OnEnemyKO', reward)
+    self.sfx:play("ko")
   end
 end;
 
