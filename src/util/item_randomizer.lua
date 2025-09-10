@@ -33,11 +33,11 @@ end;
 ---@param rarity string
 ---@return { [string]: any }
 ItemRandomizer.getRandomItem = function(itemType, rarity)
-	local tLen = #ItemPool[itemType][rarity]
+	local tLen = #ItemPools[itemType][rarity]
 	local i = love.math.random(1, tLen)
-	local itemName = ItemPool[itemType][rarity][i]
+	local itemName = ItemPools[itemType][rarity][i]
 	if itemType ~= "consumable" then
-		table.remove(ItemPool[itemType][rarity], i)
+		table.remove(ItemPools[itemType][rarity], i)
 	end
 	local item = loadItem(itemName, itemType)
 	return item
