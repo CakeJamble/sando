@@ -10,6 +10,8 @@ Frame = require('libs.sysl-text.slog-frame')
 local parseArgs = require('util.parse_args')
 local runTests = require('test.main_tests')
 
+local loadAudio = require('util.audio_loader')
+local loadItemPools = require('util.item_pool_loader')
 
 states = {
   main_menu         = require 'gamestates.main_menu',
@@ -58,6 +60,7 @@ function love.load(args)
     print("Running tests only")
     runTests(opts)
   else
+    -- Screen Scaling
     shove.setResolution(640, 360, {
         fitMethod = "aspect",
         renderMode = "layer",
@@ -68,17 +71,34 @@ function love.load(args)
       resizable = true
     })
 
-    input = {joystick = nil}
-    font = love.graphics.newFont('asset/thin_sans.ttf')
-    love.graphics.setFont(font)
-    Gamestate.registerEvents()
-    Gamestate.switch(states['main_menu'])
+    -- Camera
     camera = Camera()
+
+    -- Input
+    input = {joystick = nil}
     local joysticks = love.joystick.getJoysticks()
     if joysticks[1] then
       input.joystick = joysticks[1]
       print('added joystick')
     end
+
+    -- Fonts
+    Font = love.graphics.newFont('asset/thin_sans.ttf')
+    love.graphics.setFont(Font)
+
+    -- Audio
+    AllSounds = {sfx = {}, music = {}}
+    local sfxDir = 'asset/audio/sfx'
+    local musicDir = 'asset/audio/music'
+    loadAudio(sfxDir, AllSounds.sfx, "static")
+    loadAudio(musicDir, AllSounds.music, "stream")
+
+    -- Item Pools
+    ItemPools = loadItemPools()
+
+    -- Gamestates
+    Gamestate.registerEvents()
+    Gamestate.switch(states['main_menu'])
   end
 end;
 

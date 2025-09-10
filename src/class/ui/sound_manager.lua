@@ -5,35 +5,28 @@ local Class = require('libs.hump.class')
 ---@class SoundManager
 local SoundManager = Class{}
 
-function SoundManager:init(state)
-	local dir = 'asset/audio/' .. state
-	self.sfx = {}
-	self:loadSFX(dir)
-	self.music = {}
+function SoundManager:init(sounds)
+	self.sounds = sounds or {}
+	self.volume = 1.0
 end;
 
----@param dir string
-function SoundManager:loadSFX(dir)
-	local items = love.filesystem.getDirectoryItems(dir)
+---@param key string
+---@return table|nil Returns a love.audio.Source or nothing if key not found
+function SoundManager:play(key)
+	local variants = self.sounds[key]
+	if not variants or #variants == 0 then return end
 
-	for _,item in ipairs(items) do
-		local fp = dir .. "/" .. item
-		local info = love.filesystem.getInfo(fp)
+	local i = love.math.random(#variants)
+	local base = variants[i]
 
-		if info == "file" then
-			local ext = item:match("^.+(%..+)$")
-			local key = fp:gsub("%.%w+$", "")
-			local src = love.audio.newSource(fp, "static")
-			if not self.sfx[key] then self.sfx[key] =
-			table.insert(self.sfx[key], src)
-		elseif info == "directory" then
-			self:loadSFX(fp)
-		end
-	end
+	local sound = base:clone()
+	sound:play()
+
+	return sound
 end;
 
----@param dir string
-function SoundManager.loadMusic(dir)
+function SoundManager:setVolume(v)
+	self.volume = v
 end;
 
 return SoundManager

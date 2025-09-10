@@ -1,3 +1,4 @@
+local SoundManager = require('class.ui.sound_manager')
 local Entity = require('class.entities.entity')
 -- local Enemy = require("class.entities.enemy")
 -- local ActionUI = require("class.ui.action_ui")
@@ -94,6 +95,8 @@ end;
 ---@param previous table
 function combat:enter(previous)
   self.lockCamera = false
+  self.soundManager = SoundManager(AllSounds.music)
+  self.soundManager:play("tetris_placeholder")
   self.characterTeam = loadCharacterTeam()
   self.rewardExp = 0
   self.rewardMoney = 0
