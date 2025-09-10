@@ -7,7 +7,7 @@ turnCounter = 1
 
 statStageCap = 6
 
----@return table
+---@return table Item file names for each item type and rarity
 local function initItemPool()
   local pref = "data/item/"
   local pools = {
