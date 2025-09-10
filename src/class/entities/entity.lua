@@ -3,7 +3,6 @@ local ProgressBar = require('class.ui.progress_bar')
 local Class = require "libs.hump.class"
 local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
-local SoundManager = require('class.ui.sound_manager')
 require('util.globals')
 
 ---@class Entity
@@ -125,7 +124,7 @@ function Entity:init(data, x, y)
   local normSpeed = math.min(speed/maxSpeed, 1)
   self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
 
-  self.sfx = SoundManager(AllSounds.sfx.entities.character.Bake)
+  
   Signal.register('TargetConfirm',
   function()
     if self.tweens['pbTween'] then

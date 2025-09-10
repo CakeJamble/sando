@@ -6,6 +6,7 @@
 ]]
 -- require("util.skill_sheet")
 -- require("util.stat_sheet")
+local SoundManager = require('class.ui.sound_manager')
 local Entity = require("class.entities.entity")
 local ActionUI = require("class.ui.action_ui")
 local Signal = require('libs.hump.signal')
@@ -96,6 +97,7 @@ function Character:init(data, actionButton)
   self.hasLCanceled = false
   self.canLCancel = false
 
+  self.sfx = SoundManager(AllSounds.sfx.entities.character[self.entityName])
   Signal.register('OnEnterScene',
     function()
       flux.to(self.pos, self.combatStartEnterDuration, {x = Character.xPos})
