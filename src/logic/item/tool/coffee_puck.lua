@@ -1,30 +1,20 @@
 local json = require('libs.json')
 local loadItem = require('util.item_loader')
+local ItemRandomizer = require('util.item_randomizer')
 
 return function(characterTeam)
-	-- load item pools
-	local pref = 'data/item/consumable/'
-	local rawCommon = love.filesystem.read(pref .. 'common_pool.json')
-	local rawUncommon = love.filesystem.read(pref .. 'uncommon_pool.json')
-	local rawRare = love.filesystem.read(pref .. 'rare_pool.json')
+	local bonus = characterTeam.rarityMod
+	local itemType = {"consumable"}
+	local itemPools = {"common", "uncommon", "rare"}
+	local rarities = {uncommon = 0.3 + bonus, rare = 0.1 + bonus}
+	local consumables = ItemRandomizer.getRandomItems(3, itemType, itemPools, rarities)
+	
+	-- start coroutine
+	-- await decision
 
-	local commonPool = json.decode(rawCommon)
-	local uncommonPool = json.decode(rawUncommon)
-	local rarePool = json.decode(rawRare)
-
-	local pools = {commonPool, uncommonPool, rarePool}
-	local rewards = {}
-	for i=1, 3 do
-		local randPool = love.math.random(1, #pools)
-		local randIndex = love.math.random(1, pools[randPool])
-		local randConsumable = loadItem(pools[randPool][randIndex])
-		table.insert(rewards, randConsumable)
-	end
-
-	-- wait for user to take all or leave menu
-	-- temp impl for linter
-	characterTeam:addItem(rewards[1])
-	for _,reward in ipairs(rewards) do
-		print(reward.name)
+	-- temp
+	characterTeam:addConsumable(consumables[1])
+	for _,item in ipairs(consumables) do
+		print(item.name)
 	end
 end;

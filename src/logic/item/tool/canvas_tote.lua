@@ -1,3 +1,6 @@
+---@param characterTeam CharacterTeam
 return function(characterTeam)
-	characterTeam.inventory.numAccessories = 1 + characterTeam.inventory.numAccessories
+	local accessoryManager = characterTeam.inventory.accessoryManager
+
+	print('hello')
 end;

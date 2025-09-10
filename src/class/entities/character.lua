@@ -197,6 +197,12 @@ function Character:raiseMaxHP(pct)
   self.battleStats.hp = newCurrHP
 end;
 
+---@param pct number
+function Character:lowerMaxHP(pct)
+  self.baseStats.hp = math.floor(0.5 + self.baseStats.hp * pct)
+  self.battleStats.hp = math.min(self.baseStats.hp, self.battleStats.hp)
+end;
+
 ---@param amount integer
 ---@param attackerLuck integer
 function Character:takeDamage(amount, attackerLuck)

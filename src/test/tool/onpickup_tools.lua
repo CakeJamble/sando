@@ -16,19 +16,29 @@ T('Given a Character Team', function(T)
 		local rawCommon = love.filesystem.read(pref .. 'common_pool.json')
 		local rawUncommon = love.filesystem.read(pref .. 'uncommon_pool.json')
 		local rawRare = love.filesystem.read(pref .. 'rare_pool.json')
+		local rawEvent = love.filesystem.read(pref .. 'event_pool.json')
+		local rawShop = love.filesystem.read(pref .. 'shop_pool.json')
 
 		local common = json.decode(rawCommon)
 		local uncommon = json.decode(rawUncommon)
 		local rare = json.decode(rawRare)
-		local toolPools = {common = common, uncommon = uncommon, rare = rare}
+		local event = json.decode(rawEvent)
+		local shop = json.decode(rawShop)
+		local toolPools = {common = common, uncommon = uncommon, rare = rare,
+			event = event, shop = shop}
 
 		for pool,toolNames in pairs(toolPools) do
 			for _,toolName in ipairs(toolNames) do
 				-- Protected call to catch if image file does not exist
-				local success, tool = pcall(function() loadItem(toolName, 'tool') end)
-				T:assert(success, "Failed to load tool: " .. toolName .. "\nError: " .. tostring(tool))
-				if success and tool and tool.signal == "OnPickup" then
-					table.insert(OnPickup, tool)
+				-- local success, tool = pcall(function() loadItem(toolName, 'tool') end)
+				-- T:assert(success, "Failed to load tool: " .. toolName .. "\nError: " .. tostring(tool))
+				local tool = loadItem(toolName, 'tool')
+				if tool then
+					print(toolName, tool.signal)
+
+					if tool.signal == 'OnPickup' then
+						table.insert(OnPickup, tool)
+					end
 				end
 			end
 		end
