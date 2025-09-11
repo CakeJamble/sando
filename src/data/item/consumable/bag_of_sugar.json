@@ -1,5 +1,6 @@
 {
 	"name": "Bag of Sugar",
+	"rarity": "rare",
 	"itemType": "support",
 	"isSingleTarget": true,
 	"raise": ["attack", "speed"],

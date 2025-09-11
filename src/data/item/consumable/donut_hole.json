@@ -1,5 +1,6 @@
 {
 	"name": "Donut Hole",
+	"rarity": "uncommon",
 	"itemType": "support",
 	"isSingleTarget": false,
 	"numProcs": 5,

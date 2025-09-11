@@ -2,6 +2,6 @@
 	"name": "Smart Watch",
 	"signal": "OnEndCombat",
 	"description": "Late statuses are cleansed at the end of combat.",
-	"flavorText": "For the baker with nothing left to give!",
+	"flavorText": "How's my sleep score?",
 	"rarity": "common"
 }

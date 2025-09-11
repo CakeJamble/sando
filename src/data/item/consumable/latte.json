@@ -1,5 +1,6 @@
 {
 	"name": "Latte",
+	"rarity": "rare",
 	"itemType": "support",
 	"isSingleTarget": true,
 	"effects": ["heal"],
