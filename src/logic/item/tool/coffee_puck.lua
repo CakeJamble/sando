@@ -1,5 +1,3 @@
-local json = require('libs.json')
-local loadItem = require('util.item_loader')
 local ItemRandomizer = require('util.item_randomizer')
 
 return function(characterTeam)
