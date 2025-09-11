@@ -126,16 +126,16 @@ function AccessoryManager:registerSignals()
 		end)
 
 	self:registerSignal('OnStartCombat',
-		function()
+		function(character)
 			for _,item in ipairs(self.list.OnStartCombat) do
-				item.proc()
+				item.proc(character)
 			end
 		end)
 
 	self:registerSignal('OnAttack',
-		function(skill)
+		function(character)
 			for _,item in ipairs(self.list.OnAttack) do
-				item.proc(skill)
+				item.proc(character)
 			end
 		end)
 
@@ -147,16 +147,16 @@ function AccessoryManager:registerSignals()
 		end)
 
 	self:registerSignal('OnEnemyAttack',
-		function(enemy)
+		function(enemy, character)
 			for _,item in ipairs(self.list.OnEnemyAttack) do
-				item.proc(enemy)
+				item.proc(enemy, character)
 			end
 		end)
 
 	self:registerSignal('OnKO',
-		function()
+		function(character)
 			for _,item in ipairs(self.list.OnKO) do
-				item.proc()
+				item.proc(character)
 			end
 		end)
 
