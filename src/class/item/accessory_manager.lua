@@ -89,6 +89,7 @@ function AccessoryManager.initItemLists()
 		OnKO = {},
 		OnTargetConfirm = {},
 		OnEndTurn = {},
+		OnEndCombat = {},
 	}
 
 	return result
