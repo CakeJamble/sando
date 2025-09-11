@@ -29,16 +29,9 @@ T('Given a Character Team', function(T)
 
 		for pool,toolNames in pairs(toolPools) do
 			for _,toolName in ipairs(toolNames) do
-				-- Protected call to catch if image file does not exist
-				-- local success, tool = pcall(function() loadItem(toolName, 'tool') end)
-				-- T:assert(success, "Failed to load tool: " .. toolName .. "\nError: " .. tostring(tool))
 				local tool = loadItem(toolName, 'tool')
-				if tool then
-					print(toolName, tool.signal)
-
-					if tool.signal == 'OnPickup' then
+				if tool and tool.signal == 'OnPickup' then
 						table.insert(OnPickup, tool)
-					end
 				end
 			end
 		end
