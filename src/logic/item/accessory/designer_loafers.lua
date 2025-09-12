@@ -1,3 +1,10 @@
-return function(character)
-	character.landingLag = 0.5 * character.landingLag
-end;
+local proc = {
+	equip = function(character)
+		character.landingLagMods["designer_loafers"] = 0.5
+	end,
+	unequip = function(character)
+		character.landingLag["designer_loafers"] = nil
+	end
+}
+
+return proc

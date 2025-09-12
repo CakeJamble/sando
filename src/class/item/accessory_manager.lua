@@ -43,21 +43,33 @@ end;
 
 ---@param character Character
 ---@param i integer
+---@param itemType string
 function AccessoryManager:equip(character, i, itemType)
-	local item = table.remove(self.list, i)
-	local numSlots
+	local item = table.remove(self.list[itemType], i)
+	character:equip(item, itemType)
+	-- item.proc.equip(character)
 
-	if itemType == 'equip' then
-		numSlots = character.numEquipSlots
-	else -- itemType == 'accessory'
-		numSlots = character.numAccessorySlots
-	end
+	-- local numSlots
 
-	if numSlots >= character.equips[itemType] then
+	-- if itemType == 'equip' then
+		-- numSlots = character.numEquipSlots
+	-- else -- itemType == 'accessory'
+		-- numSlots = character.numAccessorySlots
+	-- end
+	-- if numSlots >= character.equips[itemType] then
 		-- Coroutine: confirm to sell or equip back on and revert
-		local co = self:createEquipCoroutine(character, item, itemType)
-		coroutine.resume(co)
-	end
+		-- local co = self:createEquipCoroutine(character, item, itemType)
+		-- coroutine.resume(co)
+	-- end
+end;
+
+---@param character Character
+---@param itemType string
+---@param pos integer
+---@return { [string]: any }
+function AccessoryManager:unequip(character, itemType, pos)
+	local item = character:unequip(itemType, pos)
+	return item
 end;
 
 ---@param character Character
@@ -113,10 +125,10 @@ function AccessoryManager:registerSignal(name, f)
 end;
 
 function AccessoryManager:registerSignals()
-	self:registerSignal('OnEquip',
-		function(character, item)
-			item.proc(character)
-		end)
+	-- self:registerSignal('OnEquip',
+	-- 	function(character, item)
+	-- 		item.proc.equip(character)
+	-- 	end)
 
 	self:registerSignal('OnStartTurn',
 		function(character)
