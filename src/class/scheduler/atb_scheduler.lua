@@ -26,6 +26,7 @@ function ATBScheduler:enter()
 	self:registerSignal('OnStartCombat',
 	function()
     for _,entity in ipairs(self.combatants) do
+      entity:setProgressBarPos()
       entity:tweenProgressBar(
       function()
         print(entity.entityName .. "'s turn is ready to begin")

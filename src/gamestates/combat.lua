@@ -215,6 +215,11 @@ function combat:update(dt)
 
     if imgui.Checkbox("ATB System", atbSystem) then
       Entity.isATB = atbSystem[0]
+      for _,entity in ipairs(self.characterTeam.members) do
+        entity:setProgressBarPos()
+      end
+      for _,entity in ipairs(self.enemyTeam.members) do
+        entity:setProgressBarPos()
     end
 
     imgui.End()
