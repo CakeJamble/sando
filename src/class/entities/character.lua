@@ -341,6 +341,19 @@ function Character:updateSkills()
   return result
 end;
 
+---@param skill table
+function Character:learnSkill(skill)
+  table.insert(self.currentSkills, skill)
+end;
+
+---@return any
+function Character:yieldSkillSelect()
+  return coroutine.yield({
+    routineType = "skillChoice",
+    character = self
+  })
+end;
+
 --[[----------------------------------------------------------------------------------------------------
         Animation
 ----------------------------------------------------------------------------------------------------]]

@@ -220,6 +220,7 @@ function combat:update(dt)
       end
       for _,entity in ipairs(self.enemyTeam.members) do
         entity:setProgressBarPos()
+      end
     end
 
     imgui.End()
