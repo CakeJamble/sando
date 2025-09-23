@@ -41,7 +41,8 @@ luac.out
 
 .vscode
 out
-
 build
 asset
-asset/*
+.luacheckrc
+*.sublime-project
+*.sublime-workspace
