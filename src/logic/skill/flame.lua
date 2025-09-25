@@ -2,86 +2,91 @@ require('util.globals')
 local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
-
+local addBezierSegment = require('util.add_bezier_segment')
 -- Duration field of flame skill is the skill to hit ONE target
+---@param ref Enemy
+---@param qteManager? QTEManager
 return function(ref, qteManager)
-  local skill = ref.skill
-  local targets = ref.targets
-  local tPos = {}
-  for _,target in ipairs(targets) do
-    table.insert(tPos, target.hitbox)
-  end
-  local damage = ref.battleStats['attack'] + skill.damage
-  local luck = ref.battleStats.luck
-  local flameTravelTime = skill.duration
-  local flawlessDodge = true
-  local hasCollided = {}
-  for _ in ipairs(targets) do
-    table.insert(hasCollided, false)
-  end
+  local stageX, stageY = ref.stagingPositions.projectileAttack.x, ref.stagingPositions.projectileAttack.y
+  flux.to(ref.pos, 1, {x = stageX, y = stageY})
+  :oncomplete(function()
+    local skill = ref.skill
+    local targets = ref.targets
+    local damage = ref.battleStats['attack'] + skill.damage
+    local luck = ref.battleStats.luck
+    local flameTravelTime = skill.duration
+    local flawlessDodge = true
 
-  local goalPos = {}
-  for i,pos in ipairs(tPos) do
-    local x, y
-    local xOffset = 2 * pos.w
-    if i % 2 == 1 then
-      x = pos.x - xOffset
+    -- Targets of skill
+    -- Top to bottom vs bottom to top
+    local chance = love.math.random()
+    local isTopToBottom = chance <= 0.5
+    local tPos = {}
+    local hasCollided = {}
+    local start, stop, step
+    if isTopToBottom then
+      start, stop, step = 1, #targets, 1
+      -- ref:signalLeft()
     else
-      x = pos.x + xOffset
+      start, stop, step = #targets, 1, -1
+      -- ref:signalRight()
     end
-    y = pos.y + pos.h
-    table.insert(goalPos, {x=x,y=y})
 
-    -- Tween behind next target
-    if i < #tPos then
-      local nextTarget = tPos[i+1]
-      table.insert(goalPos, {x=x,y=nextTarget.y + nextTarget.h})
+    for i=start, stop, step do
+      local target = targets[i]
+      table.insert(tPos, target.hitbox)
+      table.insert(hasCollided, false)
     end
-  end
+    table.insert(tPos, ref.hitbox)
 
-  -- rebound onto user at the end (if dodged perfectly)
-  table.insert(goalPos, {x = ref.hitbox.x + (ref.hitbox.w / 2), y = ref.hitbox.y + (ref.hitbox.h / 2)})
+    local flame = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
+    table.insert(ref.projectiles, flame)
 
-  local flame = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
-  table.insert(ref.projectiles, flame)
+    -- Bezier Curve
+    local vertices = {}
+    local startX, startY = flame.pos.x, flame.pos.y
+    table.insert(vertices, startX); table.insert(vertices, startY);
+    local offsetX = 80 -- num px in front/behind before next bezier segment for collision
+    local sign = -1
+    for i,hitbox in ipairs(tPos) do
+      local sign = (i % 2 == 0) and 1 or -1
+      offsetX = sign * offsetX
+      local goalX, goalY = hitbox.x + hitbox.w / 2, hitbox.y + hitbox.h
+      local prevX, prevY = vertices[#vertices - 1], vertices[#vertices]
+      addBezierSegment(vertices, prevX, prevY, goalX, goalY, offsetX)
+    end
 
-  local checkCollision = function()
-    for i,target in ipairs(targets) do
-      if not hasCollided[i] and Collision.rectsOverlap(flame.hitbox, target.hitbox) then
-        target:takeDamage(damage, luck)
-        hasCollided[i] = true
-        flawlessDodge = false
+    local curve = love.math.newBezierCurve(vertices)
+    flame.progress = 0
+
+    local checkCollision = function()
+      for i,target in ipairs(targets) do
+        -- if not hasCollided[i] and Collision.rectsOverlap(flame.hitbox, target.hitbox) then
+        if not hasCollided[i] and flame.hitbox.x == tPos[i].x and flame.hitbox.y == tPos[i].y and target.isJumping == false then
+          target:takeDamage(damage, luck)
+          hasCollided[i] = true
+          flawlessDodge = false
+          ref.tweens.attack:stop()
+          flux.to(flame.dims, 0.25, {r=0}):ease("linear")
+            :oncomplete(function() table.remove(ref.projectiles, 1) end)
+          ref:endTurn(skill.duration)
+        end
       end
     end
-  end
 
-  -- Tweening for N Targets + Rebound onto ref
-  local attack = flux.to(flame.pos, flameTravelTime, {x = goalPos[1].x, y = goalPos[1].y})
-    :ease(skill.beginTweenType)
-    :onupdate(checkCollision)
-
-  for i=2, #goalPos do
-    local t = flameTravelTime
-
-    -- Make flame faster so it can be jumped over
-    if i % 2 == 1 then
-      t = t / 3
-    end
-
-    attack = attack:after(t, {x=goalPos[i].x, y=goalPos[i].y}):ease(skill.beginTweenType):onupdate(checkCollision)
-
-    -- Rebound onto user
-    if i == #goalPos then
-      attack = attack:oncomplete(function()
-        if flawlessDodge then
-          ref:takeDamage(damage, luck)
-        end
-        table.remove(ref.projectiles, 1)
+    local attack = flux.to(flame, flameTravelTime * 2 * (#targets), {progress = 1}):ease("linear")
+      :onupdate(function()
+        flame.pos.x, flame.pos.y = curve:evaluate(flame.progress)
+        checkCollision()
+      end)
+      :oncomplete(function()
+        if flawlessDodge then ref:takeDamage(damage, luck) end
+        flux.to(flame.dims, 0.25, {r=0}):ease("linear")
+          :oncomplete(function() table.remove(ref.projectiles, 1) end)
         ref:endTurn(skill.duration)
       end)
-    end
-  end
 
-  ref.tweens['attack'] = attack
+    ref.tweens['attack'] = attack
+  end)
 
 end;

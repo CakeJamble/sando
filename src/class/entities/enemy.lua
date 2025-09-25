@@ -31,6 +31,11 @@ function Enemy:init(data)
 
   self.sfx = SoundManager(AllSounds.sfx.entities.enemy[self.entityName])
 
+  self.stagingPositions = {
+    projectileAttack = {
+      x = 400, y = 200
+    }
+  }
   Signal.register('OnStartCombat',
     function()
       self.oPos.x = self.pos.x
@@ -84,8 +89,7 @@ end;
 
 ---@param validTargets { [string]: Entity[]}
 function Enemy:setupOffense(validTargets)
-  local skillIndex = love.math.random(1, #self.skillPool)
-  self.skill = self.skillPool[skillIndex]
+  self.skill = self.getRandomSkill(self.skillPool, #validTargets)
   local targetType = self.skill.targetType
   local isSingleTarget = self.skill.isSingleTarget
   self:setTargets(validTargets, targetType)
@@ -108,6 +112,30 @@ function Enemy:targetSelect(targetType, isSingleTarget)
   end
 
   return targets
+end;
+
+---@param skillPool table
+---@param numValidTargets integer
+function Enemy.getRandomSkill(skillPool, numValidTargets)
+  local skill
+
+  if numValidTargets == 1 then
+    local singleTargetSkills = {}
+    for _,s in ipairs(skillPool) do
+      if s.isSingleTarget then
+        table.insert(singleTargetSkills)
+      end
+    end
+
+    local i = love.math.random(1, #singleTargetSkills)
+    skill = singleTargetSkills[i]
+  else
+    print('selecting from all skills')
+    local i = love.math.random(1, #skillPool)
+    skill = skillPool[i]
+  end
+
+  return skill
 end;
 
 ---@return table
