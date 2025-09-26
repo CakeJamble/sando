@@ -121,9 +121,9 @@ function ToolManager:registerSignals()
 
 
 	self:registerSignal('OnAttack',
-		function(skill)
+		function(character)
 			for _,item in ipairs(self.tools.OnAttack) do
-				item.proc(skill)
+				item.proc(character)
 			end
 		end)
 

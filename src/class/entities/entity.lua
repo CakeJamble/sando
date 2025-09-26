@@ -41,6 +41,15 @@ function Entity:init(data, x, y, entityType)
     ohko = 0,
     late = 0
   }
+  self.lowerAfterSkillUse = {
+    hp = 0,
+    fp = 0,
+    attack = 0,
+    defense = 0,
+    speed = 0,
+    luck = 0,
+    growthRate = 0
+  }
   self.critMult = 2
   self.basic = data.basic
   self.skillPool = data.skillPool
@@ -368,6 +377,13 @@ function Entity:resetStatModifiers() --> void
     end
   end
 end;
+
+---@param statName string
+---@param stage integer
+function Entity:lowerAfterSkillResolves(statName, stage)
+  self.lowerAfterSkillUse[statName] = math.max(0, self.lowerAfterSkillUse[statName] - stage)
+end;
+
 
 --[[----------------------------------------------------------------------------------------------------
         Status

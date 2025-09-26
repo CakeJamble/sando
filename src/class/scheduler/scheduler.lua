@@ -35,6 +35,14 @@ function Scheduler:enter()
 		function(reward)
 			table.insert(self.rewards, reward)
 		end)
+	self:registerSignal("OnSkillResolved",
+		function(entity)
+			for stat,stage in pairs(entity.lowerAfterSkillUse) do
+				if stage > 0 then
+					entity:modifyBattleStat(stat, -stage)
+				end
+			end
+		end)
 end;
 
 ---@param name string
@@ -118,14 +126,6 @@ function Scheduler:removeKOs()
 		  self.enemyTeam:removeMembers(koEnemies)
 		  self.characterTeam:registerKO(koCharacters)
   	end)
-  -- for i=1, #removeIndices do
-  --   print('removing ' .. self.combatants[removeIndices[i]].entityName .. ' from combat')
-  --   table.remove(self.combatants, removeIndices[i])
-  -- end
-
-  -- self.enemyTeam:removeMembers(koEnemies)
-  -- self.characterTeam:registerKO(koCharacters)
-
   return duration
 end;
 

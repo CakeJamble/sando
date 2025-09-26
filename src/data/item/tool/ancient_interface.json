@@ -1,7 +1,7 @@
 {
 	"name": "Ancient Interface",
-	"signal": "OnAttack",
-	"description": "Your first attack each combat always crits",
+	"signal": "OnStartCombat",
+	"description": "Team receives a double Luck boost for the first turn of each combat",
 	"flavorText": "There's a satisfying clack to the keys.",
 	"rarity": "common"
 }
