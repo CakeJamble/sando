@@ -2,6 +2,7 @@ require('util.globals')
 local flux = require('libs.flux')
 local Projectile = require('class.entities.projectile')
 local Timer = require('libs.hump.timer')
+local Signal = require('libs.hump.signal')
 
 return function(ref, qteBonus, qteManager)
   local skill = ref.skill
@@ -40,6 +41,7 @@ return function(ref, qteBonus, qteManager)
             function()
               target:heal(amount)
               table.remove(ref.projectiles, 1)
+              Signal.emit("OnSkillResolved", ref)
               ref:endTurn(skill.duration, nil, skill.returnTweenType)
             end)
         ref.tweens['attack'] = attack

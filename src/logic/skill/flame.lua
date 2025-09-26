@@ -1,5 +1,6 @@
 require('util.globals')
 local Projectile = require('class.entities.projectile')
+local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local createBezierCurve = require('util.create_quad_bezier_curve')
@@ -61,12 +62,14 @@ return function(ref, qteManager)
         hasCollided = true
         target:takeDamage(damage, luck)
         ref.tweens.attack:stop()
-        table.remove(ref.projectiles, 1) 
+        table.remove(ref.projectiles, 1)
+        Signal.emit("OnSkillResolved", ref)
         ref:endTurn(skill.duration)
       elseif not target then -- recoil onto user
         ref:takeDamage(damage, 0)
         ref.tweens.attack:stop()
         table.remove(ref.projectiles, 1)
+        Signal.emit("OnSkillResolved", ref)
         ref:endTurn(skill.duration)
       end
     end

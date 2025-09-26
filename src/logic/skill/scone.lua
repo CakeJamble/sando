@@ -3,6 +3,7 @@ local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local Timer = require('libs.hump.timer')
+local Signal = require('libs.hump.signal')
 
 return function(ref, qteBonus, qteManager)
   local skill = ref.skill
@@ -50,6 +51,7 @@ return function(ref, qteBonus, qteManager)
         end
       end)
       :oncomplete(function()
+        Signal.emit("OnSkillResolved", ref)
         ref:endTurn(skill.duration, nil, skill.returnTweenType)
       end)
   end)

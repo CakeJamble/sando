@@ -46,6 +46,7 @@ return function(ref, qteBonus, qteManager)
       end
     end)
     :oncomplete(function()
+      Signal.emit("OnSkillResolved", ref)
       ref:endTurn(skill.duration, nil, skill.returnTweenType)
     end)
     ref.tweens['attack'] = attack
