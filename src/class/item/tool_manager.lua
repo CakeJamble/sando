@@ -73,7 +73,8 @@ function ToolManager.initToolLists()
 		OnSwapMembers = {},
 		OnQTESuccess = {},
 		OnSellAccessory = {},
-		OnEnemyBuffed = {}
+		OnEnemyBuffed = {},
+		OnSkillResolved = {},
 	}
 
 	return result
@@ -173,6 +174,13 @@ function ToolManager:registerSignals()
 		function(accessory)
 			for _,item in ipairs(self.tools.OnAccSell) do
 				item.proc(accessory)
+			end
+		end)
+
+	self:registerSignal('OnSkillResolved',
+		function(entity)
+			for _,item in ipairs(self.tools.OnSkillResolved) do
+				if entity.type == "character" then item.proc(entity) end
 			end
 		end)
 end;
