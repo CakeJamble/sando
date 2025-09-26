@@ -79,21 +79,24 @@ function Scheduler:resetCamera(duration)
 	flux.to(camera, duration, {x = self.cameraPosX, y = self.cameraPosY, scale = 1})
 end;
 
+---@return integer Duration of time for longest faint animation
 function Scheduler:removeKOs()
 	local koEnemies = {}
 	local koCharacters = {}
-	for i=1, #self.combatants do
-		local entity = self.combatants[i]
+	local duration = 0
+
+	-- Get KO duration first so they aren't removed before seeing them faint
+	for _,entity in ipairs(self.combatants) do
 		if not entity:isAlive() then
-			if entity.type == 'enemy' then
+			local faintDuration = entity:startFainting()
+			duration = math.max(duration, faintDuration)
+			if entity.type == "enemy" then
 				table.insert(koEnemies, entity)
 			else
 				table.insert(koCharacters, entity)
 			end
-		else
-			self.combatants[i]:resetDmgDisplay()
-			-- self.combatants[i].state = 'idle'
 		end
+		entity:resetDmgDisplay()
 	end
 
   local removeIndices = {}
@@ -105,13 +108,25 @@ function Scheduler:removeKOs()
     end
   end
 
-  for i=1, #removeIndices do
-    print('removing ' .. self.combatants[removeIndices[i]].entityName .. ' from combat')
-    table.remove(self.combatants, removeIndices[i])
-  end
+  Timer.after(duration,
+  	function()
+		  for i=1, #removeIndices do
+		    print('removing ' .. self.combatants[removeIndices[i]].entityName .. ' from combat')
+		    table.remove(self.combatants, removeIndices[i])
+		  end
 
-  self.enemyTeam:removeMembers(koEnemies)
-  self.characterTeam:registerKO(koCharacters)
+		  self.enemyTeam:removeMembers(koEnemies)
+		  self.characterTeam:registerKO(koCharacters)
+  	end)
+  -- for i=1, #removeIndices do
+  --   print('removing ' .. self.combatants[removeIndices[i]].entityName .. ' from combat')
+  --   table.remove(self.combatants, removeIndices[i])
+  -- end
+
+  -- self.enemyTeam:removeMembers(koEnemies)
+  -- self.characterTeam:registerKO(koCharacters)
+
+  return duration
 end;
 
 ---@return boolean
