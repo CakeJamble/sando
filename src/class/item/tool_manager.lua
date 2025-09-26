@@ -157,9 +157,9 @@ function ToolManager:registerSignals()
 		end)
 
 	self:registerSignal('OnPurchase',
-		function()
+		function(characterTeam)
 			for _,item in ipairs(self.tools.OnPurchase) do
-				item.proc()
+				item.proc(characterTeam)
 			end
 		end)
 
