@@ -24,7 +24,7 @@ local Entity = Class{
 ---@param data table
 ---@param x integer
 ---@param y integer
----@param type string
+---@param entityType string
 function Entity:init(data, x, y, entityType)
   self.type = entityType
   self.entityName = data.entityName
