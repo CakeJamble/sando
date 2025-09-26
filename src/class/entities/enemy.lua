@@ -28,14 +28,8 @@ function Enemy:init(data)
 
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
   self.drawKOStars = false
-
   self.sfx = SoundManager(AllSounds.sfx.entities.enemy[self.entityName])
 
-  self.stagingPositions = {
-    projectileAttack = {
-      x = 400, y = 200
-    }
-  }
   Signal.register('OnStartCombat',
     function()
       self.oPos.x = self.pos.x
