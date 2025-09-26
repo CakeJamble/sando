@@ -31,10 +31,10 @@ end;
 
 function Scheduler:enter()
 	-- for Signal registration that is shared amongst all Scheduler classes
-	self:registerSignal('OnEnemyKO',
-		function(reward)
-			table.insert(self.rewards, reward)
-		end)
+	-- self:registerSignal('OnEnemyKO',
+	-- 	function(reward)
+	-- 		table.insert(self.rewards, reward)
+	-- 	end)
 	self:registerSignal("OnSkillResolved",
 		function(entity)
 			for stat,stage in pairs(entity.lowerAfterSkillUse) do
@@ -133,6 +133,11 @@ function Scheduler:removeKOs(activeEntity)
 		  -- Emit proper signals
 		  self:emitDeathSignals(activeEntity, koCharacters, koEnemies)
 
+		  -- Put their rewards in the bag
+		  for _,enemy in ipairs (koEnemies) do
+		  	local reward = enemy:getRewards()
+		  	table.insert(self.rewards, reward)
+		  end
   	end)
   return duration
 end;
