@@ -2,16 +2,19 @@ require('util.globals')
 local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
-local addBezierSegment = require('util.add_bezier_segment')
+local createBezierCurve = require('util.create_quad_bezier_curve')
+
 -- Duration field of flame skill is the skill to hit ONE target
 ---@param ref Enemy
 ---@param qteManager? QTEManager
 return function(ref, qteManager)
-  local stageX, stageY = ref.stagingPositions.projectileAttack.x, ref.stagingPositions.projectileAttack.y
+  local skill = ref.skill
+  local targets = ref.targets
+  local stageX = ref.pos.x - 20
+  local stageY = (targets[1].pos.y + targets[#targets].pos.y) / 2
   flux.to(ref.pos, 1, {x = stageX, y = stageY})
   :oncomplete(function()
-    local skill = ref.skill
-    local targets = ref.targets
+
     local damage = ref.battleStats['attack'] + skill.damage
     local luck = ref.battleStats.luck
     local flameTravelTime = skill.duration
@@ -32,31 +35,21 @@ return function(ref, qteManager)
       -- ref:signalRight()
     end
 
+    -- Add positions to flame's path based on coin flip above
     for i=start, stop, step do
       local target = targets[i]
-      table.insert(tPos, target.hitbox)
+      local x,y = target.hitbox.x + (target.hitbox.w / 2), target.hitbox.y + target.hitbox.h
+      table.insert(tPos, {x=x,y=y})
       table.insert(hasCollided, false)
     end
-    table.insert(tPos, ref.hitbox)
+    local rx,ry = ref.hitbox.x + ref.hitbox.w / 2, ref.hitbox.y + ref.hitbox.h
+    table.insert(tPos, {x=rx, y=ry})
 
     local flame = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
     table.insert(ref.projectiles, flame)
 
-    -- Bezier Curve
-    local vertices = {}
-    local startX, startY = flame.pos.x, flame.pos.y
-    table.insert(vertices, startX); table.insert(vertices, startY);
-    local offsetX = 80 -- num px in front/behind before next bezier segment for collision
-    local sign = -1
-    for i,hitbox in ipairs(tPos) do
-      local sign = (i % 2 == 0) and 1 or -1
-      offsetX = sign * offsetX
-      local goalX, goalY = hitbox.x + hitbox.w / 2, hitbox.y + hitbox.h
-      local prevX, prevY = vertices[#vertices - 1], vertices[#vertices]
-      addBezierSegment(vertices, prevX, prevY, goalX, goalY, offsetX)
-    end
-
-    local curve = love.math.newBezierCurve(vertices)
+    -- Define path & collision, then begin skill
+    local curve = createBezierCurve(flame.pos.x, flame.pos.y, tPos[1].x, tPos[1].y)
     flame.progress = 0
 
     local checkCollision = function()
@@ -73,19 +66,25 @@ return function(ref, qteManager)
         end
       end
     end
-
-    local attack = flux.to(flame, flameTravelTime * 2 * (#targets), {progress = 1}):ease("linear")
+    local attack = flux.to(flame, flameTravelTime, {progress = 1}):ease("linear")
       :onupdate(function()
         flame.pos.x, flame.pos.y = curve:evaluate(flame.progress)
         checkCollision()
       end)
-      :oncomplete(function()
-        if flawlessDodge then ref:takeDamage(damage, luck) end
-        flux.to(flame.dims, 0.25, {r=0}):ease("linear")
-          :oncomplete(function() table.remove(ref.projectiles, 1) end)
-        ref:endTurn(skill.duration)
-      end)
+      :oncomplete(function() flame.progress = 0 end)
 
+    for i=2, #tPos do
+      local v = {}
+      local x, y = tPos[i-1].x, tPos[i-1].y
+      goalX, goalY = tPos[i].x, tPos[i].y
+      local c = createBezierCurve(x, y, goalX, goalY)
+      attack = attack:after(flameTravelTime, {progress = 1}):ease("linear")
+        :onupdate(function()
+          flame.pos.x, flame.pos.y = c:evaluate(flame.progress)
+          checkCollision()
+        end)
+        :oncomplete(function() flame.progress = 0 end)
+    end
     ref.tweens['attack'] = attack
   end)
 
