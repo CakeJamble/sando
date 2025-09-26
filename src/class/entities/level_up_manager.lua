@@ -173,8 +173,8 @@ function LevelUpManager.initUI(members)
 	return uiTable
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function LevelUpManager:gamepadpressed(joystick, button)
 	if button == 'a' and self.isActive then
 		if self.isDisplayingNotification then

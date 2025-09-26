@@ -158,8 +158,8 @@ function combat:mousereleased(x, y, button, istouch, presses)
   imgui.love.MouseReleased(button)
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function combat:gamepadpressed(joystick, button)
   if button == 'start' then
     -- Gamestate.push(states['pause'])
@@ -173,8 +173,8 @@ function combat:gamepadpressed(joystick, button)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function combat:gamepadreleased(joystick, button)
   if self.turnManager and self.turnManager.qteManager.activeQTE then
     self.turnManager.qteManager:gamepadreleased(joystick, button)

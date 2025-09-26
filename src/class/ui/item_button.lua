@@ -14,8 +14,8 @@ function ItemButton:init(pos, index, itemList, actionButton)
   self.description = 'Use an item to gain an advantage'
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function ItemButton:gamepadpressed(joystick, button)
   SubMenuButton.gamepadpressed(self, joystick, button)
 

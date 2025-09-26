@@ -394,8 +394,8 @@ function Character:keypressed(key)
   -- if in movement state, does nothing
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function Character:gamepadpressed(joystick, button)
   if self.actionUI and self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
@@ -412,8 +412,8 @@ function Character:gamepadpressed(joystick, button)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function Character:gamepadreleased(joystick, button)
   if button == 'rightshoulder' then
       self.canGuard = false

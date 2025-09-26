@@ -78,8 +78,8 @@ function TapAnalogLeftQTE:beginQTE(callback)
 		end)
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function TapAnalogLeftQTE:gamepadpressed(joystick, button)
 	if button == 'dpleft' and not self.signalEmitted then
 		local goalWidth = self.progressBar:increaseMeter(self.increaseAmount)
@@ -88,8 +88,8 @@ function TapAnalogLeftQTE:gamepadpressed(joystick, button)
 	end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function TapAnalogLeftQTE:gamepadreleased(joystick, button)
 end;
 

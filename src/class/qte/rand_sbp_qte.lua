@@ -101,8 +101,8 @@ function randSBP:beginQTE(callback)
 	end)
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function randSBP:gamepadpressed(joystick, button)
 	if self.displayButton and not self.qteComplete then
 		local qteSuccess = false
@@ -119,8 +119,8 @@ function randSBP:gamepadpressed(joystick, button)
 	end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function randSBP:gamepadreleased(joystick, button)
 end;
 

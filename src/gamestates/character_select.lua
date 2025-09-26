@@ -72,8 +72,8 @@ function character_select:keypressed(key)
   -- statPreview = character_select:setStatPreview()
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function character_select:gamepadpressed(joystick, button)
   if button == 'dpright' then
     character_select:set_right()

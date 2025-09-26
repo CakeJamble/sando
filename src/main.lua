@@ -55,6 +55,7 @@ Text.configure.add_text_sound(Audio.text.default, 0.5)
 
 local JoystickUtils = require 'util.joystick_utils'
 
+---@param args table Arguments to set the game environment (test vs prod, etc.)
 function love.load(args)
   -- Screen Scaling
   shove.setResolution(640, 360, {
@@ -104,6 +105,7 @@ function love.load(args)
   end
 end;
 
+---@param joystick love.Joystick
 function love.joystickadded(joystick)
   print("Joystick connected: " .. joystick:getName())
 
@@ -112,6 +114,7 @@ function love.joystickadded(joystick)
   end
 end;
 
+---@param joystick love.Joystick
 function love.joystickremoved(joystick)
   print("Joystick disconnected: " .. joystick:getName())
 
@@ -120,6 +123,7 @@ function love.joystickremoved(joystick)
   end
 end;
 
+---@param dt number
 function love.update(dt)
   JoystickUtils.update(dt)
 

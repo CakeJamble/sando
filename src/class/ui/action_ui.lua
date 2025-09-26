@@ -169,8 +169,8 @@ end
 function ActionUI:keypressed(key) --> void
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function ActionUI:gamepadpressed(joystick, button) --> void
   if self.active then
 ----------------------- Button Tweening ---------------------------

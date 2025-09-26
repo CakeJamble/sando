@@ -112,8 +112,8 @@ function mbpQTE:handleQTE()
 		end)
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function mbpQTE:gamepadpressed(joystick, button)
 	if not self.qteComplete and button == self.inputSequence[self.buttonsIndex].val then
 		self.alphas[self.buttonsIndex] = 0
@@ -141,8 +141,8 @@ function mbpQTE:gamepadpressed(joystick, button)
 	end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function mbpQTE:gamepadreleased(joystick, button)
 end;
 

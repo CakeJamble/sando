@@ -192,8 +192,8 @@ function reward:increaseMoney()
     end)
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function reward:gamepadpressed(joystick, button)
   self.levelUpManager:gamepadpressed(joystick, button)
   self.lootManager:gamepadpressed(joystick, button)

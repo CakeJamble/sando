@@ -59,8 +59,8 @@ function RingQTE:beginQTE(callback)
 	end)
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function RingQTE:gamepadpressed(joystick, button)
 	if button == self.actionButton then
 		if self.ring.revActive then
@@ -97,8 +97,8 @@ function RingQTE:gamepadpressed(joystick, button)
 
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function RingQTE:gamepadreleased(joystick, button)
 end;
 
