@@ -74,7 +74,7 @@ function SkillCommand.getQTEBonus(qteBonus)
   return result
 end;
 
----@param qteBonus string
+---@param qteBonus? fun(val: number): number
 function SkillCommand:executeSkill(qteBonus)
   self.entity.skill.proc(self.entity, qteBonus, self.qteManager)
 end

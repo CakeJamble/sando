@@ -143,9 +143,9 @@ function ToolManager:registerSignals()
 		end)
 
 	self:registerSignal('OnKO',
-		function()
+		function(character, enemies, koEnemies)
 			for _,item in ipairs(self.tools.OnKO) do
-				item.proc()
+				item.proc(character, enemies, koEnemies)
 			end
 		end)
 

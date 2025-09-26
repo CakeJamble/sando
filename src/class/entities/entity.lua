@@ -391,13 +391,27 @@ end;
 
 ---@param status string
 function Entity:applyStatus(status)
-  local chance = love.math.random()
+  if not self:isAlreadyAfflicted(status) then
+    local chance = love.math.random()
 
-  if chance > self.statusResist[status] then
-    table.insert(self.statuses, status)
-  else
-    print('resisted!')
+    if chance > self.statusResist[status] then
+      table.insert(self.statuses, status)
+    else
+      print('resisted!')
+    end
   end
+end;
+
+---@param status string
+---@return boolean
+function Entity:isAlreadyAfflicted(status)
+  for _,curr in ipairs(self.statuses) do
+    if curr == status then
+      return true
+    end
+  end
+
+  return false
 end;
 
 ---@param statuses string[]
