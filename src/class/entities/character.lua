@@ -56,8 +56,7 @@ local Character = Class{__includes = Entity,
 ---@param data table
 ---@param actionButton string
 function Character:init(data, actionButton)
-  self.type = 'character'
-  Entity.init(self, data, Character.xCombatStart, Character.yPos)
+  Entity.init(self, data, Character.xCombatStart, Character.yPos, "character")
   self.actionButton = actionButton
   self.basic = data.basic
   self.skillPool = data.skillPool

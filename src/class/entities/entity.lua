@@ -24,7 +24,9 @@ local Entity = Class{
 ---@param data table
 ---@param x integer
 ---@param y integer
-function Entity:init(data, x, y)
+---@param type string
+function Entity:init(data, x, y, entityType)
+  self.type = entityType
   self.entityName = data.entityName
   self.baseStats = self.copyStats(data)
   self.battleStats = self.copyStats(data)
@@ -56,6 +58,7 @@ function Entity:init(data, x, y)
   self.baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
   self.animations = {}
   self.currentAnimTag = 'idle'
+  self.koAnimDuration = data.koAnimDuration or 1.5
 
   self.pos = {x = x, y = y, r = 0, a = 1}
   self.tPos = {x = 0, y = 0}
@@ -453,24 +456,14 @@ function Entity:takeDamage(amount, attackerLuck) --> void
     self.battleStats["hp"] = newHP
   end
 
-  if self:isAlive() then
-    self.currentAnimTag = 'flinch'
-    Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
-  else
-    self.currentAnimTag = 'ko'
-  end
-
-  -- Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
+  self.currentAnimTag = 'flinch'
+  Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
 end;
 
 ---@param amount integer
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
-  if self:isAlive() then
-    self.currentAnimTag = 'flinch'
-  else
-    self.currentAnimTag = 'ko'
-  end
+  self.currentAnimTag = 'flinch'
 end;
 
 ---@param attackerLuck integer
@@ -489,6 +482,11 @@ function Entity:calcCritChance(attackerLuck)
   local chance = math.min(100, math.max(1, (attackerLuck / 4) - (luck / 8)))
   chance = chance / 100
   return chance
+end;
+
+function Entity:startFainting()
+  self.currentAnimTag = "ko"
+  return self.koAnimDuration
 end;
 
 --[[----------------------------------------------------------------------------------------------------
