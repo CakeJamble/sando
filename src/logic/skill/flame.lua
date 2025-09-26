@@ -18,19 +18,22 @@ return function(ref, qteManager)
     local luck = ref.battleStats.luck
     local flameTravelTime = skill.duration
 
-    -- Targets of skill
-    -- Top to bottom vs bottom to top
+    -- Does flame travel Top-to-Bottom or Bottom-to-Top
     local chance = love.math.random()
     local isTopToBottom = chance <= 0.5
     local tPos = {}
     local start, stop, step
+    local direction
     if isTopToBottom then
       start, stop, step = 1, #targets, 1
-      -- ref:signalLeft()
+      direction = "right"
     else
       start, stop, step = #targets, 1, -1
-      -- ref:signalRight()
+      direction = "left"
     end
+
+--! uncomment when animation is done
+    -- ref:telegraphSkill(skill.name, direction)
 
     -- Add positions to flame's path in the order dictated by the coin flip
     for i=start, stop, step do
