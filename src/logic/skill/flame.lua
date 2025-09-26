@@ -48,7 +48,7 @@ return function(ref, qteManager)
     table.insert(ref.projectiles, flame)
 
     -- Define path & collision, then begin skill
-    local curve = createBezierCurve(flame.pos.x, flame.pos.y, tPos[1].x, tPos[1].y)
+    local curve = createBezierCurve(flame.pos.x, flame.pos.y, tPos[1].x, tPos[1].y, 1, isTopToBottom)
     flame.progress = 0
 
     local checkCollision = function(target)
@@ -83,8 +83,8 @@ return function(ref, qteManager)
     for i=2, #tPos do
       local prev = tPos[i-1]
       local curr = tPos[i]
-      local c = createBezierCurve(prev.x, prev.y, curr.x, curr.y)
-      attack = attack:after(flameTravelTime, {progress = 1}):ease("linear")
+      local c = createBezierCurve(prev.x, prev.y, curr.x, curr.y, i, isTopToBottom)
+      attack = attack:after(flameTravelTime/2, {progress = 1}):ease("linear")
         :onupdate(function()
           flame.pos.x, flame.pos.y = c:evaluate(flame.progress)
         end)
