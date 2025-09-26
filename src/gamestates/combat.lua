@@ -83,8 +83,6 @@ function combat:init()
         healthDropDuration = 0.5
       end
 
-
-
       local delay = 0.25
       local newHP = math.min(character.totalHP, math.max(0, character.currHP - amount))
       flux.to(self.characterTeamHP[self.targetedCharacterIndex], healthDropDuration, {currHP = newHP})

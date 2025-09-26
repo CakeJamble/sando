@@ -17,6 +17,7 @@ return function(ref, qteManager)
     local damage = ref.battleStats['attack'] + skill.damage
     local luck = ref.battleStats.luck
     local flameTravelTime = skill.duration
+    local hasCollided = false
 
     -- Does flame travel Top-to-Bottom or Bottom-to-Top
     local chance = love.math.random()
@@ -52,22 +53,21 @@ return function(ref, qteManager)
     flame.progress = 0
 
     local checkCollision = function(target)
+      if hasCollided then
+        return
+      end
       if target and not target.isJumping then
-        print('damage taken')
+        print(target.entityName .. " took " .. damage .. " damage")
+        hasCollided = true
         target:takeDamage(damage, luck)
         ref.tweens.attack:stop()
-        flux.to(flame.dims, 0.25, {r=0}):ease("linear")
-          :oncomplete(function() 
-            table.remove(ref.projectiles, 1) 
-            ref:endTurn(skill.duration)
-          end)
+        table.remove(ref.projectiles, 1) 
+        ref:endTurn(skill.duration)
       elseif not target then -- recoil onto user
         ref:takeDamage(damage, 0)
-        flux.to(flame.dims, 0.25, {r=0}):ease("linear")
-          :oncomplete(function()
-            table.remove(ref.projectiles, 1)
-            ref:endTurn(skill.duration)
-          end)
+        ref.tweens.attack:stop()
+        table.remove(ref.projectiles, 1)
+        ref:endTurn(skill.duration)
       end
     end
 
@@ -95,5 +95,4 @@ return function(ref, qteManager)
     end
     ref.tweens['attack'] = attack
   end)
-
 end;
