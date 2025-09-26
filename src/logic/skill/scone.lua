@@ -19,6 +19,7 @@ return function(ref, qteBonus, qteManager)
   end
   local sconeFlyingTime = 0.4
   local peakHeight = -tPos.h/2
+  local goalShadowY = tPos.y + tPos.h
 
   Timer.after(skill.duration, function()
     -- Create a Scone Projectile
@@ -35,6 +36,7 @@ return function(ref, qteBonus, qteManager)
     scone.progress = 0
 
     local attack = flux.to(scone, sconeFlyingTime, {progress = 1}):ease(skill.beginTweenType)
+      :onstart(function() scone:tweenShadow(sconeFlyingTime, goalShadowY) end)
       :onupdate(function()
         -- update position
         scone.pos.x, scone.pos.y = curve:evaluate(scone.progress)
