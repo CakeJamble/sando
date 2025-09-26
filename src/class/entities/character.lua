@@ -211,7 +211,6 @@ function Character:takeDamage(amount, attackerLuck)
   if self.isGuarding then
     self.battleStats.defense = self.battleStats.defense + self.blockMod
     bonusApplied = true
-    print('taking less damage')
   end
 
   Entity.takeDamage(self, amount, attackerLuck)
@@ -225,6 +224,7 @@ function Character:takeDamage(amount, attackerLuck)
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
   Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
+  Signal.emit('OnAttacked', self)
 end;
 
 ---@param amount integer
