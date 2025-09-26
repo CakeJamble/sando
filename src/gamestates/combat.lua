@@ -95,6 +95,7 @@ end;
 function combat:enter(previous)
   self.lockCamera = false
   self.soundManager = SoundManager(AllSounds.music)
+  self.soundManager:setGlobalVolume(0.1)
   self.soundManager:play("tetris_placeholder")
   self.characterTeam = loadCharacterTeam()
   self.rewardExp = 0
