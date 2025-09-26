@@ -30,11 +30,6 @@ function Scheduler:init(characterTeam, enemyTeam)
 end;
 
 function Scheduler:enter()
-	-- for Signal registration that is shared amongst all Scheduler classes
-	-- self:registerSignal('OnEnemyKO',
-	-- 	function(reward)
-	-- 		table.insert(self.rewards, reward)
-	-- 	end)
 	self:registerSignal("OnSkillResolved",
 		function(entity)
 			for stat,stage in pairs(entity.lowerAfterSkillUse) do

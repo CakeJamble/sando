@@ -119,12 +119,7 @@ function Character:startTurn()
   Entity.startTurn(self)
   self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
   self.actionUI.active = true
-  -- Signal.emit('OnStartTurn', self)
-
-  -- Timer.after(0.25, function()
-  --   self.actionUI:set(self)
-  -- end
-  -- )
+  Signal.emit('OnStartTurn', self)
 end
 
 ---@param targets { [string]: Entity[]}
