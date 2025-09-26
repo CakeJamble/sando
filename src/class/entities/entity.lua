@@ -486,8 +486,10 @@ function Entity:takeDamage(amount, attackerLuck) --> void
     self.battleStats["hp"] = newHP
   end
 
-  self.currentAnimTag = 'flinch'
-  Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
+  if self:isAlive() then
+    self.currentAnimTag = 'flinch'
+    Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
+  end
 end;
 
 ---@param amount integer
