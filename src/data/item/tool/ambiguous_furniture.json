@@ -3,5 +3,5 @@
 	"signal": "OnPickup",
 	"description": "Slightly increase the base chance of item rarities",
 	"flavorText": "A popular item for completionists.",
-	"rarity": "shop"
+	"rarity": "shop",
 }

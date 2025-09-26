@@ -56,6 +56,7 @@ function combat:init()
   self.turnCount = 1
   self.encounteredPools = {}
   self.floorNumber = 1
+  self.paused = false
 
   for i=1,numFloors do
     self.encounteredPools[i] = {}
@@ -82,8 +83,6 @@ function combat:init()
         healthDropDuration = 0.5
       end
 
-
-
       local delay = 0.25
       local newHP = math.min(character.totalHP, math.max(0, character.currHP - amount))
       flux.to(self.characterTeamHP[self.targetedCharacterIndex], healthDropDuration, {currHP = newHP})
@@ -96,6 +95,7 @@ end;
 function combat:enter(previous)
   self.lockCamera = false
   self.soundManager = SoundManager(AllSounds.music)
+  self.soundManager:setGlobalVolume(0.1)
   self.soundManager:play("tetris_placeholder")
   self.characterTeam = loadCharacterTeam()
   self.rewardExp = 0
@@ -162,7 +162,9 @@ end;
 ---@param button string
 function combat:gamepadpressed(joystick, button)
   if button == 'start' then
-    Gamestate.push(states['pause'])
+    -- Gamestate.push(states['pause'])
+    self.paused = not self.paused
+    if self.paused then Signal.emit("OnPause") else Signal.emit("OnResume") end
   end
   if self.turnManager and self.turnManager.qteManager.activeQTE then
     self.turnManager.qteManager:gamepadpressed(joystick, button)
@@ -183,15 +185,14 @@ end;
 
 ---@param dt number
 function combat:update(dt)
+  if not self.paused then
   flux.update(dt)
-  if self.turnManager then
-    self.turnManager:update(dt)
+    if self.turnManager then
+      self.turnManager:update(dt)
+    end
+
+    Timer.update(dt)
   end
-  -- if self.lockCamera then
-  --   local cameraTarget = self.turnManager.activeEntity
-  --   camera:lockWindow(cameraTarget.x, cameraTarget.y, 0, cameraTarget.x + 100, 0, cameraTarget.y + 100)
-  -- end
-  Timer.update(dt)
 
   -- imgui
   imgui.love.Update(dt)
@@ -215,6 +216,12 @@ function combat:update(dt)
 
     if imgui.Checkbox("ATB System", atbSystem) then
       Entity.isATB = atbSystem[0]
+      for _,entity in ipairs(self.characterTeam.members) do
+        entity:setProgressBarPos()
+      end
+      for _,entity in ipairs(self.enemyTeam.members) do
+        entity:setProgressBarPos()
+      end
     end
 
     imgui.End()

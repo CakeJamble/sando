@@ -19,29 +19,38 @@ return function(ref, qteBonus, qteManager)
   end
   local sconeFlyingTime = 0.4
   local peakHeight = -tPos.h/2
+  local goalShadowY = tPos.y + tPos.h
 
   Timer.after(skill.duration, function()
     -- Create a Scone Projectile
     local scone = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
     local startX, startY = scone.pos.x, scone.pos.y
     table.insert(ref.projectiles, scone)
-    -- Signal.emit('ProjectileMade', scone)
-    -- Tween the scone projectile through the target
-    local attack = flux.to(scone.pos, sconeFlyingTime, {x = goalX}):ease(skill.beginTweenType)
-      :onupdate(function()
-      -- over duration, tween y in a parabola towards target
-      local t = (scone.pos.x - startX) / (goalX - startX)
-      scone.pos.y = startY + (goalY - startY) * t + peakHeight * (1 - (2 * t - 1)^2)
 
+    -- vertex
+    local controlX = startX + goalX / 2
+    local controlY = math.min(startY, goalY) - peakHeight
+    local curve = love.math.newBezierCurve(startX, startY, controlX, controlY, goalX, goalY)
+
+    -- tween value
+    scone.progress = 0
+
+    local attack = flux.to(scone, sconeFlyingTime, {progress = 1}):ease(skill.beginTweenType)
+      :onstart(function() scone:tweenShadow(sconeFlyingTime, goalShadowY) end)
+      :onupdate(function()
+        -- update position
+        scone.pos.x, scone.pos.y = curve:evaluate(scone.progress)
+
+        -- collision
         if not hasCollided and Collision.rectsOverlap(scone.hitbox, target.hitbox) then
           target:takeDamage(damage, luck)
           hasCollided = true
-          flux.to(scone.dims, 0.25, {r = 0}):ease('linear')
-            -- :oncomplete(function() Signal.emit('DespawnProjectile') end)
+          flux.to(scone.dims, 0.25, {r=0}):ease("linear")
             :oncomplete(function() table.remove(ref.projectiles, 1) end)
         end
       end)
-      :oncomplete(function() ref:endTurn(skill.duration, nil, skill.returnTweenType) end)
-      ref.tweens['attack'] = attack
+      :oncomplete(function()
+        ref:endTurn(skill.duration, nil, skill.returnTweenType)
+      end)
   end)
 end;

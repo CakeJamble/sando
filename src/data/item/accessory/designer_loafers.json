@@ -1,7 +1,7 @@
 {
 	"name": "Designer Loafers",
-	"signal": "OnTargetConfirm",
-	"description": "Gain 5 gold when you use a skill",
+	"signal": "OnEquip",
+	"description": "Recover from jumps faster",
 	"flavorText": "Classy",
 	"rarity": "rare"
 }

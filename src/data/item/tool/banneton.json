@@ -1,6 +1,6 @@
 {
 	"name": "Banneton",
-	"signal": "OnPickup",
+	"signal": "OnAttack",
 	"description": "Physical skills have a chance to burn",
 	"flavorText": "Every boule deserves a proper viking funeral.",
 	"rarity": "common"

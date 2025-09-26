@@ -1,5 +1,6 @@
 {
 	"name": "Bread Crust",
+	"rarity": "common",
 	"itemType": "support",
 	"isSingleTarget": true,
 	"effects": ["negate_damage"],

@@ -1,5 +1,6 @@
 {
 	"name": "Activated Almond",
+	"rarity": "uncommon",
 	"itemType": "support",
 	"isSingleTarget": true,
 	"effects": ["fp"],

@@ -1,5 +1,6 @@
 {
 	"name": "Fruit Juice",
+	"rarity": "rare",
 	"itemType": "support",
 	"isSingleTarget": true,
 	"effects": ["max_hp"],

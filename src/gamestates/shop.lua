@@ -1,9 +1,12 @@
 local Shop = {}
-local DialogManager = require('libs.ui.dialog_manager')
+local DialogManager = require('class.ui.dialog_manager')
 local ItemRandomizer = require('util.item_randomizer')
 local SoundManager = require('class.ui.sound_manager')
+local CharacterTeam = require('class.entities.character_team')
 
 function Shop:init()
+	shove.createLayer('background')
+	self.bg = love.graphics.newImage('asset/sprites/background/shop.png')
 	self.dialogManager = DialogManager()
 	self.dialogManager:getAll('shop')
 	self.textbox = Text.new("left",
@@ -79,6 +82,15 @@ function Shop:update(dt)
 end;
 
 function Shop:draw()
+	shove.beginDraw()
+	camera:attach()
+
+	shove.beginLayer('background')
+	love.graphics.draw(self.bg,0,0,0,2,2)
+	shove.endLayer()
+
+	camera:detach()
+	shove.endDraw()
 end;
 
 return Shop

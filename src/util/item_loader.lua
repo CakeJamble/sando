@@ -22,6 +22,7 @@ local function loadItem(itemName, itemType)
 	local image = love.graphics.newImage('asset/sprites/item/' .. itemType .. '/' .. itemName .. '.png')
 	data.image = image
 
+	data.value = 10
 	return data
 end
 

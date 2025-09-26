@@ -1,5 +1,6 @@
 {
 	"name": "Sweet Treat",
+	"rarity": "uncommon",
 	"itemType": "support",
 	"isSingleTarget": true,
 	"effects": ["lvl_up"],

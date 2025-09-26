@@ -26,6 +26,7 @@ end;
 function DialogManager:getAll(category)
 	if not self.cache[category] then
 		local path = self.pref .. category .. ".json"
+		print(path)
 		local file = love.filesystem.read(path)
 		self.cache[category] = json.decode(file)
 	end

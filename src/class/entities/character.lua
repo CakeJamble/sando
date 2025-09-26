@@ -56,8 +56,7 @@ local Character = Class{__includes = Entity,
 ---@param data table
 ---@param actionButton string
 function Character:init(data, actionButton)
-  self.type = 'character'
-  Entity.init(self, data, Character.xCombatStart, Character.yPos)
+  Entity.init(self, data, Character.xCombatStart, Character.yPos, "character")
   self.actionButton = actionButton
   self.basic = data.basic
   self.skillPool = data.skillPool
@@ -93,6 +92,8 @@ function Character:init(data, actionButton)
   self.canJump = false
   self.guardCooldownFinished = true
   self.isJumping = false
+  self.baseLandingLag = Character.landingLag
+  self.landingLagMods = {}
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
   self.canLCancel = false
@@ -197,6 +198,12 @@ function Character:raiseMaxHP(pct)
   self.battleStats.hp = newCurrHP
 end;
 
+---@param pct number
+function Character:lowerMaxHP(pct)
+  self.baseStats.hp = math.floor(0.5 + self.baseStats.hp * pct)
+  self.battleStats.hp = math.min(self.baseStats.hp, self.battleStats.hp)
+end;
+
 ---@param amount integer
 ---@param attackerLuck integer
 function Character:takeDamage(amount, attackerLuck)
@@ -248,6 +255,14 @@ function Character:recoil(additionalPenalty)
     end)
 end;
 
+---@return number
+function Character:getLandingLag()
+  local lag = self.baseLandingLag
+  for _,mult in pairs(self.landingLagMods) do
+    lag = lag * mult
+  end
+  return lag
+end;
 
 --[[----------------------------------------------------------------------------------------------------
         Equipped Items (Equips & Accessories)
@@ -255,6 +270,20 @@ end;
 
 function Character:equip(item, itemType)
   table.insert(self.equips[itemType], item)
+  if item.signal == "OnEquip" then
+    item.proc.equip(self)
+  end
+end;
+
+---@param itemType string
+---@param pos integer
+---@return { [string]: any }
+function Character:unequip(itemType, pos)
+  local item = table.remove(self.equips[itemType], pos)
+  if item.signal == "OnEquip" then
+    item.proc.unequip(self)
+  end
+  return item
 end;
 
 ---@deprecated
@@ -311,6 +340,19 @@ function Character:updateSkills()
   return result
 end;
 
+---@param skill table
+function Character:learnSkill(skill)
+  table.insert(self.currentSkills, skill)
+end;
+
+---@return any
+function Character:yieldSkillSelect()
+  return coroutine.yield({
+    routineType = "skillChoice",
+    character = self
+  })
+end;
+
 --[[----------------------------------------------------------------------------------------------------
         Animation
 ----------------------------------------------------------------------------------------------------]]
@@ -364,7 +406,8 @@ function Character:gamepadpressed(joystick, button)
   -- L-Cancel
   if button == 'leftshoulder' and self.canLCancel then
     print('l-cancel success')
-    self.landingLag = self.landingLag / 2
+    -- self.landingLag = self.landingLag / 2
+    self.landingLagMods["LCancel"] = 0.5
     self.hasLCanceled = true
   end
 end;
@@ -434,13 +477,16 @@ function Character:beginJump()
     end)
     :oncomplete(
       function()
-        Timer.after(self.landingLag,
+        local landingLag = self:getLandingLag()
+        Timer.after(landingLag,
           function()
             self.isJumping = false
             self.canJump = true
             self.landingLag = Character.landingLag
             self.canLCancel = false
+            self.landingLagMods["LCancel"] = nil
             self.hasLCanceled = false
+
           end)
       end)
   self.tweens['jump'] = jump

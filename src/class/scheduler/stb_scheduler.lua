@@ -26,27 +26,32 @@ function STBScheduler:enter()
 	Entity.isATB = false
 
 	local turnStart = function()
-		self:removeKOs()
-		self:winLossConsMet()
-		if self:winLossConsMet() then
-			-- transition to rewards
-			print('match done')
-		else
-			while not self.combatants[self.turnIndex]:isAlive() do
-				self.turnIndex = (self.turnIndex % #self.combatants) + 1
-			end
-			self.activeEntity = self.combatants[self.turnIndex]
-			local command
+		local duration = self:removeKOs()
 
-			if self.activeEntity.type == 'character' then
-				command = PlayerInputCommand(self.activeEntity, self)
-			else
-				command = AICommand(self.activeEntity, self)
-			end
-			self.activeCommand = command
-			self.turnIndex = (self.turnIndex % #self.combatants) + 1
-			self.activeCommand:start()
-		end
+		-- After longest faint animation finishes, check state of combat
+		Timer.after(duration,
+			function()
+						-- self:winLossConsMet()
+				if self:winLossConsMet() then
+					-- transition to rewards
+					print('match done')
+				else
+					while not self.combatants[self.turnIndex]:isAlive() do
+						self.turnIndex = (self.turnIndex % #self.combatants) + 1
+					end
+					self.activeEntity = self.combatants[self.turnIndex]
+					local command
+
+					if self.activeEntity.type == 'character' then
+						command = PlayerInputCommand(self.activeEntity, self)
+					else
+						command = AICommand(self.activeEntity, self)
+					end
+					self.activeCommand = command
+					self.turnIndex = (self.turnIndex % #self.combatants) + 1
+					self.activeCommand:start()
+				end
+			end)
 	end
 
 	self:registerSignal('NextTurn', turnStart)
@@ -104,7 +109,6 @@ function STBScheduler:checkQueues()
     end
 
     if self.activeCommand then
-      -- self:entitiesReactToTurnStart()
       print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
       self.activeCommand:start(self)
     end

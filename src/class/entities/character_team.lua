@@ -41,6 +41,15 @@ function CharacterTeam:increaseMoney(amount)
   self.money = self.money + amount
 end;
 
+---@param opts? table Optional arguments for excluding selection
+---@return any
+function CharacterTeam:yieldCharacterSelect(opts)
+  return coroutine.yield({
+    routineType = "characterChoice",
+    opts = opts or {}
+  })
+end;
+
 ---@param incomingSkill table
 ---@deprecated
 function CharacterTeam:startDefense(incomingSkill)

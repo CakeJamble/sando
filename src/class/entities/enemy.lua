@@ -17,9 +17,8 @@ local Enemy = Class{__includes = Entity,
 
 ---@param data table
 function Enemy:init(data)
-  self.type = 'enemy'
   self.enemyType = data.enemyType
-  Entity.init(self, data, Enemy.xPos, Enemy.yPos)
+  Entity.init(self, data, Enemy.xPos, Enemy.yPos, "enemy")
   local animationsPath = 'asset/sprites/entities/enemy/' .. self.enemyType .. '/' .. self.entityName .. '/'
   self:setAnimations(animationsPath)
   self.expReward = data.experienceReward
@@ -28,7 +27,6 @@ function Enemy:init(data)
 
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
   self.drawKOStars = false
-
   self.sfx = SoundManager(AllSounds.sfx.entities.enemy[self.entityName])
 
   Signal.register('OnStartCombat',
@@ -84,8 +82,7 @@ end;
 
 ---@param validTargets { [string]: Entity[]}
 function Enemy:setupOffense(validTargets)
-  local skillIndex = love.math.random(1, #self.skillPool)
-  self.skill = self.skillPool[skillIndex]
+  self.skill = self.getRandomSkill(self.skillPool, #validTargets)
   local targetType = self.skill.targetType
   local isSingleTarget = self.skill.isSingleTarget
   self:setTargets(validTargets, targetType)
@@ -108,6 +105,30 @@ function Enemy:targetSelect(targetType, isSingleTarget)
   end
 
   return targets
+end;
+
+---@param skillPool table
+---@param numValidTargets integer
+function Enemy.getRandomSkill(skillPool, numValidTargets)
+  local skill
+
+  if numValidTargets == 1 then
+    local singleTargetSkills = {}
+    for _,s in ipairs(skillPool) do
+      if s.isSingleTarget then
+        table.insert(singleTargetSkills)
+      end
+    end
+
+    local i = love.math.random(1, #singleTargetSkills)
+    skill = singleTargetSkills[i]
+  else
+    print('selecting from all skills')
+    local i = love.math.random(1, #skillPool)
+    skill = skillPool[i]
+  end
+
+  return skill
 end;
 
 ---@return table

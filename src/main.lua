@@ -20,7 +20,8 @@ states = {
   game              = require 'gamestates.game',
   reward            = require 'gamestates.reward',
   combat            = require 'gamestates.combat',
-  pause             = require 'gamestates.pause'
+  pause             = require 'gamestates.pause',
+  shop = require('gamestates.shop')
 }
 
 local framePath = 'asset/sprites/frame/'
@@ -55,50 +56,51 @@ Text.configure.add_text_sound(Audio.text.default, 0.5)
 local JoystickUtils = require 'util.joystick_utils'
 
 function love.load(args)
+  -- Screen Scaling
+  shove.setResolution(640, 360, {
+      fitMethod = "aspect",
+      renderMode = "layer",
+    })
+  local windowWidth, windowHeight = love.window.getDesktopDimensions()
+  windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
+  shove.setWindowMode(windowWidth, windowHeight, {
+    resizable = true
+  })
+
+  -- Camera
+  camera = Camera()
+
+  -- Input
+  input = {joystick = nil}
+  local joysticks = love.joystick.getJoysticks()
+  if joysticks[1] then
+    input.joystick = joysticks[1]
+    print('added joystick')
+  end
+
+  -- Fonts
+  Font = love.graphics.newFont('asset/thin_sans.ttf')
+  love.graphics.setFont(Font)
+
+  -- Audio
+  AllSounds = {sfx = {}, music = {}}
+  local sfxDir = 'asset/audio/sfx'
+  local musicDir = 'asset/audio/music'
+  loadAudio(sfxDir, AllSounds.sfx, "static")
+  loadAudio(musicDir, AllSounds.music, "stream")
+
+  -- Item Pools
+  ItemPools = loadItemPools()
+  
+  -- Test or Run
   local opts = parseArgs(args)
   if opts.test == "true" then
     print("Running tests only")
     runTests(opts)
   else
-    -- Screen Scaling
-    shove.setResolution(640, 360, {
-        fitMethod = "aspect",
-        renderMode = "layer",
-      })
-    local windowWidth, windowHeight = love.window.getDesktopDimensions()
-    windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
-    shove.setWindowMode(windowWidth, windowHeight, {
-      resizable = true
-    })
-
-    -- Camera
-    camera = Camera()
-
-    -- Input
-    input = {joystick = nil}
-    local joysticks = love.joystick.getJoysticks()
-    if joysticks[1] then
-      input.joystick = joysticks[1]
-      print('added joystick')
-    end
-
-    -- Fonts
-    Font = love.graphics.newFont('asset/thin_sans.ttf')
-    love.graphics.setFont(Font)
-
-    -- Audio
-    AllSounds = {sfx = {}, music = {}}
-    local sfxDir = 'asset/audio/sfx'
-    local musicDir = 'asset/audio/music'
-    loadAudio(sfxDir, AllSounds.sfx, "static")
-    loadAudio(musicDir, AllSounds.music, "stream")
-
-    -- Item Pools
-    ItemPools = loadItemPools()
-
-    -- Gamestates
-    Gamestate.registerEvents()
-    Gamestate.switch(states['main_menu'])
+  -- Gamestates
+  Gamestate.registerEvents()
+  Gamestate.switch(states['main_menu'])
   end
 end;
 

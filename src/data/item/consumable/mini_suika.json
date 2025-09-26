@@ -1,5 +1,6 @@
 {
 	"name": "Mini Suika",
+	"rarity": "common",
 	"itemType": "support",
 	"isSingleTarget": true,
 	"effects": ["heal"],
