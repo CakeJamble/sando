@@ -48,18 +48,6 @@ return function(ref, qteManager)
     local curve = createBezierCurve(flame.pos.x, flame.pos.y, tPos[1].x, tPos[1].y)
     flame.progress = 0
 
-    -- local checkCollision = function()
-    --   for i,target in ipairs(targets) do
-    --     -- if not hasCollided[i] and Collision.rectsOverlap(flame.hitbox, target.hitbox) then
-    --     if flame.hitbox.x == tPos[i].x and flame.hitbox.y == tPos[i].y and target.isJumping == false then
-    --       target:takeDamage(damage, luck)
-    --       ref.tweens.attack:stop()
-    --       flux.to(flame.dims, 0.25, {r=0}):ease("linear")
-    --         :oncomplete(function() table.remove(ref.projectiles, 1) end)
-    --       ref:endTurn(skill.duration)
-    --     end
-    --   end
-    -- end
     local checkCollision = function(target)
       if target and not target.isJumping then
         print('damage taken')
