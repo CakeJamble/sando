@@ -301,6 +301,21 @@ function Character:gainExp(amount)
   end
 end;
 
+---@return { [string]: integer } Stats from previous level
+function Character:levelUp()
+  local oldStats = {}
+  for stat,fcn in ipairs(self.growthFunctions) do
+    oldStats[stat] = self.baseStats[stat]
+    self.baseStats[stat] = fcn(self.level)
+
+    if stat == "hp" or stat == "fp" then
+      local proportion = self.battleStats[stat] / oldStats[stat]
+      self.battleStats[stat] = math.floor(0.5 + (proportion * self.baseStats[stat]))
+    end
+  end
+  return oldStats
+end;
+
 -- Gets the required exp for the next level
   -- preconditions: none
   -- postconditions: updates self.experiencedRequired based on polynomial scaling
