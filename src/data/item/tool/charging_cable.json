@@ -1,7 +1,7 @@
 {
 	"name": "Charging Cable",
 	"signal": "OnLevelUp",
-	"description": "Leveling up doubles the FP restored",
+	"description": "Leveling up restores FP slightly",
 	"flavorText": "If the phone dies, all the recipes go with it",
 	"rarity": "uncommon"
 }
