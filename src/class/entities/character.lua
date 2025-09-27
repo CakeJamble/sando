@@ -1,20 +1,10 @@
---! filename: Character
---[[
-  Character class
-  Used to create a character object, which consists of
-  a character's stats, skills, states, and gear.
-]]
--- require("util.skill_sheet")
--- require("util.stat_sheet")
 local SoundManager = require('class.ui.sound_manager')
 local Entity = require("class.entities.entity")
 local ActionUI = require("class.ui.action_ui")
 local Signal = require('libs.hump.signal')
 local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
--- require("class.item.gear")
-
-
+local statGrowthFunctions = require('util.calc_new_stats')
 local Class = require "libs.hump.class"
 
 ---@class Character: Entity
@@ -62,6 +52,7 @@ function Character:init(data, actionButton)
   self.skillPool = data.skillPool
   self.blockMod = 1
   self.level = 1
+  self.growthFunctions = statGrowthFunctions[self.entityName]
   self.currentSkills = {}
   self:updateSkills()
   self.qteSuccess = true
@@ -119,12 +110,7 @@ function Character:startTurn()
   Entity.startTurn(self)
   self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
   self.actionUI.active = true
-  -- Signal.emit('OnStartTurn', self)
-
-  -- Timer.after(0.25, function()
-  --   self.actionUI:set(self)
-  -- end
-  -- )
+  Signal.emit('OnStartTurn', self)
 end
 
 ---@param targets { [string]: Entity[]}
@@ -313,6 +299,21 @@ function Character:gainExp(amount)
     self.experienceRequired = self:getRequiredExperience()
     -- TODO: need to signal to current gamestate to push new level up reward state
   end
+end;
+
+---@return { [string]: integer } Stats from previous level
+function Character:levelUp()
+  local oldStats = {}
+  for stat,fcn in ipairs(self.growthFunctions) do
+    oldStats[stat] = self.baseStats[stat]
+    self.baseStats[stat] = fcn(self.level)
+
+    if stat == "hp" or stat == "fp" then
+      local proportion = self.battleStats[stat] / oldStats[stat]
+      self.battleStats[stat] = math.floor(0.5 + (proportion * self.baseStats[stat]))
+    end
+  end
+  return oldStats
 end;
 
 -- Gets the required exp for the next level

@@ -106,9 +106,9 @@ function ToolManager:registerSignals()
 		end)
 
 	self:registerSignal('OnStartCombat',
-		function()
+		function(characterTeam, enemyTeam)
 			for _,item in ipairs(self.tools.OnStartCombat) do
-				item.proc()
+				item.proc(characterTeam, enemyTeam)
 			end
 		end)
 
@@ -157,9 +157,9 @@ function ToolManager:registerSignals()
 		end)
 
 	self:registerSignal('OnPurchase',
-		function()
+		function(characterTeam)
 			for _,item in ipairs(self.tools.OnPurchase) do
-				item.proc()
+				item.proc(characterTeam)
 			end
 		end)
 

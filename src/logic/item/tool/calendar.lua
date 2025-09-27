@@ -1,3 +1,5 @@
+-- Signal: OnStartTurn
+---@param character Character
 return function(character)
 	local enemyTeam = character.targets
 	for _,enemy in ipairs(enemyTeam) do

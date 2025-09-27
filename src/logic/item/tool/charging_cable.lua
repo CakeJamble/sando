@@ -1,6 +1,6 @@
-return function(characterTeam)
-	for _,member in ipairs(characterTeam.members) do
-		local amount = math.floor(0.5 + member.battleStats.fp * 0.15)
-		member:refresh(amount)
-	end
+-- Signal: OnLevelUp
+---@param character Character
+return function(character)
+	local amount = math.floor(0.5 + character.battleStats.fp * 0.15)
+	character:refresh(amount)
 end;

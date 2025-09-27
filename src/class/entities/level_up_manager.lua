@@ -65,7 +65,8 @@ function LevelUpManager:createExpCoroutine(member, amount)
 			-- trigger level up
 			if member.level > previousLevel then
 				pb:reset()
-				Signal.emit('OnLevel', member, previousLevel)
+				local oldStats = member:levelUp()
+				Signal.emit('OnLevelUp', member)
 				self:displayNotification(member, function()
 					return member.entityName .. ' leveled up! [shake][color=#0000FF](' .. previousLevel
 						.. ' -> ' .. member.level .. ')[/color][/shake]'
