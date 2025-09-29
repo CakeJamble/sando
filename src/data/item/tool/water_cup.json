@@ -1,6 +1,6 @@
 {
 	"name": "Water Cup",
-	"signal": "OnSellEquip",
+	"signal": "OnEquipSell",
 	"description": "Slightly restore FP when you sell Equipment.",
 	"flavorText": "Someone filled it with soda...",
 	"rarity": "common"
