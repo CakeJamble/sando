@@ -155,10 +155,18 @@ function ToolManager:registerSignals()
 				item.proc(target, enemyTeam)
 			end
 		end)
+
 	self:registerSignal('OnDebuffed',
 		function(character)
 			for _,item in ipairs(self.tools.OnDebuffed) do
 				item.proc(character)
+			end
+		end)
+
+	self:registerSignal('OnEnemyBuffed',
+		function(enemy, characterTeam)
+			for _,item in ipairs(self.tools.OnEnemyBuffed) do
+				item.proc(enemy, characterTeam)
 			end
 		end)
 
@@ -198,16 +206,16 @@ function ToolManager:registerSignals()
 		end)
 
 	self:registerSignal('OnEquipSell',
-		function(equip)
+		function(equip, characterTeam)
 			for _,item in ipairs(self.tools.OnEquipSell) do
-				item.proc(equip)
+				item.proc(equip, characterTeam)
 			end
 		end)
 
 	self:registerSignal('OnAccSell',
-		function(accessory)
+		function(accessory, characterTeam)
 			for _,item in ipairs(self.tools.OnAccSell) do
-				item.proc(accessory)
+				item.proc(accessory, characterTeam)
 			end
 		end)
 

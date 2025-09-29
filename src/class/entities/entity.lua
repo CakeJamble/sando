@@ -175,7 +175,7 @@ function Entity:startTurn()
     self.tweens['pbTween'] = nil
   end
 
-  if self.hazards then
+  if self.hazards and not self.ignoreHazards then
     for _,hazard in ipairs(self.hazards) do
       hazard:proc()
     end
