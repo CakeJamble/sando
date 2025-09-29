@@ -1,3 +1,5 @@
+-- Signal: OnPickup
+---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local members = characterTeam.members
 	local randIndex = love.math.random(1, #members)
