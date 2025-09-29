@@ -1,3 +1,5 @@
+--Signal OnAttack
+---@param character Character
 return function(character)
 	for _,target in ipairs(character.targets) do
 		local isVulnerable = false
