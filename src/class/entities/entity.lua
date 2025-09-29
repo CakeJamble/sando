@@ -467,6 +467,18 @@ function Entity:cleanseOne(statusToCleanse)
   end
 end;
 
+---@param pct? number (0,1] Percentage of health to revive with
+function Entity:revive(pct)
+  local percent = pct or 0.5
+  local amount = math.floor(0.5 + self.baseStats.hp)
+
+  self:cleanse()
+  self:heal(amount)
+
+  -- play sfx, tween, etc
+end;
+
+
 --[[----------------------------------------------------------------------------------------------------
         Damage
 ----------------------------------------------------------------------------------------------------]]
