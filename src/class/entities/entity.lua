@@ -41,6 +41,7 @@ function Entity:init(data, x, y, entityType)
     ohko = 0,
     late = 0
   }
+  self.debuffImmune = false
   self.lowerAfterSkillUse = {
     hp = 0,
     fp = 0,
@@ -338,6 +339,10 @@ end;
 ---@param statName string
 ---@param stage integer
 function Entity:modifyBattleStat(statName, stage) --> void
+  if stage < 0 and self.debuffImmune then 
+    -- Add a flashy animation/effect here
+    return 
+  end
   -- clamping
   local maxStage = statStageCap
   local minStage = -statStageCap
@@ -391,13 +396,15 @@ end;
 
 ---@param status string
 function Entity:applyStatus(status)
-  if not self:isAlreadyAfflicted(status) then
-    local chance = love.math.random()
+  if not self.debuffImmune then
+    if not self:isAlreadyAfflicted(status) then
+      local chance = love.math.random()
 
-    if chance > self.statusResist[status] then
-      table.insert(self.statuses, status)
-    else
-      print('resisted!')
+      if chance > self.statusResist[status] then
+        table.insert(self.statuses, status)
+      else
+        print('resisted!')
+      end
     end
   end
 end;
