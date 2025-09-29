@@ -128,6 +128,13 @@ function ToolManager:registerSignals()
 			end
 		end)
 
+	self:registerSignal('OnAttacked',
+		function(character, enemy)
+			for _,item in ipairs(self.tools.OnAttacked) do
+				item.proc(character, enemy)
+			end
+		end)
+
 	self:registerSignal('OnGuard',
 		function(character)
 			for _,item in ipairs(self.tools.OnGuard) do
@@ -142,10 +149,30 @@ function ToolManager:registerSignals()
 			end
 		end)
 
+	self:registerSignal('OnBuff',
+		function(target, enemyTeam)
+			for _,item in ipairs(self.tools.OnBuff) do
+				item.proc(target, enemyTeam)
+			end
+		end)
+	self:registerSignal('OnDebuffed',
+		function(character)
+			for _,item in ipairs(self.tools.OnDebuffed) do
+				item.proc(character)
+			end
+		end)
+
 	self:registerSignal('OnKO',
 		function(character, enemies, koEnemies)
 			for _,item in ipairs(self.tools.OnKO) do
 				item.proc(character, enemies, koEnemies)
+			end
+		end)
+
+	self:registerSignal('OnFaint',
+		function(enemy, koCharacters)
+			for _,item in ipairs(self.tools.OnFaint) do
+				item.proc(enemy, koCharacters)
 			end
 		end)
 
