@@ -1,4 +1,4 @@
-local loadTool = require('util.tool_loader')
+local loadItem = require('util.item_loader')
 
 -- Signal: OnPickup
 ---@param characterTeam CharacterTeam
@@ -8,6 +8,6 @@ return function(characterTeam)
 	inventory:setMoney(newMoney)
 
 	-- Add animation?
-	local refurbishedIdol = loadTool('refurbished_idol')
-	inventory:addTool(refurbishedIdol)
+	local refurbishedIdol = loadItem('refurbished_idol', 'accessory')
+	inventory.accessoryManager:addItem(refurbishedIdol)
 end;
