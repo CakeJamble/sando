@@ -1,7 +1,7 @@
 {
 	"name": "Potted Plant",
 	"signal": "OnLevelUp",
-	"description": "Slightly increase FP on level up.",
+	"description": "Add an extra roll to FP bonus on level up.",
 	"flavorText": "It's plastic, but the mental health benefits are undeniable!",
 	"rarity": "uncommon"
 }
