@@ -1,8 +1,12 @@
+local Signal = require('libs.hump.signal')
+
+-- Signal: OnPickup
+---@param characterTeam CharacterTeam
 return function(characterTeam)
-	-- select character from menu
+	local function onDecision(character)
+		character.numSkills = character.numSkills + 1
+	end
 
-	-- temp
-	local character = characterTeam.members[1]
+	Signal.emit("ShowChooseCharacter", characterTeam)
 
-	character:addSkillSlot()
 end;
