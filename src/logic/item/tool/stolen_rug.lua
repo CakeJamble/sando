@@ -1,4 +1,6 @@
-return function(shop)
-	shop.isFirstItemFree = true
-	shop:raisePrices(0.1)
+local Signal = require('libs.hump.signal')
+
+-- Signal: OnEnterShop
+return function(_)
+	Signal.emit("DetectStolenRug")
 end;
