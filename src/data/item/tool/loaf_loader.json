@@ -1,7 +1,7 @@
 {
 	"name": "Loaf Loader",
 	"signal": "OnPickup",
-	"description": "On pickup, one character can learn any skill",
+	"description": "On pickup, one character can learn one of three random skills",
 	"flavorText": "The bread shinkansen.",
 	"rarity": "rare"
 }
