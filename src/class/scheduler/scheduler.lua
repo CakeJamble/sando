@@ -30,6 +30,7 @@ function Scheduler:init(characterTeam, enemyTeam)
 end;
 
 function Scheduler:enter()
+	self.characterTeam.usingFirstConsumable = true
 	self:registerSignal("OnSkillResolved",
 		function(entity)
 			for stat,stage in pairs(entity.lowerAfterSkillUse) do

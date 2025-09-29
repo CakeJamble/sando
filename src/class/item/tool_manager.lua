@@ -217,6 +217,10 @@ function ToolManager:registerSignals()
 				if entity.type == "character" then item.proc(entity) end
 			end
 		end)
+
+	self:registerSignal('OnConsumableUse',
+		function()
+		end)
 end;
 
 return ToolManager
