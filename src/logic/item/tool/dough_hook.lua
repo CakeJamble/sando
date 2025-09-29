@@ -1,4 +1,6 @@
-return function(characterTeam)
+-- Signal: OnStartCombat
+---@param characterTeam CharacterTeam
+return function(characterTeam, _)
 	for _,member in ipairs(characterTeam.members) do
 		local numStages = member.numSkillSlots - #member.currentSkills
 		if numStages > 0 then

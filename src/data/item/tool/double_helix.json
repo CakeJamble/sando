@@ -1,6 +1,6 @@
 {
 	"name": "Double Helix",
-	"signal": "OnTargetConfirm",
+	"signal": "OnPickup",
 	"description": "Adds +1 hit to currently learned multihit attacks",
 	"flavorText": "One strand short of a beautiful braid.",
 	"rarity": "rare"
