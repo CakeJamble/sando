@@ -156,6 +156,13 @@ function ToolManager:registerSignals()
 			end
 		end)
 
+	self:registerSignal('OnEnterShop',
+		function(characterTeam)
+			for _,item in ipairs(self.tools.OnEnterShop) do
+				item.proc(characterTeam)
+			end
+		end)
+
 	self:registerSignal('OnPurchase',
 		function(characterTeam)
 			for _,item in ipairs(self.tools.OnPurchase) do
