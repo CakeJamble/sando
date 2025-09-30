@@ -14,5 +14,5 @@ return function(team, act, floor, encounters)
 	}
 
 	local serialized = lume.serialize(data)
-	love.filesystem.write("savedata", serialized)
+	love.filesystem.write("run_savedata", serialized)
 end;

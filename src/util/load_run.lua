@@ -4,7 +4,7 @@ local CharacterTeam = require('class.entities.character_team')
 ---@param path? string
 ---@return table|nil
 return function(path)
-	local savePath = path or "savedata"
+	local savePath = path or "run_savedata"
 	local saveData = nil
 
 	if love.filesystem.getInfo(savePath) then
