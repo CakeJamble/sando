@@ -93,14 +93,14 @@ function combat:init()
 end;
 
 ---@param previous table
-function combat:enter(previous)
+---@param opts table
+function combat:enter(previous, opts)
   self.lockCamera = false
   self.soundManager = SoundManager(AllSounds.music)
   self.soundManager:setGlobalVolume(0.1)
   self.soundManager:play("tetris_placeholder")
-  -- self.characterTeam = opts.team
-  self.characterTeam = loadCharacterTeam()
-  -- self.log = opts.log or Log()
+  self.characterTeam = opts.team
+  self.log = opts.log or Log()
   self.rewardExp = 0
   self.rewardMoney = 0
 
