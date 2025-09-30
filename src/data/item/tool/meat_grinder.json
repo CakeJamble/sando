@@ -1,6 +1,6 @@
 {
 	"name": "Meat Grinder",
-	"signal": "OnStartCombat",
+	"signal": "OnPickup",
 	"description": "Enemies in the next 3 encounters start with 1 HP",
 	"flavorText": "Good prep pays off.",
 	"rarity": "event"

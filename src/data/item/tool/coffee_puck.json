@@ -2,6 +2,6 @@
 	"name": "Coffee Puck",
 	"signal": "OnPickup",
 	"description": "Choose from 3 random consumables",
-	"flavorText": "Rock solid. A sign of overextraction.",
+	"flavorText": "Split in two, the puck shows signs of even extraction.",
 	"rarity": "uncommon"
 }

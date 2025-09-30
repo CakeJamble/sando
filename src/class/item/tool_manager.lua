@@ -73,7 +73,8 @@ function ToolManager.initToolLists()
 		OnSwapMembers = {},
 		OnQTESuccess = {},
 		OnSellAccessory = {},
-		OnEnemyBuffed = {}
+		OnEnemyBuffed = {},
+		OnSkillResolved = {},
 	}
 
 	return result
@@ -105,9 +106,9 @@ function ToolManager:registerSignals()
 		end)
 
 	self:registerSignal('OnStartCombat',
-		function()
+		function(characterTeam, enemyTeam)
 			for _,item in ipairs(self.tools.OnStartCombat) do
-				item.proc()
+				item.proc(characterTeam, enemyTeam)
 			end
 		end)
 
@@ -121,9 +122,16 @@ function ToolManager:registerSignals()
 
 
 	self:registerSignal('OnAttack',
-		function(skill)
+		function(character)
 			for _,item in ipairs(self.tools.OnAttack) do
-				item.proc(skill)
+				item.proc(character)
+			end
+		end)
+
+	self:registerSignal('OnAttacked',
+		function(character, enemy)
+			for _,item in ipairs(self.tools.OnAttacked) do
+				item.proc(character, enemy)
 			end
 		end)
 
@@ -141,10 +149,38 @@ function ToolManager:registerSignals()
 			end
 		end)
 
+	self:registerSignal('OnBuff',
+		function(target, enemyTeam)
+			for _,item in ipairs(self.tools.OnBuff) do
+				item.proc(target, enemyTeam)
+			end
+		end)
+
+	self:registerSignal('OnDebuffed',
+		function(character)
+			for _,item in ipairs(self.tools.OnDebuffed) do
+				item.proc(character)
+			end
+		end)
+
+	self:registerSignal('OnEnemyBuffed',
+		function(enemy, characterTeam)
+			for _,item in ipairs(self.tools.OnEnemyBuffed) do
+				item.proc(enemy, characterTeam)
+			end
+		end)
+
 	self:registerSignal('OnKO',
-		function()
+		function(character, enemies, koEnemies)
 			for _,item in ipairs(self.tools.OnKO) do
-				item.proc()
+				item.proc(character, enemies, koEnemies)
+			end
+		end)
+
+	self:registerSignal('OnFaint',
+		function(enemy, koCharacters)
+			for _,item in ipairs(self.tools.OnFaint) do
+				item.proc(enemy, koCharacters)
 			end
 		end)
 
@@ -155,25 +191,43 @@ function ToolManager:registerSignals()
 			end
 		end)
 
+	self:registerSignal('OnEnterShop',
+		function(characterTeam)
+			for _,item in ipairs(self.tools.OnEnterShop) do
+				item.proc(characterTeam)
+			end
+		end)
+
 	self:registerSignal('OnPurchase',
-		function()
+		function(characterTeam)
 			for _,item in ipairs(self.tools.OnPurchase) do
-				item.proc()
+				item.proc(characterTeam)
 			end
 		end)
 
 	self:registerSignal('OnEquipSell',
-		function(equip)
+		function(equip, characterTeam)
 			for _,item in ipairs(self.tools.OnEquipSell) do
-				item.proc(equip)
+				item.proc(equip, characterTeam)
 			end
 		end)
 
 	self:registerSignal('OnAccSell',
-		function(accessory)
+		function(accessory, characterTeam)
 			for _,item in ipairs(self.tools.OnAccSell) do
-				item.proc(accessory)
+				item.proc(accessory, characterTeam)
 			end
+		end)
+
+	self:registerSignal('OnSkillResolved',
+		function(entity)
+			for _,item in ipairs(self.tools.OnSkillResolved) do
+				if entity.type == "character" then item.proc(entity) end
+			end
+		end)
+
+	self:registerSignal('OnConsumableUse',
+		function()
 		end)
 end;
 

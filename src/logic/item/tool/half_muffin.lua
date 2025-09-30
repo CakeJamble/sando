@@ -1,3 +1,5 @@
+-- Signal: OnPickup
+---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local members = characterTeam.members
 	local percentIncrease = 0.08

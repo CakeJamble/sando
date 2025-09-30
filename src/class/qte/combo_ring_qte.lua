@@ -51,8 +51,8 @@ function ComboRingQTE:beginQTE(callback)
 	end)
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function ComboRingQTE:gamepadpressed(joystick, button)
 	if button == self.actionButton then
 		local ring = self.rings[self.index]

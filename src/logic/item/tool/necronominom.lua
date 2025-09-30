@@ -1,3 +1,5 @@
+-- Signal: OnSellEquip
+---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local stats = {"hp", "fp", "attack", "defense", "speed", "luck"}
 	local i = love.math.random(1, #stats)

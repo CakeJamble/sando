@@ -103,8 +103,8 @@ function SubMenuButton:setDescription()
 	self.preview = self.actionList[self.index].description
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function SubMenuButton:gamepadpressed(joystick, button)
 ----------------------- Action Selection -------------------------
   if button == 'dpdown' then

@@ -47,28 +47,20 @@ function Enemy:setTargets(targets, targetType)
 end;
 
 ---@param amount integer
----@param attackerLuck integer
-function Enemy:takeDamage(amount, attackerLuck)
-  Entity.takeDamage(self, amount, attackerLuck)
-
-  if self.currentAnimTag == 'ko' then
-    flux.to(self.pos, 1.5, {a = 0})
-    self.drawKOStars = true
-    local lifetime = starParticles[1].system:getEmitterLifetime()
-    Timer.after(lifetime, function() self.drawKOStars = false; end)
-
-    local reward = self:knockOut()
-    Signal.emit('OnEnemyKO', reward)
-    self.sfx:play("ko")
-  end
-end;
-
----@param amount integer
 function Enemy:takeDamagePierce(amount)
   Entity.takeDamagePierce(self, amount)
   if self.currentAnimTag == 'ko' then
     flux.to(self.pos, 1.5, {a = 0})
   end
+end;
+
+function Enemy:startFainting()
+  Entity.startFainting(self)
+  flux.to(self.pos, 1.5, {a = 0})
+  self.drawKOStars = true
+  local lifetime = starParticles[1].system:getEmitterLifetime()
+  Timer.after(lifetime, function() self.drawKOStars = false; end)
+  self.sfx:play("ko")
 end;
 
 ---@param rewardsDistribution integer[]
@@ -132,7 +124,7 @@ function Enemy.getRandomSkill(skillPool, numValidTargets)
 end;
 
 ---@return table
-function Enemy:knockOut()
+function Enemy:getRewards()
   local reward = {
     exp = self.expReward,
     money = self.moneyReward,

@@ -61,8 +61,8 @@ function main_menu:keyreleased(key, scancode)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function main_menu:gamepadpressed(joystick, button)
   if self.bounceFinished then
     if button == 'dpup' or button == 'dpleft' then
@@ -73,8 +73,8 @@ function main_menu:gamepadpressed(joystick, button)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function main_menu:gamepadreleased(joystick, button)
   if self.bounceFinished then
     if button == 'a' then

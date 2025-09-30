@@ -120,8 +120,8 @@ function LootManager:raiseItemTween()
 	end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function LootManager:gamepadpressed(joystick, button)
 	if self.isActive then
 		print(button)

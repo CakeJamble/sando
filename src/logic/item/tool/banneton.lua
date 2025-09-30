@@ -1,3 +1,5 @@
+-- Signal: OnSkillResolved
+---@param character Character
 return function(character)
 	local burnChance = 0.25
 	local targets = character.targets
@@ -12,8 +14,6 @@ return function(character)
 		if canBurn then
 			if burnChance >= love.math.random() then
 				target:applyStatus('burn')
-			else
-				print('cannot burn ' .. target.entityName)
 			end
 		end
 	end

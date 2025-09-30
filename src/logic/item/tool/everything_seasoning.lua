@@ -1,3 +1,4 @@
+-- Signal: OnPickup
 ---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local co = coroutine.create(function()

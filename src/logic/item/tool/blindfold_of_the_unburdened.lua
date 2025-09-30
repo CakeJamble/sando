@@ -1,14 +1,19 @@
-return function(characterTeam)
+-- Signal: OnStartCombat
+---@param characterTeam CharacterTeam
+return function(characterTeam, _)
 	for _,character in ipairs(characterTeam.members) do
-		local inventory = character.inventory
+		local maxEquips = character.numEquipSlots
+		local maxAccessories = character.numAccessorySlots
+		local items = character.equips
 
-		if inventory.numEquipSlots > #inventory.equipManager.equips then
-			character:modifyBattleStat('speed', 1)
-			character:modifyBattleStat('luck', 1)
+		if maxEquips > #items.equip then
+			character:modifyBattleStat("speed", 1)
+			character:modifyBattleStat("luck", 1)
 		end
-		if inventory.numAccessories > #inventory.accessoryManager.accessories then
-			character:modifyBattleStat('speed', 1)
-			character:modifyBattleStat('luck', 1)
+
+		if maxAccessories > #items.accessory then
+			character:modifyBattleStat("speed", 1)
+			character:modifyBattleStat("luck", 1)
 		end
 	end
 end;

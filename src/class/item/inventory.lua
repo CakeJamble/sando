@@ -36,10 +36,19 @@ function Inventory:init(characterTeam)
     self.cabinetRotate = math.pi/2
 end
 
-function Inventory:setMoney(amount)
-    self.money = math.max(0, amount)
+---@param amount integer
+function Inventory:gainMoney(amount)
+    self.money = self.money + amount
 
-    -- then play animation or sound something (or in a purchase/sell fcn that calls this)
+    -- tween UI
+    -- play sfx
+end;
+
+---@param amount integer
+function Inventory:loseMoney(amount)
+    self.money = math.max(0, self.money - amount)
+    -- tween UI
+    -- play sfx
 end;
 
 ---@param item table

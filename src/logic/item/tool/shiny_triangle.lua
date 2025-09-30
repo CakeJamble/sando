@@ -1,3 +1,5 @@
+-- Signal: OnPickup
+---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local allSkills = {}
 	local numSkillsToReplace = {}

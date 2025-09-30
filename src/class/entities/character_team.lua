@@ -24,6 +24,9 @@ function CharacterTeam:init(characters)
 
   Character.inventory = self.inventory
   ActionUI.consumables = self.inventory.consumables
+  self.usingFirstConsumable = true
+
+  self.koGetsExp = false
 
   -- Adding items for testing
   self.inventory:addConsumable(espresso)
@@ -66,16 +69,16 @@ function CharacterTeam:keypressed(key)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function CharacterTeam:gamepadpressed(joystick, button)
   for _,member in pairs(self.members) do
     member:gamepadpressed(joystick, button)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function CharacterTeam:gamepadreleased(joystick, button)
   for _,member in ipairs(self.members) do
     member:gamepadreleased(joystick, button)
@@ -88,5 +91,14 @@ function CharacterTeam:registerKO(koCharacters)
     table.insert(self.koCharacters, character)
   end
 end;
+
+function CharacterTeam:rest()
+  for _,character in ipairs(self.members) do
+    local amount = math.floor(0.5 + character.baseStats.hp * 0.4)
+    character:heal(amount)
+    character:cleanse()
+  end
+end;
+
 
 return CharacterTeam

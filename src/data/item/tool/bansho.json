@@ -1,7 +1,7 @@
 {
 	"name": "Bansho",
 	"signal": "OnKO",
-	"description": "Statuses spread to adjacent enemies on KO",
+	"description": "KO'd enemies spread their statuses to a random team member",
 	"flavorText": "A single swing wiped out a great fire",
 	"rarity": "common"
 }

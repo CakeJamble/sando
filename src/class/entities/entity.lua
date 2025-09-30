@@ -41,6 +41,16 @@ function Entity:init(data, x, y, entityType)
     ohko = 0,
     late = 0
   }
+  self.debuffImmune = false
+  self.lowerAfterSkillUse = {
+    hp = 0,
+    fp = 0,
+    attack = 0,
+    defense = 0,
+    speed = 0,
+    luck = 0,
+    growthRate = 0
+  }
   self.critMult = 2
   self.basic = data.basic
   self.skillPool = data.skillPool
@@ -165,7 +175,7 @@ function Entity:startTurn()
     self.tweens['pbTween'] = nil
   end
 
-  if self.hazards then
+  if self.hazards and not self.ignoreHazards then
     for _,hazard in ipairs(self.hazards) do
       hazard:proc()
     end
@@ -329,6 +339,10 @@ end;
 ---@param statName string
 ---@param stage integer
 function Entity:modifyBattleStat(statName, stage) --> void
+  if stage < 0 and self.debuffImmune then 
+    -- Add a flashy animation/effect here
+    return 
+  end
   -- clamping
   local maxStage = statStageCap
   local minStage = -statStageCap
@@ -369,19 +383,42 @@ function Entity:resetStatModifiers() --> void
   end
 end;
 
+---@param statName string
+---@param stage integer
+function Entity:lowerAfterSkillResolves(statName, stage)
+  self.lowerAfterSkillUse[statName] = math.max(0, self.lowerAfterSkillUse[statName] - stage)
+end;
+
+
 --[[----------------------------------------------------------------------------------------------------
         Status
 ----------------------------------------------------------------------------------------------------]]
 
 ---@param status string
 function Entity:applyStatus(status)
-  local chance = love.math.random()
+  if not self.debuffImmune then
+    if not self:isAlreadyAfflicted(status) then
+      local chance = love.math.random()
 
-  if chance > self.statusResist[status] then
-    table.insert(self.statuses, status)
-  else
-    print('resisted!')
+      if chance > self.statusResist[status] then
+        table.insert(self.statuses, status)
+      else
+        print('resisted!')
+      end
+    end
   end
+end;
+
+---@param status string
+---@return boolean
+function Entity:isAlreadyAfflicted(status)
+  for _,curr in ipairs(self.statuses) do
+    if curr == status then
+      return true
+    end
+  end
+
+  return false
 end;
 
 ---@param statuses string[]
@@ -430,6 +467,18 @@ function Entity:cleanseOne(statusToCleanse)
   end
 end;
 
+---@param pct? number (0,1] Percentage of health to revive with
+function Entity:revive(pct)
+  local percent = pct or 0.5
+  local amount = math.floor(0.5 + self.baseStats.hp)
+
+  self:cleanse()
+  self:heal(amount)
+
+  -- play sfx, tween, etc
+end;
+
+
 --[[----------------------------------------------------------------------------------------------------
         Damage
 ----------------------------------------------------------------------------------------------------]]
@@ -456,8 +505,10 @@ function Entity:takeDamage(amount, attackerLuck) --> void
     self.battleStats["hp"] = newHP
   end
 
-  self.currentAnimTag = 'flinch'
-  Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
+  if self:isAlive() then
+    self.currentAnimTag = 'flinch'
+    Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
+  end
 end;
 
 ---@param amount integer

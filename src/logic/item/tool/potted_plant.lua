@@ -1,4 +1,9 @@
+-- Signal: OnLevelUp
+---@param character Character
 return function(character)
-	local amount = love.math.random(1, 5)
-	character.baseStats.fp = character.baseStats.fp + amount
+	local co = coroutine.create(function()
+		local stat = "fp"
+		local amount = character:yieldStatRoll(stat)
+	end)
+	coroutine.resume(co)
 end;

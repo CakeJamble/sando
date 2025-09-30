@@ -1,5 +1,7 @@
 local Inventory = require('class.item.inventory')
 
+-- Signal: OnPickup
+---@param characterTeam CharacterTeam
 return function(characterTeam)
 	Inventory.consumableMult = Inventory.consumableMult + 1
 

@@ -1,6 +1,7 @@
 require('util.globals')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
+local Signal = require('libs.hump.signal')
 
 return function(ref, qteBonus, qteManager)
   local skill = ref.skill
@@ -50,7 +51,7 @@ return function(ref, qteBonus, qteManager)
           end)
         :oncomplete(
           function()
-
+            Signal.emit('OnSkillResolved', ref)
             ref:endTurn(skill.duration, stagingPos, skill.returnTweenType)
           end)
         ref.tweens['attack'] = attack

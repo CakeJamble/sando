@@ -1,3 +1,5 @@
+-- Signal: OnAttack
+---@param character Character
 return function(character)
 	local skill = character.skill
 	local fp = character.battleStats.fp

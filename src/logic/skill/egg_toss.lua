@@ -2,7 +2,11 @@ require('util.globals')
 local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
+local Signal = require('libs.hump.signal')
 
+---@param ref Character
+---@param qteBonus table
+---@param qteManager? QTEManager
 return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local targets = ref.targets
@@ -56,6 +60,10 @@ return function(ref, qteBonus, qteManager)
         end
       end)
       :delay((i-1) * timeBtwnThrows)
+      :oncomplete(function() 
+        Signal.emit("OnSkillResolved", ref) 
+        -- end turn?
+      end)
     table.insert(attack, eggTween)
   end
 end;

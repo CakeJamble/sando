@@ -119,4 +119,8 @@ function STBScheduler:checkQueues()
   end
 end;
 
+function STBScheduler:removeKOs()
+	Scheduler.removeKOs(self, self.activeEntity)
+end;
+
 return STBScheduler

@@ -145,8 +145,8 @@ function HoldSBP:handleQTE()
 	end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function HoldSBP:gamepadpressed(joystick, button)
 	if button == self.actionButton and self.setupComplete and not self.signalEmitted and not self.isActionButtonPressed then
 		self.isActionButtonPressed = true
@@ -160,8 +160,8 @@ function HoldSBP:gamepadpressed(joystick, button)
 	end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function HoldSBP:gamepadreleased(joystick, button)
 	if button == self.actionButton and self.setupComplete and self.isActionButtonPressed then
 		self.isActionButtonPressed = true

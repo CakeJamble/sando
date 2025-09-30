@@ -183,16 +183,16 @@ function QTEManager.getInstructions(qteType, actionButton)
 	return result
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function QTEManager:gamepadpressed(joystick, button)
 	if self.activeQTE then
 		self.activeQTE:gamepadpressed(joystick, button)
 	end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function QTEManager:gamepadreleased(joystick, button)
 	if self.activeQTE then
 		self.activeQTE:gamepadreleased(joystick, button)

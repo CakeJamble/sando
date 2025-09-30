@@ -1,3 +1,5 @@
+-- Signal: OnStartTurn
+---@param character Character
 return function(character)
 	local skills = character.currentSkills
 

@@ -30,10 +30,14 @@ function Scheduler:init(characterTeam, enemyTeam)
 end;
 
 function Scheduler:enter()
-	-- for Signal registration that is shared amongst all Scheduler classes
-	self:registerSignal('OnEnemyKO',
-		function(reward)
-			table.insert(self.rewards, reward)
+	self.characterTeam.usingFirstConsumable = true
+	self:registerSignal("OnSkillResolved",
+		function(entity)
+			for stat,stage in pairs(entity.lowerAfterSkillUse) do
+				if stage > 0 then
+					entity:modifyBattleStat(stat, -stage)
+				end
+			end
 		end)
 end;
 
@@ -79,8 +83,9 @@ function Scheduler:resetCamera(duration)
 	flux.to(camera, duration, {x = self.cameraPosX, y = self.cameraPosY, scale = 1})
 end;
 
+---@param activeEntity? Entity
 ---@return integer Duration of time for longest faint animation
-function Scheduler:removeKOs()
+function Scheduler:removeKOs(activeEntity)
 	local koEnemies = {}
 	local koCharacters = {}
 	local duration = 0
@@ -108,25 +113,40 @@ function Scheduler:removeKOs()
     end
   end
 
+  -- After longest faint animation ends...
   Timer.after(duration,
   	function()
+  		-- Remove dead combatants from combat
 		  for i=1, #removeIndices do
 		    print('removing ' .. self.combatants[removeIndices[i]].entityName .. ' from combat')
 		    table.remove(self.combatants, removeIndices[i])
 		  end
 
+		  -- Make sure team records their demise
 		  self.enemyTeam:removeMembers(koEnemies)
 		  self.characterTeam:registerKO(koCharacters)
+
+		  -- Emit proper signals
+		  self:emitDeathSignals(activeEntity, koCharacters, koEnemies)
+
+		  -- Put their rewards in the bag
+		  for _,enemy in ipairs (koEnemies) do
+		  	local reward = enemy:getRewards()
+		  	table.insert(self.rewards, reward)
+		  end
   	end)
-  -- for i=1, #removeIndices do
-  --   print('removing ' .. self.combatants[removeIndices[i]].entityName .. ' from combat')
-  --   table.remove(self.combatants, removeIndices[i])
-  -- end
-
-  -- self.enemyTeam:removeMembers(koEnemies)
-  -- self.characterTeam:registerKO(koCharacters)
-
   return duration
+end;
+
+---@param activeEntity? Entity
+---@param koCharacters Character[]
+---@param koEnemies Enemy[]
+function Scheduler:emitDeathSignals(activeEntity, koCharacters, koEnemies)
+  local emitOnKO = #koEnemies > 0 and #self.enemyTeam.members > 0 and (activeEntity and activeEntity.type == "character")
+  local emitOnFaint = #koCharacters > 0 and activeEntity
+
+  if emitOnKO then Signal.emit("OnKO", activeEntity, self.enemyTeam.members, koEnemies) end
+  if emitOnFaint then Signal.emit("OnFaint", activeEntity, koCharacters) end
 end;
 
 ---@return boolean

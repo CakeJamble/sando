@@ -1,7 +1,7 @@
 {
 	"name": "Pear Programmer",
-	"signal": "OnDebuffed",
-	"description": "Gain a small amount of money when your stats are lowered",
+	"signal": "OnFaint",
+	"description": "Single use. When a character (or multiple characters) faint(s), instantly revive them.",
 	"flavorText": "Having them around helps, even if they aren't totally sure what's going on.",
 	"rarity": "event"
 }

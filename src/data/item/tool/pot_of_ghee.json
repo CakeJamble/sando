@@ -1,6 +1,6 @@
 {
 	"name": "Pot of Ghee",
-	"signal": "OnTargetConfirm",
+	"signal": "OnBuff",
 	"description": "Buffs are slightly more effective",
 	"flavorText": "Clarity.",
 	"rarity": "rare"

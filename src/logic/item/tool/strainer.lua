@@ -1,3 +1,5 @@
+-- Signal: OnPickup
+---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local members = characterTeam.members
 	for _,member in pairs(members) do

@@ -1,20 +1,10 @@
---! filename: Character
---[[
-  Character class
-  Used to create a character object, which consists of
-  a character's stats, skills, states, and gear.
-]]
--- require("util.skill_sheet")
--- require("util.stat_sheet")
 local SoundManager = require('class.ui.sound_manager')
 local Entity = require("class.entities.entity")
 local ActionUI = require("class.ui.action_ui")
 local Signal = require('libs.hump.signal')
 local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
--- require("class.item.gear")
-
-
+local statGrowthFunctions = require('util.calc_new_stats')
 local Class = require "libs.hump.class"
 
 ---@class Character: Entity
@@ -62,6 +52,7 @@ function Character:init(data, actionButton)
   self.skillPool = data.skillPool
   self.blockMod = 1
   self.level = 1
+  self.growthFunctions = statGrowthFunctions[self.entityName]
   self.currentSkills = {}
   self:updateSkills()
   self.qteSuccess = true
@@ -119,12 +110,7 @@ function Character:startTurn()
   Entity.startTurn(self)
   self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
   self.actionUI.active = true
-  -- Signal.emit('OnStartTurn', self)
-
-  -- Timer.after(0.25, function()
-  --   self.actionUI:set(self)
-  -- end
-  -- )
+  Signal.emit('OnStartTurn', self)
 end
 
 ---@param targets { [string]: Entity[]}
@@ -211,7 +197,6 @@ function Character:takeDamage(amount, attackerLuck)
   if self.isGuarding then
     self.battleStats.defense = self.battleStats.defense + self.blockMod
     bonusApplied = true
-    print('taking less damage')
   end
 
   Entity.takeDamage(self, amount, attackerLuck)
@@ -225,6 +210,7 @@ function Character:takeDamage(amount, attackerLuck)
     self.battleStats.defense = self.battleStats.defense - self.blockMod
   end
   Signal.emit('OnHPChanged', self.amount, isDamage, Entity.tweenHP)
+  Signal.emit('OnAttacked', self)
 end;
 
 ---@param amount integer
@@ -315,6 +301,21 @@ function Character:gainExp(amount)
   end
 end;
 
+---@return { [string]: integer } Stats from previous level
+function Character:levelUp()
+  local oldStats = {}
+  for stat,fcn in ipairs(self.growthFunctions) do
+    oldStats[stat] = self.baseStats[stat]
+    self.baseStats[stat] = fcn(self.level)
+
+    if stat == "hp" or stat == "fp" then
+      local proportion = self.battleStats[stat] / oldStats[stat]
+      self.battleStats[stat] = math.floor(0.5 + (proportion * self.baseStats[stat]))
+    end
+  end
+  return oldStats
+end;
+
 -- Gets the required exp for the next level
   -- preconditions: none
   -- postconditions: updates self.experiencedRequired based on polynomial scaling
@@ -394,8 +395,8 @@ function Character:keypressed(key)
   -- if in movement state, does nothing
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function Character:gamepadpressed(joystick, button)
   if self.actionUI and self.actionUI.active then
     self.actionUI:gamepadpressed(joystick, button)
@@ -412,8 +413,8 @@ function Character:gamepadpressed(joystick, button)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function Character:gamepadreleased(joystick, button)
   if button == 'rightshoulder' then
       self.canGuard = false

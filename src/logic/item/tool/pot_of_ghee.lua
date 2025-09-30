@@ -1,3 +1,6 @@
-return function(character)
-	character.skill.buff = character.skill.buff + 1
+-- Signal: OnTargetConfirm
+---@param character Character
+---@param buff string
+return function(character, buff)
+	character:modifyBattleStat(buff, 1)
 end;

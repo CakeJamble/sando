@@ -46,8 +46,8 @@ function FlourButton:keypressed(key)
   end
 end;
 
----@param joystick string
----@param button string
+---@param joystick love.Joystick
+---@param button love.GamepadButton
 function FlourButton:gamepadpressed(joystick, button)
   SubMenuButton.gamepadpressed(self, joystick, button)
 

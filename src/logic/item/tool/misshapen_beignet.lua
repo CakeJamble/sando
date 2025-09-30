@@ -1,3 +1,5 @@
+-- Signal: OnPickup
+---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local inventory = characterTeam.inventory
 	for _,consumable in ipairs(inventory.consumables) do
