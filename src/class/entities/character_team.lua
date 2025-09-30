@@ -14,13 +14,14 @@ local espresso = loadItem('espresso', 'consumable')
 local CharacterTeam = Class{__includes = Team}
 
 ---@param characters Character[]
-function CharacterTeam:init(characters)
+---@param inventory? Inventory
+function CharacterTeam:init(characters, inventory)
   Team.init(self, characters)
   self.rarityMod = 0
   self.discount = 0
 
   self.koCharacters = {}
-  self.inventory = Inventory(self)
+  self.inventory = inventory or Inventory(self)
 
   Character.inventory = self.inventory
   ActionUI.consumables = self.inventory.consumables
