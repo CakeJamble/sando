@@ -102,6 +102,7 @@ function AccessoryManager.initItemLists()
 		OnTargetConfirm = {},
 		OnEndTurn = {},
 		OnEndCombat = {},
+		OnFloorEntered = {},
 	}
 
 	return result

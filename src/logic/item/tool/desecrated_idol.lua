@@ -4,8 +4,8 @@ local loadItem = require('util.item_loader')
 ---@param characterTeam CharacterTeam
 return function(characterTeam)
 	local inventory = characterTeam.inventory
-	local newMoney = math.ceil(inventory.money / 2)
-	inventory:setMoney(newMoney)
+	local amount = math.ceil(inventory.money / 2)
+	inventory:loseMoney(amount)
 
 	-- Add animation?
 	local refurbishedIdol = loadItem('refurbished_idol', 'accessory')

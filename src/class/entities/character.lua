@@ -228,6 +228,11 @@ function Character:refresh(amount)
   self.battleStats.fp = math.min(self.baseStats.fp, self.battleStats.fp + amount)
 end;
 
+
+function Character:removeCurses()
+  self.curses = {}
+end
+
 ---@param additionalPenalty? integer
 function Character:recoil(additionalPenalty)
   if not additionalPenalty then additionalPenalty = 0 end
