@@ -14,6 +14,7 @@ local STBScheduler = require('class.scheduler.stb_scheduler')
 local Signal = require('libs.hump.signal')
 local Timer = require("libs.hump.timer")
 local flux = require('libs.flux')
+local Log = require('class.log')
 
 local generateEncounter = require('util.encounter_generator')
 local imgui = require('libs.cimgui')
@@ -97,7 +98,9 @@ function combat:enter(previous)
   self.soundManager = SoundManager(AllSounds.music)
   self.soundManager:setGlobalVolume(0.1)
   self.soundManager:play("tetris_placeholder")
+  -- self.characterTeam = opts.team
   self.characterTeam = loadCharacterTeam()
+  -- self.log = opts.log or Log()
   self.rewardExp = 0
   self.rewardMoney = 0
 
@@ -186,11 +189,11 @@ end;
 ---@param dt number
 function combat:update(dt)
   if not self.paused then
-  flux.update(dt)
+    flux.update(dt)
+
     if self.turnManager then
       self.turnManager:update(dt)
     end
-
     Timer.update(dt)
   end
 

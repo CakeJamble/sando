@@ -22,6 +22,10 @@ local TEMP_BG = 'asset/sprites/background/temp_mm_bg.png'
 local Timer = require('libs.hump.timer')
 local JoystickUtils = require('util.joystick_utils')
 local flux = require('libs.flux')
+local loadRun = require('util.load_run')
+local CharacterTeam = require('class.entities.character_team')
+local Log = require('class.log')
+
 
 function main_menu:init()
   shove.createLayer('background')
@@ -135,9 +139,8 @@ end;
 function main_menu:validate_selection()
   if index == 1 then
     Gamestate.switch(states['character_select'])
-  elseif index == 2 and main_menu:saveExists() == true then
-    -- load data
-    love.event.quit() -- remove later
+  elseif index == 2 then
+    self:loadRun()
   elseif index == 3 then
     Gamestate.switch(states['bakery'])
   elseif index == 4 then
@@ -147,10 +150,21 @@ function main_menu:validate_selection()
   end
 end;
 
----@deprecated
----@return boolean
-function main_menu:saveExists()
-  return false
+function main_menu:loadRun()
+  local runData = loadRun()
+
+  if runData then
+    local characterTeam = CharacterTeam(runData.members, runData.inventory)
+    local log = Log()
+    log:loadFromSaveData(runData.act, runData.floor, runData.encounters)
+
+    local opts = {team=characterTeam, log=log}
+    if runData.previous == "combat" then
+      opts["suspend"] = true
+    end
+
+    Gamestate.switch(states[runData.previous], opts)
+  end
 end;
 
 return main_menu

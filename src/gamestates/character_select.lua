@@ -37,6 +37,7 @@ function character_select:init()
 end;
 
 function character_select:enter()
+  self.opts = {}
   self.index = 0
   self.spriteRow = 0
   self.spriteCol = 0
@@ -154,6 +155,7 @@ end;
 function character_select:validate_selection()
   if self.teamCount == TEAM_CAP then
     character_select:indicesToCharacters()
+    -- Gamestate.switch(states['combat'], self.opts)
     Gamestate.switch(states['combat'])
   else
     self.selectedTeamIndices[self.teamCount + 1] = self.index
@@ -182,9 +184,11 @@ function character_select:indicesToCharacters()
       characterList[i] = key
     end
   end
-
+  
   local characterTeam = CharacterTeam(characterList)
   saveCharacterTeam(characterTeam)
+
+  -- self.opts["team"] = CharacterTeam(characterList)
 end;
 
 ---@return string

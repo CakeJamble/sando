@@ -1,11 +1,13 @@
 local lume = require('libs.lume')
 
+---@param previous table Previous gamestate
 ---@param team CharacterTeam
 ---@param act integer
 ---@param floor integer
 ---@param encounters table History of encounters (Combat, Event, Shop, etc.)
-return function(team, act, floor, encounters)
+return function(previous, team, act, floor, encounters)
 	local data = {
+		previous = previous,
 		members = team.members,
 		inventory = team.inventory,
 		act = act,
