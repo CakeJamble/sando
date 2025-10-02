@@ -46,3 +46,4 @@ asset
 .luacheckrc
 *.sublime-project
 *.sublime-workspace
+src/analytics/posthog_api_key.lua

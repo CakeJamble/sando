@@ -302,7 +302,6 @@ function Character:gainExp(amount)
   while self.experience >= self.experienceRequired do
     self.level = self.level + 1
     self.experienceRequired = self:getRequiredExperience()
-    -- TODO: need to signal to current gamestate to push new level up reward state
   end
 end;
 
