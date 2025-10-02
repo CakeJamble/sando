@@ -23,7 +23,7 @@ local function setProperties(data)
 	properties["$set"] = {
 		["GPU Brand"] = renderer.vendor,
 		["Processor and GPU"] = renderer.device,
-		["OS Name"] = renderer.osName,
+		["OS Name"] = data.playerInfo.osName,
 		["Latest App Version"] = SANDO_VERSION,
 		["Latest Player Name"] = properties["playerName"],
 		["Choices"] = properties["choices"],
