@@ -14,13 +14,14 @@ local espresso = loadItem('espresso', 'consumable')
 local CharacterTeam = Class{__includes = Team}
 
 ---@param characters Character[]
-function CharacterTeam:init(characters)
+---@param inventory? Inventory
+function CharacterTeam:init(characters, inventory)
   Team.init(self, characters)
   self.rarityMod = 0
   self.discount = 0
 
   self.koCharacters = {}
-  self.inventory = Inventory(self)
+  self.inventory = inventory or Inventory(self)
 
   Character.inventory = self.inventory
   ActionUI.consumables = self.inventory.consumables
@@ -39,11 +40,6 @@ function CharacterTeam:distributeExperience(amount)
   end
 end;
 
----@param amount integer
-function CharacterTeam:increaseMoney(amount)
-  self.money = self.money + amount
-end;
-
 ---@param opts? table Optional arguments for excluding selection
 ---@return any
 function CharacterTeam:yieldCharacterSelect(opts)
@@ -53,16 +49,7 @@ function CharacterTeam:yieldCharacterSelect(opts)
   })
 end;
 
----@param incomingSkill table
----@deprecated
-function CharacterTeam:startDefense(incomingSkill)
-  for _,character in pairs(self.members) do
-    if character:isAlive() then
-      character.defenseState:setup(incomingSkill)
-    end
-  end
-end;
-
+---@param key string
 function CharacterTeam:keypressed(key)
   for _,member in pairs(self.members) do
     member:keypressed(key)

@@ -14,7 +14,10 @@ local STBScheduler = require('class.scheduler.stb_scheduler')
 local Signal = require('libs.hump.signal')
 local Timer = require("libs.hump.timer")
 local flux = require('libs.flux')
+local Log = require('class.log')
 
+local saveRun = require('util.save_run')
+local saveTeam = require('util.save_team')
 local generateEncounter = require('util.encounter_generator')
 local imgui = require('libs.cimgui')
 local ffi = require('ffi')
@@ -57,10 +60,6 @@ function combat:init()
   self.encounteredPools = {}
   self.floorNumber = 1
   self.paused = false
-
-  for i=1,numFloors do
-    self.encounteredPools[i] = {}
-  end
   self.targetedCharacterIndex = 1
 
   Signal.register('TargetConfirm',
@@ -92,12 +91,16 @@ function combat:init()
 end;
 
 ---@param previous table
-function combat:enter(previous)
+---@param opts table
+function combat:enter(previous, opts)
   self.lockCamera = false
   self.soundManager = SoundManager(AllSounds.music)
   self.soundManager:setGlobalVolume(0.1)
   self.soundManager:play("tetris_placeholder")
-  self.characterTeam = loadCharacterTeam()
+  self.act = opts.act or 1
+  self.floor = opts.floor or 1
+  self.characterTeam = opts.team
+  self.log = opts.log or Log()
   self.rewardExp = 0
   self.rewardMoney = 0
 
@@ -113,10 +116,19 @@ function combat:enter(previous)
 
   self.enemyTeam = generateEncounter(self.floorNumber)
 
+  saveRun('combat',self.act,
+    self.floor, self.encounteredPools, 123)
+  saveTeam(self.characterTeam)
+
   -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
   self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
   Signal.emit('OnStartCombat')
   Signal.emit('OnEnterScene')
+end;
+
+function combat:leave()
+  saveRun('combat',self.act,
+    self.floor, self.encounteredPools, 123)
 end;
 
 ---@param key string
@@ -186,11 +198,11 @@ end;
 ---@param dt number
 function combat:update(dt)
   if not self.paused then
-  flux.update(dt)
+    flux.update(dt)
+
     if self.turnManager then
       self.turnManager:update(dt)
     end
-
     Timer.update(dt)
   end
 

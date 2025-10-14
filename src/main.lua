@@ -1,4 +1,4 @@
--- -- HUMP Globals
+-- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
 Camera = require('libs.hump.camera')
 shove = require('libs.shove')
@@ -92,10 +92,13 @@ function love.load(args)
 
   -- Item Pools
   ItemPools = loadItemPools()
-  
+
   -- Test or Run
   local opts = parseArgs(args)
   if opts.test == "true" then
+    IsTestMode = true
+    local analyticsThread = love.thread.newThread("analytics/analytics_service.lua")
+    analyticsThread:start()
     print("Running tests only")
     runTests(opts)
   else
@@ -129,6 +132,13 @@ function love.update(dt)
 
   if input.joystick then
     JoystickUtils.updateAxisRepeater(input.joystick, dt)
+  end
+end;
+
+function love.quit()
+  if IsTestMode then
+    local channel = love.thread.getChannel('analytics_input')
+    channel:push({type = "quit"})
   end
 end;
 
