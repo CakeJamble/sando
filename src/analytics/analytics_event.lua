@@ -15,6 +15,7 @@ local https = require("https")
 local AnalyticsEvent = {}
 AnalyticsEvent.eventID = 1
 
+-- Sets up the major properties used for PostHog Analytics
 ---@param data table
 local function setProperties(data)
 	local properties = data.properties
@@ -57,6 +58,7 @@ function AnalyticsEvent.makeAnalyticEvent(data)
 	return event
 end;
 
+-- Attempts to send an Event to PostHog
 ---@param event table
 ---@return boolean, boolean?
 function AnalyticsEvent.sendAnalyticEvent(event)
@@ -84,6 +86,7 @@ function AnalyticsEvent.sendAnalyticEvent(event)
 end;
 
 ---@param data table
+---@return boolean
 function AnalyticsEvent.pushAnalyticEvent(data)
 	local event = AnalyticsEvent.makeAnalyticEvent(data)
 	return AnalyticsEvent.sendAnalyticEvent(event)
