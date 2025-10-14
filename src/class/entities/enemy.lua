@@ -29,11 +29,31 @@ function Enemy:init(data)
   self.drawKOStars = false
   self.sfx = SoundManager(AllSounds.sfx.entities.enemy[self.entityName])
 
+  self:defineShaders()
+  self.patternOffset = {x=0,y=0}
+  self.prevPos = {x = self.pos.x, y = self.pos.y}
   Signal.register('OnStartCombat',
     function()
       self.oPos.x = self.pos.x
       self.oPos.y = self.pos.y
     end)
+end;
+
+function Enemy:defineShaders()
+  self.pattern = love.graphics.newImage("asset/shader/pattern/dust.png")
+  self.pattern:setWrap("repeat", "repeat")
+  self.bodyShader = love.graphics.newShader("asset/shader/scrollfill_color_replace.glsl")
+  self.scrollSpeed = {0.2, 0.2}
+  self.patternScale = {3.0, 3.0}
+  self.time = 0
+
+  self.bodyShader:send("pattern", self.pattern)
+  self.bodyShader:send("patternScale", self.patternScale)
+
+  local r,g,b = 0xa1, 0xae, 0xae
+  r,g,b = r/255, g/255, b/255
+  self.bodyShader:send("targetColor", {r, g, b})
+  self.bodyShader:send("tolerance", 0.2)
 end;
 
 ---@param targets { [string]: Entity[] }
@@ -136,21 +156,31 @@ end;
 ---@param dt number
 function Enemy:update(dt)
   Entity.update(self, dt)
-
   if self.drawKOStars then
     for _,ps in ipairs(starParticles) do
       ps.system:update(dt)
     end
   end
+  self:updateShader()
+end;
+
+function Enemy:updateShader()
+  local dx,dy = self.pos.x - self.prevPos.x, self.pos.y - self.prevPos.y
+  self.patternOffset.x = self.patternOffset.x + dx * self.scrollSpeed[1]
+  self.patternOffset.y = self.patternOffset.y + dy * self.scrollSpeed[2]
+  self.bodyShader:send("patternOffset", {self.patternOffset.x, self.patternOffset.y})
+  self.prevPos.x, self.prevPos.y = self.pos.x, self.pos.y
 end;
 
 function Enemy:draw()
+  love.graphics.setShader(self.bodyShader)
   Entity.draw(self)
   if self.drawKOStars then
     for _,ps in ipairs(starParticles) do
       love.graphics.draw(ps.system, self.pos.x + self.frameWidth / 2, self.pos.y + self.frameHeight / 2)
     end
   end
+  love.graphics.setShader()
 end;
 
 return Enemy
