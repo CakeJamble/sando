@@ -1,5 +1,4 @@
-SANDO_VERSION = "0.0.1"
--- -- HUMP Globals
+-- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
 Camera = require('libs.hump.camera')
 shove = require('libs.shove')
@@ -93,7 +92,7 @@ function love.load(args)
 
   -- Item Pools
   ItemPools = loadItemPools()
-  
+
   -- Test or Run
   local opts = parseArgs(args)
   if opts.test == "true" then

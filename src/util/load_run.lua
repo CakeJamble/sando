@@ -1,16 +1,8 @@
-local lume = require('libs.lume')
-local CharacterTeam = require('class.entities.character_team')
+local bitser = require('libs.bitser')
 
----@param path? string
----@return table|nil
-return function(path)
-	local savePath = path or "run_savedata"
-	local saveData = nil
-
-	if love.filesystem.getInfo(savePath) then
-		local file = love.filesystem.read(savePath)
-		saveData = lume.deserialize(file)
-	end
-
-	return saveData
+---@return any?
+return function()
+	local savePath = "save.dat"
+	local data = bitser.loadLoveFile(savePath)
+	return data
 end;

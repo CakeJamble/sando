@@ -16,6 +16,8 @@ local Timer = require("libs.hump.timer")
 local flux = require('libs.flux')
 local Log = require('class.log')
 
+local saveRun = require('util.save_run')
+local saveTeam = require('util.save_team')
 local generateEncounter = require('util.encounter_generator')
 local imgui = require('libs.cimgui')
 local ffi = require('ffi')
@@ -58,10 +60,6 @@ function combat:init()
   self.encounteredPools = {}
   self.floorNumber = 1
   self.paused = false
-
-  for i=1,numFloors do
-    self.encounteredPools[i] = {}
-  end
   self.targetedCharacterIndex = 1
 
   Signal.register('TargetConfirm',
@@ -99,6 +97,8 @@ function combat:enter(previous, opts)
   self.soundManager = SoundManager(AllSounds.music)
   self.soundManager:setGlobalVolume(0.1)
   self.soundManager:play("tetris_placeholder")
+  self.act = opts.act or 1
+  self.floor = opts.floor or 1
   self.characterTeam = opts.team
   self.log = opts.log or Log()
   self.rewardExp = 0
@@ -116,10 +116,19 @@ function combat:enter(previous, opts)
 
   self.enemyTeam = generateEncounter(self.floorNumber)
 
+  saveRun('combat',self.act,
+    self.floor, self.encounteredPools, 123)
+  saveTeam(self.characterTeam)
+
   -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
   self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
   Signal.emit('OnStartCombat')
   Signal.emit('OnEnterScene')
+end;
+
+function combat:leave()
+  saveRun('combat',self.act,
+    self.floor, self.encounteredPools, 123)
 end;
 
 ---@param key string

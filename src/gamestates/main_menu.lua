@@ -23,6 +23,7 @@ local Timer = require('libs.hump.timer')
 local JoystickUtils = require('util.joystick_utils')
 local flux = require('libs.flux')
 local loadRun = require('util.load_run')
+local loadTeam = require('util.load_team')
 local CharacterTeam = require('class.entities.character_team')
 local Log = require('class.log')
 
@@ -152,18 +153,19 @@ end;
 
 function main_menu:loadRun()
   local runData = loadRun()
+  local characterTeam = loadTeam()
 
   if runData then
-    local characterTeam = CharacterTeam(runData.members, runData.inventory)
     local log = Log()
     log:loadFromSaveData(runData.act, runData.floor, runData.encounters)
 
-    local opts = {team=characterTeam, log=log}
     if runData.previous == "combat" then
       opts["suspend"] = true
     end
 
-    Gamestate.switch(states[runData.previous], opts)
+    runData['team'] = characterTeam
+
+    Gamestate.switch(states["combat"], runData)
   end
 end;
 

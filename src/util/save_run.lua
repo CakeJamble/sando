@@ -1,20 +1,18 @@
-local lume = require('libs.lume')
+local bitser = require('libs.bitser')
 
----@param previous table Previous gamestate
----@param team CharacterTeam
+---@param gamestate string Previous gamestate
 ---@param act integer
 ---@param floor integer
 ---@param encounters table History of encounters (Combat, Event, Shop, etc.)
-return function(previous, team, act, floor, encounters)
+---@param seed integer
+return function(gamestate,  act, floor, encounters, seed)
 	local data = {
-		previous = previous,
-		members = team.members,
-		inventory = team.inventory,
+		message = "Hello, World", 
+		gamestate = gamestate,
 		act = act,
 		floor = floor,
-		encounters = encounters
+		seed = seed,
 	}
 
-	local serialized = lume.serialize(data)
-	love.filesystem.write("run_savedata", serialized)
+	bitser.dumpLoveFile('save.dat', data)
 end;

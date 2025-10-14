@@ -93,8 +93,8 @@ function Scheduler:removeKOs(activeEntity)
 	-- Get KO duration first so they aren't removed before seeing them faint
 	for _,entity in ipairs(self.combatants) do
 		if not entity:isAlive() then
-			local faintDuration = entity:startFainting()
-			duration = math.max(duration, faintDuration)
+			-- local faintDuration = entity:startFainting()
+			-- duration = math.max(duration, faintDuration)
 			if entity.type == "enemy" then
 				table.insert(koEnemies, entity)
 			else
