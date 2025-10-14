@@ -12,19 +12,19 @@ Begins an analytics service that listens for an event, and pushes it to PostHog 
 
 Creates, sets, and pushes events to PostHog.
 
-#### `pushAnalyticEvent(data: table)`
+### `pushAnalyticEvent(data: table)`
 
 Makes the event through `makeAnalyticEvent` and sends it through `sendAnalyticEvent`
 
-#### `makeAnalyticEvent(data: table)`
+### `makeAnalyticEvent(data: table)`
 
 Sets the properties via `setProperties`, initializes the event to be sent, and increments the static variable `eventID`, which is simply a number that identifies a chronological order that events are created in during a session.
 
-#### `setProperties(data: table)`
+### `setProperties(data: table)`
 
 Sets up the major properties used for PostHog Analytics.
 
-#### `sendAnalyticEvent(event: table)`
+### `sendAnalyticEvent(event: table)`
 
 Sends a POST request to PostHog using the `https` module (LOVE 12.0+).
 
