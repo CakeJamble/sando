@@ -9,8 +9,11 @@ local Class = require('libs.hump.class')
 ---@class SpireGenerator: MapGenerator
 local SpireGenerator = Class{__includes = MapGenerator}
 
-function SpireGenerator:init()
-	MapGenerator.init(self, 15, 7, 6)
+---@param numFloors integer
+---@param mapWidth integer
+---@param numPaths integer
+function SpireGenerator:init(numFloors, mapWidth, numPaths)
+	MapGenerator.init(self, numFloors, mapWidth, numPaths)
 	self.weights = {
 		COMBAT = 10,
 		SHOP = 3,
@@ -82,7 +85,6 @@ function SpireGenerator:getRandomStartingPoints()
 			if not hasY then uniquePoints = uniquePoints + 1 end
 			table.insert(yCoords, startingPoint)
 		end
-		print(uniquePoints)
 	end
 	return yCoords
 end;
