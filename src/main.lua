@@ -1,6 +1,6 @@
 -- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
-Camera = require('libs.hump.camera')
+local Camera = require('libs.hump.camera')
 shove = require('libs.shove')
 
 Text = require('libs.sysl-text.slog-text')
@@ -131,7 +131,9 @@ function love.update(dt)
   JoystickUtils.update(dt)
 
   if input.joystick then
-    JoystickUtils.updateAxisRepeater(input.joystick, dt)
+    JoystickUtils.update(dt)
+    JoystickUtils.updateAxisRepeater(input.joystick, dt, "left")
+    JoystickUtils.updateAxisRepeater(input.joystick, dt, "right")
   end
 end;
 

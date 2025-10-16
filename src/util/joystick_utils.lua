@@ -105,13 +105,16 @@ end;
 -- Limits the number of consecutive analog stick inputs recognized
 ---@param joystick table
 ---@param dt number
+---@param stick? '"left"' | '"right"'
 ---@param config? { [string]: number }
-function M.updateAxisRepeater(joystick, dt, config)
+function M.updateAxisRepeater(joystick, dt, stick, config)
     if not joystick or not joystick:isConnected() then return end
+    stick = stick or "left"
 
     -- init state table
-    if not M.axisRepeaterStates[joystick] then
-        M.axisRepeaterStates[joystick] = {
+    M.axisRepeaterStates[joystick] = M.axisRepeaterStates[joystick] or {}
+    if not M.axisRepeaterStates[joystick][stick] then
+        M.axisRepeaterStates[joystick][stick] = {
             up = { timer = 0, wasDown = false, triggered = false },
             down = { timer = 0, wasDown = false, triggered = false },
             left = { timer = 0, wasDown = false, triggered = false },
@@ -119,14 +122,18 @@ function M.updateAxisRepeater(joystick, dt, config)
         }
     end
 
+    local state = M.axisRepeaterStates[joystick][stick]
+
     -- Default config
     config = config or {}
     local threshold = config.threshold or 0.5
     local initialDelay = config.initialDelay or 0.4
     local repeatDelay = config.repeatDelay or 0.15
 
-    local state = M.axisRepeaterStates[joystick]
-    local stickVec = Vector(joystick:getGamepadAxis('leftx'), joystick:getGamepadAxis('lefty'))
+    -- Stick Axes
+    local xAxis = stick .. "x"
+    local yAxis = stick .. "y"
+    local stickVec = Vector(joystick:getGamepadAxis(xAxis), joystick:getGamepadAxis(yAxis))
 
     local directions = {
         up = { isDown = stickVec.y < -threshold, state = state.up },
@@ -161,10 +168,12 @@ end
 
 ---@param joystick table
 ---@param direction string
+---@param stick? '"left"' | '"right"'
 ---@return boolean
-function M.isAxisRepeaterTriggered(joystick, direction)
-    if not M.axisRepeaterStates[joystick] then return false end
-    return M.axisRepeaterStates[joystick][direction].triggered
+function M.isAxisRepeaterTriggered(joystick, direction, stick)
+    stick = stick or "left"
+    if not M.axisRepeaterStates[joystick][stick] then return false end
+    return M.axisRepeaterStates[joystick][stick][direction].triggered
 end
 
 ---@param joystick table

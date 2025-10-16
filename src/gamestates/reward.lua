@@ -32,10 +32,6 @@ function reward:init()
     function()
       self:increaseMoney()
     end)
-  Signal.register('OnMoneySettled',
-    function()
-      Gamestate.switch(states["overworld"], self.act, self.floor, self.characterTeam, self.log)
-    end)
 end;
 
 --- Each time the Reward state is entered, given that we are not coming from a combat state,
@@ -194,8 +190,9 @@ function reward:increaseMoney()
   local amount = self.moneyReward + self.characterTeam.inventory.money
   flux.to(self.moneyValues, 1.5, {rewardVal = 0, totalVal = amount})
     :oncomplete(function()
-      self.characterTeam:increaseMoney(self.moneyReward)
-      Gamestate.switch(states['shop'], self.characterTeam)
+      self.characterTeam.inventory:gainMoney(self.moneyReward)
+      self.log:setCleared()
+      Gamestate.switch(states["overworld"], self.characterTeam, self.log)
     end)
 end;
 

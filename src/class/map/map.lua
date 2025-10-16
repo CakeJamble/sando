@@ -14,10 +14,15 @@ function Map:init(mapData, numFloors, width, numPaths)
 	self.width = width
 	self.numPaths = numPaths
 	self.selected = nil
-	self.activeRooms = {}
 	self.selectedIndex = nil
+	self.activeRooms = {}
+	self.pos = {
+		x = shove.getViewportWidth() / 4,
+		y = 0
+	}
 end;
 
+-- Connect rooms with lines to visualize paths
 function Map:connectRooms()
 	for _,row in ipairs(self.mapData) do
 		for _,room in ipairs(row) do
@@ -26,6 +31,7 @@ function Map:connectRooms()
 	end
 end;
 
+-- Connect one room to parent(s) by creating lines and assigning it to the room
 ---@param room Room
 function Map:connectLines(room)
 	if not room.nextRooms then return end
@@ -38,8 +44,10 @@ function Map:connectLines(room)
 	end
 end;
 
+-- Sets validated rooms to active and changes their opacities
 ---@param floor integer
 function Map:checkActiveRooms(floor)
+	self.activeRooms = {}
 	for _,room in ipairs(self.mapData[floor]) do
 		if room.type ~= "NA" then
 			if floor == 1 and not room.cleared then
@@ -56,6 +64,7 @@ function Map:checkActiveRooms(floor)
 	end
 end;
 
+-- Check if any of the parent rooms are marked as cleared
 ---@param room Room
 ---@return boolean
 function Map:clearedParents(room)
@@ -89,7 +98,7 @@ function Map:clearedParents(room)
 	end
 
 	-- right parent
-	if room.col < self.mapWidth and room.row > 1 then
+	if room.col < self.width and room.row > 1 then
 		local parentCandidate = self.mapData[room.row - 1][room.col + 1]
 
 		if has(parentCandidate.nextRooms, room) then
@@ -105,6 +114,16 @@ function Map:clearedParents(room)
 	return false
 end;
 
+---@param log Log
+---@param floor integer
+function Map:logSelection(log, floor)
+	log:logEncounterSelection(self.selectedIndex, self.mapData[floor])
+
+	for _,room in ipairs(self.mapData[floor]) do
+		room.alpha = 0.5
+	end
+end;
+
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function Map:gamepadpressed(joystick, button)
@@ -116,7 +135,7 @@ function Map:gamepadpressed(joystick, button)
 		if self.selectedIndex <= 0 then
 			self.selectedIndex = #self.activeRooms
 		end
-		self.selected = self.selectedIndex
+		self.selected = self.activeRooms[self.selectedIndex]
 	elseif button == "dpright" then
 		self.selectedIndex = self.selectedIndex + 1
 		if self.selectedIndex > #self.activeRooms then
@@ -127,12 +146,23 @@ function Map:gamepadpressed(joystick, button)
 end;
 
 function Map:draw()
+	-- Center map
+	local dx,dy = self.pos.x, self.pos.y
+	love.graphics.translate(dx, dy)
+
+	self:drawRooms()
+	self:drawSelectBox()
+end;
+
+function Map:drawRooms()
 	for _,row in ipairs(self.mapData) do
 		for _,room in ipairs(row) do
 			room:draw()
 		end
 	end
+end;
 
+function Map:drawSelectBox()
 	if self.selected then
 		love.graphics.setColor(0, 0, 1)
 		local x,y,w,h = self.selected.pos.x, self.selected.pos.y, self.selected.w, self.selected.h
@@ -140,4 +170,5 @@ function Map:draw()
 		love.graphics.setColor(1,1,1)
 	end
 end;
+
 return Map
