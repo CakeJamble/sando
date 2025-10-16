@@ -17,11 +17,11 @@ states = {
   main_menu         = require 'gamestates.main_menu',
   character_select  = require 'gamestates.character_select',
   bakery            = require 'gamestates.bakery',
-  game              = require 'gamestates.game',
   reward            = require 'gamestates.reward',
   combat            = require 'gamestates.combat',
   pause             = require 'gamestates.pause',
-  shop = require('gamestates.shop')
+  shop = require('gamestates.shop'),
+  overworld = require("gamestates.overworld")
 }
 
 local framePath = 'asset/sprites/frame/'

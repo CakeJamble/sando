@@ -32,6 +32,10 @@ function reward:init()
     function()
       self:increaseMoney()
     end)
+  Signal.register('OnMoneySettled',
+    function()
+      Gamestate.switch(states["overworld"], self.act, self.floor, self.characterTeam, self.log)
+    end)
 end;
 
 --- Each time the Reward state is entered, given that we are not coming from a combat state,
@@ -42,6 +46,9 @@ end;
 ---@param characterTeam CharacterTeam
 function reward:enter(previous, rewards, characterTeam)
   if previous == states['combat'] then
+    self.act = previous.act
+    self.floor = previous.floor
+    self.log = previous.log
     self.characterTeam = characterTeam
     self.expReward = self.sumReward(rewards, 'exp')
     self.moneyReward = self.sumReward(rewards, 'money')

@@ -155,7 +155,9 @@ end;
 function character_select:validate_selection()
   if self.teamCount == TEAM_CAP then
     character_select:indicesToCharacters()
-    Gamestate.switch(states['combat'], self.opts)
+    local act, floor = 1, 1
+    local team = self.opts.team
+    Gamestate.switch(states['overworld'], act, floor, team)
   else
     self.selectedTeamIndices[self.teamCount + 1] = self.index
     self.teamCount = self.teamCount + 1

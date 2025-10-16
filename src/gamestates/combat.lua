@@ -1,14 +1,8 @@
 local SoundManager = require('class.ui.sound_manager')
 local Entity = require('class.entities.entity')
--- local Enemy = require("class.entities.enemy")
--- local ActionUI = require("class.ui.action_ui")
 local Projectile = require('class.entities.projectile')
--- local character_select = require('gamestates.character_select')
 require("util.globals")
--- local CharacterTeam = require('class.entities.character_team')
--- local EnemyTeam = require('class.entities.enemy_team')
--- require('class.input.command_manager')
--- require('class.scheduler.turn_manager')
+
 local ATBScheduler = require('class.scheduler.atb_scheduler')
 local STBScheduler = require('class.scheduler.stb_scheduler')
 local Signal = require('libs.hump.signal')
@@ -28,7 +22,6 @@ local tweenHPLossCheckboxState = ffi.new("bool[1]", false)
 local atbSystem = ffi.new("bool[1]", false)
 
 local combat = {}
-local numFloors = 50
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
 local COMBAT_UI_PATH = 'asset/sprites/combat/'
 local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
