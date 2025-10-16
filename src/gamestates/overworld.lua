@@ -4,6 +4,7 @@ local Map = require('class.map.map')
 local Log = require('class.log')
 local flux = require('libs.flux')
 local JoystickUtils = require("util.joystick_utils")
+local Camera = require('libs.hump.camera')
 
 function overworld:init()
 	shove.createLayer("background")
@@ -25,6 +26,9 @@ function overworld:enter(previous, act, floor, characterTeam, log)
 	end
 
 	self.map:checkActiveRooms(self.floor)
+
+	self.lookY = 0
+	camera.smoother = Camera.smooth.damped(10.0)
 end;
 
 ---@return Map
@@ -66,7 +70,6 @@ function overworld:update(dt)
 	if input.joystick then
 		-- Left Stick
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
-    	print('yerp')
       self:gamepadpressed(input.joystick, 'dpright')
     elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
       self:gamepadpressed(input.joystick, 'dpleft')
@@ -85,11 +88,12 @@ function overworld:update(dt)
   end
 end;
 
+-- Only scrolls in Y direction
 ---@param direction string
 function overworld:scrollCamera(direction)
-	print('yep')
-	local scrollStep = 640
-	local cx, cy = camera:position()
+	local scrollStep = 64
+	local _, cy = camera:position()
+	cy = cy + self.lookY
 
 	if direction == 'up' then
 		cy = cy - scrollStep
@@ -97,7 +101,7 @@ function overworld:scrollCamera(direction)
 		cy = cy + scrollStep
 	end
 
-	camera:lookAt(cx, cy)
+	camera:lockY(cy)
 end;
 
 function overworld:draw()

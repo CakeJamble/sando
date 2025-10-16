@@ -89,8 +89,6 @@ function SpireGenerator:getRandomStartingPoints()
 	return yCoords
 end;
 
-
-
 ---@param row integer
 ---@param col integer
 ---@param room Room
@@ -143,8 +141,9 @@ function SpireGenerator:wouldCrossExistingPath(row, col, room)
 end;
 
 function SpireGenerator:setupBossRoom()
-	local middle = math.floor(self.mapWidth / 2)
+	local middle = math.floor(0.5 + self.mapWidth / 2)
 	local bossRoom = self.mapData[self.numFloors][middle]
+	bossRoom:setType("BOSS")
 	print(bossRoom.pos.x, bossRoom.pos.y)
 
 	for j=1, self.mapWidth do
