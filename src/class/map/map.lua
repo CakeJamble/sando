@@ -47,6 +47,7 @@ end;
 -- Sets validated rooms to active and changes their opacities
 ---@param floor integer
 function Map:checkActiveRooms(floor)
+	self.activeRooms = {}
 	for _,room in ipairs(self.mapData[floor]) do
 		if room.type ~= "NA" then
 			if floor == 1 and not room.cleared then
@@ -113,6 +114,16 @@ function Map:clearedParents(room)
 	return false
 end;
 
+---@param log Log
+---@param floor integer
+function Map:logSelection(log, floor)
+	log:logEncounterSelection(self.selectedIndex, self.mapData[floor])
+
+	for _,room in ipairs(self.mapData[floor]) do
+		room.alpha = 0.5
+	end
+end;
+
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function Map:gamepadpressed(joystick, button)
@@ -124,7 +135,7 @@ function Map:gamepadpressed(joystick, button)
 		if self.selectedIndex <= 0 then
 			self.selectedIndex = #self.activeRooms
 		end
-		self.selected = self.selectedIndex
+		self.selected = self.activeRooms[self.selectedIndex]
 	elseif button == "dpright" then
 		self.selectedIndex = self.selectedIndex + 1
 		if self.selectedIndex > #self.activeRooms then
@@ -133,8 +144,6 @@ function Map:gamepadpressed(joystick, button)
 		self.selected = self.activeRooms[self.selectedIndex]
 	end
 end;
-
-
 
 function Map:draw()
 	-- Center map

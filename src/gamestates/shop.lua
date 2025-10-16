@@ -26,11 +26,12 @@ function Shop:init()
 end;
 
 ---@param previous table
----@param characterTeam CharacterTeam
-function Shop:enter(previous, characterTeam)
+---@param options table
+function Shop:enter(previous, options)
 	self.sfx = SoundManager(AllSounds.sfx.shop)
-	self.characterTeam = characterTeam
-	self.items = self.loadShopItems(self.numItems, self.shopRarities, characterTeam.rarityMod)
+	self.characterTeam = options.team
+	self.log = options.log or Log()
+	self.items = self.loadShopItems(self.numItems, self.shopRarities, self.characterTeam.rarityMod)
 end;
 
 ---@param hasVisited boolean

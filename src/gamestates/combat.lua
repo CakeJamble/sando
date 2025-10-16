@@ -108,7 +108,7 @@ function combat:enter(previous, opts)
   end
 
   self.enemyTeam = generateEncounter(self.floorNumber)
-
+  
   saveRun('combat',self.act,
     self.floor, self.encounteredPools, 123)
   saveTeam(self.characterTeam)

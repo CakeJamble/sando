@@ -16,16 +16,15 @@ end;
 ---@param floor integer
 ---@param characterTeam CharacterTeam
 ---@param log? Log
-function overworld:enter(previous, act, floor, characterTeam, log)
+function overworld:enter(previous, characterTeam, log)
 	self.characterTeam = characterTeam
-	self.act = act
-	self.floor = floor
 	self.log = log or Log()
-	if not self.map then
-		self.map = self:generateMap()
-	end
-
+	self.act = self.log.act
+	self.floor = self.log.floor
+	self.map = self.log.map or self:generateMap()
+	
 	self.map:checkActiveRooms(self.floor)
+
 
 	self.lookY = 0
 	camera.smoother = Camera.smooth.damped(10.0)
@@ -37,20 +36,19 @@ function overworld:generateMap()
 	local mapGenerator = SpireGenerator(numFloors, mapWidth, numPaths)
 	local map = Map(mapGenerator:generateMap(), numFloors, mapWidth, numPaths)
 	map:connectRooms()
+	-- self.log:setMap(map)
+	self.log.map = map
 	return map
 end;
 
 function overworld:switchState()
+	self.map:logSelection(self.log, self.floor)
 	local state = string.lower(self.map.selected.type)
-	local options = {}
-
-	if state == "combat" then
-		options.act = self.act
-		options.floor = self.floor
-		options.team = self.characterTeam
-	elseif state == "shop" then
-		options = self.characterTeam
-	end
+	self.map.selected = nil
+	local options = {
+		team = self.characterTeam,
+		log = self.log,
+	}
 
 	Gamestate.switch(states[state], options)
 end;
