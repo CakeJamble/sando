@@ -131,7 +131,9 @@ function love.update(dt)
   JoystickUtils.update(dt)
 
   if input.joystick then
-    JoystickUtils.updateAxisRepeater(input.joystick, dt)
+    JoystickUtils.update(dt)
+    JoystickUtils.updateAxisRepeater(input.joystick, dt, "left")
+    JoystickUtils.updateAxisRepeater(input.joystick, dt, "right")
   end
 end;
 

@@ -3,6 +3,7 @@ local SpireGenerator = require('class.map.spire_generator')
 local Map = require('class.map.map')
 local Log = require('class.log')
 local flux = require('libs.flux')
+local JoystickUtils = require("util.joystick_utils")
 
 function overworld:init()
 	shove.createLayer("background")
@@ -61,15 +62,53 @@ end;
 
 function overworld:update(dt)
 	flux.update(dt)
+
+	if input.joystick then
+		-- Left Stick
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+    	print('yerp')
+      self:gamepadpressed(input.joystick, 'dpright')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+      self:gamepadpressed(input.joystick, 'dpleft')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:gamepadpressed(input.joystick, 'dpup')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:gamepadpressed(input.joystick, 'dpdown')
+    end
+
+    -- Right Stick
+	  if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up', 'right') then
+	  	self:scrollCamera('up')
+	  elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down', 'right') then
+	  	self:scrollCamera('down')
+	  end
+  end
+end;
+
+---@param direction string
+function overworld:scrollCamera(direction)
+	print('yep')
+	local scrollStep = 640
+	local cx, cy = camera:position()
+
+	if direction == 'up' then
+		cy = cy - scrollStep
+	elseif direction == 'down' then
+		cy = cy + scrollStep
+	end
+
+	camera:lookAt(cx, cy)
 end;
 
 function overworld:draw()
 	shove.beginDraw()
+	camera:attach()
 
 	shove.beginLayer("ui")
 	self.map:draw()
 	shove.endLayer()
 
+	camera:detach()
 	shove.endDraw()
 end;
 

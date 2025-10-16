@@ -1,6 +1,5 @@
 local Class = require('libs.hump.class')
 local flux = require('libs.flux')
-local JoystickUtils = require("util.joystick_utils")
 
 ---@class Map
 local Map = Class{}
@@ -135,21 +134,15 @@ function Map:gamepadpressed(joystick, button)
 	end
 end;
 
----@param dt number
--- function Map:update(dt)
--- 	if input.joystick then
+
 
 function Map:draw()
-	love.graphics.push()
-
 	-- Center map
 	local dx,dy = self.pos.x, self.pos.y
 	love.graphics.translate(dx, dy)
 
 	self:drawRooms()
 	self:drawSelectBox()
-
-	love.graphics.pop()
 end;
 
 function Map:drawRooms()
