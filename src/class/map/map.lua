@@ -1,5 +1,6 @@
 local Class = require('libs.hump.class')
 local flux = require('libs.flux')
+local JoystickUtils = require("util.joystick_utils")
 
 ---@class Map
 local Map = Class{}
@@ -14,10 +15,15 @@ function Map:init(mapData, numFloors, width, numPaths)
 	self.width = width
 	self.numPaths = numPaths
 	self.selected = nil
-	self.activeRooms = {}
 	self.selectedIndex = nil
+	self.activeRooms = {}
+	self.pos = {
+		x = shove.getViewportWidth() / 4,
+		y = 0
+	}
 end;
 
+-- Connect rooms with lines to visualize paths
 function Map:connectRooms()
 	for _,row in ipairs(self.mapData) do
 		for _,room in ipairs(row) do
@@ -26,6 +32,7 @@ function Map:connectRooms()
 	end
 end;
 
+-- Connect one room to parent(s) by creating lines and assigning it to the room
 ---@param room Room
 function Map:connectLines(room)
 	if not room.nextRooms then return end
@@ -38,6 +45,7 @@ function Map:connectLines(room)
 	end
 end;
 
+-- Sets validated rooms to active and changes their opacities
 ---@param floor integer
 function Map:checkActiveRooms(floor)
 	for _,room in ipairs(self.mapData[floor]) do
@@ -56,6 +64,7 @@ function Map:checkActiveRooms(floor)
 	end
 end;
 
+-- Check if any of the parent rooms are marked as cleared
 ---@param room Room
 ---@return boolean
 function Map:clearedParents(room)
@@ -89,7 +98,7 @@ function Map:clearedParents(room)
 	end
 
 	-- right parent
-	if room.col < self.mapWidth and room.row > 1 then
+	if room.col < self.width and room.row > 1 then
 		local parentCandidate = self.mapData[room.row - 1][room.col + 1]
 
 		if has(parentCandidate.nextRooms, room) then
@@ -126,13 +135,32 @@ function Map:gamepadpressed(joystick, button)
 	end
 end;
 
+---@param dt number
+-- function Map:update(dt)
+-- 	if input.joystick then
+
 function Map:draw()
+	love.graphics.push()
+
+	-- Center map
+	local dx,dy = self.pos.x, self.pos.y
+	love.graphics.translate(dx, dy)
+
+	self:drawRooms()
+	self:drawSelectBox()
+
+	love.graphics.pop()
+end;
+
+function Map:drawRooms()
 	for _,row in ipairs(self.mapData) do
 		for _,room in ipairs(row) do
 			room:draw()
 		end
 	end
+end;
 
+function Map:drawSelectBox()
 	if self.selected then
 		love.graphics.setColor(0, 0, 1)
 		local x,y,w,h = self.selected.pos.x, self.selected.pos.y, self.selected.w, self.selected.h
@@ -140,4 +168,5 @@ function Map:draw()
 		love.graphics.setColor(1,1,1)
 	end
 end;
+
 return Map

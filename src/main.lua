@@ -1,6 +1,6 @@
 -- HUMP Globals
 Gamestate = require "libs.hump.gamestate"
-Camera = require('libs.hump.camera')
+local Camera = require('libs.hump.camera')
 shove = require('libs.shove')
 
 Text = require('libs.sysl-text.slog-text')

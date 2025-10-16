@@ -37,7 +37,6 @@ end;
 
 function overworld:switchState()
 	local state = string.lower(self.map.selected.type)
-	print(state)
 	local options = {}
 
 	if state == "combat" then
