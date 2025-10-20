@@ -167,7 +167,7 @@ function SpireGenerator:setupRoomTypes()
 	-- floor 1 is always a standard combat
 	for _,room in ipairs(self.mapData[1]) do
 		if #room.nextRooms > 0 then
-			room:setType("SHOP")
+			room:setType("COMBAT")
 		end
 	end
 
