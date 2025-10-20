@@ -18,7 +18,6 @@ function ATBScheduler:init(characterTeam, enemyTeam)
 	}
 	self.activeCommand = nil
 	self.awaitingPlayerAction = false
-	self:enter()
 end;
 
 function ATBScheduler:enter()

@@ -18,7 +18,6 @@ function STBScheduler:init(characterTeam, enemyTeam)
 	self.activeEntity = nil
 	self.activeCommand = nil
 	self.commandQueue = {}
-	self:enter()
 end;
 
 function STBScheduler:enter()

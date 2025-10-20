@@ -114,6 +114,7 @@ function combat:enter(previous, opts)
 
   -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
   self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
+  self.turnManager:enter()
   Signal.emit('OnStartCombat')
   Signal.emit('OnEnterScene')
 end;
