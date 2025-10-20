@@ -4,6 +4,7 @@ local Projectile = require('class.entities.projectile')
 
 local ATBScheduler = require('class.scheduler.atb_scheduler')
 local STBScheduler = require('class.scheduler.stb_scheduler')
+local CTBScheduler = require('class.scheduler.ctb_scheduler')
 local Signal = require('libs.hump.signal')
 local Timer = require("libs.hump.timer")
 local flux = require('libs.flux')
@@ -113,7 +114,9 @@ function combat:enter(previous, opts)
   saveTeam(self.characterTeam)
 
   -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
-  self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
+  -- self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
+  self.turnManager = CTBScheduler(self.characterTeam, self.enemyTeam)
+  self.turnManager:enter()
   Signal.emit('OnStartCombat')
   Signal.emit('OnEnterScene')
 end;

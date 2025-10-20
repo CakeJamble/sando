@@ -1,4 +1,3 @@
-require('util.globals')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local Signal = require('libs.hump.signal')
