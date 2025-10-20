@@ -37,8 +37,6 @@ function Room:setType(roomType)
 
 	-- uncomment me when the assets are here!
 	-- self.sprite = love.graphics.newImage(path)
-	print("Row: " .. self.row, "Col: " .. self.col, "x: " .. self.pos.x, "y: " .. self.pos.y)
-	print("roomType: " .. roomType)
 end;
 
 function Room:draw()

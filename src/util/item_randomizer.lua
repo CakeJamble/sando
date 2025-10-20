@@ -3,7 +3,7 @@ require('util.globals')
 local ItemRandomizer = {}
 ---@param itemTypes string[]
 ---@return string
-local function getItemType(itemTypes)
+local function getRandomItemType(itemTypes)
 	local i = love.math.random(1, #itemTypes)
 	local itemType = itemTypes[i]
 
@@ -13,11 +13,11 @@ end;
 ---@param pools string[]
 ---@param rarities { [string]: number }
 ---@return string
-local function getItemRarity(pools, rarities)
+ItemRandomizer.getWeightedRandomItemRarity = function(pools, rarities)
 	local rarity
 	local chance = love.math.random()
 	for k,v in pairsByValues(rarities) do
-		if v >= chance then 
+		if v >= chance then
 			rarity = k
 			break
 		end
@@ -36,7 +36,7 @@ ItemRandomizer.getRandomItem = function(itemType, rarity)
 	local tLen = #ItemPools[itemType][rarity]
 	local i = love.math.random(1, tLen)
 	local itemName = ItemPools[itemType][rarity][i]
-	if itemType ~= "consumable" then
+	if itemType == "tool" then
 		table.remove(ItemPools[itemType][rarity], i)
 	end
 	local item = loadItem(itemName, itemType)
@@ -52,8 +52,8 @@ ItemRandomizer.getRandomItems = function(numItems, itemTypes, pools, rarities)
 	local items = {}
 
 	for i=1,numItems do
-		local itemType = getItemType(itemTypes)
-		local rarity = getItemRarity(pools, rarities)
+		local itemType = getRandomItemType(itemTypes)
+		local rarity = ItemRandomizer.getWeightedRandomItemRarity(pools, rarities)
 		local item = ItemRandomizer.getRandomItem(itemType, rarity)
 		table.insert(items, item)
 	end

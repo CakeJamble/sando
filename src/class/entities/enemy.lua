@@ -115,7 +115,6 @@ function Enemy.getRandomSkill(skillPool, numValidTargets)
     local i = love.math.random(1, #singleTargetSkills)
     skill = singleTargetSkills[i]
   else
-    print('selecting from all skills')
     local i = love.math.random(1, #skillPool)
     skill = skillPool[i]
   end

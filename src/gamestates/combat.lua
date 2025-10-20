@@ -93,7 +93,7 @@ function combat:enter(previous, opts)
   self.act = opts.act or 1
   self.floor = opts.floor or 1
   self.characterTeam = opts.team
-  self.log = opts.log or Log()
+  self.log = opts.log
   self.rewardExp = 0
   self.rewardMoney = 0
 

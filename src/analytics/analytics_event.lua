@@ -75,9 +75,6 @@ function AnalyticsEvent.sendAnalyticEvent(event)
 		}
 	})
 
-	print("Response Code", code)
-	print("Response Body", result)
-
 	if code == 200 then
 		return true
 	else

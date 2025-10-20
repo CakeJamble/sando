@@ -270,7 +270,6 @@ function Entity:goToStagingPosition(t, displacement)
     stagingPos.x = self.target.oPos.x + displacement
     stagingPos.y = self.target.oPos.y
   end
-  print('Tweening for active entity to use ' .. self.skill.name)
   if t == nil then
     t = self.skill.stagingTime
   end
@@ -499,7 +498,7 @@ function Entity:takeDamage(amount, attackerLuck) --> void
   if Entity.tweenHP then
     print('slow tween beginning for HP')
     local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
-      :oncomplete(function() print('done with hp tween') end)
+      -- :oncomplete(function() print('done with hp tween') end)
     self.tweens['damage'] = damageTween
   else
     self.battleStats["hp"] = newHP

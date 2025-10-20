@@ -144,7 +144,6 @@ function SpireGenerator:setupBossRoom()
 	local middle = math.floor(0.5 + self.mapWidth / 2)
 	local bossRoom = self.mapData[self.numFloors][middle]
 	bossRoom:setType("BOSS")
-	print(bossRoom.pos.x, bossRoom.pos.y)
 
 	for j=1, self.mapWidth do
 		local currRoom = self.mapData[self.numFloors - 1][j]
@@ -168,7 +167,7 @@ function SpireGenerator:setupRoomTypes()
 	-- floor 1 is always a standard combat
 	for _,room in ipairs(self.mapData[1]) do
 		if #room.nextRooms > 0 then
-			room:setType("COMBAT")
+			room:setType("SHOP")
 		end
 	end
 
