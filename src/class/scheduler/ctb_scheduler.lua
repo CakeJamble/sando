@@ -157,6 +157,48 @@ function CTBScheduler:checkQueues()
 	end
 end;
 
+-- Roundabout way of removing enemy KOs without putting them in the combatants list
+function CTBScheduler:removeKOs()
+	local dur1 = Scheduler.removeKOs(self, self.activeEntity)
+	local dur2 = 1
 
+	local koEnemies = {}
+	for _,enemy in ipairs(self.enemyTeam.members) do
+		if not enemy:isAlive() then
+			table.insert(koEnemies, enemy)
+		end
+		enemy:resetDmgDisplay()
+	end
+
+	Timer.after(dur2,
+		function()
+			self.enemyTeam:removeMembers(koEnemies)
+			self:emitDeathSignals(self.activeEntity, {}, koEnemies)
+
+			for _,enemy in ipairs(koEnemies) do
+				table.insert(self.rewards, enemy:getRewards())
+			end
+		end)
+
+	return math.max(dur1, dur2)
+end;
+
+-- Update enemies without needing them in the combatants list
+---@param dt number
+function CTBScheduler:update(dt)
+	Scheduler.update(self, dt)
+	for _,enemy in ipairs(self.enemyTeam.members) do
+		enemy:update(dt)
+	end
+end;
+
+-- Draws the timers
+function CTBScheduler:draw()
+	for _,timer in ipairs(self.enemyTimers) do
+		local countdown = tostring(timer.gauge - (timer.tick % timer.gauge))
+		local pos = timer.enemy.pos
+		love.graphics.print(countdown, pos.x, pos.y + 30)
+	end
+end;
 
 return CTBScheduler
