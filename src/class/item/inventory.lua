@@ -52,6 +52,37 @@ function Inventory:loseMoney(amount)
 end;
 
 ---@param item table
+---@param itemType string
+function Inventory:addItem(item, itemType)
+    if itemType == "tool" then
+        self.toolManager:addItem(item)
+    elseif itemType == "equip" then
+        self.equipManager:addItem(item)
+    elseif itemType == "accessory" then
+        self.accessoryManager:addItem(item)
+    else
+        self:addConsumable(item)
+    end
+end;
+
+---@param item table
+---@param itemType string
+---@return table
+function Inventory:popItem(item, itemType)
+    local item = {}
+    if itemType == "tool" then
+        item = self.toolManager:popItem(item)
+    elseif itemType == "equip" then
+        item = self.equipManager:addItem(item)
+    elseif itemType == "accessory" then
+        item = self.accessoryManager:addItem(item)
+    -- else
+        -- item = self:popConsumable(item)
+    end
+
+    return item
+end;
+---@param item table
 ---@return boolean
 function Inventory:addConsumable(item)
     if #self.consumables >= self.numConsumableSlots then
@@ -80,6 +111,7 @@ end;
 
 ---@param tool table
 ---@return table
+---@deprecated
 function Inventory:popTool(tool)
     return self.toolManager:popTool(tool)
 end;

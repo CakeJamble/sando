@@ -12,8 +12,6 @@ function overworld:init()
 end;
 
 ---@param previous table
----@param act integer
----@param floor integer
 ---@param characterTeam CharacterTeam
 ---@param log? Log
 function overworld:enter(previous, characterTeam, log)
@@ -24,7 +22,6 @@ function overworld:enter(previous, characterTeam, log)
 	self.map = self.log.map or self:generateMap()
 	
 	self.map:checkActiveRooms(self.floor)
-
 
 	self.lookY = 0
 	camera.smoother = Camera.smooth.damped(10.0)

@@ -128,16 +128,35 @@ function shop:processTransaction(inventory, item)
 		self.sfx:play("laugh")
 	end
 
-	-- should trigger some kind of reordering or resetting of UI and cursor stuff later
+	local item = table.remove(self.items[self.selectedItemType], self.selectedIndex)
+	self.characterTeam.inventory:addItem(item, self.selectedItemType)
+
+	-- Adjust selection if you clear out stock
+	if #self.items[self.selectedItemType] == 0 then
+		self.selected = nil
+		self.selectedItemType = nil
+	end
 end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function shop:gamepadpressed(joystick, button)
-	if not self.selected or not self.selectedItemType then
-		self.selectedIndex = 1
+	if button == 'b' then
+		self.log:setCleared()
+		Gamestate.switch(states['overworld'], self.characterTeam, self.log)
+	elseif not self.selected or not self.selectedItemType then
 		self.typeIndex = 1
-		self.selectedItemType = self.itemTypes[self.typeIndex]
+		self.selectedIndex = 1
+
+		for itemType,itemList in pairs(self.items) do
+			if #itemList == 0 then
+				self.typeIndex = self.typeIndex + 1
+			else
+				self.selectedItemType = itemType
+				break
+			end
+		end
+
 		self.selected = self.items[self.selectedItemType][self.selectedIndex]
 	elseif button == "dpleft" then
 		self.selectedIndex = self.selectedIndex - 1
@@ -204,6 +223,8 @@ function shop:draw()
 
 	shove.beginLayer('ui')
 	self:drawUI()
+	love.graphics.rectangle("fill", 360, 32, 32, 16)
+	love.graphics.print("Press b to leave", 360, 50)
 	shove.endLayer()
 
 	camera:detach()
