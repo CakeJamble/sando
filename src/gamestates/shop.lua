@@ -124,17 +124,16 @@ function shop:processTransaction(inventory, item)
 	if money >= cost then
 		inventory:loseMoney(money - cost)
 		self.sfx:play("coins_drop")
+		local item = table.remove(self.items[self.selectedItemType], self.selectedIndex)
+		self.characterTeam.inventory:addItem(item, self.selectedItemType)
+		-- Adjust selection if you clear out stock
+		if #self.items[self.selectedItemType] == 0 then
+			self.selected = nil
+			self.selectedItemType = nil
+		end
 	else
 		self.sfx:play("laugh")
-	end
-
-	local item = table.remove(self.items[self.selectedItemType], self.selectedIndex)
-	self.characterTeam.inventory:addItem(item, self.selectedItemType)
-
-	-- Adjust selection if you clear out stock
-	if #self.items[self.selectedItemType] == 0 then
-		self.selected = nil
-		self.selectedItemType = nil
+		-- add a visual
 	end
 end;
 
