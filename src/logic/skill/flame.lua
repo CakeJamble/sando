@@ -1,4 +1,3 @@
-require('util.globals')
 local Projectile = require('class.entities.projectile')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')

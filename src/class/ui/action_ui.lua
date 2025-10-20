@@ -9,7 +9,7 @@ local PassButton = require('class.ui.pass_button')
 local JoystickUtils = require('util.joystick_utils')
 local Signal = require('libs.hump.signal')
 local Timer = require('libs.hump.timer')
-require('util.globals')
+local sortLayers = require('util.table_utils').sortLayers
 
 local Class = require 'libs.hump.class'
 

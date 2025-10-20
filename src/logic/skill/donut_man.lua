@@ -1,4 +1,3 @@
-require('util.globals')
 local flux = require('libs.flux')
 local Projectile = require('class.entities.projectile')
 local Timer = require('libs.hump.timer')

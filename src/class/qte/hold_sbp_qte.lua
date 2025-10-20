@@ -4,7 +4,7 @@ local QTE = require('class.qte.qte')
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
-require('util.globals')
+local calcSpacingFromTarget = require('util.calc_spacing')
 
 ---@class HoldSBP: QTE
 local HoldSBP = Class{__includes = QTE}

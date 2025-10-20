@@ -1,7 +1,6 @@
 local SoundManager = require('class.ui.sound_manager')
 local Entity = require('class.entities.entity')
 local Projectile = require('class.entities.projectile')
-require("util.globals")
 
 local ATBScheduler = require('class.scheduler.atb_scheduler')
 local STBScheduler = require('class.scheduler.stb_scheduler')
@@ -122,6 +121,7 @@ end;
 function combat:leave()
   saveRun('combat',self.act,
     self.floor, self.encounteredPools, 123)
+  self.soundManager:stopAll()
 end;
 
 ---@param key string

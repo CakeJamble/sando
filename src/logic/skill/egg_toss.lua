@@ -1,4 +1,3 @@
-require('util.globals')
 local Projectile = require('class.entities.projectile')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')

@@ -56,6 +56,12 @@ function SoundManager:play(key)
 	return sound
 end;
 
+function SoundManager:stopAll()
+	for _,src in ipairs(self.activeSounds) do
+		src:stop()
+	end
+end;
+
 ---@param v number
 function SoundManager:setGlobalVolume(v)
 	self.volume = v

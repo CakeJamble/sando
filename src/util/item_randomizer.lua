@@ -1,5 +1,6 @@
 local loadItem = require('util.item_loader')
-require('util.globals')
+local pairsByValues = require('util.table_utils').pairsByValues
+
 local ItemRandomizer = {}
 ---@param itemTypes string[]
 ---@return string

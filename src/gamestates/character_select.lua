@@ -1,6 +1,5 @@
 local character_select = {}
 local CharacterTeam = require("class.entities.character_team")
-require("util.globals")
 local Character = require("class.entities.character")
 local loadCharacterData = require('util.character_loader')
 local JoystickUtils = require('util.joystick_utils')

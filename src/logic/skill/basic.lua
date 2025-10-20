@@ -2,6 +2,7 @@ require('util.globals')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local Signal = require('libs.hump.signal')
+local calcSpacingFromTarget = require('util.calc_spacing')
 
 return function(ref, qteBonus, qteManager)
   local skill = ref.skill
