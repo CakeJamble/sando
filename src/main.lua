@@ -21,6 +21,7 @@ states = {
   combat            = require 'gamestates.combat',
   pause             = require 'gamestates.pause',
   shop = require('gamestates.shop'),
+  event = require('gamestates.event'),
   overworld = require("gamestates.overworld")
 }
 
