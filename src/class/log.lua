@@ -5,6 +5,7 @@ local Log = Class{}
 
 
 function Log:init()
+	self.low, self.high = love.math.getRandomSeed()
 	self.act = 1
 	self.floor = 1
 	self.encounters = {
