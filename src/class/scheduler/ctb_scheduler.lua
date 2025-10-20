@@ -18,6 +18,9 @@ function CTBScheduler:init(characterTeam, enemyTeam)
 	self.combatants = self.characterTeam.members -- lazy override scheduler init
 	self:sortQueue(self.combatants)
 	self.enemyTimers = {}
+	self.turnIndex = 1
+	self.activeEntity = nil
+	self.activeCommand = nil
 	self.characterCommandQueue = {}
 	self.enemyCommandQueue = {}
 	self.isEnemyTurn = false
@@ -26,6 +29,31 @@ end;
 function CTBScheduler:enter()
 	Scheduler.enter(self)
 	Entity.isATB = false
+	local turnStart = function()
+		local duration = self:removeKOs()
+
+		Timer.after(duration,
+			function()
+			if self:winLossConsMet() then return end
+			while not self.combatants[self.turnIndex]:isAlive() do
+				self.turnIndex = (self.turnIndex % #self.combatants) + 1
+			end
+
+			self.activeEntity = self.combatants[self.turnIndex]
+			local command
+			if self.activeEntity.type == 'character' then
+				command = PlayerInputCommand(self.activeEntity, self)
+			else
+				command = AICommand(self.activeEntity, self)
+			end
+			self.activeCommand = command
+			self.turnIndex = (self.turnIndex % #self.combatants) + 1
+			self.activeCommand:start()
+		end)
+	end
+
+	print('registering signals')
+	self:registerSignal("NextTurn", turnStart)
 
 	self:registerSignal("OnStartCombat",
 		function()
@@ -33,15 +61,8 @@ function CTBScheduler:enter()
 				local contextTimer = self.initCTimer(enemy)
 				table.insert(self.enemyTimers, contextTimer)
 			end
+			Timer.after(1, turnStart)
 		end)
-
-	local turnStart = function()
-		if self:winLossConsMet() then return end
-		while not self.combatants[self.turnIndex]:isAlive() do
-			self.turnIndex = (self.turnIndex % #self.combatants) + 1
-		end
-	end
-	self:registerSignal("NextTurn", turnStart)
 
 	self:registerSignal("OnEndTurn",
 		function(timeBtwnTurns)
@@ -102,6 +123,7 @@ end;
 
 ---@param command Command
 function CTBScheduler:enqueueCommand(command)
+	  print('enqueuing command from ' .. command.entity.entityName .. ' in command queue')
 	if command.entity.type == "enemy" then
 		table.insert(self.enemyCommandQueue, command)
 	else
