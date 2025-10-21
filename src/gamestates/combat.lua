@@ -97,8 +97,8 @@ function combat:enter(previous, opts)
   self.rewardExp = 0
   self.rewardMoney = 0
 
+  -- HP UI
   self.characterTeamHP = {}
-
   for _,entity in ipairs(self.characterTeam.members) do
     table.insert(self.characterTeamHP,{
       name = entity.entityName,
@@ -113,10 +113,9 @@ function combat:enter(previous, opts)
     self.floor, self.encounteredPools, 123)
   saveTeam(self.characterTeam)
 
-  -- self.turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
-  -- self.turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
-  self.turnManager = CTBScheduler(self.characterTeam, self.enemyTeam)
+  self.turnManager = self:setTurnManager(self.characterTeam.inventory.toolManager)
   self.turnManager:enter()
+
   Signal.emit('OnStartCombat')
   Signal.emit('OnEnterScene')
 end;
@@ -125,6 +124,29 @@ function combat:leave()
   saveRun('combat',self.act,
     self.floor, self.encounteredPools, 123)
   self.soundManager:stopAll()
+end;
+
+---@param toolManager ToolManager
+---@return STBScheduler|CTBScheduler|ATBScheduler
+function combat:setTurnManager(toolManager)
+  local has = function(t, elem)
+    for _,item in ipairs(t) do
+      if item.name == elem then return true
+      end
+    end
+    return false
+  end
+
+  local turnManager
+  if has(toolManager.tools, "ATB") then
+    turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
+  elseif has(toolManager.tools, "CTB") then
+    turnManager = CTBScheduler(self.characterTeam, self.enemyTeam)
+  else
+    turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
+  end
+
+  return turnManager
 end;
 
 ---@param key string
@@ -137,33 +159,6 @@ function combat:keypressed(key)
   else
     self.characterTeam:keypressed(key)
   end
-end;
-
----@param x number
----@param y number
----@param dx number
----@param dy number
----@param istouch boolean
-function combat:mousemoved(x, y, dx, dy, istouch)
-  imgui.love.MouseMoved(x, y)
-end;
-
----@param x number
----@param y number
----@param button string
----@param istouch boolean
----@param presses number
-function combat:mousepressed(x, y, button, istouch, presses)
-  imgui.love.MousePressed(button)
-end;
-
----@param x number
----@param y number
----@param button string
----@param istouch boolean
----@param presses number
-function combat:mousereleased(x, y, button, istouch, presses)
-  imgui.love.MouseReleased(button)
 end;
 
 ---@param joystick love.Joystick
@@ -268,8 +263,36 @@ function combat:draw()
   imgui.love.RenderDrawLists()
 end;
 
+--------- Overrides required to use cimgui
+
 function combat:quit()
   imgui.love.Shutdown()
 end;
 
+---@param x number
+---@param y number
+---@param dx number
+---@param dy number
+---@param istouch boolean
+function combat:mousemoved(x, y, dx, dy, istouch)
+  imgui.love.MouseMoved(x, y)
+end;
+
+---@param x number
+---@param y number
+---@param button string
+---@param istouch boolean
+---@param presses number
+function combat:mousepressed(x, y, button, istouch, presses)
+  imgui.love.MousePressed(button)
+end;
+
+---@param x number
+---@param y number
+---@param button string
+---@param istouch boolean
+---@param presses number
+function combat:mousereleased(x, y, button, istouch, presses)
+  imgui.love.MouseReleased(button)
+end;
 return combat
