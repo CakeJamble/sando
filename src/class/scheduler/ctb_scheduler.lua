@@ -194,6 +194,7 @@ end;
 
 -- Draws the timers
 function CTBScheduler:draw()
+	Scheduler.draw(self)
 	for _,timer in ipairs(self.enemyTimers) do
 		local countdown = tostring(timer.gauge - (timer.tick % timer.gauge))
 		local pos = timer.enemy.pos
