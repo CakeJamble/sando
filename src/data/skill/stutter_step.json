@@ -1,0 +1,17 @@
+{
+	"name": "Stutter Step",
+	"targetType": "characters",
+	"isSingleTarget": true,
+	"damage": 1,
+	"effects": ["damage"],
+	"chance": 1,
+	"spritePath": "asset/sprites/entities/Enemy/Line/basic.png",
+	"soundPath": "asset/audio/entities/character/marco/basic.wav",
+	"duration": 1,
+	"stagingTime": 1,
+	"stagingType": "near",
+	"beginTweenType": "linear",
+	"returnTweenType": "linear",
+	"isDodgeable": true,
+	"hasProjectile": false
+}
