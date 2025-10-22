@@ -1,6 +1,7 @@
 local SoundManager = require('class.ui.sound_manager')
 local Entity = require('class.entities.entity')
 local Projectile = require('class.entities.projectile')
+local JoystickUtils = require('util.joystick_utils')
 
 local ATBScheduler = require('class.scheduler.atb_scheduler')
 local STBScheduler = require('class.scheduler.stb_scheduler')
@@ -195,6 +196,7 @@ function combat:update(dt)
       self.turnManager:update(dt)
     end
     Timer.update(dt)
+    self:updateJoystick(dt)
   end
 
   -- imgui
@@ -230,6 +232,22 @@ function combat:update(dt)
     imgui.End()
   end
 
+end;
+
+---@param dt number
+function combat:updateJoystick(dt)
+  if input.joystick then
+    -- Left Stick
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+      self:gamepadpressed(input.joystick, 'dpright')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+      self:gamepadpressed(input.joystick, 'dpleft')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:gamepadpressed(input.joystick, 'dpup')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:gamepadpressed(input.joystick, 'dpdown')
+    end
+  end
 end;
 
 function combat:draw()
