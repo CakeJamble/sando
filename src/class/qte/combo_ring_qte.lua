@@ -54,7 +54,7 @@ end;
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function ComboRingQTE:gamepadpressed(joystick, button)
-	if button == self.actionButton then
+	if button == self.actionButton and not self.signalEmitted then
 		local ring = self.rings[self.index]
 		if ring.revActive then
 			self.sliceIndex = self.sliceIndex + 1
