@@ -1,6 +1,7 @@
 local SoundManager = require('class.ui.sound_manager')
 local Entity = require('class.entities.entity')
 local Projectile = require('class.entities.projectile')
+local JoystickUtils = require('util.joystick_utils')
 
 local ATBScheduler = require('class.scheduler.atb_scheduler')
 local STBScheduler = require('class.scheduler.stb_scheduler')
@@ -195,9 +196,29 @@ function combat:update(dt)
       self.turnManager:update(dt)
     end
     Timer.update(dt)
+    self:updateJoystick()
   end
+  self:updateIMGUI(dt)
+end;
 
-  -- imgui
+-- Might interfere with QTE Joystick mechanics, circle back later to make sure
+function combat:updateJoystick()
+  if input.joystick then
+    -- Left Stick
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+      self:gamepadpressed(input.joystick, 'dpright')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+      self:gamepadpressed(input.joystick, 'dpleft')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:gamepadpressed(input.joystick, 'dpup')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:gamepadpressed(input.joystick, 'dpdown')
+    end
+  end
+end;
+
+---@param dt number
+function combat:updateIMGUI(dt)
   imgui.love.Update(dt)
   imgui.NewFrame()
 
@@ -229,7 +250,6 @@ function combat:update(dt)
 
     imgui.End()
   end
-
 end;
 
 function combat:draw()
