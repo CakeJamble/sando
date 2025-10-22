@@ -196,10 +196,29 @@ function combat:update(dt)
       self.turnManager:update(dt)
     end
     Timer.update(dt)
-    self:updateJoystick(dt)
+    self:updateJoystick()
   end
+  self:updateIMGUI(dt)
+end;
 
-  -- imgui
+-- Might interfere with QTE Joystick mechanics, circle back later to make sure
+function combat:updateJoystick()
+  if input.joystick then
+    -- Left Stick
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+      self:gamepadpressed(input.joystick, 'dpright')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+      self:gamepadpressed(input.joystick, 'dpleft')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:gamepadpressed(input.joystick, 'dpup')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:gamepadpressed(input.joystick, 'dpdown')
+    end
+  end
+end;
+
+---@param dt number
+function combat:updateIMGUI(dt)
   imgui.love.Update(dt)
   imgui.NewFrame()
 
@@ -230,23 +249,6 @@ function combat:update(dt)
     end
 
     imgui.End()
-  end
-
-end;
-
----@param dt number
-function combat:updateJoystick(dt)
-  if input.joystick then
-    -- Left Stick
-    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
-      self:gamepadpressed(input.joystick, 'dpright')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
-      self:gamepadpressed(input.joystick, 'dpleft')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
-      self:gamepadpressed(input.joystick, 'dpup')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
-      self:gamepadpressed(input.joystick, 'dpdown')
-    end
   end
 end;
 

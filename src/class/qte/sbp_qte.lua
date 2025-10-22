@@ -5,8 +5,10 @@ local Class = require 'libs.hump.class'
 --[[ sbpQTE : Single Button Press QTE
 	- QTE for skills and basic attacks that only require a single buttons press at a given interval.
 ]]
+---@class sbpQTE
 local sbpQTE = Class{__includes = QTE}
 
+---@deprecated
 function sbpQTE:init()
 	QTE.init(self)
 	self.type = 'sbp'

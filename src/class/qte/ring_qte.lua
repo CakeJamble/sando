@@ -62,7 +62,7 @@ end;
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function RingQTE:gamepadpressed(joystick, button)
-	if button == self.actionButton then
+	if button == self.actionButton and not self.signalEmitted then
 		if self.ring.revActive then
 			self.sliceIndex = self.sliceIndex + 1
 			if self.ring:isInHitBox() then
@@ -70,6 +70,7 @@ function RingQTE:gamepadpressed(joystick, button)
 				self.successCount = self.successCount + 1
 			else
 			print('bad')
+			self.signalEmitted = true
 			self.onComplete(false)
 			end
 
