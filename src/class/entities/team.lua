@@ -35,6 +35,31 @@ function Team:removeMembers(entities) --> void
   end
 end;
 
+function Team:initBench()
+  self.bench = {}
+  for i=2,#self.members do
+    local member = table.remove(self.members, i)
+    table.insert(self.bench, member)
+  end
+end;
+
+---@param index integer
+function Team:moveToBench(index)
+  local member = table.remove(self.members, index)
+  table.insert(self.bench, member)
+end;
+
+---@param activeIndex integer Index of active member going to the bench
+---@param benchIndex integer Index of bench member entering combat
+function Team:swap(activeIndex, benchIndex)
+  if #self.members >=1 and #self.bench >= 1 then
+    local memberToBench = table.remove(self.members, activeIndex)
+    local memberToActive = table.remove(self.bench, benchIndex)
+    table.insert(self.bench, benchIndex, memberToBench)
+    table.insert(self.members, activeIndex, memberToActive)
+  end
+end;
+
 ---@return Entity[]
 function Team:getLivingMembers()
   local result = {}
