@@ -138,13 +138,16 @@ function combat:setTurnManager(toolManager)
     return false
   end
 
+  local config = {}
+  config.hasBench = has(toolManager.tools, "Bench")
+
   local turnManager
   if has(toolManager.tools, "ATB") then
-    turnManager = ATBScheduler(self.characterTeam, self.enemyTeam)
+    turnManager = ATBScheduler(self.characterTeam, self.enemyTeam, config)
   elseif has(toolManager.tools, "CTB") then
-    turnManager = CTBScheduler(self.characterTeam, self.enemyTeam)
+    turnManager = CTBScheduler(self.characterTeam, self.enemyTeam, config)
   else
-    turnManager = STBScheduler(self.characterTeam, self.enemyTeam)
+    turnManager = STBScheduler(self.characterTeam, self.enemyTeam, config)
   end
 
   return turnManager
