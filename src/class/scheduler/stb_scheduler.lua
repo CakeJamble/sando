@@ -11,8 +11,9 @@ local STBScheduler = Class{__includes = Scheduler}
 -- Standard Turn Based Scheduler
 ---@param characterTeam CharacterTeam
 ---@param enemyTeam EnemyTeam
-function STBScheduler:init(characterTeam, enemyTeam)
-	Scheduler.init(self, characterTeam, enemyTeam)
+---@param config table
+function STBScheduler:init(characterTeam, enemyTeam, config)
+	Scheduler.init(self, characterTeam, enemyTeam, config)
 	self:sortQueue(self.combatants)
 	self.turnIndex = 1
 	self.activeEntity = nil

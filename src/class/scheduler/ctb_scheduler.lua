@@ -13,8 +13,9 @@ local CTBScheduler = Class{__includes = Scheduler}
 
 ---@param characterTeam CharacterTeam
 ---@param enemyTeam EnemyTeam
-function CTBScheduler:init(characterTeam, enemyTeam)
-	Scheduler.init(self, characterTeam, enemyTeam)
+---@param config table
+function CTBScheduler:init(characterTeam, enemyTeam, config)
+	Scheduler.init(self, characterTeam, enemyTeam, config)
 	self.combatants = self.characterTeam.members -- lazy override scheduler init
 	self:sortQueue(self.combatants)
 	self.enemyTimers = {}

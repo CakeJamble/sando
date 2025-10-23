@@ -10,8 +10,9 @@ local ATBScheduler = Class{__includes = Scheduler}
 -- Active Timer Battle Scheduler
 ---@param characterTeam CharacterTeam
 ---@param enemyTeam EnemyTeam
-function ATBScheduler:init(characterTeam, enemyTeam)
-	Scheduler.init(self, characterTeam, enemyTeam)
+---@param config table
+function ATBScheduler:init(characterTeam, enemyTeam, config)
+	Scheduler.init(self, characterTeam, enemyTeam, config)
 	self.commandQueue = {
 		interruptibles = {},
 		uninterruptibles = {}

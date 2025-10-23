@@ -9,12 +9,21 @@ local Scheduler = Class{}
 
 ---@param characterTeam CharacterTeam
 ---@param enemyTeam EnemyTeam
-function Scheduler:init(characterTeam, enemyTeam)
+---@param config table
+function Scheduler:init(characterTeam, enemyTeam, config)
 	self.characterTeam = characterTeam
 	self.enemyTeam = enemyTeam
-	self.combatants = self:populateCombatants(characterTeam.members, enemyTeam.members)
-	self.cameraPosX, self.cameraPosY = camera:position()
+	
+	self.isBenchEnabled = config.hasBench
+	if self.isBenchEnabled then
+		self.bench = {
+			character = characterTeam.bench,
+			enemy = enemyTeam.bench
+		}
+	end
 
+	self.combatants = self:populateCombatants(characterTeam.members, enemyTeam.members, self.isBenchEnabled)
+	self.cameraPosX, self.cameraPosY = camera:position()
 	self.qteManager = QTEManager(characterTeam)
 	self.combatHazards = {
 		characterHazards = {},
