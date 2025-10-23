@@ -7,6 +7,7 @@ local Team = Class{}
 ---@param entities Entity[]
 function Team:init(entities)
   self.members = entities
+  self.bench = nil
   self.membersIndex = 1
   self.money = 0
 end;
