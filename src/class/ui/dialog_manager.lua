@@ -18,7 +18,13 @@ function DialogManager:getText(category, key)
 		local file = love.filesystem.read(path)
 		self.cache[category] = json.decode(file)
 	end
-	return self.cache[category][key]
+
+	if type(self.cache[category][key]) == "table" then
+		local i = love.math.random(1, #self.cache[category][key])
+		return self.cache[category][key][i]
+	else
+		return self.cache[category][key]
+	end
 end;
 
 ---@param category string File name without extension
