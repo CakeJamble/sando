@@ -1,4 +1,19 @@
 {
 	"firstVisit": "Welcome to the shop!",
-	"returnVisit": "Welcome back!"
+	"returnVisit": "Welcome back!",
+	"insufficientMoney": [
+		"Nice try...",
+		"Whoa there, bud",
+		"Did you miscount?"
+	],
+	"purchase": [
+		"Excellent choice!",
+		"Thank you for your acquiescence!",
+		"Thanks, boss!",
+	],
+	"shopExit": [
+		"See youuu~",
+		"Bye-bye!",
+		"Wait, no! Come back!"
+	]
 }
