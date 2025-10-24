@@ -1,0 +1,23 @@
+{
+	"name": "Ripple",
+	"damage": 0,
+	"targetType": "characters",
+	"isSingleTarget": false,
+	"effects": ["damage"],
+	"chance": 1,
+	"cost": 2,
+	"spritePath": "asset/sprites/entities/character/marco/basic.png",
+	"soundPath": "asset/audio/entities/character/marco/basic.wav",
+	"duration": 2,
+	"stagingTime": 1,
+	"stagingType": "far",
+	"qteType": "combo_ring_qte",
+	"qteBonus": "damage",
+	"description": "Deals physical damage to a single target.",
+	"unlockedAtLvl": 1,
+	"beginTweenType": "linear",
+	"returnTweenType": "linear",
+	"isDodgeable": true,
+	"hasProjectile": true,
+	"castsShadow": false
+}
