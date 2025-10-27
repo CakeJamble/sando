@@ -70,10 +70,10 @@ end;
 
 ---@param charRef Character
 function ActionUI:set(charRef)
-  self.x = charRef.pos.x + ActionUI.X_OFFSET
-  self.y = charRef.pos.y + ActionUI.Y_OFFSET
-  self.pos.x = self.x
-  self.pos.y = self.y
+  self.x = charRef.pos.x + ActionUI.X_OFFSET - charRef.pos.ox
+  self.y = charRef.pos.y + ActionUI.Y_OFFSET - charRef.pos.oy
+  self.pos.x = self.x - charRef.pos.ox
+  self.pos.y = self.y - charRef.pos.oy
   self.skillList = charRef.currentSkills
   self.actionButton = charRef.actionButton
   self.landingPositions = self:setButtonLandingPositions()

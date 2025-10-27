@@ -13,7 +13,7 @@ local flux = require('libs.flux')
 ---@field hideProgressBar boolean
 local Entity = Class{
   movementTime = 2,
-  drawHitboxes = false,
+  drawHitboxes = true,
   drawHitboxPositions = false,
   tweenHP = false,
   isATB = true,
@@ -69,13 +69,20 @@ function Entity:init(data, x, y, entityType)
   self.currentAnimTag = 'idle'
   self.koAnimDuration = data.koAnimDuration or 1.5
 
-  self.pos = {x = x, y = y, r = 0, a = 1}
-  self.tPos = {x = 0, y = 0}
-  self.oPos = {x = x, y = x}
+
   -- self.dX=0
   -- self.dY=0
   self.frameWidth = data.width      -- width of sprite (or width for a single frame of animation for this character)
   self.frameHeight = data.height    -- height of sprite (or height for a single frame of animation for this character)
+  self.pos = {
+    x = x, y = y,
+    r = 0, a = 1,
+    sx = 1, sy = 1,
+    ox = self.frameWidth / 2,
+    oy = self.frameHeight / 2
+  }
+  self.tPos = {x = 0, y = 0}
+  self.oPos = {x = x, y = x}
   self.currentFrame = 1
   self.isFocused = false
   self.targets = {}
@@ -100,17 +107,17 @@ function Entity:init(data, x, y, entityType)
   self.hbXOffset = (data.width - data.hbWidth) / 2
   self.hbYOffset = (data.height - data.hbHeight) * 0.75
   self.hitbox = {
-    x = self.pos.x + self.hbXOffset,
-    y = self.pos.y + self.hbYOffset,
+    x = self.pos.x + self.hbXOffset - self.pos.ox,
+    y = self.pos.y + self.hbYOffset - self.pos.oy,
     w = data.hbWidth,
     h = data.hbHeight
   }
 
   self.shadowDims = {
-    x = self.hitbox.x + (self.hitbox.w / 2.5),
-    y = self.oPos.y + self.frameHeight,
+    x = self.hitbox.x + (self.hitbox.w / 2.5) - self.pos.ox,
+    y = self.oPos.y + self.frameHeight - self.pos.oy,
     w = self.hitbox.w / 2,
-    h = self.hitbox.h / 8
+    h = self.hitbox.h / 8,
   }
   self.tweens = {}
 
@@ -632,13 +639,13 @@ function Entity:updateAnimation(dt)
 end;
 
 function Entity:updateHitbox()
-  self.hitbox.x = self.pos.x + self.hbXOffset
-  self.hitbox.y = self.pos.y + self.hbYOffset
+  self.hitbox.x = self.pos.x + self.hbXOffset - self.pos.ox
+  self.hitbox.y = self.pos.y + self.hbYOffset - self.pos.oy
 end;
 
 function Entity:updateShadow()
   self.shadowDims.x = self.hitbox.x + (self.hitbox.w / 2)
-  self.shadowDims.y = self.pos.y + (self.frameHeight * 0.95)
+  self.shadowDims.y = self.pos.y + (self.frameHeight * 0.95) - self.pos.oy
 end;
 
 ---@param dt number
@@ -684,7 +691,7 @@ function Entity:drawSprite()
   local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
   spriteNum = math.min(spriteNum, #animation.quads)
   love.graphics.setColor(1,1,1,self.pos.a)
-  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, 1)
+  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.frameWidth/2, self.frameHeight/2)
   love.graphics.setColor(1,1,1,1)
 end;
 
@@ -707,7 +714,7 @@ end;
 
 function Entity:drawProjectiles()
   for _,projectile in ipairs(self.projectiles) do
-    projectile:draw()
+    projectile:draw(self.pos)
   end
 end;
 
@@ -716,7 +723,6 @@ function Entity:drawProgressBar()
     self.progressBar:draw()
   end
 end;
-
 
 -- ATB Functionality
 ---@param onComplete fun() Emits OnTurnReady(entity) signal
