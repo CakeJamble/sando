@@ -1,4 +1,5 @@
 local json = require('libs.json')
+local JoystickUtils = require("util.joystick_utils")
 local loadItem = require('util.item_loader')
 local event = {}
 
@@ -24,10 +25,26 @@ end;
 function event:enter(previous, options)
 	self.log = options.log
 	self.characterTeam = options.team
-	self.ev = self:loadEvent(self.log.act, self.log.floor)
-	self:start()
+	self.eventData = self:loadEvent(self.log.act, self.log.floor)
+	self.rewards = self.loadRewards(self.eventData)
+	self.coroutines = {}
+	self.selectedIndex = nil
+	if self.eventData.eventType == "combat" then Gamestate.switch(states['combat'], options) else self:start() end
 end;
 
+function event:start()
+	table.insert(self.coroutines, self:createOptionSelectCo())
+	self:resumeCurrent()
+end;
+
+function event:createOptionSelectCo()
+	return coroutine.create(function()
+		self.textbox:send(self.eventData.description)
+
+		coroutine.yield('await option select')
+		return self.eventData.proc(self.selectedIndex, self.eventData, self.characterTeam)
+	end)
+end;
 ---@param act integer
 ---@param floor integer
 ---@return table
@@ -37,23 +54,59 @@ function event:loadEvent(act, floor)
 	local raw = love.filesystem.read(eventPath)
 	local data = json.decode(raw)
 
+	local logicPath = 'logic.event.' .. self.eventPool[i]
+	local proc = require(logicPath)
+	if proc then data.proc = proc
+	else 
+		error('Failed to find implementation for event named ' .. self.eventPool[i] .. ': ' .. tostring(proc))
+	end
+
 	return data
 end;
 
-function event:start()
-	self.textbox:send(self.ev.description)
+---@param eventData table
+---@return table
+function event.loadRewards(eventData)
+	local rewards = {}
+	local itemType = eventData.itemType
+	for _,itemName in ipairs(eventData.itemNames) do
+		local item = loadItem(itemName, itemType)
+		table.insert(rewards, item)
+	end
+	return rewards
 end;
 
----@param itemOptions table
----@return table
-function event.loadRewards(itemOptions)
-	-- do
-	return {-1}
+function event:resumeCurrent()
+end;
+
+---@param joystick love.Joystick
+---@param button love.GamepadButton
+function event:gamepadpressed(joystick, button)
+	-- if not self.selectedIndex then
+		-- self.selectedIndex = 1
+	-- elseif button == 'dpleft' then
 end;
 
 ---@param dt number
 function event:update(dt)
 	self.textbox:update(dt)
+	self:updateJoystick(dt)
+end;
+
+---@param dt number
+function event:updateJoystick(dt)
+  if input.joystick then
+    -- Left Stick
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+      self:gamepadpressed(input.joystick, 'dpright')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+      self:gamepadpressed(input.joystick, 'dpleft')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:gamepadpressed(input.joystick, 'dpup')
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:gamepadpressed(input.joystick, 'dpdown')
+    end
+  end
 end;
 
 function event:draw()
