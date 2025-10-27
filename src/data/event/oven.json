@@ -1,0 +1,21 @@
+{
+	"name": "Oven",
+	"description": "You find an open deck oven. It's fires are still roaring and show no signs of cooling down. Upon peering into it, you notice the shadow of a tool behind the burnt debris collected at the front.",
+	"options": [
+		"Reach for the tool",
+		"Leave"
+	],
+	"results": {
+		"reach": {
+			"success": "You successfully grab the tool and add it to your inventory.",
+			"immune": "You reach into the oven, confident in your protection. You pocket the tool without any worries.",
+			"fail": "Your forearm makes contact with the deck, burning you and dealing damage"
+		},
+		"leave": "The oven looks too hot, and you aren't equipped to handle this. You peace out."
+	},
+	"item": {
+		"count": 1,
+		"itemType": "tool",
+		"pools": ["common", "uncommon", "rare"]
+	}
+}
