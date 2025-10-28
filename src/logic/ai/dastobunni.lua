@@ -3,16 +3,17 @@
 -- Above Half Health: Targets highest HP Character
 -- Below Half Health: Targets lowest HP Character
 ---@param ref Enemy Self-reference
----@return table The target(s) and selected skill or sequence of actions
-return function(ref)
-	ref.skill = ref.getRandomSkill(ref.skillPool, 1)
+---@param validTargets Entity[]
+---@return table, table The target(s) and selected skill or sequence of actions
+return function(ref, validTargets)
+	local skill = ref.getRandomSkill(ref.skillPool, 1)
 
 	local currHP = ref.battleStats.hp
 	local maxHP = ref.baseStats.hp
 	local hpRatio = currHP / maxHP
 
 	if #ref.targets == 0 then
-		return { targets = {}, skill = ref.skill }
+		return {}, skill
 	end
 
 	local chosenTarget
@@ -44,8 +45,5 @@ return function(ref)
 	-- Randomly pick one if there are multiple candidates with the same HP
 	chosenTarget = candidates[love.math.random(1, #candidates)]
 
-	return {
-		targets = { chosenTarget },
-		skill = ref.skill
-	}
-end
+	return {chosenTarget}, skill
+end;
