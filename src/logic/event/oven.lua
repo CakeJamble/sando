@@ -3,8 +3,7 @@ local loadItem = require('util.item_loader')
 -- Determine if event succeeded or failed, and return the relevant data for the next screen
 ---@param selection integer Which index of the options array the player selected
 ---@param eventData table Decoded JSON table for the event
----@param characterTeam CharacterTeam
-return function(selection, eventData, characterTeam)
+return function(selection, eventData)
 	local itemData = eventData.item
 	local result = {}
 

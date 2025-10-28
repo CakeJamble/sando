@@ -1,7 +1,9 @@
+// Deals damage and burns a random member until you get a success or leave
 {
 	"name": "Oven",
 	"eventType": "chance",
-	"successRate": 0.65,
+	"successRate": 0.3,
+	"successDelta": 0.1,
 	"description": "You find an open deck oven. It's fires are still roaring and show no signs of cooling down. Upon peering into it, you notice the shadow of a tool behind the burnt debris collected at the front.",
 	"options": [
 		"Reach for the tool",

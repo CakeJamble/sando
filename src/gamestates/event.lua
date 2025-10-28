@@ -28,6 +28,7 @@ function event:enter(previous, options)
 	self.eventData = self:loadEvent(self.log.act, self.log.floor)
 	self.rewards = self.loadRewards(self.eventData)
 	self.coroutines = {}
+	self.i = 1
 	self.selectedIndex = nil
 	if self.eventData.eventType == "combat" then Gamestate.switch(states['combat'], options) else self:start() end
 end;
@@ -45,6 +46,7 @@ function event:createOptionSelectCo()
 		return self.eventData.proc(self.selectedIndex, self.eventData, self.characterTeam)
 	end)
 end;
+
 ---@param act integer
 ---@param floor integer
 ---@return table
@@ -76,7 +78,30 @@ function event.loadRewards(eventData)
 	return rewards
 end;
 
+-- Regulates the order of coroutines occurring in the event gamestate
 function event:resumeCurrent()
+	local co = self.coroutines[self.i]
+	local code, res = coroutine.resume(co)
+	if not code then
+		error(res)
+	else
+		print('Returned from coroutine ' .. self.i .. ': ' .. res)
+	end
+
+	if coroutine.status(co) == 'dead' then
+		self.i = self.i + 1
+
+		if self.coroutines[self.i] then
+			self:resumeCurrent()
+		else
+			self:applyEventOutcome(res)
+		end
+	end
+end;
+
+---@param eventResult table
+function event:applyEventOutcome(eventResult)
+	print(eventResult)
 end;
 
 ---@param joystick love.Joystick
