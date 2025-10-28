@@ -1,7 +1,9 @@
 local json = require('libs.json')
 local loadSkill = require('util.skill_loader')
 local dataDir = 'data/entity/enemy_stats/'
+local aiPath = 'logic.ai.'
 
+-- Load, package, and return the Enemy data file (JSON), skills (JSON), and AI decision tree (Lua)
 ---@param entityName string
 ---@return { [string]: any }
 local function loadEnemyData(entityName)
@@ -15,6 +17,10 @@ local function loadEnemyData(entityName)
 	end
 
 	data.skillPool = skillPool
+
+	local ai = require(aiPath .. entityName)
+	data.ai = ai
+
 	return data
 end
 
