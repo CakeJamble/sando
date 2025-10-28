@@ -9,6 +9,7 @@ function DialogManager:init()
 	self.cache = {}
 end;
 
+-- Returns text at key. Returns a random index if the key points to a table
 ---@param category string File name without extension
 ---@param key string Selection of text in file
 ---@return string
@@ -18,6 +19,34 @@ function DialogManager:getText(category, key)
 		local file = love.filesystem.read(path)
 		self.cache[category] = json.decode(file)
 	end
+
+	if type(self.cache[category][key]) == "table" then
+		local i = love.math.random(1, #self.cache[category][key])
+		return self.cache[category][key][i]
+	else
+		return self.cache[category][key]
+	end
+end;
+
+-- Returns table of texts at key. Raises an error when a table is not found
+---@param category string File name without extensions
+---@param key string selection of text in file
+---@return string[]
+function DialogManager:getTextTree(category, key)
+	if not self.cache[category] then
+		local path = self.pref .. category .. ".json"
+		local file = love.filesystem.read(path)
+		self.cache[category] = json.decode(file)
+	end
+
+	if type(self.cache[category][key]) ~= "table" then
+		local typeFound = type(self.cache[category][key])
+		local message = "At self.cache." .. category .. '.' .. key
+			.. ", found a" .. typeFound .. ", but expected a table of strings"
+
+		error(message)
+	end
+
 	return self.cache[category][key]
 end;
 

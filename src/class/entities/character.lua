@@ -517,7 +517,7 @@ function Character:update(dt)
   Entity.update(self, dt)
 
   if self.isJumping then
-    self.shadowDims.y = self.oPos.y + (self.frameHeight * 0.95)
+    self.shadowDims.y = self.oPos.y + (self.frameHeight * 0.95) - self.pos.oy
   end
 
   if self.actionUI and self.actionUI.active then

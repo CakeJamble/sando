@@ -3,6 +3,7 @@ local DialogManager = require('class.ui.dialog_manager')
 local ItemRandomizer = require('util.item_randomizer')
 local SoundManager = require('class.ui.sound_manager')
 local JoystickUtils = require('util.joystick_utils')
+local flux = require('libs.flux')
 
 function shop:init()
 	shove.createLayer('background', {zIndex = 1})
@@ -18,6 +19,12 @@ function shop:init()
     character_sound = true,
     sound_every = 2,
 	})
+
+	self.textboxPositionRange = {
+		xmin = 0, xmax = 100,
+		ymin = 0, ymax = 100
+	}
+	self.textPos = {x=0,y=0,a=1}
 	self.hasVisited = false
 	self.numItems = 4
 	self.shopRarities = {
@@ -30,6 +37,8 @@ function shop:init()
 	self.selectedItemType = nil
 	self.itemTypes = {"tool", "equip", "accessory", "consumable"}
 	self.typeIndex = 0
+	self.drawTextbox = true
+	self.textTween = nil
 end;
 
 ---@param previous table
@@ -40,6 +49,25 @@ function shop:enter(previous, options)
 	self.log = options.log
 	self.items = self.loadShopItems(self.numItems, self.shopRarities, self.characterTeam.rarityMod)
 	self.layout = self.setLayout()
+
+	local greeting = self.getGreeting(self.hasVisited, self.dialogManager)
+	self:send(greeting)
+end;
+
+---@param text string
+function shop:send(text)
+	if self.textTween then self.textTween:stop() end
+	self.drawTextbox = true
+	self.textPos.a = 1
+	local x = love.math.random(self.textboxPositionRange.xmin, self.textboxPositionRange.xmax)
+	local y = love.math.random(self.textboxPositionRange.ymin, self.textboxPositionRange.ymax)
+	self.textPos.x, self.textPos.y = x, y
+	self.textbox:send(text)
+	self.textTween = flux.to(self.textPos, 1.5, {a=0})
+		:delay(4)
+		:oncomplete(function()
+			self.drawTextbox = false
+		end)
 end;
 
 ---@return table
@@ -133,6 +161,8 @@ function shop:processTransaction(inventory, item)
 		end
 	else
 		self.sfx:play("laugh")
+		local dialog = self.dialogManager:getText('shop', 'insufficientMoney')
+		self:send(dialog)
 		-- add a visual
 	end
 end;
@@ -194,6 +224,8 @@ end;
 
 ---@param dt number
 function shop:update(dt)
+	flux.update(dt)
+	self.textbox:update(dt)
 	if input.joystick then
 		-- Left Stick
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
@@ -254,6 +286,13 @@ function shop:drawUI()
 
 	if self.selected then
 		self:drawCursor()
+	end
+
+	if self.drawTextbox then
+		local x,y,a = self.textPos.x, self.textPos.y, self.textPos.a
+		-- love.graphics.setColor(1,1,1,a)
+		self.textbox:draw(x, y)
+		-- love.graphics.setColor(1,1,1,1)
 	end
 end;
 

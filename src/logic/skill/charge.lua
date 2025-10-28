@@ -15,7 +15,7 @@ return function(ref)
 
   local xOffset = 50
   local tPos = target.hitbox
-  local goalX, goalY = tPos.x - xOffset, tPos.y + yOffset
+  local goalX, goalY = tPos.x - xOffset, tPos.y + yOffset + target.pos.oy
 
   local hasCollided = false
   local damage = ref.battleStats['attack'] + skill.damage
@@ -25,7 +25,7 @@ return function(ref)
   local spaceFromTarget = calcSpacingFromTarget(skill.stagingType, ref.type)
   local stagingPos = {
     x = tPos.x + spaceFromTarget.x,
-    y = goalY + spaceFromTarget.y
+    y = goalY + spaceFromTarget.y + target.pos.oy
   }
   ref.tPos.x = stagingPos.x
   ref.tPos.y = stagingPos.y

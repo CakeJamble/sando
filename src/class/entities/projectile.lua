@@ -50,20 +50,22 @@ function Projectile:interruptTween(tweenKey)
 	self.tweens[tweenKey]:stop()
 end;
 
-function Projectile:draw()
+---@param pos table Position table of owner of projectiles
+function Projectile:draw(pos)
+	local ox,oy = pos.ox, pos.oy
 	love.graphics.setColor(1,0,0,1) --red
-	love.graphics.circle('fill', self.pos.x, self.pos.y, self.dims.r)
+	love.graphics.circle('fill', self.pos.x - ox, self.pos.y - oy, self.dims.r)
 	love.graphics.setColor(1,1,1)
 
 	if self.castsShadow then
 		love.graphics.setColor(0, 0, 0, 0.4)
-	  love.graphics.ellipse("fill", self.shadowPos.x, self.shadowPos.y, self.shadowPos.w, self.shadowPos.h)
+	  love.graphics.ellipse("fill", self.shadowPos.x - ox, self.shadowPos.y - oy, self.shadowPos.w, self.shadowPos.h)
 	  love.graphics.setColor(1, 1, 1, 1)
 	end
 
   if Projectile.drawHitboxes then
     love.graphics.setColor(1, 1, 0, 0.4)
-    love.graphics.rectangle("fill", self.hitbox.x, self.hitbox.y, self.hitbox.w, self.hitbox.h)
+    love.graphics.rectangle("fill", self.hitbox.x - ox, self.hitbox.y - oy, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)
   end
 end;
