@@ -61,7 +61,7 @@ end;
 
 ---@param characterMembers Character[]
 ---@param enemyMembers Enemy[]
----@return Entity[]
+---@return table{ characters: Character[], enemies: Enemy[] }
 function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	local queue = {}
 	for _,character in ipairs(characterMembers) do

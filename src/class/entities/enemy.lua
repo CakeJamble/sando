@@ -24,7 +24,7 @@ function Enemy:init(data)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)
-
+  self.procAI = data.ai
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
   self.drawKOStars = false
   self.sfx = SoundManager(AllSounds.sfx.entities.enemy[self.entityName])
@@ -72,16 +72,13 @@ function Enemy.setRewardsDistribution(rewardsDistribution)
   }
 end;
 
----@param validTargets { [string]: Entity[]}
+---@param validTargets table{ characters: Character[], enemies: Enemy[] }
 function Enemy:setupOffense(validTargets)
-  self.skill = self.getRandomSkill(self.skillPool, #validTargets)
-  local targetType = self.skill.targetType
-  local isSingleTarget = self.skill.isSingleTarget
-  self:setTargets(validTargets, targetType)
-  self.targets = self:targetSelect(targetType, isSingleTarget)
+  self.targets, self.skill = self.procAI(self, validTargets)
   Signal.emit('TargetConfirm')
 end;
 
+---@deprecated
 ---@param targetType string
 ---@param  isSingleTarget boolean
 function Enemy:targetSelect(targetType, isSingleTarget)
@@ -108,7 +105,7 @@ function Enemy.getRandomSkill(skillPool, numValidTargets)
     local singleTargetSkills = {}
     for _,s in ipairs(skillPool) do
       if s.isSingleTarget then
-        table.insert(singleTargetSkills)
+        table.insert(singleTargetSkills, s)
       end
     end
 

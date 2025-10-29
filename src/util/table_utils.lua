@@ -7,7 +7,7 @@ TableUtils.deepCopy = function(original)
   if type(original) == 'table' then
     copy = {}
     for k,v in pairs(original) do
-      copy[k] = deepCopy(v)
+      copy[k] = TableUtils.deepCopy(v)
     end
   else
     copy = original
