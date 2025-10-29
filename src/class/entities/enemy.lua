@@ -105,7 +105,7 @@ function Enemy.getRandomSkill(skillPool, numValidTargets)
     local singleTargetSkills = {}
     for _,s in ipairs(skillPool) do
       if s.isSingleTarget then
-        table.insert(singleTargetSkills)
+        table.insert(singleTargetSkills, s)
       end
     end
 
