@@ -3,7 +3,7 @@
 -- Above Half Health: Targets highest HP Character
 -- Below Half Health: Targets lowest HP Character
 ---@param ref Enemy Self-reference
----@param validTargets Entity[]
+---@param validTargets table{ characters: Character[], enemies: Enemy[] }
 ---@return table, table The target(s) and selected skill or sequence of actions
 return function(ref, validTargets)
 	local skill = ref.getRandomSkill(ref.skillPool, 1)
@@ -12,17 +12,12 @@ return function(ref, validTargets)
 	local maxHP = ref.baseStats.hp
 	local hpRatio = currHP / maxHP
 
-	if #ref.targets == 0 then
-		return {}, skill
-	end
-
 	local chosenTarget
 	local bestValue = hpRatio > 0.5 and -math.huge or math.huge
 	local candidates = {}
 
-	for _, target in ipairs(ref.targets) do
+	for _, target in ipairs(validTargets.characters) do
 		local tHP = target.battleStats.hp
-
 		if hpRatio > 0.5 then
 			-- Above half HP: find highest HP
 			if tHP > bestValue then

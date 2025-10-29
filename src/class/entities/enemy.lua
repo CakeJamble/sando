@@ -72,7 +72,7 @@ function Enemy.setRewardsDistribution(rewardsDistribution)
   }
 end;
 
----@param validTargets { [string]: Entity[]}
+---@param validTargets table{ characters: Character[], enemies: Enemy[] }
 function Enemy:setupOffense(validTargets)
   self.targets, self.skill = self.procAI(self, validTargets)
   Signal.emit('TargetConfirm')
