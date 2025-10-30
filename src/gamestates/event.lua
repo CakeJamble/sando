@@ -115,11 +115,10 @@ end;
 ---@param dt number
 function event:update(dt)
 	self.textbox:update(dt)
-	self:updateJoystick(dt)
+	self:updateJoystick()
 end;
 
----@param dt number
-function event:updateJoystick(dt)
+function event:updateJoystick()
   if input.joystick then
     -- Left Stick
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then

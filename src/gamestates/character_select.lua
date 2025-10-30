@@ -206,11 +206,10 @@ end;
 
 ---@param dt number
 function character_select:update(dt)
-  self:updateJoystick(dt)
+  self:updateJoystick()
 end;
 
----@param dt number
-function character_select:updateJoystick(dt)
+function character_select:updateJoystick()
   if input.joystick then
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
       self:gamepadpressed(input.joystick, 'dpright')

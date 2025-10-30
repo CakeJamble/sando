@@ -61,7 +61,10 @@ end;
 
 function overworld:update(dt)
 	flux.update(dt)
+	self:updateJoystick()
+end;
 
+function overworld:updateJoystick()
 	if input.joystick then
 		-- Left Stick
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
