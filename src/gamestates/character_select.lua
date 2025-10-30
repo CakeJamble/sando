@@ -50,9 +50,6 @@ function character_select:enter()
   for i=1,TEAM_CAP do
     self.selectedTeamIndices[i] = {}
   end
-
-  -- statPreview = character_select:setStatPreview()
-
 end;
 
 ---@deprecated
@@ -69,7 +66,6 @@ function character_select:keypressed(key)
   elseif key == 'z' then
     character_select:validate_selection()
   end
-  -- statPreview = character_select:setStatPreview()
 end;
 
 ---@param joystick love.Joystick
@@ -86,7 +82,6 @@ function character_select:gamepadpressed(joystick, button)
   elseif button == 'a' then
     character_select:validate_selection()
   end
-  -- statPreview = character_select:setStatPreview()
 end;
 
 function character_select:set_right()
@@ -162,8 +157,7 @@ function character_select:validate_selection()
   end
 end;
 
-  -- Takes table of selected character indices and converts
-  -- each index to a valid Character object, adding to the global team table
+-- Converts index choices to Character objects and adds them to self.opts
 function character_select:indicesToCharacters()
   local characterList = {}
   for i=1,TEAM_CAP do
@@ -187,6 +181,7 @@ function character_select:indicesToCharacters()
   self.opts["team"] = CharacterTeam(characterList)
 end;
 
+---@deprecated
 ---@return string
 function character_select:setStatPreview()
   local statPreview
@@ -202,6 +197,7 @@ function character_select:setStatPreview()
   return statPreview
 end;
 
+-- Format stats table into a string for the stat preview
 ---@param stats { [string]: string|integer }
 ---@return string
 function character_select:statsToString(stats)
@@ -210,6 +206,11 @@ end;
 
 ---@param dt number
 function character_select:update(dt)
+  self:updateJoystick(dt)
+end;
+
+---@param dt number
+function character_select:updateJoystick(dt)
   if input.joystick then
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
       self:gamepadpressed(input.joystick, 'dpright')
@@ -227,17 +228,7 @@ function character_select:draw()
   shove.beginDraw()
 
   shove.beginLayer('ui')
-  -- Character Select Grid and Stats
-  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10,
-    OFFSET * (GRID_LENGTH + 1) + 10)
-  love.graphics.draw(self.bakePortrait, SELECT_START, SELECT_START)
-  love.graphics.draw(self.marcoPortrait, SELECT_START + OFFSET, SELECT_START)
-  love.graphics.draw(self.mariaPortrait, SELECT_START, SELECT_START + OFFSET)
-  love.graphics.draw(self.keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
-  love.graphics.draw(self.cursor, SELECT_START + (self.spriteCol * OFFSET), SELECT_START+ (self.spriteRow * OFFSET))
-  -- love.graphics.print(statPreview, 300, 100)
-
-  -- Instructions
+  self:drawCharacterSelect()
   love.graphics.print(self.instructions, 240, 20)
 
   if self.teamCount < TEAM_CAP then
@@ -250,6 +241,17 @@ function character_select:draw()
     self.selectedContainerOptions.width, self.selectedContainerOptions.height)
   shove.endLayer()
   shove.endDraw()
+end;
+
+function character_select:drawCharacterSelect()
+  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10,
+    OFFSET * (GRID_LENGTH + 1) + 10)
+  love.graphics.draw(self.bakePortrait, SELECT_START, SELECT_START)
+  love.graphics.draw(self.marcoPortrait, SELECT_START + OFFSET, SELECT_START)
+  love.graphics.draw(self.mariaPortrait, SELECT_START, SELECT_START + OFFSET)
+  love.graphics.draw(self.keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
+  love.graphics.draw(self.cursor, SELECT_START + (self.spriteCol * OFFSET), SELECT_START+ (self.spriteRow * OFFSET))
+  -- love.graphics.print(statPreview, 300, 100)
 end;
 
 return character_select

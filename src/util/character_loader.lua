@@ -2,6 +2,7 @@ local json = require('libs.json')
 local loadSkill = require('util.skill_loader')
 local dataDir = 'data/entity/character_stats/'
 
+-- Returns the data table used to initialize a Character object
 ---@param entityName string
 ---@return { [string]: any }
 local function loadCharacterData(entityName)
