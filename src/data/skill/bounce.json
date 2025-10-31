@@ -19,5 +19,15 @@
 	"returnTweenType": "linear",
 	"isDodgeable": true,
 	"hasProjectile": true,
+	"projectiles": [
+		{
+			"path": "",
+			"name": "",
+			"width": 12,
+			"height": 12,
+			"duration": 1,
+			"stillSprite": ""
+		}
+	],
 	"castsShadow": true
 }
