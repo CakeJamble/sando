@@ -21,12 +21,12 @@
 	"hasProjectile": true,
 	"projectiles": [
 		{
-			"path": "",
-			"name": "",
+			"path": "asset/sprites/projectile/daikon.png",
+			"name": "daikon",
 			"width": 12,
 			"height": 12,
 			"duration": 1,
-			"stillSprite": ""
+			"stillSprite": "asset/sprites/projectile/daikon_still.png"
 		}
 	],
 	"castsShadow": true
