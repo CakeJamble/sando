@@ -37,9 +37,8 @@ end;
 
 ---@param dt number
 function Projectile:update(dt)
-	local r = self.dims.r
-	self.hitbox.x = self.pos.x - r
-	self.hitbox.y = self.pos.y - r
+	self.hitbox.x = self.pos.x - self.hitbox.w / 2
+	self.hitbox.y = self.pos.y - self.hitbox.h / 2
 	self.shadowPos.x = self.pos.x
 	self:updateAnimation(dt)
 end
@@ -74,18 +73,8 @@ end;
 function Projectile:draw(pos)
 	local ox,oy = pos.ox, pos.oy
 	self:drawSprite(ox, oy)
-
-	if self.castsShadow then
-		love.graphics.setColor(0, 0, 0, 0.4)
-	  love.graphics.ellipse("fill", self.shadowPos.x - ox, self.shadowPos.y - oy, self.shadowPos.w, self.shadowPos.h)
-	  love.graphics.setColor(1, 1, 1, 1)
-	end
-
-  if Projectile.drawHitboxes then
-    love.graphics.setColor(1, 1, 0, 0.4)
-    love.graphics.rectangle("fill", self.hitbox.x - ox, self.hitbox.y - oy, self.hitbox.w, self.hitbox.h)
-    love.graphics.setColor(1, 1, 1)
-  end
+	self:drawShadow(ox, oy)
+	self:drawHitbox(ox, oy)
 end;
 
 ---@param ox number Origin X offset for drawing centered projectile
@@ -101,6 +90,26 @@ function Projectile:drawSprite(ox, oy)
 
 		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], x, y)
 	end
+end;
+
+---@param ox number Origin X offset for centering
+---@param oy number Origin Y offset for centering
+function Projectile:drawShadow(ox, oy)
+	if self.castsShadow then
+		love.graphics.setColor(0, 0, 0, 0.4)
+	  love.graphics.ellipse("fill", self.shadowPos.x - ox, self.shadowPos.y - oy, self.shadowPos.w, self.shadowPos.h)
+	  love.graphics.setColor(1, 1, 1, 1)
+	end
+end;
+
+---@param ox number Origin X offset for centering
+---@param oy number Origin Y offset for centering
+function Projectile:drawHitbox(ox, oy)
+  if Projectile.drawHitboxes then
+    love.graphics.setColor(1, 1, 0, 0.4)
+    love.graphics.rectangle("fill", self.hitbox.x - ox, self.hitbox.y - oy, self.hitbox.w, self.hitbox.h)
+    love.graphics.setColor(1, 1, 1)
+  end
 end;
 
 return Projectile
