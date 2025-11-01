@@ -7,19 +7,25 @@ local Projectile = Class{drawHitboxes = false}
 
 ---@param x integer
 ---@param y integer
+---@param w integer
+---@param h integer
 ---@param castsShadow boolean
 ---@param index integer
-function Projectile:init(x, y, castsShadow, index)
+---@param animation table { spriteSheet: love.Image, quads: love.Quad, duration: integer, currentTime: number, spriteNum: integer, still: love.Image }
+function Projectile:init(x, y, w, h, castsShadow, index, animation)
 	self.pos = {x=x, y=y}
-	self.dims = {r = 10}
-	local r = self.dims.r
+	-- self.dims = {r = 10}
+	-- local r = self.dims.r
 	self.hitbox = {
-		x=x-r,y=y-r,w=2*self.dims.r, h=2*self.dims.r
+		x=x-w/2,y=y-h/2,
+		w=w, h=h
 	}
 	self.shadowPos = {
 		x=x, y=y + self.hitbox.h,
 		w=self.hitbox.w/2, h=self.hitbox.h/4
 	}
+	self.animation = animation
+	self.isStill = false
 
 	self.index = index
 	self.castsShadow = castsShadow
@@ -32,7 +38,18 @@ function Projectile:update(dt)
 	self.hitbox.x = self.pos.x - r
 	self.hitbox.y = self.pos.y - r
 	self.shadowPos.x = self.pos.x
+	self:updateAnimation(dt)
 end
+
+---@param dt number
+function Projectile:updateAnimation(dt)
+	if not self.isStill then
+		self.animation.currentTime = self.animation.currentTime + dt
+		if self.animation.currentTime >= self.animation.duration then
+			self.animation.currentTime = self.animation.currentTime - self.animation.duration
+		end
+	end
+end;
 
 ---@param duration integer
 ---@param targetYPos integer
@@ -53,9 +70,7 @@ end;
 ---@param pos table Position table of owner of projectiles
 function Projectile:draw(pos)
 	local ox,oy = pos.ox, pos.oy
-	love.graphics.setColor(1,0,0,1) --red
-	love.graphics.circle('fill', self.pos.x - ox, self.pos.y - oy, self.dims.r)
-	love.graphics.setColor(1,1,1)
+	self:drawSprite(ox, oy)
 
 	if self.castsShadow then
 		love.graphics.setColor(0, 0, 0, 0.4)
@@ -68,6 +83,21 @@ function Projectile:draw(pos)
     love.graphics.rectangle("fill", self.hitbox.x - ox, self.hitbox.y - oy, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)
   end
+end;
+
+---@param ox number Origin X offset for drawing centered projectile
+---@param oy number Origin Y offset for drawing centered projectile
+function Projectile:drawSprite(ox, oy)
+	local x, y = self.pos.x - ox, self.pos.y - oy
+
+	if self.isStill then
+		love.graphics.draw(self.animation.still, x, y)
+	else
+		local spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) + 1
+		spriteNum = math.min(spriteNum, #self.animation.quads)
+
+		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], x, y)
+	end
 end;
 
 return Projectile

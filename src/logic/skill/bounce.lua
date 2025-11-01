@@ -3,6 +3,7 @@ local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local createBezierCurve = require('util.create_quad_bezier_curve')
+local ProjectileUtils = require('util.projectile_animation_loader')
 
 return function(ref, qteManager)
 	local skill = ref.skill
@@ -11,7 +12,11 @@ return function(ref, qteManager)
 	local target = ref.targets[1]
 	local tPos = target.hitbox
 
-	local projectile = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
+
+	local animation = ProjectileUtils.createProjectileAnimations(skill.projectiles.daikon)
+	local pX, pY = ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2)
+	local pW, pH = skill.projectiles.daikon.width, skill.projectiles.daikon.height
+	local projectile = Projectile(pX, pY, pW, pH, skill.castsShadow, 1, animation)
 	local goalX, goalY = -2 * projectile.dims.r, target.oPos.y + target.hitbox.h
 	table.insert(ref.projectiles, projectile)
 
