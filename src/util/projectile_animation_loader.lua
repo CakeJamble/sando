@@ -1,5 +1,7 @@
+local ProjectileUtils = {}
+
 ---@param data table { path: string, width: integer, height: integer, duration: number }
-local function createProjectileAnimations(data)
+ProjectileUtils.createProjectileAnimations = function(data)
 	local image = love.graphics.newImage(data.path)
 	local height, width = data.height, data.width
 	local animation = {}
@@ -14,7 +16,7 @@ local function createProjectileAnimations(data)
 
 	animation.duration = data.duration or 1
 	animation.currentTime = 0
-	animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
+	-- animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
 
 	local still = love.graphics.newImage(data.stillSprite)
 	animation.still = still
@@ -24,7 +26,7 @@ end;
 
 ---@param projectilesData table[] { path: string, width: integer, height: integer, duration: number }
 ---@return table[] A table of animations for each projectile, indexed by projectile name
-local function initProjectiles(projectilesData)
+ProjectileUtils.initProjectiles = function(projectilesData)
 	local projectiles = {}
 	for _,projectileData in ipairs(projectilesData) do
 		local name = projectileData.name
@@ -35,4 +37,4 @@ local function initProjectiles(projectilesData)
 	return projectiles
 end;
 
-return initProjectiles
+return ProjectileUtils
