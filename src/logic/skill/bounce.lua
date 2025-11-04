@@ -4,6 +4,7 @@ local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local createBezierCurve = require('util.create_quad_bezier_curve')
 
+---@param ref Enemy
 return function(ref, qteManager)
 	local skill = ref.skill
 	local luck = ref.battleStats.luck
@@ -35,6 +36,7 @@ return function(ref, qteManager)
 		:onstart(function() projectile:tweenShadow(1, goalY) end)
 		:onupdate(function()
 			projectile.pos.x, projectile.pos.y = curve:evaluate(projectile.progress)
+			projectile.pos.r = projectile.pos.r - math.pi/16
 	 	end)
 		:oncomplete(function()
 			projectile.progress = 0
@@ -45,6 +47,7 @@ return function(ref, qteManager)
 	attack = attack:after(projectile, 0.5, {progress = 1}):ease('linear')
 		:onupdate(function()
 			projectile.pos.x, projectile.pos.y = curve:evaluate(projectile.progress)
+			projectile.pos.r = projectile.pos.r - math.pi/8
 		end)
 		:oncomplete(function()
 			projectile.progress = 0
@@ -59,14 +62,17 @@ return function(ref, qteManager)
 	attack = attack:after(projectile, 1, {progress = 1}):ease('linear')
 		:onupdate(function()
 			projectile.pos.x, projectile.pos.y = curve:evaluate(projectile.progress)
+			projectile.pos.r = projectile.pos.r - math.pi/32
 			if not hasCollided and Collision.rectsOverlap(projectile.hitbox, target.hitbox) then
 				target:takeDamage(damage, luck)
 				hasCollided = true
+				projectile.isStill = hasCollided
 				flux.to(projectile.hitbox, 0.25, {w=0,h=0}):oncomplete(function() table.remove(ref.projectiles, 1) end)
 			end
 		end)
 		:oncomplete(function()
 			Signal.emit("OnSkillResolved", ref)
+			table.remove(ref.projectiles, 1)
 			ref:endTurn(skill.duration, nil, skill.returnTweenType)
 			projectile.progress = 0
 		end)
