@@ -1,6 +1,6 @@
 local ProjectileUtils = {}
 
----@param data { path: string, width: integer, height: integer, duration: number }
+---@param data { path: string, width: integer, height: integer, duration: number, stillSprite: string }
 ---@return {spriteSheet: love.Image, quads: love.Quad, duration: number, currentTime: number, still: love.Image} animation
 ProjectileUtils.createProjectileAnimations = function(data)
 	local image = love.graphics.newImage(data.path)
@@ -24,7 +24,7 @@ ProjectileUtils.createProjectileAnimations = function(data)
 	return animation
 end;
 
----@param projectilesData { path: string, width: integer, height: integer, duration: number }[]
+---@param projectilesData { path: string, width: integer, height: integer, duration: number, stillSprite: string }[]
 ---@return {spriteSheet: love.Image, quads: love.Quad, duration: number, currentTime: number, still: love.Image}[] projectiles Animations for each projectile, indexed by projectile name
 ProjectileUtils.initProjectiles = function(projectilesData)
 	local projectiles = {}
