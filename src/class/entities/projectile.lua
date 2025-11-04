@@ -18,7 +18,7 @@ function Projectile:init(x, y, w, h, castsShadow, index, animation)
 	-- self.dims = {r = 10}
 	-- local r = self.dims.r
 	self.hitbox = {
-		x=x-w/2,y=y-h/2,
+		x=x,y=y,
 		w=w, h=h
 	}
 	self.shadowPos = {
@@ -37,8 +37,8 @@ end;
 
 ---@param dt number
 function Projectile:update(dt)
-	self.hitbox.x = self.pos.x - self.hitbox.w / 2
-	self.hitbox.y = self.pos.y - self.hitbox.h / 2
+	self.hitbox.x = self.pos.x
+	self.hitbox.y = self.pos.y
 	self.shadowPos.x = self.pos.x
 	self:updateAnimation(dt)
 end
