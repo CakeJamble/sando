@@ -28,9 +28,8 @@ end;
 ---@return table[] A table of animations for each projectile, indexed by projectile name
 ProjectileUtils.initProjectiles = function(projectilesData)
 	local projectiles = {}
-	for _,projectileData in ipairs(projectilesData) do
-		local name = projectileData.name
-		local projectile = createProjectileAnimations(projectileData)
+	for name,projectileData in pairs(projectilesData) do
+		local projectile = ProjectileUtils.createProjectileAnimations(projectileData)
 		projectiles[name] = projectile
 	end
 
