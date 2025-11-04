@@ -9,7 +9,8 @@ local Signal = require('libs.hump.signal')
 return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local targets = ref.targets
-  local damage = ref.battleStats['attack'] + skill.damage
+  -- local damage = ref.battleStats['attack'] + skill.damage
+  local damage = 1
   local luck = ref.battleStats.luck
   if qteBonus then
     damage = qteBonus(damage)
@@ -35,11 +36,22 @@ return function(ref, qteBonus, qteManager)
   end
 
   for i=1, numProjectiles do
+    local tIndex = love.math.random(1, #targets)
+    -- load white egg if 1, brown egg if not 1
+    local animation
+    local projectileData
+    if tIndex == 1 then
+      animation = skill.animation.whiteEgg
+      projectileData = skill.projectiles.whiteEgg
+    else
+      animation = skill.animation.brownEgg
+      projectileData = skill.projectiles.brownEgg
+    end
     local x,y = ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2)
-    local egg = Projectile(x, y, skill.castsShadow, i)
+    local w,h = projectileData.width, projectileData.height
+    local egg = Projectile(x, y, w, h, skill.castsShadow, i, animation)
     table.insert(ref.projectiles, egg)
 
-    local tIndex = love.math.random(1, #targets)
     local goalX, goalY = tPos[tIndex].x, tPos[tIndex].y
     local target = targets[tIndex]
     local goalShadowY = target.hitbox.y + target.hitbox.h
@@ -55,14 +67,21 @@ return function(ref, qteBonus, qteManager)
         if not hasCollided[i] and Collision.rectsOverlap(egg.hitbox, target.hitbox) then
           target:takeDamage(damage, luck)
           hasCollided[i] = true
-          table.remove(ref.projectiles, i)
+          -- table.remove(ref.projectiles, i)
         end
       end)
       :delay((i-1) * timeBtwnThrows)
-      :oncomplete(function() 
-        Signal.emit("OnSkillResolved", ref) 
+      :oncomplete(function()
+        Signal.emit("OnSkillResolved", ref)
+        table.remove(ref.projectiles)
         -- end turn?
       end)
     table.insert(attack, eggTween)
+
+    if i == numProjectiles then
+      eggTween = eggTween:oncomplete(function() ref:endTurn(1, nil, nil)
+      table.remove(ref.projectiles) end)
+    end
   end
+  ref.tweens['attack'] = attack
 end;
