@@ -4,7 +4,7 @@ local Class = require('libs.hump.class')
 
 ---@class Projectile
 ---@field drawHitboxes boolean
-local Projectile = Class{drawHitboxes = false}
+local Projectile = Class{drawHitboxes = true}
 
 ---@param x integer
 ---@param y integer
@@ -14,13 +14,15 @@ local Projectile = Class{drawHitboxes = false}
 ---@param index integer
 ---@param animation table { spriteSheet: love.Image, quads: love.Quad, duration: integer, currentTime: number, spriteNum: integer, still: love.Image }
 function Projectile:init(x, y, w, h, castsShadow, index, animation)
-	self.pos = {x=x, y=y}
+	self.pos = {x=x, y=y, r=0}
 	-- self.dims = {r = 10}
 	-- local r = self.dims.r
 	self.hitbox = {
 		x=x,y=y,
 		w=w, h=h
 	}
+
+	self.ox, self.oy = self.hitbox.w/2, self.hitbox.h/2
 	self.shadowPos = {
 		x=x, y=y + self.hitbox.h,
 		w=self.hitbox.w/2, h=self.hitbox.h/4
@@ -69,45 +71,38 @@ function Projectile:interruptTween(tweenKey)
 	self.tweens[tweenKey]:stop()
 end;
 
----@param pos table Position table of owner of projectiles
-function Projectile:draw(pos)
-	local ox,oy = pos.ox, pos.oy
-	self:drawSprite(ox, oy)
-	self:drawShadow(ox, oy)
-	self:drawHitbox(ox, oy)
+function Projectile:draw()
+	self:drawSprite()
+	self:drawShadow()
+	self:drawHitbox()
 end;
 
----@param ox number Origin X offset for drawing centered projectile
----@param oy number Origin Y offset for drawing centered projectile
-function Projectile:drawSprite(ox, oy)
-	local x, y = self.pos.x - ox, self.pos.y - oy
-
+function Projectile:drawSprite()
+	local x, y, r = self.pos.x, self.pos.y, self.pos.r
 	if self.isStill then
 		love.graphics.draw(self.animation.still, x, y)
 	else
 		local spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) + 1
 		spriteNum = math.min(spriteNum, #self.animation.quads)
 
-		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], x, y)
+		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], x, y, r, 1, 1, self.ox, self.oy)
 	end
 end;
 
----@param ox number Origin X offset for centering
----@param oy number Origin Y offset for centering
-function Projectile:drawShadow(ox, oy)
+function Projectile:drawShadow()
 	if self.castsShadow then
+		local x,y = self.shadowPos.x - self.ox, self.shadowPos.y - self.oy
 		love.graphics.setColor(0, 0, 0, 0.4)
-	  love.graphics.ellipse("fill", self.shadowPos.x - ox, self.shadowPos.y - oy, self.shadowPos.w, self.shadowPos.h)
+	  love.graphics.ellipse("fill", x, y, self.shadowPos.w, self.shadowPos.h)
 	  love.graphics.setColor(1, 1, 1, 1)
 	end
 end;
 
----@param ox number Origin X offset for centering
----@param oy number Origin Y offset for centering
-function Projectile:drawHitbox(ox, oy)
+function Projectile:drawHitbox()
   if Projectile.drawHitboxes then
+		local x,y = self.hitbox.x - self.ox, self.hitbox.y - self.oy
     love.graphics.setColor(1, 1, 0, 0.4)
-    love.graphics.rectangle("fill", self.hitbox.x - ox, self.hitbox.y - oy, self.hitbox.w, self.hitbox.h)
+    love.graphics.rectangle("fill", x, y, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)
   end
 end;

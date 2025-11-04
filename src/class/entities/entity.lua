@@ -714,7 +714,7 @@ end;
 
 function Entity:drawProjectiles()
   for _,projectile in ipairs(self.projectiles) do
-    projectile:draw(self.pos)
+    projectile:draw()
   end
 end;
 
