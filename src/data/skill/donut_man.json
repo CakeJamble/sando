@@ -11,10 +11,10 @@
 	"duration": 0.5,
 	"stagingTime": 1,
 	"stagingType": "near",
-	"qteType": "hold_sbp",
+	"qteType": "ring_qte",
 	"qteBonus": "damage",
 	"description": "Heals a target.",
-	"unlockedAtLvl": 2,
+	"unlockedAtLvl": 1,
 	"beginTweenType": "linear",
 	"returnTweenType": "linear",
 	"isDodgeable": false,
@@ -24,7 +24,7 @@
 			"path": "asset/sprites/projectile/donut_man.png",
 			"width": 12, "height": 12,
 			"duration": 1,
-			"stillSprite": "asset/sprites/projectile/donut_man_stil.png"
+			"stillSprite": "asset/sprites/projectile/donut_man_still.png"
 		}
 	},
 	"castsShadow": true

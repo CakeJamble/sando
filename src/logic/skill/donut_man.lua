@@ -33,7 +33,7 @@ return function(ref, qteBonus, qteManager)
   local donut = Projectile(px, py, pw, ph, skill.castsShadow, 1, animation)
   table.insert(ref.projectiles, donut)
 
-  Timer.after(qteManager.activeQTE.duration,
+  Timer.after(1,
     function()
       -- Tween projectile to the target in an arc (quadout then quad in for feel of gravity)
       local attack = flux.to(donut.pos, donutFlyingTime / 2, {x = xMidPoint, y = arcHeight})
