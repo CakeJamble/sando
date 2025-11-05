@@ -17,8 +17,12 @@ return function(ref, qteBonus, qteManager)
     burnChance = qteBonus(burnChance)
   end
 
-  -- Create a Scone Projectile
-  local wok = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
+  -- Create a Wok Projectile (temp using flame)
+  local animation = skill.animation.flame
+  local x,y = ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2)
+  local w,h = skill.projectiles.flame.width, skill.projectiles.flame.height
+  -- local wok = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
+  local wok = Projectile(x, y, w, h, skill.castsShadow, 1, animation)
   local startX, startY = wok.pos.x, wok.pos.y
   table.insert(ref.projectiles, wok)
   local peakHeight = -tPos.h
