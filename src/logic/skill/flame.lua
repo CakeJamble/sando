@@ -44,8 +44,11 @@ return function(ref, qteManager)
     end
     local rx,ry = ref.hitbox.x + ref.hitbox.w / 2, ref.hitbox.y + ref.hitbox.h
     table.insert(tPos, {x=rx, y=ry,target=nil})
-
-    local flame = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
+    local animation = skill.animation.flame
+    local x,y = ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2)
+    local w,h = skill.projectiles.flame.width, skill.projectiles.flame.height
+    local flame = Projectile(x, y, w, h, skill.castsShadow, 1, animation)
+    -- local flame = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
     table.insert(ref.projectiles, flame)
 
     -- Define path & collision, then begin skill
