@@ -19,5 +19,13 @@
 	"returnTweenType": "linear",
 	"isDodgeable": false,
 	"hasProjectile": true,
+	"projectiles": {
+		"donut": {
+			"path": "asset/sprites/projectile/donut_man.png",
+			"width": 12, "height": 12,
+			"duration": 1,
+			"stillSprite": "asset/sprites/projectile/donut_man_stil.png"
+		}
+	},
 	"castsShadow": true
 }
