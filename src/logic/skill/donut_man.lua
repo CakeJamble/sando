@@ -3,6 +3,7 @@ local Projectile = require('class.entities.projectile')
 local Timer = require('libs.hump.timer')
 local Signal = require('libs.hump.signal')
 
+---@param ref Character
 return function(ref, qteBonus, qteManager)
   local skill = ref.skill
   local target = ref.targets[1]
@@ -25,10 +26,14 @@ return function(ref, qteBonus, qteManager)
   local donutFlyingTime = 0.8
   local goalShadowY = target.hitbox.y + target.hitbox.h
 
-  local donut = Projectile(ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
+  local animation = skill.animation.donut
+  local projectileData = skill.projectiles.donut
+  local px, py = ref.hitbox.x + ref.hitbox.w, ref.hitbox.y + (ref.hitbox.h / 2)
+  local pw, ph = projectileData.width, projectileData.height
+  local donut = Projectile(px, py, pw, ph, skill.castsShadow, 1, animation)
   table.insert(ref.projectiles, donut)
 
-  Timer.after(qteManager.activeQTE.duration,
+  Timer.after(1,
     function()
       -- Tween projectile to the target in an arc (quadout then quad in for feel of gravity)
       local attack = flux.to(donut.pos, donutFlyingTime / 2, {x = xMidPoint, y = arcHeight})

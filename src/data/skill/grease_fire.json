@@ -19,5 +19,13 @@
 	"returnTweenType": "linear",
 	"isDodgeable": false,
 	"hasProjectile": true,
+	"projectiles": {
+		"flame": {
+			"path": "asset/sprites/projectile/flame.png",
+			"width": 32, "height": 32,
+			"duration": 1,
+			"stillSprite": "asset/sprites/projectile/flame_still.png"
+		}
+	},
 	"castsShadow": true
 }

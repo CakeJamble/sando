@@ -1,25 +1,36 @@
 local flux = require('libs.flux')
+local deepCopy = require('util.table_utils').deepCopy
 local Class = require('libs.hump.class')
 
 ---@class Projectile
 ---@field drawHitboxes boolean
-local Projectile = Class{drawHitboxes = false}
+local Projectile = Class{drawHitboxes = true}
 
 ---@param x integer
 ---@param y integer
+---@param w integer
+---@param h integer
 ---@param castsShadow boolean
 ---@param index integer
-function Projectile:init(x, y, castsShadow, index)
-	self.pos = {x=x, y=y}
-	self.dims = {r = 10}
-	local r = self.dims.r
+---@param animation table { spriteSheet: love.Image, quads: love.Quad, duration: integer, currentTime: number, spriteNum: integer, still: love.Image }
+function Projectile:init(x, y, w, h, castsShadow, index, animation)
+	self.pos = {x=x, y=y, r=0}
+	-- self.dims = {r = 10}
+	-- local r = self.dims.r
 	self.hitbox = {
-		x=x-r,y=y-r,w=2*self.dims.r, h=2*self.dims.r
+		x=x,y=y,
+		w=w, h=h
 	}
+
+	self.ox, self.oy = self.hitbox.w/2, self.hitbox.h/2
 	self.shadowPos = {
 		x=x, y=y + self.hitbox.h,
 		w=self.hitbox.w/2, h=self.hitbox.h/4
 	}
+
+	-- Does this prevent a shared animation?
+	self.animation = deepCopy(animation)
+	self.isStill = false
 
 	self.index = index
 	self.castsShadow = castsShadow
@@ -28,11 +39,21 @@ end;
 
 ---@param dt number
 function Projectile:update(dt)
-	local r = self.dims.r
-	self.hitbox.x = self.pos.x - r
-	self.hitbox.y = self.pos.y - r
+	self.hitbox.x = self.pos.x
+	self.hitbox.y = self.pos.y
 	self.shadowPos.x = self.pos.x
+	self:updateAnimation(dt)
 end
+
+---@param dt number
+function Projectile:updateAnimation(dt)
+	if not self.isStill then
+		self.animation.currentTime = self.animation.currentTime + dt
+		if self.animation.currentTime >= self.animation.duration then
+			self.animation.currentTime = self.animation.currentTime - self.animation.duration
+		end
+	end
+end;
 
 ---@param duration integer
 ---@param targetYPos integer
@@ -50,22 +71,38 @@ function Projectile:interruptTween(tweenKey)
 	self.tweens[tweenKey]:stop()
 end;
 
----@param pos table Position table of owner of projectiles
-function Projectile:draw(pos)
-	local ox,oy = pos.ox, pos.oy
-	love.graphics.setColor(1,0,0,1) --red
-	love.graphics.circle('fill', self.pos.x - ox, self.pos.y - oy, self.dims.r)
-	love.graphics.setColor(1,1,1)
+function Projectile:draw()
+	self:drawSprite()
+	self:drawShadow()
+	self:drawHitbox()
+end;
 
+function Projectile:drawSprite()
+	local x, y, r = self.pos.x, self.pos.y, self.pos.r
+	if self.isStill then
+		love.graphics.draw(self.animation.still, x, y)
+	else
+		local spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) + 1
+		spriteNum = math.min(spriteNum, #self.animation.quads)
+
+		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], x, y, r, 1, 1, self.ox, self.oy)
+	end
+end;
+
+function Projectile:drawShadow()
 	if self.castsShadow then
+		local x,y = self.shadowPos.x - self.ox, self.shadowPos.y - self.oy
 		love.graphics.setColor(0, 0, 0, 0.4)
-	  love.graphics.ellipse("fill", self.shadowPos.x - ox, self.shadowPos.y - oy, self.shadowPos.w, self.shadowPos.h)
+	  love.graphics.ellipse("fill", x, y, self.shadowPos.w, self.shadowPos.h)
 	  love.graphics.setColor(1, 1, 1, 1)
 	end
+end;
 
+function Projectile:drawHitbox()
   if Projectile.drawHitboxes then
+		local x,y = self.hitbox.x - self.ox, self.hitbox.y - self.oy
     love.graphics.setColor(1, 1, 0, 0.4)
-    love.graphics.rectangle("fill", self.hitbox.x - ox, self.hitbox.y - oy, self.hitbox.w, self.hitbox.h)
+    love.graphics.rectangle("fill", x, y, self.hitbox.w, self.hitbox.h)
     love.graphics.setColor(1, 1, 1)
   end
 end;

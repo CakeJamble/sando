@@ -4,6 +4,7 @@ local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local createBezierCurve = require('util.create_quad_bezier_curve')
 
+---@param ref Enemy
 return function(ref, qteManager)
 	local skill = ref.skill
 	local luck = ref.battleStats.luck
@@ -11,8 +12,12 @@ return function(ref, qteManager)
 	local target = ref.targets[1]
 	local tPos = target.hitbox
 
-	local projectile = Projectile(ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
-	local goalX, goalY = -2 * projectile.dims.r, target.oPos.y + target.hitbox.h
+	local animation = skill.animation.daikon
+	local projectileData = skill.projectiles.daikon
+	local pX, pY = ref.pos.x - ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2)
+	local pW, pH = projectileData.width, projectileData.height
+	local projectile = Projectile(pX, pY, pW, pH, skill.castsShadow, 1, animation)
+	local goalX, goalY = -2 * projectile.hitbox.w, target.oPos.y + target.hitbox.h
 	table.insert(ref.projectiles, projectile)
 
 	-- First Arc in bounce path
@@ -31,6 +36,7 @@ return function(ref, qteManager)
 		:onstart(function() projectile:tweenShadow(1, goalY) end)
 		:onupdate(function()
 			projectile.pos.x, projectile.pos.y = curve:evaluate(projectile.progress)
+			projectile.pos.r = projectile.pos.r - math.pi/16
 	 	end)
 		:oncomplete(function()
 			projectile.progress = 0
@@ -41,6 +47,7 @@ return function(ref, qteManager)
 	attack = attack:after(projectile, 0.5, {progress = 1}):ease('linear')
 		:onupdate(function()
 			projectile.pos.x, projectile.pos.y = curve:evaluate(projectile.progress)
+			projectile.pos.r = projectile.pos.r - math.pi/8
 		end)
 		:oncomplete(function()
 			projectile.progress = 0
@@ -48,21 +55,24 @@ return function(ref, qteManager)
 
 			-- janky way of making it jump higher w/o changing util function
 			local cx,cy = curve:getControlPoint(2)
-			curve:setControlPoint(2, cx, cy - 50)
+			curve:setControlPoint(2, cx, cy - 80)
 		end)
 
 	-- Bounce 3 (collision possible here)
 	attack = attack:after(projectile, 1, {progress = 1}):ease('linear')
 		:onupdate(function()
 			projectile.pos.x, projectile.pos.y = curve:evaluate(projectile.progress)
+			projectile.pos.r = projectile.pos.r - math.pi/32
 			if not hasCollided and Collision.rectsOverlap(projectile.hitbox, target.hitbox) then
 				target:takeDamage(damage, luck)
 				hasCollided = true
-				flux.to(projectile.dims, 0.25, {r=0}):oncomplete(function() table.remove(ref.projectiles, 1) end)
+				projectile.isStill = hasCollided
+				flux.to(projectile.hitbox, 0.25, {w=0,h=0}):oncomplete(function() table.remove(ref.projectiles, 1) end)
 			end
 		end)
 		:oncomplete(function()
 			Signal.emit("OnSkillResolved", ref)
+			table.remove(ref.projectiles, 1)
 			ref:endTurn(skill.duration, nil, skill.returnTweenType)
 			projectile.progress = 0
 		end)

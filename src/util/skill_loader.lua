@@ -1,4 +1,5 @@
 local json = require('libs.json')
+local initProjectiles = require('util.projectile_animation_loader').initProjectiles
 
 ---@param skillName string
 ---@return { [string]: any }
@@ -17,6 +18,10 @@ local function loadSkill(skillName)
 	end
 
 	data.tag = skillName
+
+	if data.hasProjectile and data.projectiles then
+		data.animation = initProjectiles(data.projectiles)
+	end
 
 	return data
 end

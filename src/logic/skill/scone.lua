@@ -23,7 +23,10 @@ return function(ref, qteBonus, qteManager)
 
   Timer.after(skill.duration, function()
     -- Create a Scone Projectile
-    local scone = Projectile(ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2), skill.castsShadow, 1)
+    local x,y = ref.pos.x + ref.hitbox.w, ref.pos.y + (ref.hitbox.h / 2)
+    local w,h = skill.projectiles.scone.width, skill.projectiles.scone.height
+    local animation = skill.animation.scone
+    local scone = Projectile(x, y, w, h, skill.castsShadow, 1, animation)
     local startX, startY = scone.pos.x, scone.pos.y
     table.insert(ref.projectiles, scone)
 

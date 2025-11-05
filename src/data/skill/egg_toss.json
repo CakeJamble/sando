@@ -19,5 +19,21 @@
 	"returnTweenType": "linear",
 	"isDodgeable": false,
 	"hasProjectile": true,
+	"projectiles": {
+		"whiteEgg": {
+			"path": "asset/sprites/projectile/white_egg.png",
+			"width": 8,
+			"height": 8,
+			"duration": 1,
+			"stillSprite": "asset/sprites/projectile/white_egg_still.png"
+		},
+		"brownEgg": {
+			"path": "asset/sprites/projectile/brown_egg.png",
+			"width": 8,
+			"height": 8,
+			"duration": 1,
+			"stillSprite": "asset/sprites/projectile/brown_egg_still.png"
+		}
+	},
 	"castsShadow": true
 }

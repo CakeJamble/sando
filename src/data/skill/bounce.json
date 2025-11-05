@@ -19,5 +19,14 @@
 	"returnTweenType": "linear",
 	"isDodgeable": true,
 	"hasProjectile": true,
+	"projectiles": {
+		"daikon" : {
+			"path": "asset/sprites/projectile/daikon.png",
+			"width": 12,
+			"height": 12,
+			"duration": 1,
+			"stillSprite": "asset/sprites/projectile/daikon_still.png"
+		}
+	},
 	"castsShadow": true
 }

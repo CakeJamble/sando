@@ -19,5 +19,13 @@
 	"returnTweenType": "linear",
 	"isDodgeable": true,
 	"hasProjectile": true,
+	"projectiles": {
+		"scone": {
+			"path": "asset/sprites/projectile/scone.png",
+			"width": 12, "height": 12,
+			"duration": 1,
+			"stillSprite": "asset/sprites/projectile/scone_still.png"
+		}
+	},
 	"castsShadow": true
 }
