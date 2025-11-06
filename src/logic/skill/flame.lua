@@ -4,7 +4,6 @@ local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local createBezierCurve = require('util.create_quad_bezier_curve')
 
--- Duration field of flame skill is the skill to hit ONE target
 ---@param ref Enemy
 ---@param qteManager? QTEManager
 return function(ref, qteManager)
