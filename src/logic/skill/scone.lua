@@ -48,12 +48,11 @@ return function(ref, qteBonus, qteManager)
         if not hasCollided and Collision.rectsOverlap(scone.hitbox, target.hitbox) then
           target:takeDamage(damage, luck)
           hasCollided = true
-          flux.to(scone.dims, 0.25, {r=0}):ease("linear")
-            :oncomplete(function() table.remove(ref.projectiles, 1) end)
         end
       end)
       :oncomplete(function()
         Signal.emit("OnSkillResolved", ref)
+        table.remove(ref.projectiles, 1)
         ref:endTurn(skill.duration, nil, skill.returnTweenType)
       end)
   end)
