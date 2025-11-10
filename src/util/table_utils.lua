@@ -1,5 +1,19 @@
 local TableUtils = {}
 
+-- Given a string indexed table (dictionary), returns a random key-value pair
+---@param t table
+---@return string, any
+TableUtils.getRandPair = function(t)
+  local keys = {}
+  for k,_ in pairs(t) do
+    table.insert(keys, k)
+  end
+
+  local i = love.math.random(1, #keys)
+  local key = keys[i]
+  return key, t[key]
+end;
+
 ---@param original table
 ---@return table
 TableUtils.deepCopy = function(original)
