@@ -1,5 +1,5 @@
 local flux = require('libs.flux')
-local deepCopy = require('util.table_utils').deepCopy
+-- local deepCopy = require('util.table_utils').deepCopy
 local Class = require('libs.hump.class')
 
 ---@class Projectile
@@ -29,7 +29,9 @@ function Projectile:init(x, y, w, h, castsShadow, index, animation)
 	}
 
 	-- Does this prevent a shared animation?
-	self.animation = deepCopy(animation)
+	-- self.animation = deepCopy(animation)
+
+	self.animation = animation
 	self.isStill = false
 
 	self.index = index
