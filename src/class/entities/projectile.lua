@@ -54,6 +54,9 @@ function Projectile:updateAnimation(dt)
 		if self.animation.currentTime >= self.animation.duration then
 			self.animation.currentTime = self.animation.currentTime - self.animation.duration
 		end
+
+		self.animation.spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) + 1
+		self.animation.spriteNum = math.min(self.animation.spriteNum, #self.animation.quads)
 	end
 end;
 
@@ -84,10 +87,7 @@ function Projectile:drawSprite()
 	if self.isStill then
 		love.graphics.draw(self.animation.still, x, y)
 	else
-		local spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) + 1
-		spriteNum = math.min(spriteNum, #self.animation.quads)
-
-		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[spriteNum], x, y, r, 1, 1, self.ox, self.oy)
+		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[self.animation.spriteNum], x, y, r, 1, 1, self.ox, self.oy)
 	end
 end;
 

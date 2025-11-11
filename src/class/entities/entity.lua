@@ -636,6 +636,9 @@ function Entity:updateAnimation(dt)
       animation.currentTime = animation.currentTime - animation.duration
     end
   end
+
+  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+  animation.spriteNum = math.min(animation.spriteNum, #animation.quads)
 end;
 
 function Entity:updateHitbox()
@@ -688,10 +691,8 @@ end;
 
 function Entity:drawSprite()
   local animation = self.animations[self.currentAnimTag]
-  local spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  spriteNum = math.min(spriteNum, #animation.quads)
   love.graphics.setColor(1,1,1,self.pos.a)
-  love.graphics.draw(animation.spriteSheet, animation.quads[spriteNum], self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.frameWidth/2, self.frameHeight/2)
+  love.graphics.draw(animation.spriteSheet, animation.quads[animation.spriteNum], self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.frameWidth/2, self.frameHeight/2)
   love.graphics.setColor(1,1,1,1)
 end;
 
