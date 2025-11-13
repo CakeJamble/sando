@@ -103,6 +103,7 @@ end;
 -- gets a set of reward options for every enemy in combat
 ---@param rewards table[]
 ---@param rarityMod number
+---@return table
 function reward:getItemRewards(rewards, rarityMod)
   local result = {}
   for _,rwd in ipairs(rewards) do

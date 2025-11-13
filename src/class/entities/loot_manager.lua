@@ -23,10 +23,11 @@ function LootManager:init(lootOptions)
 
 	self.isActive = false
 	self.highlightSelected = false
-	self.lootIndex = 1
+	self.lootIndex = 0
 	self.selectedReward = nil
 	self.isRewardSelected = false
 	self.coroutines = {}
+	self.tweens = {}
 end;
 
 ---@return table
@@ -111,12 +112,16 @@ function LootManager:resumeCurrent()
 end;
 
 function LootManager:raiseItemTween()
+	for _,tween in ipairs(self.tweens) do
+		tween:stop()
+	end
 	for _,img in ipairs(self.pick3UI.images) do
 		img.scale = 1
 	end
 
 	if self.lootIndex < 4 then
-		flux.to(self.pick3UI.images[self.lootIndex], 0.25, {scale = 2})
+		local scaleTween = flux.to(self.pick3UI.images[self.lootIndex], 0.25, {scale = 2})
+		table.insert(self.tweens, scaleTween)
 	end
 end;
 
@@ -124,8 +129,10 @@ end;
 ---@param button love.GamepadButton
 function LootManager:gamepadpressed(joystick, button)
 	if self.isActive then
-		print(button)
-		if button == 'a' then
+		if self.lootIndex == 0 and button ~= 'b' then
+			self.lootIndex = 1
+			self:raiseItemTween()
+		elseif button == 'a' then
 			self:resumeCurrent()
 		elseif button == 'dpleft' and self.lootIndex > 1 then
 			self.lootIndex = self.lootIndex - 1
@@ -153,7 +160,14 @@ function LootManager:draw()
 			love.graphics.draw(img.image, self.pick3UI.x + i * self.pick3UI.offset, self.pick3UI.y, 0,
 				img.scale, img.scale)
 		end
+
+		if self.isRewardSelected then
+			self.drawPreview()
+		end
 	end
 end;
+
+function LootManager:drawPreview()
+end
 
 return LootManager
