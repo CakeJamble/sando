@@ -160,7 +160,14 @@ function LootManager:draw()
 			love.graphics.draw(img.image, self.pick3UI.x + i * self.pick3UI.offset, self.pick3UI.y, 0,
 				img.scale, img.scale)
 		end
+
+		if self.isRewardSelected then
+			self.drawPreview()
+		end
 	end
 end;
+
+function LootManager:drawPreview()
+end
 
 return LootManager
