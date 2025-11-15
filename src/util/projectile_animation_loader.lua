@@ -17,7 +17,7 @@ ProjectileUtils.createProjectileAnimations = function(data)
 
 	animation.duration = data.duration or 1
 	animation.currentTime = 0
-	animation.spriteNum = 0
+	animation.spriteNum = 1
 
 	if data.stillSprite then
 		local still = love.graphics.newImage(data.stillSprite)
