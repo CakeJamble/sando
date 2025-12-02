@@ -4,7 +4,9 @@ local flux = require('libs.flux')
 local Collision = require('libs.collision')
 local createBezierCurve = require('util.create_quad_bezier_curve')
 
----@param ref Enemy
+-- Throw a radish, it bounces twice and then hops over the enemy. Checks for collision on the last bounce for damage.
+---@param ref Enemy The Enemy using the skill
+---@param qteManager QTEManager Manages the QTE (only applicable if refactored to be a Character skill)
 return function(ref, qteManager)
 	local skill = ref.skill
 	local luck = ref.battleStats.luck
