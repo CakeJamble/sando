@@ -4,12 +4,14 @@ local ItemRandomizer = require('util.item_randomizer')
 local SoundManager = require('class.ui.sound_manager')
 local JoystickUtils = require('util.joystick_utils')
 local flux = require('libs.flux')
+local suit = require('libs.suit')
 
 function shop:init()
 	shove.createLayer('background', {zIndex = 1})
 	shove.createLayer('item', {zIndex = 5})
 	shove.createLayer('ui', {zIndex = 10})
 	self.bg = love.graphics.newImage('asset/sprites/background/shop.png')
+
 	self.dialogManager = DialogManager()
 	self.dialogManager:getAll('shop')
 	self.textbox = Text.new("left",
@@ -39,6 +41,7 @@ function shop:init()
 	self.typeIndex = 0
 	self.drawTextbox = true
 	self.textTween = nil
+
 end;
 
 ---@param previous table
@@ -49,9 +52,11 @@ function shop:enter(previous, options)
 	self.log = options.log
 	self.items = self.loadShopItems(self.numItems, self.shopRarities, self.characterTeam.rarityMod)
 	self.layout = self.setLayout()
+	self.itemsUI = suit.new()
 
 	local greeting = self.getGreeting(self.hasVisited, self.dialogManager)
 	self:send(greeting)
+	self.showMessage = false
 end;
 
 ---@param text string
@@ -122,7 +127,6 @@ end;
 ---@param rarities { [string]: number }
 ---@param rarityMod number
 function shop.loadShopItems(numItems, rarities, rarityMod)
-	local itemTypes = {"accessory", "consumable", "equip", "tool"}
 	local rarityTypes = {}
 	local modRarities = {}
 	for name,rarity in pairs(rarities) do
@@ -130,17 +134,16 @@ function shop.loadShopItems(numItems, rarities, rarityMod)
 		modRarities[name] = rarity + rarityMod
 	end
 
-	-- sloppy but based off of previous implementation
-	local items = {tool = {}, accessory = {}, equip = {}, consumable = {}}
-	for key,t in pairs(items) do
+	local items = {}
+	local itemTypes = {"accessory", "consumable", "equip", "tool"}
+	for _,itemType in ipairs(itemTypes) do
 		for i=1, 2 do
 			local rarity = ItemRandomizer.getWeightedRandomItemRarity(rarityTypes, modRarities)
-			local item = ItemRandomizer.getRandomItem(key, rarity)
-			table.insert(items[key], item)
+			local item = ItemRandomizer.getRandomItem(itemType, rarity)
+			item.itemType = itemType
+			table.insert(items, item)
 		end
 	end
-
-	print(#items.tool)
 	return items
 end;
 
@@ -224,6 +227,7 @@ end;
 
 ---@param dt number
 function shop:update(dt)
+	self:updateSUIT(dt)
 	flux.update(dt)
 	self.textbox:update(dt)
 	if input.joystick then
@@ -240,6 +244,38 @@ function shop:update(dt)
   end
 end;
 
+---@param dt number
+function shop:updateSUIT(dt)
+	local items = {accessory = {}, consumable = {}, equip = {}, tool = {}}
+	for _, item in ipairs(self.items) do
+		table.insert(items[item.itemType], item)
+	end
+	local itemTypes = {"accessory", "consumable", "equip", "tool"}
+	self.itemsUI.layout:reset(25, 50)
+	local px, py = 32, 32
+	self.itemsUI.layout:padding(px, py)
+	local w,h = 32, 32
+
+	for i,itemType in ipairs(itemTypes) do
+		for _,item in ipairs(items[itemType]) do
+			local itemName = string.sub(item.name, 1, 1)
+			if item.itemType == itemType then
+				if item.image:typeOf("Texture") then
+					print("ok")
+				else
+					print("oh no")
+				end
+				local x,y = self.itemsUI.layout:col(w, h)
+				if self.itemsUI:ImageButton(item.image, x, y).hit then
+					print('ok')
+				end
+			end
+		end
+		-- self.itemsUI.layout:row(-(px + 2 * w))
+		self.itemsUI.layout:push(25, 50 + i * (h + py))
+	end
+end;
+
 function shop:draw()
 	shove.beginDraw()
 	camera:attach()
@@ -249,11 +285,13 @@ function shop:draw()
 	shove.endLayer()
 
 	shove.beginLayer('item')
-	self:drawItems()
+	-- self:drawItems()
 	shove.endLayer()
 
 	shove.beginLayer('ui')
 	self:drawUI()
+	self.itemsUI:draw()
+	-- love.graphics.draw(self.lin, 20, 175)
 	love.graphics.rectangle("fill", 360, 32, 32, 16)
 	love.graphics.print("Press b to leave", 360, 50)
 	shove.endLayer()
@@ -267,6 +305,7 @@ function shop:drawItems()
 		local items = self.items[key]
 		for i, item in ipairs(items) do
 			local x,y = layout.x + (layout.xOffset * (i-1)), layout.y
+			-- love.graphics.draw(self.itemBox, x, y)
 			love.graphics.draw(item.image, x, y)
 		end
 	end
@@ -279,20 +318,23 @@ function shop:drawCursor()
 	love.graphics.setColor(0, 0, 1)
 	love.graphics.rectangle('line', x, y, 32, 32)
 	love.graphics.setColor(1, 1, 1)
+	-- love.graphics.draw(self.cursor, x, y)
 end;
 
 function shop:drawUI()
 	-- self.drawBoard(self.items)
 
+	-- love.graphics.draw(self.truck, 100, 100)
 	if self.selected then
 		self:drawCursor()
+		-- love.graphics.draw(self.itemUIContainer, 200, 100)
 	end
 
 	if self.drawTextbox then
 		local x,y,a = self.textPos.x, self.textPos.y, self.textPos.a
-		-- love.graphics.setColor(1,1,1,a)
+		love.graphics.setColor(1,1,1,a)
 		self.textbox:draw(x, y)
-		-- love.graphics.setColor(1,1,1,1)
+		love.graphics.setColor(1,1,1,1)
 	end
 end;
 
