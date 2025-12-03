@@ -258,17 +258,12 @@ function shop:updateSUIT(dt)
 
 	for i,itemType in ipairs(itemTypes) do
 		for _,item in ipairs(items[itemType]) do
-			local itemName = string.sub(item.name, 1, 1)
-			if item.itemType == itemType then
-				if item.image:typeOf("Texture") then
-					print("ok")
-				else
-					print("oh no")
-				end
-				local x,y = self.itemsUI.layout:col(w, h)
-				if self.itemsUI:ImageButton(item.image, x, y).hit then
-					print('ok')
-				end
+			local x,y = self.itemsUI.layout:col(w, h)
+			local returnState = self.itemsUI:ImageButton(item.image, x, y)
+			if returnState.hovered then
+				self.itemsUI:Label(item.description, 150, 50, 100, 50)
+			elseif returnState.hit then
+				self:purchaseTransaction(self.characterTeam.inventory, item)
 			end
 		end
 		-- self.itemsUI.layout:row(-(px + 2 * w))
