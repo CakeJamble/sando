@@ -41,7 +41,32 @@ function shop:init()
 	self.typeIndex = 0
 	self.drawTextbox = true
 	self.textTween = nil
-
+	self.baseCosts = {
+		accessory = {
+			common = 10,
+			uncommon = 15,
+			shop = 20,
+			rare = 25
+		},
+		consumable = {
+			common = 4,
+			uncommon = 6,
+			shop = 8,
+			rare = 9
+		},
+		equip = {
+			common = 12,
+			uncommon = 16,
+			shop = 20,
+			rare = 24
+		},
+		tool = {
+			common = 25,
+			uncommon = 35,
+			shop = 50,
+			rare = 55
+		},
+	}
 end;
 
 ---@param previous table
@@ -51,6 +76,7 @@ function shop:enter(previous, options)
 	self.characterTeam = options.team
 	self.log = options.log
 	self.items = self.loadShopItems(self.numItems, self.shopRarities, self.characterTeam.rarityMod)
+	self:setPrices()
 	self.layout = self.setLayout()
 	self.itemsUI = suit.new()
 
@@ -75,6 +101,7 @@ function shop:send(text)
 		end)
 end;
 
+---@deprecated Use SUIT to set layout
 ---@return table
 function shop.setLayout()
 	local result = {
@@ -145,6 +172,16 @@ function shop.loadShopItems(numItems, rarities, rarityMod)
 		end
 	end
 	return items
+end;
+
+-- Sets prices based on base costs and team discount rates. Assumes discount is a percentage
+function shop:setPrices()
+	for _, item in ipairs(self.items) do
+		local value = self.baseCosts[item.itemType][item.rarity]
+		local price = math.max(1, math.ceil(value * (1 - self.characterTeam.discount)))
+		item.value = value
+		item.price = price
+	end
 end;
 
 ---@param inventory Inventory
