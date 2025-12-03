@@ -1,5 +1,7 @@
 {
 	"name": "Hairnet",
+	"description": "Prevents poison",
+	"flavorText": "Keeps hair out of your stuff",
 	"cost": 10,
 	"rarity": "common",
 	"effects": "poison_resist",

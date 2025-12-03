@@ -1,5 +1,7 @@
 {
 	"name": "Ranch Hat",
+	"description": "Increases power and lowers luck",
+	"flavorText": "Needs no flavor text",
 	"cost": 10,
 	"rarity": "rare",
 	"effects": "crit_down",
