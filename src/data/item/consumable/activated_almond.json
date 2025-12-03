@@ -4,7 +4,6 @@
 	"itemType": "support",
 	"description": "Heals 1/3 pf Max FP",
 	"flavorText": "Essential part of a balanced self-help blog",
-	"cost": 10,
 	"isSingleTarget": true,
 	"effects": ["fp"],
 	"amount": 0.33,

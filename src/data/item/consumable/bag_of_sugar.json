@@ -4,7 +4,6 @@
 	"itemType": "support",
 	"description": "Attack+, Speed+, Defense-, Luck-",
 	"flavorText": "Somehow healthier than a single energy drink",
-	"cost": 10,
 	"isSingleTarget": true,
 	"raise": ["attack", "speed"],
 	"lower": ["defense", "luck"],

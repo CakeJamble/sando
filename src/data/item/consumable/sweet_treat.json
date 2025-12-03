@@ -4,7 +4,6 @@
 	"itemType": "support",
 	"description": "Gain a level",
 	"flavorText": "Controversially locked in the Nuz Region",
-	"cost": 10,
 	"isSingleTarget": true,
 	"effects": ["lvl_up"],
 	"amount": 1,

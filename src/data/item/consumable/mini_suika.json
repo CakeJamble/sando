@@ -4,7 +4,6 @@
 	"itemType": "support",
 	"description": "+5 Regen",
 	"flavorText": "You feel the pinapples and melons surging through the Suika Force",
-	"cost": 10,
 	"isSingleTarget": true,
 	"effects": ["heal"],
 	"amount": 10,

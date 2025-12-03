@@ -2,7 +2,6 @@
 	"name": "Moldy Apron",
 	"description": "Poisons the wearer",
 	"flavorText": "It refuses to be washed",
-	"cost": 10,
 	"rarity": "common",
 	"effects": "poison",
 	"stats": {

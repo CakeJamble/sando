@@ -2,7 +2,6 @@
 	"name": "Aluminum Apron",
 	"description": "Minimal stat boosts but provides burn immunity",
 	"flavorText": "Cool and crumpled",
-	"cost": 10,
 	"rarity": "uncommon",
 	"effects": "burn_immunity",
 	"stats": {

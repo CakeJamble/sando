@@ -4,7 +4,6 @@
 	"itemType": "support",
 	"description": "Take no damage this turn",
 	"flavorText": "Who would throw this out?",
-	"cost": 10,
 	"isSingleTarget": true,
 	"effects": ["negate_damage"],
 	"amount": 0,

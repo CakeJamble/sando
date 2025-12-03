@@ -4,7 +4,6 @@
 	"itemType": "support",
 	"description": "Greatly raises speed",
 	"flavorText": "Go time, baby",
-	"cost": 10,
 	"isSingleTarget": true,
 	"effects": ["heal"],
 	"amount": 10,
