@@ -49,7 +49,7 @@ Audio = {}
 Audio.text = {}
 Audio.text.default = love.audio.newSource(audioPath .. "text/default.ogg", "static")
 Audio.sfx = {}
-Audio.sfx.ui = love.audio.newSource(audioPath .. "sfx/Selection_Ukelele chord 04_mod.ogg", "static")
+Audio.sfx.ui = love.audio.newSource(audioPath .. "sfx/uke.ogg", "static")
 Audio.sfx.ui:setVolume(0.3)
 Text.configure.audio_table("Audio")
 Text.configure.add_text_sound(Audio.text.default, 0.5)
@@ -65,7 +65,7 @@ function love.load(args)
     })
   local windowWidth, windowHeight = love.window.getDesktopDimensions()
   windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
-  shove.setWindowMode(windowWidth, windowHeight, {
+  shove.setWindowMode(2560, 1440, {
     resizable = true
   })
 

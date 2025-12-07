@@ -1,10 +1,12 @@
 local SoundManager = require('class.ui.sound_manager')
-local suit = require('libs.suit')
+local pause = {}
 local initLuis = require("libs.luis.init")
 local luis = initLuis("libs/luis/widgets")
-local pause = {}
+local flux = require('libs.flux')
 
 function pause:init()
+
+    shove.createLayer("ui", {zIndex = 10})
     self.musicManager = SoundManager(AllSounds.music)
     self.sfxManager = SoundManager(AllSounds.sfx)
     self.supportedResolutions = {
@@ -15,15 +17,37 @@ function pause:init()
         {3840, 2160}
     }
     self.resIndex = 4
+    -- luis.baseWidth = 2560
+    -- luis.baseHeight = 1440
 end;
 
 function pause:enter(previous)
-    self.sliders = {
-        musicSlider = {value = 100, min = 0, max = 100},
-        sfxSlider = {value = 100, min = 0, max = 100}
-    }
+    self.container = luis.newFlexContainer(18, 20, 2, 2)
     self.windowWidth, self.windowHeight = shove.getViewportDimensions()
+
+    self.luisTime = 0
     self.musicManager:play('ny_house_party')
+
+    self.musicVolSlider = luis.newSlider(0, 1, 1, 10, 2,
+        function(value)
+            self.musicManager:setGlobalVolume(value)
+        end, 1, 1)
+    self.sfxSlider = luis.newSlider(0, 1, 1, 10, 2,
+        function(value)
+        self.sfxManager:setGlobalVolume(value)
+
+    end, 3, 1)
+    self.sfxButton = luis.newButton("Test", 4, 2, nil,
+        function()
+            self.sfxManager:play("uke")
+        end, 15, 14)
+    self.container:addChild(self.musicVolSlider)
+    self.container:addChild(self.sfxSlider)
+    self.container:addChild(self.sfxButton)
+    luis.newLayer("main")
+    luis.setCurrentLayer("main")
+    luis.createElement(luis.currentLayer, "FlexContainer", self.container)
+    luis.showGrid = true
 end;
 
 function pause:leave()
@@ -34,78 +58,29 @@ function pause:keypressed(key)
     if key == 'p' then
         return Gamestate.pop()
     end
-    suit.keypressed(key)
 end;
 
 ---@param dt number
 function pause:update(dt)
-    -- Volume Settings
-    rows = suit.layout:rows{pos = {50, 50}, min_height = 150,
-        {200, 30},
-        {200, 50},
-        {200, 30},
-        {200, 50},
-        {200, 50},
-        {200, 50},
-        {200, 50},
-        {200, 50},
-        {200, 50}
-    }
-    values = suit.layout:rows{pos = {250, 80}, min_height = 150,
-        {200, 50},
-        {200, 30},
-        {200, 50}
-    }
+  self.luisTime = self.luisTime + dt
+  if self.luisTime >= 1/60 then
+    flux.update(self.luisTime)
+    self.luisTime = 0
+  end
+  -- luis.updateScale()
+  luis.update(dt)
+end;
 
-    suit.Label("Music", {align = 'left'}, rows.cell(1))
-    if suit.Slider(self.sliders.musicSlider, {align = 'left'}, rows.cell(2)).changed then
-        local newVol = self.sliders.musicSlider.value / 100
-        self.musicManager:setGlobalVolume(newVol)
-    end
-    suit.Label(math.floor(0.5 + self.sliders.musicSlider.value), values.cell(1))
-    
-    suit.Label("Sound Effects", {align = 'left'}, rows.cell(3))
+function pause:mousepressed(x, y, button, istouch)
+    luis.mousepressed(x, y, button, istouch)
+end;
 
-    suit.Label('', {align = 'left'}, values.cell(2))
-    -- Only want to play once when the slider is released so it doesn't jam the listener
-    local sfxReturnStates = suit.Slider(self.sliders.sfxSlider, {align = 'left'}, rows.cell(4))
-    if sfxReturnStates.changed then
-        local newVol = self.sliders.sfxSlider.value / 100
-        self.sfxManager:setGlobalVolume(newVol)
-    end
-
-    if sfxReturnStates.hit then
-        self.sfxManager:play('uke')
-    end
-    suit.Label(math.floor(0.5 + self.sliders.sfxSlider.value), values.cell(3))
-
-    -- Display Settings
-    suit.Label("Resolution", {align = 'left'}, rows.cell(5))
-
-    if suit.Button("Smaller", rows.cell(6)).hit then
-        self.resIndex = math.max(1, self.resIndex - 1)
-        local newResolution = self.supportedResolutions[self.resIndex]
-        local width, height = newResolution[1], newResolution[2]
-        shove.setWindowMode(width, height)
-    end
-    local res = self.supportedResolutions[self.resIndex]
-    local resString = tostring(res[1] .. 'x' .. res[2])
-    suit.Label(resString, rows.cell(7))
-
-    if suit.Button("Larger", rows.cell(8)).hit then
-        self.resIndex = math.min(#self.supportedResolutions, self.resIndex + 1)
-        local newResolution = self.supportedResolutions[self.resIndex]
-        local width, height = newResolution[1], newResolution[2]
-        shove.setWindowMode(width, height)
-    end
-
-    if suit.Button("Main Menu", rows.cell(9)).hit then
-        Gamestate.switch(states['main_menu'])
-    end
+function pause:mousereleased(x, y, button, istouch)
+    luis.mousereleased(x, y, button, istouch)
 end;
 
 function pause:draw()
-    suit.draw()
+    luis.draw()
 end;
 
 return pause

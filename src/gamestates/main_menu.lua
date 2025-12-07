@@ -145,7 +145,7 @@ function main_menu:validate_selection()
   elseif index == 3 then
     Gamestate.switch(states['bakery'])
   elseif index == 4 then
-    Gamestate.switch(states['settings'])
+    Gamestate.switch(states['pause'])
   else
     love.event.quit()
   end
