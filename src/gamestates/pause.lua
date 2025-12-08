@@ -22,7 +22,7 @@ function pause:init()
 end;
 
 function pause:enter(previous)
-    self.container = luis.newFlexContainer(18, 20, 2, 2)
+    -- self.container = luis.newFlexContainer(18, 20, 2, 2)
     self.windowWidth, self.windowHeight = shove.getViewportDimensions()
 
     self.luisTime = 0
@@ -41,12 +41,15 @@ function pause:enter(previous)
         function()
             self.sfxManager:play("uke")
         end, 15, 14)
-    self.container:addChild(self.musicVolSlider)
-    self.container:addChild(self.sfxSlider)
-    self.container:addChild(self.sfxButton)
+    -- self.container:addChild(self.musicVolSlider)
+    -- self.container:addChild(self.sfxSlider)
+    -- self.container:addChild(self.sfxButton)
     luis.newLayer("main")
     luis.setCurrentLayer("main")
-    luis.createElement(luis.currentLayer, "FlexContainer", self.container)
+    luis.createElement(luis.currentLayer, "Slider", self.musicVolSlider)
+    luis.createElement(luis.currentLayer, "Slider", self.sfxSlider)
+    luis.createElement(luis.currentLayer, "Button", self.sfxButton)
+    -- luis.createElement(luis.currentLayer, "FlexContainer", self.container)
     luis.showGrid = true
 end;
 
