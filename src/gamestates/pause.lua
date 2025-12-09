@@ -53,6 +53,22 @@ function pause:enter(previous)
             local width, height = newResolution[1], newResolution[2]
             shove.setWindowMode(width, height)
         end, 6, 8)
+    self.brightnessSlider = luis.newSlider(0, 1, 1, 10, 1,
+        function(value)
+            Brightness = value
+        end, 8, 1)
+    self.constrastSlider = luis.newSlider(0, 1, 1, 10, 1,
+        function(value)
+            Contrast = value
+        end, 10, 1)
+    self.saturationSlider = luis.newSlider(0, 1, 1, 10, 1,
+        function(value)
+            Saturation = value
+        end, 12, 1)
+    self.hueShiftSlider = luis.newSlider(0, 1, 0, 10, 1,
+        function(value)
+            HueShift = value
+        end, 14, 1)
     luis.newLayer("main")
     luis.setCurrentLayer("main")
     luis.createElement(luis.currentLayer, "Slider", self.musicVolSlider)
@@ -60,6 +76,11 @@ function pause:enter(previous)
     luis.createElement(luis.currentLayer, "Button", self.sfxButton)
     luis.createElement(luis.currentLayer, "Button", self.resDownButton)
     luis.createElement(luis.currentLayer, "Button", self.resUpButton)
+    luis.createElement(luis.currentLayer, "Slider", self.brightnessSlider)
+    luis.createElement(luis.currentLayer, "Slider", self.constrastSlider)
+    luis.createElement(luis.currentLayer, "Slider", self.saturationSlider)
+    luis.createElement(luis.currentLayer, "Slider", self.hueShiftSlider)
+
     luis.showGrid = true
 end;
 
