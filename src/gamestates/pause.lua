@@ -7,6 +7,7 @@ local flux = require('libs.flux')
 function pause:init()
 
     shove.createLayer("ui", {zIndex = 10})
+    luis.setGridSize(32)
     self.musicManager = SoundManager(AllSounds.music)
     self.sfxManager = SoundManager(AllSounds.sfx)
     self.supportedResolutions = {
@@ -22,34 +23,43 @@ function pause:init()
 end;
 
 function pause:enter(previous)
-    -- self.container = luis.newFlexContainer(18, 20, 2, 2)
     self.windowWidth, self.windowHeight = shove.getViewportDimensions()
-
     self.luisTime = 0
     self.musicManager:play('ny_house_party')
 
-    self.musicVolSlider = luis.newSlider(0, 1, 1, 10, 2,
+    self.musicVolSlider = luis.newSlider(0, 1, 1, 10, 1,
         function(value)
             self.musicManager:setGlobalVolume(value)
         end, 1, 1)
-    self.sfxSlider = luis.newSlider(0, 1, 1, 10, 2,
+    self.sfxSlider = luis.newSlider(0, 1, 1, 10, 1,
         function(value)
         self.sfxManager:setGlobalVolume(value)
-
     end, 3, 1)
-    self.sfxButton = luis.newButton("Test", 4, 2, nil,
+    self.sfxButton = luis.newButton("Test", 2, 1, nil,
         function()
             self.sfxManager:play("uke")
-        end, 15, 14)
-    -- self.container:addChild(self.musicVolSlider)
-    -- self.container:addChild(self.sfxSlider)
-    -- self.container:addChild(self.sfxButton)
+        end, 3, 12)
+    self.resDownButton = luis.newButton("Smaller", 2, 2, nil,
+        function()
+            self.resIndex = math.max(1, self.resIndex - 1)
+            local newResolution = self.supportedResolutions[self.resIndex]
+            local width, height = newResolution[1], newResolution[2]
+            shove.setWindowMode(width, height)
+        end, 6, 1)
+    self.resUpButton = luis.newButton("Larger", 2, 2, nil,
+        function()
+            self.resIndex = math.min(#self.supportedResolutions, self.resIndex + 1)
+            local newResolution = self.supportedResolutions[self.resIndex]
+            local width, height = newResolution[1], newResolution[2]
+            shove.setWindowMode(width, height)
+        end, 6, 8)
     luis.newLayer("main")
     luis.setCurrentLayer("main")
     luis.createElement(luis.currentLayer, "Slider", self.musicVolSlider)
     luis.createElement(luis.currentLayer, "Slider", self.sfxSlider)
     luis.createElement(luis.currentLayer, "Button", self.sfxButton)
-    -- luis.createElement(luis.currentLayer, "FlexContainer", self.container)
+    luis.createElement(luis.currentLayer, "Button", self.resDownButton)
+    luis.createElement(luis.currentLayer, "Button", self.resUpButton)
     luis.showGrid = true
 end;
 
@@ -57,10 +67,15 @@ function pause:leave()
     self.musicManager:stopAll()
 end;
 
+---@return string result
+function pause:resolutionToString()
+    local resolution = self.supportedResolutions[self.resIndex]
+    local  width, height = tostring(resolution[1]), tostring(resolution[2])
+    local result = width .. ' x ' .. height
+    return result
+end;
+
 function pause:keypressed(key)
-    if key == 'p' then
-        return Gamestate.pop()
-    end
 end;
 
 ---@param dt number
