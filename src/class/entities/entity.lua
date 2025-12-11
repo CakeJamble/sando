@@ -3,6 +3,7 @@ local ProgressBar = require('class.ui.progress_bar')
 local Class = require "libs.hump.class"
 local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
+local StatusEffects = require('util.status_effects')
 
 ---@class Entity
 ---@field movementTime integer
@@ -37,7 +38,7 @@ function Entity:init(data, x, y, entityType)
     sleep = 0,
     lactose = 0,
     paralyze = 0,
-    ohko = 0,
+    ohko = 0, -- ??
     late = 0
   }
   self.debuffImmune = false
@@ -49,6 +50,14 @@ function Entity:init(data, x, y, entityType)
     speed = 0,
     luck = 0,
     growthRate = 0
+  }
+  self.statMods= {
+    hp = 1,
+    fp = 1,
+    attack = 1,
+    defense = 1,
+    speed = 1,
+    luck = 1,
   }
   self.critMult = 2
   self.basic = data.basic
@@ -132,6 +141,7 @@ function Entity:init(data, x, y, entityType)
   }
   self.progressBar = ProgressBar(self.pos, pbOptions, false)
   self.hideProgressBar = Entity.hideProgressBar
+  self.isResumingTurn = false
 
   self.hazards = nil
 
@@ -185,6 +195,10 @@ function Entity:startTurn()
     for _,hazard in ipairs(self.hazards) do
       hazard:proc()
     end
+  end
+
+  if not self.isResumingTurn then
+    self:tickStatuses()
   end
 
   print('starting turn for ' .. self.entityName)
@@ -328,6 +342,17 @@ function Entity:isAlive() --> bool
   return self.battleStats['hp'] > 0
 end;
 
+---@return table
+function Entity:getMultdStats()
+  local result = {}
+  local stats = self.battleStats
+  for key,statMod in pairs(self.statMods) do
+    result[key] = stats[key] * statMod
+  end
+  return result
+end;
+
+
 --[[----------------------------------------------------------------------------------------------------
         Battle Stats
 ----------------------------------------------------------------------------------------------------]]
@@ -406,12 +431,55 @@ function Entity:applyStatus(status)
       local chance = love.math.random()
 
       if chance > self.statusResist[status] then
-        table.insert(self.statuses, status)
+        table.insert(self.statuses, StatusEffects[status])
+        if StatusEffects[status].apply ~= nil then
+          local key, mult = StatusEffects[status].apply(self.statMods)
+          self.statMods[key] = mult
+        end
       else
         print('resisted!')
       end
     end
   end
+end;
+
+-- Procs logic for any tickable statuses the Entity has (burn, poison, sleep)
+function Entity:tickStatuses()
+  for key, status in pairs(self.statuses) do
+    if key == 'sleep' then
+      local wakeUp, sleepCounter = status.tick(status.sleepCounter)
+      if wakeUp then
+        self:wakeUp()
+      else
+        status.sleepCounter = sleepCounter
+        self:snooze()
+      end
+    elseif status.tick ~= nil then
+      local damage = status.tick(self.battleStats.hp, self.baseStats.hp)
+      self:tickDOT(key, damage)
+    end
+  end
+end;
+
+function Entity:wakeUp()
+  local description = self.entityName .. " woke up!"
+  -- remove sleep status
+end;
+
+function Entity:snooze()
+  local description = self.entityName .. " decided to snooze!"
+end;
+
+---@param status string
+---@param damage integer
+function Entity:tickDOT(status, damage)
+  local description = self.entityName .. " takes " .. status .. " damage!"
+
+  -- placeholder. need to display this as a text box coroutine
+  print(description)
+
+  -- after it happens, take damage, start hurt animation, etc
+  self:takeDamagePierce(damage)
 end;
 
 ---@param status string
