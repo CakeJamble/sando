@@ -37,6 +37,7 @@ ItemRandomizer.getRandomItem = function(itemType, rarity)
 	local tLen = #ItemPools[itemType][rarity]
 	local i = love.math.random(1, tLen)
 	local itemName = ItemPools[itemType][rarity][i]
+	-- print("index: " .. i, rarity, itemName)
 	if itemType == "tool" then
 		table.remove(ItemPools[itemType][rarity], i)
 	end

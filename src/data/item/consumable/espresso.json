@@ -2,6 +2,8 @@
 	"name": "Espresso",
 	"rarity": "common",
 	"itemType": "support",
+	"description": "Greatly raises speed",
+	"flavorText": "Go time, baby",
 	"isSingleTarget": true,
 	"effects": ["heal"],
 	"amount": 10,

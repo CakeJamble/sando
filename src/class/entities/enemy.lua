@@ -28,6 +28,8 @@ function Enemy:init(data)
   Enemy.yPos = Enemy.yPos + Enemy.yOffset
   self.drawKOStars = false
   self.sfx = SoundManager(AllSounds.sfx.entities.enemy[self.entityName])
+  self.isMultiphase = data.isMultiphase or false
+  self.phaseData = data.phaseData
 
   Signal.register('OnStartCombat',
     function()
@@ -78,6 +80,17 @@ function Enemy:setupOffense(validTargets)
   Signal.emit('TargetConfirm')
 end;
 
+function Enemy:checkPhase()
+  local currentPhase = self.phaseData.phase
+  if self.phaseData.isMultiphase then
+    self.phaseData.phase = self.phaseData:check()
+  end
+
+  if self.phaseData.phase ~= currentPhase then
+    Signal.emit("OnPhaseChange", self)
+  end
+end;
+
 ---@deprecated
 ---@param targetType string
 ---@param  isSingleTarget boolean
@@ -108,7 +121,7 @@ function Enemy.getRandomSkill(skillPool, numValidTargets)
         table.insert(singleTargetSkills, s)
       end
     end
-
+ 
     local i = love.math.random(1, #singleTargetSkills)
     skill = singleTargetSkills[i]
   else

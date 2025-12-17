@@ -3,6 +3,5 @@
 	"signal": "OnFloorEntered",
 	"description": "Gains value every floor",
 	"flavorText": "Their beauty was a spark that started an ancient war.",
-	"value": 0,
 	"rarity": "event"
 }

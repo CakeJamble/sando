@@ -1,6 +1,7 @@
 {
 	"name": "Swim Briefs",
-	"cost": 10,
+	"description": "Increases attack and lowers defense",
+	"flavorText": "Empowering but not very protective.",
 	"rarity": "common",
 	"effects": null,
 	"stats": {

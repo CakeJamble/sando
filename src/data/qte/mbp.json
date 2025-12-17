@@ -12,13 +12,14 @@
 	"inputContainerOptions": {
 		"x": 0,
 		"y": -200,
-		"w": 40,
-		"h": 175
+		"w": 175,
+		"h": 40
 	},
 	"currentInputContainerOptions": {
 		"x":0,"y":0,"r":25
 	},
 	"baseY": "-20",
+	"baseX": "0",
 	"buttons": ["a","b","x","y"],
 	"waitDuration": 1,
 	"duration": 3,

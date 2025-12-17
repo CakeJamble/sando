@@ -42,6 +42,7 @@ function mbpQTE:init(data)
 	self.inputSequenceContainerDims = data.inputContainerOptions
 	self.alphas = {}
 	self.baseY = data.baseY
+	self.baseX = data.baseX
 	self.offset = 45
 	-- circle holding the current (at the bottom of the rectangle container)
 	self.currentInputContainerDims = data.currentInputContainerOptions
@@ -117,7 +118,7 @@ end;
 function mbpQTE:gamepadpressed(joystick, button)
 	if not self.qteComplete and button == self.inputSequence[self.buttonsIndex].val then
 		self.alphas[self.buttonsIndex] = 0
-		self:moveInputSequenceDown()
+		self:moveInputSequenceDown() -- adjust for different layout
 		if not self.doneWaiting then
 			print('stopping wait tween')
 			self.waitTween:stop()
@@ -146,8 +147,14 @@ end;
 function mbpQTE:gamepadreleased(joystick, button)
 end;
 
+-- For vertically oriented version of QTE
 function mbpQTE:moveInputSequenceDown()
 	self.baseY = self.baseY + self.offset
+end;
+
+-- For horizontally oriented version of QTE
+function mbpQTE:moveInputSequenceLeft()
+	self.baseX = self.baseX - self.offset
 end;
 
 function mbpQTE:reset()

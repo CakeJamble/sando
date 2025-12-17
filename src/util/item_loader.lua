@@ -5,7 +5,6 @@ local json = require('libs.json')
 ---@return { [string]: any }
 local function loadItem(itemName, itemType)
 	local jsonPath = 'data/item/' .. itemType .. '/'
-	print(itemType)
 	jsonPath = jsonPath .. itemName .. '.json'
 	local raw = love.filesystem.read(jsonPath)
 	local data = json.decode(raw)

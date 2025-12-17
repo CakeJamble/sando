@@ -1,6 +1,7 @@
 {
 	"name": "Basic Apron",
-	"cost": 10,
+	"description": "No apparent benefits",
+	"flavorText": "Standard issue",
 	"rarity": "common",
 	"effects": "ohko",
 	"stats": {

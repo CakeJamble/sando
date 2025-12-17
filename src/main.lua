@@ -13,6 +13,17 @@ local runTests = require('test.main_tests')
 local loadAudio = require('util.audio_loader')
 local loadItemPools = require('util.item_pool_loader')
 
+local getClosestResolution = require('util.get_closest_resolution')
+
+-- PostProcessing Effects
+local screenCanvas
+local postShader
+
+Brightness = 1.0
+Contrast = 1.0
+Saturation = 1.0
+HueShift = 0.0
+
 states = {
   main_menu         = require 'gamestates.main_menu',
   character_select  = require 'gamestates.character_select',
@@ -49,7 +60,7 @@ Audio = {}
 Audio.text = {}
 Audio.text.default = love.audio.newSource(audioPath .. "text/default.ogg", "static")
 Audio.sfx = {}
-Audio.sfx.ui = love.audio.newSource(audioPath .. "sfx/Selection_Ukelele chord 04_mod.ogg", "static")
+Audio.sfx.ui = love.audio.newSource(audioPath .. "sfx/uke.ogg", "static")
 Audio.sfx.ui:setVolume(0.3)
 Text.configure.audio_table("Audio")
 Text.configure.add_text_sound(Audio.text.default, 0.5)
@@ -58,15 +69,28 @@ local JoystickUtils = require 'util.joystick_utils'
 
 ---@param args table Arguments to set the game environment (test vs prod, etc.)
 function love.load(args)
+  screenCanvas = love.graphics.newCanvas()
+  postShader = love.graphics.newShader("asset/shader/postprocess.glsl")
+
   -- Screen Scaling
-  shove.setResolution(640, 360, {
+  shove.setResolution(1920, 1080, {
       fitMethod = "aspect",
       renderMode = "layer",
+      scalingFilter = "linear"
     })
   local windowWidth, windowHeight = love.window.getDesktopDimensions()
-  windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
-  shove.setWindowMode(windowWidth, windowHeight, {
-    resizable = true
+  local wW, wH = tonumber(windowWidth), tonumber(windowHeight)
+  supportedResolutions = {
+    {640, 360},
+    {1280, 720},
+    {1920, 1080},
+    {2560, 1440},
+    {3840, 2160}
+  }
+  local width, height = getClosestResolution(wW, wH, supportedResolutions)
+  print("Launching in " .. width .. " x " .. height)
+  shove.setWindowMode(width, height, {
+    resizable = false
   })
 
   -- Camera
@@ -136,6 +160,21 @@ function love.update(dt)
     JoystickUtils.updateAxisRepeater(input.joystick, dt, "left")
     JoystickUtils.updateAxisRepeater(input.joystick, dt, "right")
   end
+end;
+
+function love.draw()
+  -- Put the whole game on a canvas
+  love.graphics.setCanvas(screenCanvas)
+  love.graphics.clear()
+  Gamestate.current():draw()
+  love.graphics.setCanvas()
+  love.graphics.setShader(postShader)
+
+  -- Send values that can be set in settings
+  postShader:send("brightness", Brightness)
+  postShader:send("contrast", Contrast)
+  postShader:send("saturation", Saturation)
+  postShader:send("hueShift", HueShift)
 end;
 
 function love.quit()

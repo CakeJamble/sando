@@ -120,6 +120,7 @@ function ATBScheduler:checkQueues()
     self.activeCommand:interrupt()
     table.insert(self.commandQueue.interruptibles, 1, self.activeCommand)
     print('placed active command from ' .. self.activeCommand.entity.entityName .. ' back onto interruptibles list')
+    self.activeCommand.entity.isResumingTurn = true
     self.activeCommand = command
     print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
     self.activeCommand:start(self)

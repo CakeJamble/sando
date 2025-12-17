@@ -2,6 +2,8 @@
 	"name": "Bag of Sugar",
 	"rarity": "rare",
 	"itemType": "support",
+	"description": "Attack+, Speed+, Defense-, Luck-",
+	"flavorText": "Somehow healthier than a single energy drink",
 	"isSingleTarget": true,
 	"raise": ["attack", "speed"],
 	"lower": ["defense", "luck"],

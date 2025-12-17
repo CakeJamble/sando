@@ -7,4 +7,3 @@ return function(characterTeam)
 	characterTeam = bitser.register("characterTeam", characterTeam)
 	bitser.dumpLoveFile('save_team.dat', characterTeam)
 end;
-

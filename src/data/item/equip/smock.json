@@ -1,6 +1,7 @@
 {
 	"name": "Smock",
-	"cost": 10,
+	"description": "Lowers the cost of skills",
+	"flavorText": "Grants the vision to see truth behind skill",
 	"rarity": "uncommon",
 	"effects": "skill_cost",
 	"stats": {
