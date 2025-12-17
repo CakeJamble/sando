@@ -13,6 +13,8 @@ local runTests = require('test.main_tests')
 local loadAudio = require('util.audio_loader')
 local loadItemPools = require('util.item_pool_loader')
 
+local getClosestResolution = require('util.get_closest_resolution')
+
 -- PostProcessing Effects
 local screenCanvas
 local postShader
@@ -71,14 +73,24 @@ function love.load(args)
   postShader = love.graphics.newShader("asset/shader/postprocess.glsl")
 
   -- Screen Scaling
-  shove.setResolution(640, 360, {
+  shove.setResolution(1920, 1080, {
       fitMethod = "aspect",
       renderMode = "layer",
+      scalingFilter = "linear"
     })
   local windowWidth, windowHeight = love.window.getDesktopDimensions()
-  windowWidth, windowHeight = windowWidth * 0.8, windowHeight* 0.8
-  shove.setWindowMode(2560, 1440, {
-    resizable = true
+  local wW, wH = tonumber(windowWidth), tonumber(windowHeight)
+  supportedResolutions = {
+    {640, 360},
+    {1280, 720},
+    {1920, 1080},
+    {2560, 1440},
+    {3840, 2160}
+  }
+  local width, height = getClosestResolution(wW, wH, supportedResolutions)
+  print("Launching in " .. width .. " x " .. height)
+  shove.setWindowMode(width, height, {
+    resizable = false
   })
 
   -- Camera
