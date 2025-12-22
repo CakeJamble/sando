@@ -105,7 +105,7 @@ function love.load(args)
   end
 
   -- Fonts
-  Font = love.graphics.newFont('asset/thin_sans.ttf')
+  Font = love.graphics.newFont('asset/Chelsea_Market/ChelseaMarket-Regular.ttf')
   love.graphics.setFont(Font)
 
   -- Audio
