@@ -1,6 +1,6 @@
 --! filename: hold_sbp_qte
-local ProgressBar = require('class.ui.progress_bar')
-local QTE = require('class.qte.qte')
+local ProgressBar = require('class.ui.ProgressBar')
+local QTE = require('class.qte.QTE')
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')

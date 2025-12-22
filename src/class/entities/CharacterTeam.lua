@@ -1,14 +1,9 @@
 --! filename: character team
-local Team = require('class.entities.team')
-local Inventory = require('class.item.inventory')
-local Character = require('class.entities.character')
-local ActionUI = require('class.ui.action_ui')
+local Team = require('class.entities.Team')
+local Inventory = require('class.item.Inventory')
+local Character = require('class.entities.Character')
+local ActionUI = require('class.ui.ActionUI')
 local Class = require('libs.hump.class')
-
-
--- testing functionality of different items (REMOVE LATER)
-local loadItem = require 'util.item_loader'
-local espresso = loadItem('espresso', 'consumable')
 
 ---@class CharacterTeam: Team
 local CharacterTeam = Class{__includes = Team}

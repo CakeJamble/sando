@@ -1,4 +1,4 @@
-local QTE = require('class.qte.qte')
+local QTE = require('class.qte.QTE')
 local fireParticles = require 'asset.particle.small_fire'
 local Class = require('libs.hump.class')
 local Timer = require('libs.hump.timer')

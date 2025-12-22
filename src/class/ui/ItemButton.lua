@@ -1,4 +1,4 @@
-local SubMenuButton = require('class.ui.submenu_button')
+local SubMenuButton = require('class.ui.SubmenuButton')
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 

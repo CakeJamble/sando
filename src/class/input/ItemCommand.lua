@@ -1,4 +1,4 @@
-local Command = require('class.input.command')
+local Command = require('class.input.Command')
 local Class = require('libs.hump.class')
 
 ---@class ItemCommand: Command

@@ -3,7 +3,7 @@ Implementation of a Roguelike Map Generator, based on a tutorial by @GodotGameLa
 that was remade in Lua for LOVE2D
 ]]
 
-local MapGenerator = require('class.map.map_generator')
+local MapGenerator = require('class.map.MapGenerator')
 local Class = require('libs.hump.class')
 
 ---@class SpireGenerator: MapGenerator

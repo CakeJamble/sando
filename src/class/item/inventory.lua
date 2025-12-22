@@ -1,6 +1,6 @@
-local ToolManager = require('class.item.tool_manager')
-local EquipManager = require('class.item.equip_manager')
-local AccessoryManager = require('class.item.accessory_manager')
+local ToolManager = require('class.item.ToolManager')
+local EquipManager = require('class.item.EquipManager')
+local AccessoryManager = require('class.item.AccessoryManager')
 
 local Class = require 'libs.hump.class'
 

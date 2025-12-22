@@ -1,4 +1,4 @@
-local ProgressBar = require('class.ui.progress_bar')
+local ProgressBar = require('class.ui.ProgressBar')
 local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')

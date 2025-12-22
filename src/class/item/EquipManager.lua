@@ -1,4 +1,4 @@
-local AccessoryManager = require("class.item.accessory_manager")
+local AccessoryManager = require("class.item.AccessoryManager")
 local Class = require('libs.hump.class')
 
 ---@class EquipManager: AccessoryManager

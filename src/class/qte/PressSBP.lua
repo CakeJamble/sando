@@ -1,5 +1,5 @@
 --! filename: sbpQTE
-local QTE = require('class.qte.qte')
+local QTE = require('class.qte.QTE')
 local Class = require 'libs.hump.class'
 
 --[[ sbpQTE : Single Button Press QTE

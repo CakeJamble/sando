@@ -1,6 +1,6 @@
-local Command = require('class.input.command')
+local Command = require('class.input.Command')
+local SkillCommand = require('class.input.SkillCommand')
 local Class = require('libs.hump.class')
-local SkillCommand = require('class.input.skill_command')
 
 ---@class AICommand: Command
 local AICommand = Class{__includes = Command}

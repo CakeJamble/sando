@@ -1,9 +1,9 @@
-local HoldSBP = require('class.qte.hold_sbp_qte')
-local mbpQTE = require('class.qte.mbp_qte')
-local randSBP = require('class.qte.rand_sbp_qte')
-local RingQTE = require('class.qte.ring_qte')
-local ComboRingQTE = require('class.qte.combo_ring_qte')
-local TapAnalogLeftQTE = require('class.qte.tap_analog_left_qte')
+local HoldSBP = require('class.qte.HoldSBP')
+local mbpQTE = require('class.qte.MBP')
+local randSBP = require('class.qte.RandSBP')
+local RingQTE = require('class.qte.Ring')
+local ComboRingQTE = require('class.qte.ComboRing')
+local TapAnalogLeftQTE = require('class.qte.TapAnalogLeft')
 
 local loadQTE = require 'util.qte_loader'
 

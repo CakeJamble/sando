@@ -1,5 +1,5 @@
 local Class = require('libs.hump.class')
-local QTE = require('class.qte.qte')
+local QTE = require('class.qte.QTE')
 local Timer = require('libs.hump.timer')
 
 ---@class RhythmBase: QTE

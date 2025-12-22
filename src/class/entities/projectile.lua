@@ -1,5 +1,4 @@
 local flux = require('libs.flux')
--- local deepCopy = require('util.table_utils').deepCopy
 local Class = require('libs.hump.class')
 
 ---@class Projectile

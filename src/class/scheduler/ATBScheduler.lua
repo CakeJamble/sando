@@ -1,8 +1,8 @@
-local Scheduler = require('class.scheduler.scheduler')
+local Scheduler = require('class.scheduler.Scheduler')
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
-local PlayerInputCommand = require('class.input.player_input_command')
-local AICommand = require('class.input.ai_command')
+local PlayerInputCommand = require('class.input.PlayerInputCommand')
+local AICommand = require('class.input.AICommand')
 
 ---@class ATBScheduler: Scheduler
 local ATBScheduler = Class{__includes = Scheduler}

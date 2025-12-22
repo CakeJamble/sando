@@ -1,4 +1,4 @@
-local Button = require('class.ui.button')
+local Button = require('class.ui.Button')
 local Class = require('libs.hump.class')
 
 ---@class SubMenuButton: Button

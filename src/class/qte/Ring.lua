@@ -1,6 +1,6 @@
-local Ring = require('class.ui.ring')
+local Ring = require('class.ui.Ring')
 local Class = require('libs.hump.class')
-local QTE = require('class.qte.qte')
+local QTE = require('class.qte.QTE')
 local flux = require('libs.flux')
 
 ---@class RingQTE: QTE

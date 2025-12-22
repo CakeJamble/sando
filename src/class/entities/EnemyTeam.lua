@@ -1,5 +1,5 @@
 --! filename: enemy team
-local Team = require('class.entities.team')
+local Team = require('class.entities.Team')
 local Class = require 'libs.hump.class'
 
 ---@class EnemyTeam: Team

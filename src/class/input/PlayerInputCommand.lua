@@ -1,7 +1,6 @@
--- local InputCommand = require('class.input.command')
-local Command = require('class.input.command')
-local SkillCommand = require('class.input.skill_command')
-local ItemCommand = require('class.input.item_command')
+local Command = require('class.input.Command')
+local SkillCommand = require('class.input.SkillCommand')
+local ItemCommand = require('class.input.ItemCommand')
 local Class = require('libs.hump.class')
 
 ---@class PlayerInputCommand: Command

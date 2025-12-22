@@ -3,7 +3,7 @@ Implementation of a Roguelike Map Generator, based on a tutorial by @GodotGameLa
 that was remade in Lua for LOVE2D
 ]]
 
-local Room = require('class.map.room')
+local Room = require('class.map.Room')
 local Class = require('libs.hump.class')
 
 ---@class MapGenerator

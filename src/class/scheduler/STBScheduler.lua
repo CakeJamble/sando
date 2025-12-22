@@ -1,8 +1,8 @@
-local Entity = require('class.entities.entity')
-local Scheduler = require('class.scheduler.scheduler')
+local Entity = require('class.entities.Entity')
+local Scheduler = require('class.scheduler.Scheduler')
 local Class = require('libs.hump.class')
-local PlayerInputCommand = require('class.input.player_input_command')
-local AICommand = require('class.input.ai_command')
+local PlayerInputCommand = require('class.input.PlayerInputCommand')
+local AICommand = require('class.input.AICommand')
 local Timer = require('libs.hump.timer')
 
 ---@class STBScheduler: Scheduler
