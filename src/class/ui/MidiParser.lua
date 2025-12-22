@@ -16,7 +16,7 @@ local Class = require('libs.hump.class')
 ---@field ppq integer
 ---@field events MidiEvent[]
 
----@class Midi
+---@class MidiParser
 local MidiParser = Class{}
 
 ---@param data string
