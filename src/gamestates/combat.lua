@@ -1,15 +1,15 @@
-local SoundManager = require('class.ui.sound_manager')
-local Entity = require('class.entities.entity')
-local Projectile = require('class.entities.projectile')
+local SoundManager = require('class.ui.SoundManager')
+local Entity = require('class.entities.Entity')
+local Projectile = require('class.entities.Projectile')
 local JoystickUtils = require('util.joystick_utils')
 
-local ATBScheduler = require('class.scheduler.atb_scheduler')
-local STBScheduler = require('class.scheduler.stb_scheduler')
-local CTBScheduler = require('class.scheduler.ctb_scheduler')
+local ATBScheduler = require('class.scheduler.ATBScheduler')
+local STBScheduler = require('class.scheduler.STBScheduler')
+local CTBScheduler = require('class.scheduler.CTBScheduler')
 local Signal = require('libs.hump.signal')
 local Timer = require("libs.hump.timer")
 local flux = require('libs.flux')
-local Log = require('class.log')
+local Log = require('class.Log')
 
 local saveRun = require('util.save_run')
 local saveTeam = require('util.save_team')
@@ -22,13 +22,13 @@ local hitboxYPosCheckboxState = ffi.new("bool[1]", false)
 local tweenHPLossCheckboxState = ffi.new("bool[1]", false)
 local atbSystem = ffi.new("bool[1]", false)
 
-local combat = {}
+local Combat = {}
 local TEMP_BG = 'asset/sprites/background/temp-combat-bg.png'
 local COMBAT_UI_PATH = 'asset/sprites/combat/'
 local COMBAT_TEAM_UI_PATH = COMBAT_UI_PATH .. 'combat-team-ui.png'
 local HP_HOLDER = COMBAT_UI_PATH .. 'hp-holder.png'
 
-function combat:init()
+function Combat:init()
   imgui.love.Init()
   shove.createLayer('background')
   shove.createLayer('entity', {zIndex = 10})
@@ -86,7 +86,7 @@ end;
 
 ---@param previous table
 ---@param opts table
-function combat:enter(previous, opts)
+function Combat:enter(previous, opts)
   self.lockCamera = false
   self.soundManager = SoundManager(AllSounds.music)
   self.soundManager:setGlobalVolume(0.1)
@@ -121,7 +121,7 @@ function combat:enter(previous, opts)
   Signal.emit('OnEnterScene')
 end;
 
-function combat:leave()
+function Combat:leave()
   saveRun('combat',self.act,
     self.floor, self.encounteredPools, 123)
   self.soundManager:stopAll()
@@ -129,7 +129,7 @@ end;
 
 ---@param toolManager ToolManager
 ---@return STBScheduler|CTBScheduler|ATBScheduler
-function combat:setTurnManager(toolManager)
+function Combat:setTurnManager(toolManager)
   local has = function(t, elem)
     for _,item in ipairs(t) do
       if item.name == elem then return true
@@ -155,7 +155,7 @@ end;
 
 ---@param key string
 ---@deprecated
-function combat:keypressed(key)
+function Combat:keypressed(key)
   if key == '`' then
     showDebugWindow = not showDebugWindow
   elseif key == 'p' then
@@ -167,7 +167,7 @@ end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function combat:gamepadpressed(joystick, button)
+function Combat:gamepadpressed(joystick, button)
   if button == 'start' then
     -- Gamestate.push(states['pause'])
     self.paused = not self.paused
@@ -182,7 +182,7 @@ end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function combat:gamepadreleased(joystick, button)
+function Combat:gamepadreleased(joystick, button)
   if self.turnManager and self.turnManager.qteManager.activeQTE then
     self.turnManager.qteManager:gamepadreleased(joystick, button)
   else
@@ -191,7 +191,7 @@ function combat:gamepadreleased(joystick, button)
 end;
 
 ---@param dt number
-function combat:update(dt)
+function Combat:update(dt)
   if not self.paused then
     flux.update(dt)
 
@@ -205,7 +205,7 @@ function combat:update(dt)
 end;
 
 -- Might interfere with QTE Joystick mechanics, circle back later to make sure
-function combat:updateJoystick()
+function Combat:updateJoystick()
   if input.joystick then
     -- Left Stick
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
@@ -221,7 +221,7 @@ function combat:updateJoystick()
 end;
 
 ---@param dt number
-function combat:updateIMGUI(dt)
+function Combat:updateIMGUI(dt)
   imgui.love.Update(dt)
   imgui.NewFrame()
 
@@ -255,7 +255,7 @@ function combat:updateIMGUI(dt)
   end
 end;
 
-function combat:draw()
+function Combat:draw()
   shove.beginDraw()
   camera:attach()
 
@@ -288,7 +288,7 @@ end;
 
 --------- Overrides required to use cimgui
 
-function combat:quit()
+function Combat:quit()
   imgui.love.Shutdown()
 end;
 
@@ -297,7 +297,7 @@ end;
 ---@param dx number
 ---@param dy number
 ---@param istouch boolean
-function combat:mousemoved(x, y, dx, dy, istouch)
+function Combat:mousemoved(x, y, dx, dy, istouch)
   imgui.love.MouseMoved(x, y)
 end;
 
@@ -306,7 +306,7 @@ end;
 ---@param button string
 ---@param istouch boolean
 ---@param presses number
-function combat:mousepressed(x, y, button, istouch, presses)
+function Combat:mousepressed(x, y, button, istouch, presses)
   imgui.love.MousePressed(button)
 end;
 
@@ -315,7 +315,8 @@ end;
 ---@param button string
 ---@param istouch boolean
 ---@param presses number
-function combat:mousereleased(x, y, button, istouch, presses)
+function Combat:mousereleased(x, y, button, istouch, presses)
   imgui.love.MouseReleased(button)
 end;
-return combat
+
+return Combat

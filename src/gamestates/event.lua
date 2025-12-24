@@ -1,9 +1,9 @@
 local json = require('libs.json')
 local JoystickUtils = require("util.joystick_utils")
 local loadItem = require('util.item_loader')
-local event = {}
+local Event = {}
 
-function event:init()
+function Event:init()
 	shove.createLayer("background", {zIndex = 1})
 	shove.createLayer("ui", {zIndex = 10})
 	self.dataDir = 'data/event/'
@@ -22,7 +22,7 @@ end;
 
 ---@param previous table
 ---@param options table
-function event:enter(previous, options)
+function Event:enter(previous, options)
 	self.log = options.log
 	self.characterTeam = options.team
 	self.eventData = self:loadEvent(self.log.act, self.log.floor)
@@ -30,15 +30,15 @@ function event:enter(previous, options)
 	self.coroutines = {}
 	self.i = 1
 	self.selectedIndex = nil
-	if self.eventData.eventType == "combat" then Gamestate.switch(states['combat'], options) else self:start() end
+	if self.eventData.eventType == "combat" then Gamestate.switch(states['Combat'], options) else self:start() end
 end;
 
-function event:start()
+function Event:start()
 	table.insert(self.coroutines, self:createOptionSelectCo())
 	self:resumeCurrent()
 end;
 
-function event:createOptionSelectCo()
+function Event:createOptionSelectCo()
 	return coroutine.create(function()
 		self.textbox:send(self.eventData.description)
 
@@ -50,7 +50,7 @@ end;
 ---@param act integer
 ---@param floor integer
 ---@return table
-function event:loadEvent(act, floor)
+function Event:loadEvent(act, floor)
 	local i = love.math.random(1, #self.eventPool)
 	local eventPath = self.dataDir .. self.eventPool[i] .. '.json'
 	local raw = love.filesystem.read(eventPath)
@@ -68,7 +68,7 @@ end;
 
 ---@param eventData table
 ---@return table
-function event.loadRewards(eventData)
+function Event.loadRewards(eventData)
 	local rewards = {}
 	local itemType = eventData.itemType
 	for _,itemName in ipairs(eventData.itemNames) do
@@ -79,7 +79,7 @@ function event.loadRewards(eventData)
 end;
 
 -- Regulates the order of coroutines occurring in the event gamestate
-function event:resumeCurrent()
+function Event:resumeCurrent()
 	local co = self.coroutines[self.i]
 	local code, res = coroutine.resume(co)
 	if not code then
@@ -100,25 +100,25 @@ function event:resumeCurrent()
 end;
 
 ---@param eventResult table
-function event:applyEventOutcome(eventResult)
+function Event:applyEventOutcome(eventResult)
 	print(eventResult)
 end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function event:gamepadpressed(joystick, button)
+function Event:gamepadpressed(joystick, button)
 	-- if not self.selectedIndex then
 		-- self.selectedIndex = 1
 	-- elseif button == 'dpleft' then
 end;
 
 ---@param dt number
-function event:update(dt)
+function Event:update(dt)
 	self.textbox:update(dt)
 	self:updateJoystick()
 end;
 
-function event:updateJoystick()
+function Event:updateJoystick()
   if input.joystick then
     -- Left Stick
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
@@ -133,7 +133,7 @@ function event:updateJoystick()
   end
 end;
 
-function event:draw()
+function Event:draw()
 	shove.beginDraw()
 
 	shove.beginLayer('ui')
@@ -143,4 +143,4 @@ function event:draw()
 	shove.endDraw()
 end;
 
-return event
+return Event

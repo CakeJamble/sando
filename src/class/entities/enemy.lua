@@ -1,11 +1,11 @@
 --! filename: Enemy
-local Entity = require("class.entities.entity")
+local Entity = require("class.entities.Entity")
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 local flux = require('libs.flux')
 local starParticles = require('asset.particle.ko')
 local Timer = require('libs.hump.timer')
-local SoundManager = require('class.ui.sound_manager')
+local SoundManager = require('class.ui.SoundManager')
 
 ---@class Enemy: Entity
 ---@field xPos integer

@@ -1,0 +1,172 @@
+local MainMenu = {}
+local index = 1
+local BUTTONS_START_X = 75
+local BUTTONS_START_Y = 300
+local BUTTONS_OFFSET = 100
+
+local NEW_GAME_BUTTON_PATH = "asset/sprites/main_menu/new_button.png"
+local CONTINUE_BUTTON_PATH = "asset/sprites/main_menu/continue_button.png"
+local BAKERY_BUTTON_PATH = "asset/sprites/main_menu/bakery_button.png"
+local SETTINGS_BUTTON_PATH = "asset/sprites/main_menu/settings_button.png"
+local QUIT_BUTTON_PATH = "asset/sprites/main_menu/quit_button.png"
+local buttonPaths = {
+  NEW_GAME_BUTTON_PATH,
+  CONTINUE_BUTTON_PATH,
+  BAKERY_BUTTON_PATH,
+  SETTINGS_BUTTON_PATH,
+  QUIT_BUTTON_PATH
+}
+local CURSOR_PATH = "asset/sprites/main_menu/cursor.png"
+local TEMP_BG = 'asset/sprites/background/temp_mm_bg.png'
+-- local Vector = require('libs.hump.vector')
+local Timer = require('libs.hump.timer')
+local JoystickUtils = require('util.joystick_utils')
+local flux = require('libs.flux')
+local loadRun = require('util.load_run')
+local loadTeam = require('util.load_team')
+local CharacterTeam = require('class.entities.CharacterTeam')
+local Log = require('class.log')
+
+
+function MainMenu:init()
+  shove.createLayer('background')
+  shove.createLayer('ui', {zIndex = 100})
+  self.background = love.graphics.newImage(TEMP_BG)
+  self.cursor = love.graphics.newImage(CURSOR_PATH)
+  self.cursorPos = {x = BUTTONS_START_X, y = BUTTONS_START_Y}
+  self.bounceFinished = false
+  self.mmButtons = {}
+  for i=1,#buttonPaths do
+    table.insert(self.mmButtons, love.graphics.newImage(buttonPaths[i]))
+  end
+  self.pos = {x = BUTTONS_START_X, y = 0}
+  local duration = 2
+  flux.to(self.pos, duration, {x = BUTTONS_START_X, y = BUTTONS_START_Y}):ease('bouncein')
+    :oncomplete(function() self.bounceFinished = true end)
+end;
+
+---@param key string
+function MainMenu:keypressed(key)
+  if self.bounceFinished then
+    if key == 'up' or key == 'left' then
+      self:set_up()
+    elseif key == 'down' or key == 'right' then
+      self:set_down()
+    end
+  end
+end;
+
+---@param key string
+---@param scancode love.Scancode
+function MainMenu:keyreleased(key, scancode)
+  if self.bounceFinished then
+    if key == 'z' then
+      self:validate_selection()
+    end
+  end
+end;
+
+---@param joystick love.Joystick
+---@param button love.GamepadButton
+function MainMenu:gamepadpressed(joystick, button)
+  if self.bounceFinished then
+    if button == 'dpup' or button == 'dpleft' then
+      self:set_up()
+    elseif button == 'dpdown' or button == 'dpright' then
+      self:set_down()
+    end
+  end
+end;
+
+---@param joystick love.Joystick
+---@param button love.GamepadButton
+function MainMenu:gamepadreleased(joystick, button)
+  if self.bounceFinished then
+    if button == 'a' then
+      self:validate_selection()
+    end
+  end
+end;
+
+function MainMenu:set_up()
+  if index > 1 then
+    self.cursorPos.x = self.cursorPos.x - BUTTONS_OFFSET
+    index = index - 1
+  else
+    index = 5
+    self.cursorPos.x = BUTTONS_START_X + ((index - 1) * BUTTONS_OFFSET)
+  end
+end;
+
+function MainMenu:set_down()
+  if index < 5 then
+    self.cursorPos.x = self.cursorPos.x + BUTTONS_OFFSET
+    index = index + 1
+  else
+    self.cursorPos.x = BUTTONS_START_X
+    index = 1
+  end
+end;
+
+---@param dt number
+function MainMenu:update(dt)
+  flux.update(dt)
+  Timer.update(dt)
+
+  if input.joystick and self.bounceFinished then
+    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+      self:set_down()
+    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self:set_up()
+    end
+  end
+end;
+
+function MainMenu:draw()
+  shove.beginDraw()
+    shove.beginLayer("ui")
+      for i=1,#self.mmButtons do
+        love.graphics.draw(self.mmButtons[i], BUTTONS_START_X + ((i-1) * BUTTONS_OFFSET), self.pos.y)
+      end
+      love.graphics.draw(self.cursor, self.cursorPos.x, self.pos.y)
+    shove.endLayer()
+
+    shove.beginLayer('background')
+      love.graphics.draw(self.background, 0, 0)
+    shove.endLayer()
+  shove.endDraw()
+end;
+
+function MainMenu:validate_selection()
+  if index == 1 then
+    Gamestate.switch(states['CharacterSelect'])
+  elseif index == 2 then
+    self:loadRun()
+  elseif index == 3 then
+    Gamestate.switch(states['Bakery'])
+  elseif index == 4 then
+    Gamestate.switch(states['Pause'])
+  else
+    love.event.quit()
+  end
+end;
+
+function MainMenu:loadRun()
+  local runData = loadRun()
+  local characterTeam = loadTeam()
+
+  if runData then
+    local log = Log()
+    log:loadFromSaveData(runData.act, runData.floor, runData.encounters)
+
+    if runData.previous == "combat" then
+      opts["suspend"] = true
+    end
+
+    runData['team'] = characterTeam
+
+    Gamestate.switch(states["Overworld"], runData)
+  end
+end;
+
+return MainMenu

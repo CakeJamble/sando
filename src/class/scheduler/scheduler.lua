@@ -1,4 +1,4 @@
-local QTEManager = require('class.qte.qte_manager')
+local QTEManager = require('class.qte.QTEManager')
 local Timer = require('libs.hump.timer')
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
@@ -168,7 +168,7 @@ function Scheduler:winLossConsMet()
 				end
 			end
 			print('switching game states')
-			Gamestate.switch(states['reward'], self.rewards, self.characterTeam)
+			Gamestate.switch(states['Reward'], self.rewards, self.characterTeam)
     -- end)
   end
   if self.characterTeam:isWipedOut() then

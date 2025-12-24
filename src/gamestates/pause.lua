@@ -1,11 +1,10 @@
-local SoundManager = require('class.ui.sound_manager')
-local pause = {}
+local SoundManager = require('class.ui.SoundManager')
+local Pause = {}
 local initLuis = require("libs.luis.init")
 local luis = initLuis("libs/luis/widgets")
 local flux = require('libs.flux')
 
-function pause:init()
-
+function Pause:init()
     shove.createLayer("ui", {zIndex = 10})
     luis.setGridSize(32)
     self.musicManager = SoundManager(AllSounds.music)
@@ -22,7 +21,7 @@ function pause:init()
     -- luis.baseHeight = 1440
 end;
 
-function pause:enter(previous)
+function Pause:enter(previous)
     self.windowWidth, self.windowHeight = shove.getViewportDimensions()
     self.luisTime = 0
     self.musicManager:play('ny_house_party')
@@ -84,23 +83,23 @@ function pause:enter(previous)
     luis.showGrid = true
 end;
 
-function pause:leave()
+function Pause:leave()
     self.musicManager:stopAll()
 end;
 
 ---@return string result
-function pause:resolutionToString()
+function Pause:resolutionToString()
     local resolution = self.supportedResolutions[self.resIndex]
     local  width, height = tostring(resolution[1]), tostring(resolution[2])
     local result = width .. ' x ' .. height
     return result
 end;
 
-function pause:keypressed(key)
+function Pause:keypressed(key)
 end;
 
 ---@param dt number
-function pause:update(dt)
+function Pause:update(dt)
   self.luisTime = self.luisTime + dt
   if self.luisTime >= 1/60 then
     flux.update(self.luisTime)
@@ -110,16 +109,16 @@ function pause:update(dt)
   luis.update(dt)
 end;
 
-function pause:mousepressed(x, y, button, istouch)
+function Pause:mousepressed(x, y, button, istouch)
     luis.mousepressed(x, y, button, istouch)
 end;
 
-function pause:mousereleased(x, y, button, istouch)
+function Pause:mousereleased(x, y, button, istouch)
     luis.mousereleased(x, y, button, istouch)
 end;
 
-function pause:draw()
+function Pause:draw()
     luis.draw()
 end;
 
-return pause
+return Pause
