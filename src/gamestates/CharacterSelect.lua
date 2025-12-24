@@ -1,6 +1,6 @@
-local character_select = {}
-local CharacterTeam = require("class.entities.character_team")
-local Character = require("class.entities.character")
+local CharacterSelect = {}
+local CharacterTeam = require("class.entities.CharacterTeam")
+local Character = require("class.entities.Character")
 local loadCharacterData = require('util.character_loader')
 local JoystickUtils = require('util.joystick_utils')
 
@@ -16,7 +16,7 @@ local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
 local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
 local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
-function character_select:init()
+function CharacterSelect:init()
   shove.createLayer('background')
   shove.createLayer('ui')
   self.cursor = love.graphics.newImage(CURSOR_PATH)
@@ -35,7 +35,7 @@ function character_select:init()
   }
 end;
 
-function character_select:enter()
+function CharacterSelect:enter()
   self.opts = {}
   self.index = 0
   self.spriteRow = 0
@@ -54,37 +54,37 @@ end;
 
 ---@deprecated
 ---@param key string
-function character_select:keypressed(key)
+function CharacterSelect:keypressed(key)
   if key == 'right' then
-    character_select:set_right()
+    self:set_right()
   elseif key == 'left' then
-    character_select:set_left()
+    self:set_left()
   elseif key == 'up' then
-    character_select:set_up()
+    self:set_up()
   elseif key == 'down' then
-    character_select:set_down()
+    self:set_down()
   elseif key == 'z' then
-    character_select:validate_selection()
+    self:validate_selection()
   end
 end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function character_select:gamepadpressed(joystick, button)
+function CharacterSelect:gamepadpressed(joystick, button)
   if button == 'dpright' then
-    character_select:set_right()
+    self:set_right()
   elseif button == 'dpleft' then
-    character_select:set_left()
+    self:set_left()
   elseif button == 'dpup' then
-    character_select:set_up()
+    self:set_up()
   elseif button == 'dpdown' then
-    character_select:set_down()
+    self:set_down()
   elseif button == 'a' then
-    character_select:validate_selection()
+    self:validate_selection()
   end
 end;
 
-function character_select:set_right()
+function CharacterSelect:set_right()
   if self.spriteCol < GRID_LENGTH then
     self.spriteCol = self.spriteCol + 1
     self.spriteXOffset = OFFSET * self.spriteCol
@@ -104,7 +104,7 @@ function character_select:set_right()
   end
 end;
 
-function character_select:set_left()
+function CharacterSelect:set_left()
   if self.spriteCol > 0 then
     self.spriteCol = self.spriteCol - 1
     self.index = self.index - 1
@@ -122,7 +122,7 @@ function character_select:set_left()
   self.spriteXOffset = OFFSET * self.spriteCol
 end;
 
-function character_select:set_up()
+function CharacterSelect:set_up()
   if self.spriteRow > 0 then
     self.spriteRow = self.spriteRow - 1
     self.spriteYOffset = self.spriteRow * OFFSET
@@ -134,7 +134,7 @@ function character_select:set_up()
   end
 end;
 
-function character_select:set_down()
+function CharacterSelect:set_down()
   if self.spriteRow < GRID_LENGTH then
     self.spriteRow = self.spriteRow + 1
     self.spriteYOffset = self.spriteRow * OFFSET
@@ -146,11 +146,11 @@ function character_select:set_down()
   end
 end;
 
-function character_select:validate_selection()
+function CharacterSelect:validate_selection()
   if self.teamCount == TEAM_CAP then
-    character_select:indicesToCharacters()
+    self:indicesToCharacters()
     local team = self.opts.team
-    Gamestate.switch(states['overworld'], team)
+    Gamestate.switch(states['Overworld'], team)
   else
     self.selectedTeamIndices[self.teamCount + 1] = self.index
     self.teamCount = self.teamCount + 1
@@ -158,7 +158,7 @@ function character_select:validate_selection()
 end;
 
 -- Converts index choices to Character objects and adds them to self.opts
-function character_select:indicesToCharacters()
+function CharacterSelect:indicesToCharacters()
   local characterList = {}
   for i=1,TEAM_CAP do
     if self.selectedTeamIndices[i] == 0 then
@@ -183,16 +183,16 @@ end;
 
 ---@deprecated
 ---@return string
-function character_select:setStatPreview()
+function CharacterSelect:setStatPreview()
   local statPreview
   if self.spriteRow == 0 and self.spriteCol == 0 then
-    statPreview = character_select:statsToString(get_bake_stats())
+    statPreview = self:statsToString(get_bake_stats())
   elseif self.spriteRow == 0 and self.spriteCol == 1 then
-    statPreview = character_select:statsToString(get_marco_stats())
+    statPreview = self:statsToString(get_marco_stats())
   elseif self.spriteRow == 1 and self.spriteCol == 0 then
-    statPreview = character_select:statsToString(get_maria_stats())
+    statPreview = self:statsToString(get_maria_stats())
   else
-    statPreview = character_select:statsToString(get_key_stats())
+    statPreview = self:statsToString(get_key_stats())
   end
   return statPreview
 end;
@@ -200,16 +200,16 @@ end;
 -- Format stats table into a string for the stat preview
 ---@param stats { [string]: string|integer }
 ---@return string
-function character_select:statsToString(stats)
+function CharacterSelect:statsToString(stats)
   return 'Name: ' .. stats['entityName'] .. '\n' .. 'HP: ' .. stats['hp'] .. '\n' .. 'FP: ' .. stats['fp'] .. '\n' .. 'Attack: ' .. stats['attack'] .. '\n' .. 'Defense: ' .. stats['defense'] .. '\n' .. 'Speed: ' .. stats['speed'] .. '\n' .. 'Luck: ' .. stats['luck']
 end;
 
 ---@param dt number
-function character_select:update(dt)
+function CharacterSelect:update(dt)
   self:updateJoystick()
 end;
 
-function character_select:updateJoystick()
+function CharacterSelect:updateJoystick()
   if input.joystick then
     if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
       self:gamepadpressed(input.joystick, 'dpright')
@@ -223,7 +223,7 @@ function character_select:updateJoystick()
   end
 end;
 
-function character_select:draw()
+function CharacterSelect:draw()
   shove.beginDraw()
 
   shove.beginLayer('ui')
@@ -242,7 +242,7 @@ function character_select:draw()
   shove.endDraw()
 end;
 
-function character_select:drawCharacterSelect()
+function CharacterSelect:drawCharacterSelect()
   love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10,
     OFFSET * (GRID_LENGTH + 1) + 10)
   love.graphics.draw(self.bakePortrait, SELECT_START, SELECT_START)
@@ -253,4 +253,4 @@ function character_select:drawCharacterSelect()
   -- love.graphics.print(statPreview, 300, 100)
 end;
 
-return character_select
+return CharacterSelect

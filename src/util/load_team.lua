@@ -1,5 +1,5 @@
 local bitser = require('libs.bitser')
-local CharacterTeam = require('class.entities.character_team')
+local CharacterTeam = require('class.entities.CharacterTeam')
 
 ---@return CharacterTeam
 return function()

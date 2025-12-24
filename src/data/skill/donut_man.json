@@ -11,7 +11,7 @@
 	"duration": 0.5,
 	"stagingTime": 1,
 	"stagingType": "near",
-	"qteType": "ring_qte",
+	"qteType": "Ring",
 	"qteBonus": "damage",
 	"description": "Heals a target.",
 	"unlockedAtLvl": 1,

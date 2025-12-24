@@ -1,7 +1,7 @@
 local Class = require('libs.hump.class')
 local RingQTE = require('class.qte.Ring')
 
----@class ComoRingQTE: RingQTE
+---@class ComboRing: Ring
 local ComboRingQTE = Class{__includes = RingQTE}
 
 ---@param data table

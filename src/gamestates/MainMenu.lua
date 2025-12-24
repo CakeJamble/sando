@@ -1,4 +1,4 @@
-local main_menu = {}
+local MainMenu = {}
 local index = 1
 local BUTTONS_START_X = 75
 local BUTTONS_START_Y = 300
@@ -24,11 +24,11 @@ local JoystickUtils = require('util.joystick_utils')
 local flux = require('libs.flux')
 local loadRun = require('util.load_run')
 local loadTeam = require('util.load_team')
-local CharacterTeam = require('class.entities.character_team')
+local CharacterTeam = require('class.entities.CharacterTeam')
 local Log = require('class.log')
 
 
-function main_menu:init()
+function MainMenu:init()
   shove.createLayer('background')
   shove.createLayer('ui', {zIndex = 100})
   self.background = love.graphics.newImage(TEMP_BG)
@@ -46,49 +46,49 @@ function main_menu:init()
 end;
 
 ---@param key string
-function main_menu:keypressed(key)
+function MainMenu:keypressed(key)
   if self.bounceFinished then
     if key == 'up' or key == 'left' then
-      main_menu:set_up()
+      self:set_up()
     elseif key == 'down' or key == 'right' then
-      main_menu:set_down()
+      self:set_down()
     end
   end
 end;
 
 ---@param key string
 ---@param scancode love.Scancode
-function main_menu:keyreleased(key, scancode)
+function MainMenu:keyreleased(key, scancode)
   if self.bounceFinished then
     if key == 'z' then
-      main_menu:validate_selection()
+      self:validate_selection()
     end
   end
 end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function main_menu:gamepadpressed(joystick, button)
+function MainMenu:gamepadpressed(joystick, button)
   if self.bounceFinished then
     if button == 'dpup' or button == 'dpleft' then
-      main_menu:set_up()
+      self:set_up()
     elseif button == 'dpdown' or button == 'dpright' then
-      main_menu:set_down()
+      self:set_down()
     end
   end
 end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function main_menu:gamepadreleased(joystick, button)
+function MainMenu:gamepadreleased(joystick, button)
   if self.bounceFinished then
     if button == 'a' then
-      main_menu:validate_selection()
+      self:validate_selection()
     end
   end
 end;
 
-function main_menu:set_up()
+function MainMenu:set_up()
   if index > 1 then
     self.cursorPos.x = self.cursorPos.x - BUTTONS_OFFSET
     index = index - 1
@@ -98,7 +98,7 @@ function main_menu:set_up()
   end
 end;
 
-function main_menu:set_down()
+function MainMenu:set_down()
   if index < 5 then
     self.cursorPos.x = self.cursorPos.x + BUTTONS_OFFSET
     index = index + 1
@@ -109,7 +109,7 @@ function main_menu:set_down()
 end;
 
 ---@param dt number
-function main_menu:update(dt)
+function MainMenu:update(dt)
   flux.update(dt)
   Timer.update(dt)
 
@@ -122,7 +122,7 @@ function main_menu:update(dt)
   end
 end;
 
-function main_menu:draw()
+function MainMenu:draw()
   shove.beginDraw()
     shove.beginLayer("ui")
       for i=1,#self.mmButtons do
@@ -137,21 +137,21 @@ function main_menu:draw()
   shove.endDraw()
 end;
 
-function main_menu:validate_selection()
+function MainMenu:validate_selection()
   if index == 1 then
-    Gamestate.switch(states['character_select'])
+    Gamestate.switch(states['CharacterSelect'])
   elseif index == 2 then
     self:loadRun()
   elseif index == 3 then
-    Gamestate.switch(states['bakery'])
+    Gamestate.switch(states['Bakery'])
   elseif index == 4 then
-    Gamestate.switch(states['pause'])
+    Gamestate.switch(states['Pause'])
   else
     love.event.quit()
   end
 end;
 
-function main_menu:loadRun()
+function MainMenu:loadRun()
   local runData = loadRun()
   local characterTeam = loadTeam()
 
@@ -165,8 +165,8 @@ function main_menu:loadRun()
 
     runData['team'] = characterTeam
 
-    Gamestate.switch(states["combat"], runData)
+    Gamestate.switch(states["Overworld"], runData)
   end
 end;
 
-return main_menu
+return MainMenu

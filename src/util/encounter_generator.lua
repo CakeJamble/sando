@@ -1,5 +1,5 @@
-local EnemyTeam = require('class.entities.enemy_team')
-local Enemy = require('class.entities.enemy')
+local EnemyTeam = require('class.entities.EnemyTeam')
+local Enemy = require('class.entities.Enemy')
 local json = require('libs.json')
 local loadEnemy = require('util.enemy_loader')
 local dataDir = 'data/encounter_pools/'

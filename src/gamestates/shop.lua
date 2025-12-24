@@ -1,12 +1,12 @@
-local shop = {}
-local DialogManager = require('class.ui.dialog_manager')
+local Shop = {}
+local DialogManager = require('class.ui.DialogManager')
 local ItemRandomizer = require('util.item_randomizer')
-local SoundManager = require('class.ui.sound_manager')
+local SoundManager = require('class.ui.SoundManager')
 local JoystickUtils = require('util.joystick_utils')
 local flux = require('libs.flux')
 local suit = require('libs.suit')
 
-function shop:init()
+function Shop:init()
 	shove.createLayer('background', {zIndex = 1})
 	shove.createLayer('item', {zIndex = 5})
 	shove.createLayer('ui', {zIndex = 10})
@@ -71,7 +71,7 @@ end;
 
 ---@param previous table
 ---@param options table
-function shop:enter(previous, options)
+function Shop:enter(previous, options)
 	self.sfx = SoundManager(AllSounds.sfx.shop)
 	self.characterTeam = options.team
 	self.log = options.log
@@ -86,7 +86,7 @@ function shop:enter(previous, options)
 end;
 
 ---@param text string
-function shop:send(text)
+function Shop:send(text)
 	if self.textTween then self.textTween:stop() end
 	self.drawTextbox = true
 	self.textPos.a = 1
@@ -103,7 +103,7 @@ end;
 
 ---@deprecated Use SUIT to set layout
 ---@return table
-function shop.setLayout()
+function Shop.setLayout()
 	local result = {
 		tool = {
 			x = 32,
@@ -136,7 +136,7 @@ end;
 ---@param hasVisited boolean
 ---@param dialogManager DialogManager
 ---@return string
-function shop.getGreeting(hasVisited, dialogManager)
+function Shop.getGreeting(hasVisited, dialogManager)
 	local result
 
 	if not hasVisited then
@@ -153,7 +153,7 @@ end;
 ---@param numItems integer
 ---@param rarities { [string]: number }
 ---@param rarityMod number
-function shop.loadShopItems(numItems, rarities, rarityMod)
+function Shop.loadShopItems(numItems, rarities, rarityMod)
 	local rarityTypes = {}
 	local modRarities = {}
 	for name,rarity in pairs(rarities) do
@@ -175,7 +175,7 @@ function shop.loadShopItems(numItems, rarities, rarityMod)
 end;
 
 -- Sets prices based on base costs and team discount rates. Assumes discount is a percentage
-function shop:setPrices()
+function Shop:setPrices()
 	for _, item in ipairs(self.items) do
 		local value = self.baseCosts[item.itemType][item.rarity]
 		local price = math.max(1, math.ceil(value * (1 - self.characterTeam.discount)))
@@ -186,7 +186,7 @@ end;
 
 ---@param inventory Inventory
 ---@param item { [string]: any }
-function shop:processTransaction(inventory, item)
+function Shop:processTransaction(inventory, item)
 	local money = inventory.money
 	local cost = item.value
 	if money >= cost then
@@ -209,10 +209,10 @@ end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function shop:gamepadpressed(joystick, button)
+function Shop:gamepadpressed(joystick, button)
 	if button == 'b' then
 		self.log:setCleared()
-		Gamestate.switch(states['overworld'], self.characterTeam, self.log)
+		Gamestate.switch(states['Overworld'], self.characterTeam, self.log)
 	elseif not self.selected or not self.selectedItemType then
 		self.typeIndex = 1
 		self.selectedIndex = 1
@@ -263,7 +263,7 @@ function shop:gamepadpressed(joystick, button)
 end;
 
 ---@param dt number
-function shop:update(dt)
+function Shop:update(dt)
 	self:updateSUIT(dt)
 	flux.update(dt)
 	self.textbox:update(dt)
@@ -282,7 +282,7 @@ function shop:update(dt)
 end;
 
 ---@param dt number
-function shop:updateSUIT(dt)
+function Shop:updateSUIT(dt)
 	local items = {accessory = {}, consumable = {}, equip = {}, tool = {}}
 	for _, item in ipairs(self.items) do
 		table.insert(items[item.itemType], item)
@@ -308,7 +308,7 @@ function shop:updateSUIT(dt)
 	end
 end;
 
-function shop:draw()
+function Shop:draw()
 	shove.beginDraw()
 	camera:attach()
 
@@ -332,7 +332,7 @@ function shop:draw()
 	shove.endDraw()
 end;
 
-function shop:drawItems()
+function Shop:drawItems()
 	for key, layout in pairs(self.layout) do
 		local items = self.items[key]
 		for i, item in ipairs(items) do
@@ -343,7 +343,7 @@ function shop:drawItems()
 	end
 end;
 
-function shop:drawCursor()
+function Shop:drawCursor()
 	local layout = self.layout[self.selectedItemType]
 	local x = layout.x + ((self.selectedIndex - 1) * layout.xOffset)
 	local y = layout.y
@@ -353,7 +353,7 @@ function shop:drawCursor()
 	-- love.graphics.draw(self.cursor, x, y)
 end;
 
-function shop:drawUI()
+function Shop:drawUI()
 	-- self.drawBoard(self.items)
 
 	-- love.graphics.draw(self.truck, 100, 100)
@@ -390,4 +390,4 @@ end;
 -- 	love.graphics.setColor(1,1,1)
 -- end;
 
-return shop
+return Shop

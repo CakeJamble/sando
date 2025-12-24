@@ -25,15 +25,15 @@ Saturation = 1.0
 HueShift = 0.0
 
 states = {
-  main_menu         = require 'gamestates.main_menu',
-  character_select  = require 'gamestates.character_select',
-  bakery            = require 'gamestates.bakery',
-  reward            = require 'gamestates.reward',
-  combat            = require 'gamestates.combat',
-  pause             = require 'gamestates.pause',
-  shop = require('gamestates.shop'),
-  event = require('gamestates.event'),
-  overworld = require("gamestates.overworld")
+  MainMenu         = require 'gamestates.MainMenu',
+  CharacterSelect  = require 'gamestates.CharacterSelect',
+  Bakery            = require 'gamestates.Bakery',
+  Reward            = require 'gamestates.Reward',
+  Combat            = require 'gamestates.Combat',
+  Pause             = require 'gamestates.Pause',
+  Shop = require('gamestates.Shop'),
+  Event = require('gamestates.Event'),
+  Overworld = require("gamestates.Overworld")
 }
 
 local framePath = 'asset/sprites/frame/'
@@ -129,7 +129,7 @@ function love.load(args)
   else
   -- Gamestates
   Gamestate.registerEvents()
-  Gamestate.switch(states['main_menu'])
+  Gamestate.switch(states['MainMenu'])
   end
 end;
 

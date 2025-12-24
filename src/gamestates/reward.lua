@@ -1,14 +1,14 @@
-local LevelUpManager = require('class.entities.level_up_manager')
-local LootManager = require('class.entities.loot_manager')
+local LevelUpManager = require('class.entities.LevelUpManager')
+local LootManager = require('class.entities.LootManager')
 local loadItem = require('util.item_loader')
 local json = require('libs.json')
 local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
 
-local reward = {}
+local Reward = {}
 
 -- Initialize the reward state once when entered for the first time when the game is started
-function reward:init()
+function Reward:init()
   shove.createLayer('background')
   shove.createLayer('entity', {zIndex = 10})
   shove.createLayer('ui', {zIndex = 100})
@@ -40,7 +40,7 @@ end;
 ---@param previous table Previous gamestate
 ---@param rewards table[] Array of rewards from combat, 1 for each enemy
 ---@param characterTeam CharacterTeam
-function reward:enter(previous, rewards, characterTeam)
+function Reward:enter(previous, rewards, characterTeam)
   if previous == states['combat'] then
     self.act = previous.act
     self.floor = previous.floor
@@ -61,7 +61,7 @@ function reward:enter(previous, rewards, characterTeam)
 end;
 
 ---@return { [string]: table }
-function reward.initRewardPools()
+function Reward.initRewardPools()
   local pref = 'data/item/'
   local jsonPaths = {
     accessory = pref .. 'accessory/',
@@ -92,7 +92,7 @@ end;
 
 ---@param rewards table[]
 ---@param rewardType string
-function reward.sumReward(rewards, rewardType)
+function Reward.sumReward(rewards, rewardType)
   local result = 0
   for _,rwd in ipairs(rewards) do
     result = result + rwd[rewardType]
@@ -104,7 +104,7 @@ end;
 ---@param rewards table[]
 ---@param rarityMod number
 ---@return table
-function reward:getItemRewards(rewards, rarityMod)
+function Reward:getItemRewards(rewards, rarityMod)
   local result = {}
   for _,rwd in ipairs(rewards) do
     local rewardOptions = self:getRewardOptions(rwd.rarities, rarityMod)
@@ -118,7 +118,7 @@ end;
 ---@param rarities { [string]: number}
 ---@param rarityMod number
 ---@return table
-function reward:getRewardOptions(rarities, rarityMod)
+function Reward:getRewardOptions(rarities, rarityMod)
   local options = {}
   for i=1, self.numRewardOptions do
     local rewardType = self:getRewardType()
@@ -135,7 +135,7 @@ end;
 ---@param rarities { [string]: number}
 ---@param rarityMod number
 ---@return string
-function reward:getRarityResult(rarities, rarityMod)
+function Reward:getRarityResult(rarities, rarityMod)
   local result = 'common'
   local rand = love.math.random()
   local uncommonChance = rarities.uncommon + rarityMod
@@ -154,7 +154,7 @@ function reward:getRarityResult(rarities, rarityMod)
 end;
 
 ---@return string
-function reward:getRewardType()
+function Reward:getRewardType()
   local types = {}
   for k,_ in pairs(self.rewardPools) do
     table.insert(types, k)
@@ -167,7 +167,7 @@ end;
 
 -- adds item to inventory. Does not force it to be equipped at this time
 ---@param item table
-function reward:addToInventory(item)
+function Reward:addToInventory(item)
   local itemType = item.itemType
   local itemManager
 
@@ -187,30 +187,30 @@ function reward:addToInventory(item)
   end
 end;
 
-function reward:increaseMoney()
+function Reward:increaseMoney()
   local amount = self.moneyReward + self.characterTeam.inventory.money
   flux.to(self.moneyValues, 1.5, {rewardVal = 0, totalVal = amount})
     :oncomplete(function()
       self.characterTeam.inventory:gainMoney(self.moneyReward)
       self.log:setCleared()
-      Gamestate.switch(states["overworld"], self.characterTeam, self.log)
+      Gamestate.switch(states["Overworld"], self.characterTeam, self.log)
     end)
 end;
 
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
-function reward:gamepadpressed(joystick, button)
+function Reward:gamepadpressed(joystick, button)
   self.levelUpManager:gamepadpressed(joystick, button)
   self.lootManager:gamepadpressed(joystick, button)
 end;
 
 ---@param dt number
-function reward:update(dt)
+function Reward:update(dt)
   flux.update(dt)
   self.levelUpManager:update(dt)
 end;
 
-function reward:draw()
+function Reward:draw()
   self.combatState:draw()
   shove.beginDraw()
   camera:attach()
@@ -230,4 +230,4 @@ function reward:draw()
   shove.endDraw()
 end;
 
-return reward
+return Reward

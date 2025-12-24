@@ -169,15 +169,15 @@ end;
 ---@param actionButton string
 function QTEManager.getInstructions(qteType, actionButton)
 	local result
-	if qteType == 'sbp' then
+	if qteType == 'PressSBP' then
 		result = 'Press ' .. string.upper(actionButton) .. ' just before hitting the enemy!'
-	elseif qteType == 'stick_move' then
+	elseif qteType == 'TapAnalogLeft' then
 	    --do
-	elseif qteType == 'mbp' then
+	elseif qteType == 'MBP' then
 		result = 'Press the buttons in order!'
-	elseif qteType == 'hold_sbp' then
+	elseif qteType == 'HoldSBP' then
 		result = 'Hold ' .. string.upper(actionButton) .. ' until the metter fills!'
-	elseif qteType == 'rand_sbp' then
+	elseif qteType == 'RandSBP' then
 		result = 'Press the button when it appears!'
 	end
 	return result

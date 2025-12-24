@@ -4,7 +4,7 @@ local Class = require('libs.hump.class')
 local HitChart = Class{}
 
 ---@param midiSong MidiEvent[]
----@param offset number
+---@param offset number Amount of milliseconds to delay
 function HitChart:init(midiSong, offset)
 	self.offset = offset or 0
 	self.hits = {}
