@@ -5,7 +5,7 @@ local parser = MidiParser()
 ---@param dir string
 ---@param t table
 function loadRhythmMaps(dir, t)
-	local items = love.filesystem.getDirectoryItems(fp)
+	local items = love.filesystem.getDirectoryItems(dir)
 	for _,item in ipairs(items) do
 		local fp = dir .. "/" .. item
 		local info = love.filesystem.getInfo(fp)
