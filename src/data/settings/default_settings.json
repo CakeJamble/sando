@@ -1,0 +1,10 @@
+{
+	"flags" : {
+		"resizable" : false,
+		"vsync" : true,
+		"minwidth": 640,
+		"minheight": 360
+	},
+	"musicVolume": 1,
+	"sfxVolume": 1
+}
