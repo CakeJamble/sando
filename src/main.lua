@@ -6,6 +6,7 @@ shove = require('libs.shove')
 Text = require('libs.sysl-text.slog-text')
 Frame = require('libs.sysl-text.slog-frame')
 
+local Settings = require('class.settings.Settings')
 -- Testing
 local parseArgs = require('util.parse_args')
 local runTests = require('test.main_tests')
@@ -72,29 +73,19 @@ function love.load(args)
   screenCanvas = love.graphics.newCanvas()
   postShader = love.graphics.newShader("asset/shader/postprocess.glsl")
 
-  -- Screen Scaling
+  -- Load Audio
+  AllSounds = {sfx = {}, music = {}}
+  local sfxDir = 'asset/audio/sfx'
+  local musicDir = 'asset/audio/music'
+  loadAudio(sfxDir, AllSounds.sfx, "static")
+  loadAudio(musicDir, AllSounds.music, "stream")
+
+  -- Base Resolution
   shove.setResolution(1920, 1080, {
       fitMethod = "aspect",
       renderMode = "layer",
       scalingFilter = "linear"
     })
-  local windowWidth, windowHeight = love.window.getDesktopDimensions()
-  local wW, wH = tonumber(windowWidth), tonumber(windowHeight)
-  supportedResolutions = {
-    {640, 360},
-    {1280, 720},
-    {1920, 1080},
-    {2560, 1440},
-    {3840, 2160}
-  }
-  local width, height = getClosestResolution(wW, wH, supportedResolutions)
-  print("Launching in " .. width .. " x " .. height)
-  shove.setWindowMode(width, height, {
-    resizable = false
-  })
-
-  -- Camera
-  camera = Camera()
 
   -- Input
   input = {joystick = nil}
@@ -104,16 +95,17 @@ function love.load(args)
     print('added joystick')
   end
 
+  -- Screen Resolution, Music/SFX, Input UI
+  GameSettings = Settings()
+
+  -- Camera
+  camera = Camera()
+
+
+
   -- Fonts
   Font = love.graphics.newFont('asset/Chelsea_Market/ChelseaMarket-Regular.ttf')
   love.graphics.setFont(Font)
-
-  -- Audio
-  AllSounds = {sfx = {}, music = {}}
-  local sfxDir = 'asset/audio/sfx'
-  local musicDir = 'asset/audio/music'
-  loadAudio(sfxDir, AllSounds.sfx, "static")
-  loadAudio(musicDir, AllSounds.music, "stream")
 
   -- Item Pools
   ItemPools = loadItemPools()
