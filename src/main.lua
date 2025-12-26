@@ -71,7 +71,7 @@ local JoystickUtils = require 'util.joystick_utils'
 ---@param args table Arguments to set the game environment (test vs prod, etc.)
 function love.load(args)
   screenCanvas = love.graphics.newCanvas()
-  postShader = love.graphics.newShader("asset/shader/postprocess.glsl")
+  -- postShader = love.graphics.newShader("asset/shader/postprocess.glsl")
 
   -- Load Audio
   AllSounds = {sfx = {}, music = {}}
@@ -160,13 +160,14 @@ function love.draw()
   love.graphics.clear()
   Gamestate.current():draw()
   love.graphics.setCanvas()
-  love.graphics.setShader(postShader)
+  GameSettings:draw()
+  -- love.graphics.setShader(postShader)
 
-  -- Send values that can be set in settings
-  postShader:send("brightness", Brightness)
-  postShader:send("contrast", Contrast)
-  postShader:send("saturation", Saturation)
-  postShader:send("hueShift", HueShift)
+  -- -- Send values that can be set in settings
+  -- postShader:send("brightness", Brightness)
+  -- postShader:send("contrast", Contrast)
+  -- postShader:send("saturation", Saturation)
+  -- postShader:send("hueShift", HueShift)
 end;
 
 function love.quit()

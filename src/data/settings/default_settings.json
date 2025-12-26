@@ -6,5 +6,11 @@
 		"minheight": 360
 	},
 	"musicVolume": 1,
-	"sfxVolume": 1
+	"sfxVolume": 1,
+	"display" : {
+		"brightness": 1,
+		"contrast": 1,
+		"saturation": 1,
+		"hueShift": 0
+	}
 }
