@@ -14,16 +14,8 @@ local runTests = require('test.main_tests')
 local loadAudio = require('util.audio_loader')
 local loadItemPools = require('util.item_pool_loader')
 
-local getClosestResolution = require('util.get_closest_resolution')
-
 -- PostProcessing Effects
 local screenCanvas
-local postShader
-
-Brightness = 1.0
-Contrast = 1.0
-Saturation = 1.0
-HueShift = 0.0
 
 states = {
   MainMenu         = require 'gamestates.MainMenu',
@@ -161,13 +153,6 @@ function love.draw()
   Gamestate.current():draw()
   love.graphics.setCanvas()
   GameSettings:draw()
-  -- love.graphics.setShader(postShader)
-
-  -- -- Send values that can be set in settings
-  -- postShader:send("brightness", Brightness)
-  -- postShader:send("contrast", Contrast)
-  -- postShader:send("saturation", Saturation)
-  -- postShader:send("hueShift", HueShift)
 end;
 
 function love.quit()

@@ -13,7 +13,14 @@ end;
 function Pause:enter(previous)
     self.luisTime = 0
     GameSettings.musicManager:play('ny_house_party')
+    self:defineWidgets()
+    luis.newLayer("main")
+    luis.setCurrentLayer("main")
+    self:createElements()
+    luis.showGrid = true
+end;
 
+function Pause:defineWidgets()
     self.musicVolSlider = luis.newSlider(0, 1, 1, 10, 1,
         function(value)
             GameSettings.musicManager:setGlobalVolume(value)
@@ -67,8 +74,9 @@ function Pause:enter(previous)
             GameSettings:restoreAllDefaults()
             self:restoreDefaults()
         end, 16, 1)
-    luis.newLayer("main")
-    luis.setCurrentLayer("main")
+end;
+
+function Pause:createElements()
     luis.createElement(luis.currentLayer, "Slider", self.musicVolSlider)
     luis.createElement(luis.currentLayer, "Slider", self.sfxSlider)
     luis.createElement(luis.currentLayer, "Button", self.sfxButton)
@@ -79,12 +87,10 @@ function Pause:enter(previous)
     luis.createElement(luis.currentLayer, "Slider", self.saturationSlider)
     luis.createElement(luis.currentLayer, "Slider", self.hueShiftSlider)
     luis.createElement(luis.currentLayer, "Button", self.restoreDefaultsButton)
-
-    luis.showGrid = true
 end;
 
 function Pause:leave()
-    self.musicManager:stopAll()
+    GameSettings.musicManager:stopAll()
     GameSettings:saveSettings()
 end;
 
