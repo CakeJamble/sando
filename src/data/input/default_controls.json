@@ -1,0 +1,25 @@
+{
+	"controls": {
+    "left" : ["key:left", "key:a", "axis:leftx-", "button:dpleft"],
+    "right" : ["key:right", "key:d", "axis:leftx+", "button:dpright"],
+    "up" : ["key:up", "key:w", "axis:lefty-", "button:dpup"],
+    "down": ["key:down", "key:s", "axis:lefty+", "button:dpdown"],
+    "confirm": ["key:k", "key:enter", "button:a"],
+    "action_p1": ["key:k", "button:a"],
+    "action_p2": ["key:l", "button:b"],
+    "action_p3": ["key:i", "button:x"],
+    "action_p4": ["key:i", "button:y"],
+    "guard": ["key:rshift", "axis:triggerright+"],
+    "guardToggle": ["button:rightshoulder"],
+    "fallCancel": ["key:lshift", "axis:triggerleft+" ],
+    "cancel": ["key:backspace", "key:delete", "button:leftshoulder"],
+    "menuCancel": ["button:b"],
+    "pause": ["key:escape", "key:pause", "button:start"],
+    "inventory": ["key:tab", "button:back", "button:touchpad"],
+  },
+  "pairs": {
+  	"move": ["left", "right", "up", "down"],
+  },
+  "deadzone": 0.8,
+  "squareDeadzone": false
+}
