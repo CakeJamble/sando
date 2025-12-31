@@ -73,8 +73,10 @@ function Entity:init(data, x, y, entityType)
     flinch = {},
     ko = {}
   }
-  self.baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
+  self.baseAnimationTypes = data.animations
+  local animPath = "asset/sprites/entities/" .. entityType .. "/" .. self.entityName .. "/"
   self.animations = {}
+  self:setAnimations(animPath)
   self.currentAnimTag = 'idle'
   self.koAnimDuration = data.koAnimDuration or 1.5
 
@@ -87,8 +89,15 @@ function Entity:init(data, x, y, entityType)
     x = x, y = y,
     r = 0, a = 1,
     sx = 1, sy = 1,
-    ox = self.frameWidth / 2,
-    oy = self.frameHeight / 2
+    ox = 0,
+    oy = 0
+  }
+  self.hbXOffset, self.hbYOffset = 0, 0
+  self.hitbox = {
+    x = self.pos.x + self.hbXOffset - self.pos.ox,
+    y = self.pos.y + self.hbYOffset - self.pos.oy,
+    w = data.hitbox.width,
+    h = data.hitbox.height
   }
   self.tPos = {x = 0, y = 0}
   self.oPos = {x = x, y = x}
@@ -113,14 +122,14 @@ function Entity:init(data, x, y, entityType)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
-  self.hbXOffset = (data.width - data.hbWidth) / 2
-  self.hbYOffset = (data.height - data.hbHeight) * 0.75
-  self.hitbox = {
-    x = self.pos.x + self.hbXOffset - self.pos.ox,
-    y = self.pos.y + self.hbYOffset - self.pos.oy,
-    w = data.hbWidth,
-    h = data.hbHeight
-  }
+  -- self.hbXOffset = (data.width - data.hbWidth) / 2
+  -- self.hbYOffset = (data.height - data.hbHeight) * 0.75
+  -- self.hitbox = {
+  --   x = self.pos.x + self.hbXOffset - self.pos.ox,
+  --   y = self.pos.y + self.hbYOffset - self.pos.oy,
+  --   w = data.hbWidth,
+  --   h = data.hbHeight
+  -- }
 
   self.shadowDims = {
     x = self.hitbox.x + (self.hitbox.w / 2.5) - self.pos.ox,
@@ -617,21 +626,34 @@ end;
         Sprites & SFX
 ----------------------------------------------------------------------------------------------------]]
 
+---@param path string Path to Entity's asset directory
+function Entity:setBaseAnimations(path)
+  for name, data in ipairs(self.baseAnimationTypes) do
+    local animationPath = path .. name .. '.png'
+    local image = love.graphics.newImage(animationPath)
+    self.animations[name] = self:populateFrames(image, data)
+  end
+end;
+
+function Entity:setSkillAnimations(path)
+  for _,skill in ipairs(self.skillPool) do
+    local skillPath = path .. skill.tag .. '/'
+    local skillAnimations = {}
+    for name, data in pairs(skill.animations) do
+      local image = love.graphics.newImage(skillPath .. name .. '.png')
+
+      skillAnimations[name] = self:populateFrames(image, data)
+    end
+    self.animations[skill.tag] = skillAnimations
+  end
+end;
+
 --[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
   Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
 ---@param path string
 function Entity:setAnimations(path)
-  local baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
-  for _,anim in ipairs(baseAnimationTypes) do
-    local image = love.graphics.newImage(path .. anim .. '.png')
-    self.animations[anim] = self:populateFrames(image)
-  end
-
-  for _,skill in ipairs(self.skillPool) do
-    local skillPath = path .. skill.tag .. '.png'
-    local image = love.graphics.newImage(skillPath)
-    self.animations[skill.tag] = self:populateFrames(image)
-  end
+  self:setBaseAnimations(path)
+  self:setSkillAnimations(path)
 end;
 
 ---@param path string
@@ -648,20 +670,24 @@ function Entity:setSFX(path, baseSFXTypes)
 end;
 
 ---@param image table
----@param duration? integer
----@return table
-function Entity:populateFrames(image, duration)
+---@param data {width: integer, height: integer, frameCount: integer, duration: number?}
+---@return table animation
+function Entity:populateFrames(image, data)
   local animation = {}
   animation.spriteSheet = image
   animation.quads = {}
 
-  for y = 0, image:getHeight() - self.frameHeight, self.frameHeight do
-    for x = 0, image:getWidth() - self.frameWidth, self.frameWidth do
-      table.insert(animation.quads, love.graphics.newQuad(x, y, self.frameWidth, self.frameHeight, image:getDimensions()))
+  for y = 0, image:getHeight() - data.height, data.height do
+    for x = 0, image:getWidth() - data.width, data.width do
+      table.insert(animation.quads, love.graphics.newQuad(x, y, data.width, data.height, image:getDimensions()))
+      -- Got all the frames but there are extra columns
+      if #animation.quads >= data.frameCount then break end
     end
+    -- Got all the frames but there are extra rows
+    if #animation.quads >= data.frameCount then break end
   end
 
-  animation.duration = duration or 1
+  animation.duration = data.duration or 1
   animation.currentTime = 0
   animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
 
@@ -709,7 +735,15 @@ function Entity:updateAnimation(dt)
   animation.spriteNum = math.min(animation.spriteNum, #animation.quads)
 end;
 
+-- Adjusts the hitbox offsets and x,y position based on the current animation state
 function Entity:updateHitbox()
+  local animation = self.animations[self.currentAnimTag]
+  local currentQuad = animation.quad[animation.spriteNum]
+  local sw, sh = currentQuad:getTextureDimensions()
+  self.pos.ox = sw / 2
+  self.pos.oy = sh / 2
+  self.hbXOffset = (sw - self.hitbox.width) / 2
+  self.hbYOffset = (sh - self.hitbox.height) / 2
   self.hitbox.x = self.pos.x + self.hbXOffset - self.pos.ox
   self.hitbox.y = self.pos.y + self.hbYOffset - self.pos.oy
 end;

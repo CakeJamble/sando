@@ -19,8 +19,6 @@ local Enemy = Class{__includes = Entity,
 function Enemy:init(data)
   self.enemyType = data.enemyType
   Entity.init(self, data, Enemy.xPos, Enemy.yPos, "enemy")
-  local animationsPath = 'asset/sprites/entities/enemy/' .. self.enemyType .. '/' .. self.entityName .. '/'
-  self:setAnimations(animationsPath)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)

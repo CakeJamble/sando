@@ -53,13 +53,11 @@ function Character:init(data, actionButton)
   self.blockMod = 1
   self.level = 1
   self.growthFunctions = statGrowthFunctions[self.entityName]
-  self.currentSkills = {}
-  self:updateSkills()
+  self.currentSkills = self:updateSkills()
   self.qteSuccess = true
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
-  self:setAnimations()
 
   -- local baseSFXTypes = {'jump'}
   -- self.sfx = self:setSFX('character/', baseSFXTypes)
@@ -359,32 +357,31 @@ function Character:yieldSkillSelect()
 end;
 
 --[[----------------------------------------------------------------------------------------------------
-        Animation
-----------------------------------------------------------------------------------------------------]]
-
-function Character:setAnimations()
-  local path = 'asset/sprites/entities/character/' .. self.entityName .. '/'
-  Entity.setAnimations(self, path)
-
-  local basicSprite = love.graphics.newImage(path .. 'basic.png')
-  self.animations['basic'] = self:populateFrames(basicSprite)
-
-  self:setDefenseAnimations(path)
-end;
-
----@param path string
-function Character:setDefenseAnimations(path)
-  local block = love.graphics.newImage(path .. 'block.png')
-  local jump = love.graphics.newImage(path .. 'jump.png')
-  self.animations['block'] = self:populateFrames(block)
-  self.animations['jump'] = self:populateFrames(jump)
-end;
-
---[[----------------------------------------------------------------------------------------------------
         Input
 ----------------------------------------------------------------------------------------------------]]
 
----@deprecated
+---@param dt number
+function Character:updateInput(dt)
+  -- Check guard toggle
+  if Player:pressed('guardToggle') then
+    self.isGuardToggled = not self.isGuardToggled
+  -- Check guard & jump
+  elseif Player:pressed(self.actionButton) then
+    if self.isGuardToggled or Player:down("guard") and self:canGuard() then
+      self:beginGuard()
+    elseif self.canJump then
+      self:beginJump()
+    end
+  elseif Player:released("guard") and not self.isGuardToggled then
+    self.canGuard = false
+  -- Check L-Cancel
+  elseif Player:pressed("fallCancel") and self.canLCancel then
+    self.landingLagMods["LCancel"] = 0.5
+    self.hasLCanceled = true
+  end
+end;
+
+---@deprecated Use update with baton to handle inputs
 function Character:keypressed(key)
   -- if self.state == 'offense' then
   --   self.offenseState:keypressed(key)
@@ -399,6 +396,7 @@ function Character:keypressed(key)
   -- if in movement state, does nothing
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function Character:gamepadpressed(joystick, button)
@@ -417,6 +415,7 @@ function Character:gamepadpressed(joystick, button)
   end
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function Character:gamepadreleased(joystick, button)
@@ -425,6 +424,13 @@ function Character:gamepadreleased(joystick, button)
   end
 end;
 
+-- True if the the character is not jumping and their guard cooldown timer isn't active
+---@return boolean
+function Character:canGuard()
+  return not self.isJumping and self.guardCooldownFinished
+end;
+
+---@deprecated
 function Character:checkGuardAndJump(button)
   if self:isAlive() then
     if button == 'rightshoulder' and not self.isJumping and self.guardCooldownFinished then
@@ -454,7 +460,9 @@ function Character:beginGuard()
   end)
 
   Timer.after(Character.guardCooldownDur, function()
-    self.canJump = true
+    if not self.isJumping then
+      self.canJump = true
+    end
     self.guardCooldownFinished = true
     print(self.entityName .. ' is done guarding')
   end)
@@ -516,14 +524,15 @@ end;
 function Character:update(dt)
   Entity.update(self, dt)
 
+  if self.actionUI and self.actionUI.active then
+    self.actionUI:update(dt)
+  else
+    self:updateInput(dt)
+  end
+
   if self.isJumping then
     self.shadowDims.y = self.oPos.y + (self.frameHeight * 0.95) - self.pos.oy
   end
-
-  if self.actionUI and self.actionUI.active then
-    self.actionUI:update(dt)
-  end
-
 end;
 
 function Character:draw()
