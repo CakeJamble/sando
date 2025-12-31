@@ -32,7 +32,7 @@ function FlourButton:validateSkillCosts(currentFP)
 end;
 
 ---@param key string
----@deprecated
+---@deprecated Use update with baton to handle inputs
 function FlourButton:keypressed(key)
   if key == 'down' or key == 'right' then
     self.skillIndex = (self.skillIndex % #self.skillListDisplay) + 1
@@ -45,6 +45,7 @@ function FlourButton:keypressed(key)
   end
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function FlourButton:gamepadpressed(joystick, button)
@@ -53,6 +54,16 @@ function FlourButton:gamepadpressed(joystick, button)
   if button == self.actionButton and self.selectedAction then
     Signal.emit('SkillSelected', self.selectedAction)
   elseif button == 'dpleft' or button == 'dpright' then
+    Signal.emit('SkillDeselected')
+  end
+end;
+
+function FlourButton:updateInput()
+  SubMenuButton.updateInput(self)
+
+  if Player:pressed(self.actionButton) and self.selectedAction then
+    Signal.emit('SkillSelected', self.selectedAction)
+  elseif Player:pressed('left') or Player:pressed('right') then
     Signal.emit('SkillDeselected')
   end
 end;

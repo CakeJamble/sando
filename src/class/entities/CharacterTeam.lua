@@ -44,6 +44,7 @@ function CharacterTeam:yieldCharacterSelect(opts)
   })
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param key string
 function CharacterTeam:keypressed(key)
   for _,member in pairs(self.members) do
@@ -51,6 +52,7 @@ function CharacterTeam:keypressed(key)
   end
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function CharacterTeam:gamepadpressed(joystick, button)
@@ -59,6 +61,7 @@ function CharacterTeam:gamepadpressed(joystick, button)
   end
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function CharacterTeam:gamepadreleased(joystick, button)

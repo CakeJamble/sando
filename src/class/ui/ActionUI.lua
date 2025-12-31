@@ -92,8 +92,6 @@ function ActionUI:set(charRef)
   -- consider removing if you use observer pattern to refactor keypress
   self.uiState = 'actionSelect'
 
-  -- consider removing after refactoring with Command Pattern
-
   -- self.selectedSkill = self.skillList[1]
   self.active = true
   self.easeType = 'linear'
@@ -165,18 +163,123 @@ function ActionUI:deactivate()
   print('action ui is no longer active')
 end
 
-function ActionUI:keypressed(key) --> void
-end;
+-- ---@deprecated Use update with baton to handle inputs
+-- function ActionUI:keypressed(key) --> void
+-- end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function ActionUI:gamepadpressed(joystick, button) --> void
+-- ---@deprecated Use update with baton to handle inputs
+-- ---@param joystick love.Joystick
+-- ---@param button love.GamepadButton
+-- function ActionUI:gamepadpressed(joystick, button) --> void
+--   if self.active then
+-- ----------------------- Button Tweening ---------------------------
+--     if self.uiState == 'actionSelect' or self.uiState == 'submenuing' then
+--       if button == 'dpright' then                         -- spin the wheel left
+--         if self.uiState == 'submenuing' then
+--           self.activeButton:gamepadpressed(joystick, button)
+--           self.uiState = 'actionSelect'
+--         end
+--         for _,b in ipairs(self.buttons) do
+--           b.index = (b.index % #self.buttons) + 1
+--           b.layer = b:idxToLayer()
+--         end
+--         sortLayers(self.buttons)
+--         self:tweenButtons()
+--       elseif button == 'dpleft' then                      -- spin the wheel right
+--         if self.uiState == 'submenuing' then
+--           self.activeButton:gamepadpressed(joystick, button)
+--           self.uiState = 'actionSelect'
+--         end
+--         for _,b in ipairs(self.buttons) do
+--           b.index = b.index - 1
+--           if b.index == 0 then b.index = #self.buttons end
+--           b.layer = b:idxToLayer()
+--         end
+--         sortLayers(self.buttons)
+--         self:tweenButtons()
+
+-- ----------------------- Action Selection -------------------------
+--       elseif button == self.actionButton then
+--         if self.activeButton == self.passButton then
+--           Signal.emit('PassTurn')
+--         elseif self.activeButton == self.soloButton then
+--           self.selectedSkill = self.activeButton.selectedSkill
+--           self.backButton.isHidden = false
+--           Signal.emit('SkillSelected', self.selectedSkill)
+--         elseif self.activeButton == self.flourButton or self.activeButton == self.itemButton then
+--           self.uiState = 'submenuing'
+--           self.selectedSkill = self.activeButton.actionList[self.activeButton.listIndex]
+--           self.activeButton:gamepadpressed(joystick, button)
+--         end
+--       elseif self.uiState == 'submenuing' then
+--           self.activeButton:gamepadpressed(joystick, button)
+--       end
+--     elseif self.uiState == 'targeting' then
+--       if self.selectedSkill.isSingleTarget then
+--         if button == 'dpleft' then
+--           if self.tIndex == 1 then
+--             self.highlightBack = true
+--           else
+--             self.tIndex = math.max(1, self.tIndex - 1)
+--           end
+--         elseif button == 'dpup' then
+--           self.tIndex = math.max(1, self.tIndex - 1)
+--         elseif button == 'dpright' then
+--           if self.highlightBack then
+--             self.highlightBack = false
+--           else
+--             self.tIndex = math.min(#self.targets, self.tIndex + 1)
+--           end
+--         elseif button == 'dpdown' then
+--           self.tIndex = math.min(#self.targets, self.tIndex + 1)
+--         elseif button == self.actionButton then
+--           if self.highlightBack then
+--             Signal.emit('SkillDeselected')
+--             self.highlightBack = false
+--             if self.activeButton == self.soloButton then
+--               self.uiState = 'actionSelect'
+--             else
+--               self.uiState = 'submenuing'
+--             end
+
+--           else
+--             Signal.emit('TargetConfirm', self.targetType, self.tIndex)
+--             self.uiState = 'moving'
+--           end
+--         end
+--       else
+--         if button == 'dpleft' then
+--           self.highlightBack = true
+--         elseif button == 'dpright' and self.highlightBack then
+--           self.highlightBack = false
+--         elseif button == self.actionButton then
+--           if self.highlightBack then
+--             Signal.emit('SkillDeselected')
+--             self.highlightBack = false
+--             if self.activeButton == self.soloButton then
+--               self.uiState = 'actionSelect'
+--             else
+--               self.uiState = 'submenuing'
+--             end
+--           else
+--             Signal.emit('TargetConfirm', self.targetType)
+--             self.uiState = 'moving'
+--           end
+--         end
+--       end
+--     end
+--   end
+-- end;
+
+-- Issue: This function should check for button press before the other checks
+---@param dt number
+function ActionUI:update(dt)
   if self.active then
 ----------------------- Button Tweening ---------------------------
-    if self.uiState == 'actionSelect' or self.uiState == 'submenuing' then
-      if button == 'dpright' then                         -- spin the wheel left
+    if self.uiState == 'actionSelect' or self.uiState== 'submenuing' then
+      if Player:pressed('right') then                         -- spin the wheel left
         if self.uiState == 'submenuing' then
-          self.activeButton:gamepadpressed(joystick, button)
+          self.activeButton:updateInput()
           self.uiState = 'actionSelect'
         end
         for _,b in ipairs(self.buttons) do
@@ -185,9 +288,9 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         end
         sortLayers(self.buttons)
         self:tweenButtons()
-      elseif button == 'dpleft' then                      -- spin the wheel right
+      elseif Player:pressed('left') then                      -- spin the wheel right
         if self.uiState == 'submenuing' then
-          self.activeButton:gamepadpressed(joystick, button)
+          self.activeButton:updateInput()
           self.uiState = 'actionSelect'
         end
         for _,b in ipairs(self.buttons) do
@@ -197,9 +300,8 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         end
         sortLayers(self.buttons)
         self:tweenButtons()
-
 ----------------------- Action Selection -------------------------
-      elseif button == self.actionButton then
+      elseif Player:pressed(self.actionButton) then
         if self.activeButton == self.passButton then
           Signal.emit('PassTurn')
         elseif self.activeButton == self.soloButton then
@@ -209,30 +311,30 @@ function ActionUI:gamepadpressed(joystick, button) --> void
         elseif self.activeButton == self.flourButton or self.activeButton == self.itemButton then
           self.uiState = 'submenuing'
           self.selectedSkill = self.activeButton.actionList[self.activeButton.listIndex]
-          self.activeButton:gamepadpressed(joystick, button)
+          self.activeButton:updateInput()
         end
       elseif self.uiState == 'submenuing' then
-          self.activeButton:gamepadpressed(joystick, button)
+        self.activeButton:updateInput()
       end
     elseif self.uiState == 'targeting' then
       if self.selectedSkill.isSingleTarget then
-        if button == 'dpleft' then
+        if Player:pressed('left') then
           if self.tIndex == 1 then
             self.highlightBack = true
           else
             self.tIndex = math.max(1, self.tIndex - 1)
           end
-        elseif button == 'dpup' then
+        elseif Player:pressed('up') then
           self.tIndex = math.max(1, self.tIndex - 1)
-        elseif button == 'dpright' then
+        elseif Player:pressed('right') then
           if self.highlightBack then
             self.highlightBack = false
           else
             self.tIndex = math.min(#self.targets, self.tIndex + 1)
           end
-        elseif button == 'dpdown' then
+        elseif Player:pressed('down') then
           self.tIndex = math.min(#self.targets, self.tIndex + 1)
-        elseif button == self.actionButton then
+        elseif Player:pressed(self.actionButton) then
           if self.highlightBack then
             Signal.emit('SkillDeselected')
             self.highlightBack = false
@@ -241,18 +343,17 @@ function ActionUI:gamepadpressed(joystick, button) --> void
             else
               self.uiState = 'submenuing'
             end
-
           else
             Signal.emit('TargetConfirm', self.targetType, self.tIndex)
             self.uiState = 'moving'
           end
         end
       else
-        if button == 'dpleft' then
+        if Player:pressed('left') then
           self.highlightBack = true
-        elseif button == 'dpright' and self.highlightBack then
+        elseif Player:pressed('right') and self.highlightBack then
           self.highlightBack = false
-        elseif button == self.actionButton then
+        elseif Player:pressed(self.actionButton) then
           if self.highlightBack then
             Signal.emit('SkillDeselected')
             self.highlightBack = false
@@ -267,21 +368,6 @@ function ActionUI:gamepadpressed(joystick, button) --> void
           end
         end
       end
-    end
-  end
-end;
-
----@param dt number
-function ActionUI:update(dt)
-  if input.joystick then
-    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
-      self:gamepadpressed(input.joystick, 'dpright')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
-      self:gamepadpressed(input.joystick, 'dpleft')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
-      self:gamepadpressed(input.joystick, 'dpup')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
-      self:gamepadpressed(input.joystick, 'dpdown')
     end
   end
 end;

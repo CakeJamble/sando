@@ -1,8 +1,10 @@
 local CharacterSelect = {}
+local initLuis = require('libs.luis.init')
+local luis = initLuis("libs/luis/widgets")
 local CharacterTeam = require("class.entities.CharacterTeam")
 local Character = require("class.entities.Character")
 local loadCharacterData = require('util.character_loader')
-local JoystickUtils = require('util.joystick_utils')
+local json = require('libs.json')
 
 local TEAM_CAP = 2
 local SELECT_START = 100
@@ -11,19 +13,19 @@ local GRID_LENGTH = 1
 local OFFSET = 64
 local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
 local CURSOR_PATH = CHARACTER_SELECT_PATH .. 'cursor.png'
-local BAKE_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'bake_portrait.png'
-local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
-local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
-local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
+-- local BAKE_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'bake_portrait.png'
+-- local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
+-- local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
+-- local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
 function CharacterSelect:init()
   shove.createLayer('background')
   shove.createLayer('ui')
   self.cursor = love.graphics.newImage(CURSOR_PATH)
-  self.bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
-  self.marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
-  self.mariaPortrait = love.graphics.newImage(MARIA_PORTRAIT_PATH)
-  self.keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
+  -- self.bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
+  -- self.marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
+  -- self.mariaPortrait = love.graphics.newImage(MARIA_PORTRAIT_PATH)
+  -- self.keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
 
   self.instructions = 'Select your team members'
   self.selectedContainerOptions = {
@@ -33,6 +35,8 @@ function CharacterSelect:init()
     width = TEAM_CAP * OFFSET,
     height = OFFSET
   }
+
+  luis.setGridSize(32)
 end;
 
 function CharacterSelect:enter()
@@ -44,45 +48,105 @@ function CharacterSelect:enter()
   self.spriteYOffset = 0
   self.numPlayableCharacters = 4
   self.teamCount = 0
-
+  self.characters = self.loadCharacters()
+  -- self.characterSelectSprites = self.loadCharacterSelectSprites()
   self.selectedTeamIndices = {}
 
   for i=1,TEAM_CAP do
     self.selectedTeamIndices[i] = {}
   end
+
+  self:defineWidgets()
+  self.luisTime = 0
+  luis.showGrid = true
 end;
 
----@deprecated
----@param key string
-function CharacterSelect:keypressed(key)
-  if key == 'right' then
-    self:set_right()
-  elseif key == 'left' then
-    self:set_left()
-  elseif key == 'up' then
-    self:set_up()
-  elseif key == 'down' then
-    self:set_down()
-  elseif key == 'z' then
-    self:validate_selection()
+---@return Character[]
+function CharacterSelect.loadCharacters()
+  local characters = {}
+  local path = "data/entity/unlocked_characters.json"
+  local raw = love.filesystem.read(path)
+  local data = json.decode(raw)
+
+  for i,name in ipairs(data) do
+    local actionButton = "action_p" .. i
+    local character = Character(loadCharacterData(name), actionButton)
+    characters[name] = character
   end
+
+  return characters
 end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function CharacterSelect:gamepadpressed(joystick, button)
-  if button == 'dpright' then
-    self:set_right()
-  elseif button == 'dpleft' then
-    self:set_left()
-  elseif button == 'dpup' then
-    self:set_up()
-  elseif button == 'dpdown' then
-    self:set_down()
-  elseif button == 'a' then
-    self:validate_selection()
-  end
+function CharacterSelect.loadCharacterSelectSprites()
 end;
+
+-- Widgets for party select interface
+function CharacterSelect:defineWidgets()
+  self.icons = self:defineIcondWidgets()
+  self.buttons = self:defineButtonWidgets()
+end;
+
+---@return table
+function CharacterSelect:defineIcondWidgets()
+  local icons = {}
+
+  for _, character in ipairs(self.characters) do
+    for _, skill in ipairs(character.currentSkills) do
+      local path = "asset/sprites/entities/character/" .. character.entityName .. "/" .. skill.name .. "_icon.png"
+      local icon = luis.newIcon(path, 4, 3, 10)
+      table.insert(icons, icon)
+    end
+  end
+
+  return icons
+end;
+
+---@return table
+function CharacterSelect:defineButtonWidgets()
+  local buttons = {}
+
+  for i, character in ipairs(self.characters) do
+    local button = luis.newButton(character.entityName, 8, 4, nil,
+      function()
+      end, 10, 2 + (i-1) * 10)
+    table.insert(buttons, button)
+  end
+
+  return buttons
+end;
+
+
+-- ---@deprecated
+-- ---@param key string
+-- function CharacterSelect:keypressed(key)
+--   if key == 'right' then
+--     self:set_right()
+--   elseif key == 'left' then
+--     self:set_left()
+--   elseif key == 'up' then
+--     self:set_up()
+--   elseif key == 'down' then
+--     self:set_down()
+--   elseif key == 'z' then
+--     self:validate_selection()
+--   end
+-- end;
+
+-- ---@param joystick love.Joystick
+-- ---@param button love.GamepadButton
+-- function CharacterSelect:gamepadpressed(joystick, button)
+--   if button == 'dpright' then
+--     self:set_right()
+--   elseif button == 'dpleft' then
+--     self:set_left()
+--   elseif button == 'dpup' then
+--     self:set_up()
+--   elseif button == 'dpdown' then
+--     self:set_down()
+--   elseif button == 'a' then
+--     self:validate_selection()
+--   end
+-- end;
 
 function CharacterSelect:set_right()
   if self.spriteCol < GRID_LENGTH then
@@ -206,20 +270,31 @@ end;
 
 ---@param dt number
 function CharacterSelect:update(dt)
-  self:updateJoystick()
+  self:updateJoystick(dt)
 end;
 
-function CharacterSelect:updateJoystick()
-  if input.joystick then
-    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
-      self:gamepadpressed(input.joystick, 'dpright')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
-      self:gamepadpressed(input.joystick, 'dpleft')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
-      self:gamepadpressed(input.joystick, 'dpup')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
-      self:gamepadpressed(input.joystick, 'dpdown')
-    end
+---@param dt number
+function CharacterSelect:updateJoystick(dt)
+  Player:update()
+
+  if Player:pressed('down') then
+    self:set_right()
+    self.readyToValidate = false
+  elseif Player:pressed('up') then
+    self:set_up()
+    self.readyToValidate = false
+  elseif Player:pressed('left') then
+    self:set_left()
+    self.readyToValidate = false
+  elseif Player:pressed('right') then
+    self:set_right()
+    self.readyToValidate = false
+  elseif Player:pressed('confirm') then
+    self.readyToValidate = true
+  elseif Player:released('confirm') and self.readyToValidate then
+    self:validate_selection()
+  elseif Player:pressed('cancel') or Player:pressed('menuCancel') then
+    Gamestate.switch(states['MainMenu'])
   end
 end;
 

@@ -103,6 +103,7 @@ function SubMenuButton:setDescription()
 	self.preview = self.actionList[self.index].description
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function SubMenuButton:gamepadpressed(joystick, button)
@@ -126,6 +127,24 @@ function SubMenuButton:gamepadpressed(joystick, button)
     self.displayList = false
     self.selectedAction = nil
     self.listIndex = 1
+  end
+end;
+
+function SubMenuButton:updateInput()
+  if Player:pressed('down') then
+    self.listIndex = (self.listIndex % #self.listUI) + 1
+  elseif Player:pressed('up') then
+    if self.listIndex <= 1 then
+      self.listIndex = #self.listUI
+    else
+      self.listIndex = self.listIndex - 1
+    end
+  elseif Player:pressed(self.actionButton) then
+    if not self.displayList then
+      self.displayList = true
+    else
+      self.selectedAction = self.actionList[self.listIndex]
+    end
   end
 end;
 

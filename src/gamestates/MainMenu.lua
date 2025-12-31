@@ -26,6 +26,7 @@ local loadRun = require('util.load_run')
 local loadTeam = require('util.load_team')
 local CharacterTeam = require('class.entities.CharacterTeam')
 local Log = require('class.log')
+local AxisRepeater = require('class.input.AxisRepeater')
 
 
 function MainMenu:init()
@@ -45,48 +46,32 @@ function MainMenu:init()
     :oncomplete(function() self.bounceFinished = true end)
 end;
 
----@param key string
-function MainMenu:keypressed(key)
-  if self.bounceFinished then
-    if key == 'up' or key == 'left' then
-      self:set_up()
-    elseif key == 'down' or key == 'right' then
-      self:set_down()
-    end
-  end
+function MainMenu:enter(previous)
+  self.readyToValidate = false
+  self.moveXRepeat = AxisRepeater{threshold = 0.6, initialDelay = 0.3, repeatDelay = 0.1}
 end;
 
----@param key string
----@param scancode love.Scancode
-function MainMenu:keyreleased(key, scancode)
-  if self.bounceFinished then
-    if key == 'z' then
-      self:validate_selection()
-    end
-  end
-end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function MainMenu:gamepadpressed(joystick, button)
-  if self.bounceFinished then
-    if button == 'dpup' or button == 'dpleft' then
-      self:set_up()
-    elseif button == 'dpdown' or button == 'dpright' then
-      self:set_down()
-    end
-  end
-end;
+-- ---@param key string
+-- function MainMenu:keypressed(key)
+--   if self.bounceFinished then
+--     if key == 'up' or key == 'left' then
+--       self:set_up()
+--     elseif key == 'down' or key == 'right' then
+--       self:set_down()
+--     end
+--   end
+-- end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function MainMenu:gamepadreleased(joystick, button)
-  if self.bounceFinished then
-    if button == 'a' then
-      self:validate_selection()
-    end
-  end
-end;
+-- ---@param key string
+-- ---@param scancode love.Scancode
+-- function MainMenu:keyreleased(key, scancode)
+--   if self.bounceFinished then
+--     if key == 'z' then
+--       self:validate_selection()
+--     end
+--   end
+-- end;
 
 function MainMenu:set_up()
   if index > 1 then
@@ -113,11 +98,28 @@ function MainMenu:update(dt)
   flux.update(dt)
   Timer.update(dt)
 
-  if input.joystick and self.bounceFinished then
-    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+  -- if input.joystick and self.bounceFinished then
+  --   if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+  --     self:set_down()
+  --   elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+  --     self:set_up()
+  --   end
+  -- end
+  if self.bounceFinished then
+    Player:update()
+
+    -- local axis = Player:get("move")
+    -- local pulse = moveXRepeat:update(axis, dt)
+    if Player:pressed('down') or Player:pressed('right') then
       self:set_down()
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') or JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+      self.readyToValidate = false
+    elseif Player:pressed('up') or Player:pressed('left') then
       self:set_up()
+      self.readyToValidate = false
+    elseif Player:pressed('confirm') then
+      self.readyToValidate = true
+    elseif Player:released('confirm') and self.readyToValidate then
+      self:validate_selection()
     end
   end
 end;

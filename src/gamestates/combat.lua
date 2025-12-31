@@ -192,6 +192,13 @@ end;
 
 ---@param dt number
 function Combat:update(dt)
+  Player:update()
+
+  if Player:pressed('pause') and not self.paused then
+    self.paused = true
+    -- Gamestate:push(states["Pause"])
+  end
+
   if not self.paused then
     flux.update(dt)
 
