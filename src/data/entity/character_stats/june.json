@@ -1,0 +1,27 @@
+{
+	"entityName": "June",
+	"animations": {
+		"idle": {
+			"width": 491,
+			"height": 640,
+			"frameCount": 6
+		},
+		"jump": {
+			"width": 629,
+			"height": 657,
+			"frameCount": 5,
+		}
+	},
+	"hitbox": {
+		"width": 218,
+		"height": 410
+	},
+	"hp": 10,
+	"fp": 10,
+	"attack": 10,
+	"defense": 2,
+	"speed": 5,
+	"luck": 10,
+	"growthRate": 1.25,
+	"skillPool": ["needle_stab"]
+}
