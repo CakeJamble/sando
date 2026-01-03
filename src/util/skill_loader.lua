@@ -4,7 +4,7 @@ local initProjectiles = require('util.projectile_animation_loader').initProjecti
 ---@param skillName string
 ---@return { [string]: any }
 local function loadSkill(skillName)
-	local jsonPath = 'data/skill/' .. skillName .. '.json'
+	local jsonPath = 'data/skill/character_skills/' .. skillName .. '.json'
 	local logicPath = 'logic.skill.' .. skillName
 
 	local raw = love.filesystem.read(jsonPath)
