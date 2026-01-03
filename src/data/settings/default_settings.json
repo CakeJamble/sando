@@ -11,6 +11,11 @@
 		"brightness": 1,
 		"contrast": 1,
 		"saturation": 1,
-		"hueShift": 0
+		"hueShift": 0,
+	},
+	"window": {
+		"borderless": false,
+		"fullscreen": false,
+		"display": 1,
 	}
 }

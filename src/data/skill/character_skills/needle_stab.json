@@ -10,7 +10,7 @@
 		"wind_up": {
 			"width": 486,
 			"height": 379,
-			"frameCount": 2,
+			"frameCount": 2
 		},
 		"wobble": {
 			"width": 531,
@@ -20,8 +20,7 @@
 		"attack": {
 			"width": 983,
 			"height": 389,
-			"frameCount": 8,
-			// "audioPath": "asset/audio/entitites/character/june/needle_stab.mp3"
+			"frameCount": 8
 		}
 	},
 	"stagingType": "near",
