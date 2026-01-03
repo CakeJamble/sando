@@ -143,7 +143,7 @@ end;
 function SpireGenerator:setupBossRoom()
 	local middle = math.floor(0.5 + self.mapWidth / 2)
 	local bossRoom = self.mapData[self.numFloors][middle]
-	bossRoom:setType("BOSS")
+	bossRoom:setType("Boss")
 
 	for j=1, self.mapWidth do
 		local currRoom = self.mapData[self.numFloors - 1][j]
@@ -167,28 +167,28 @@ function SpireGenerator:setupRoomTypes()
 	-- floor 1 is always a standard combat
 	for _,room in ipairs(self.mapData[1]) do
 		if #room.nextRooms > 0 then
-			room:setType("COMBAT")
+			room:setType("Combat")
 		end
 	end
 
 	-- Floor 8 is always an event
 	for _,room in ipairs(self.mapData[8]) do
 		if #room.nextRooms > 0 then
-			room:setType("EVENT")
+			room:setType("Event")
 		end
 	end
 
 	-- Floor 10 is always a shop
 	for _,room in ipairs(self.mapData[10]) do
 		if #room.nextRooms > 0 then
-			room:setType("SHOP")
+			room:setType("Shop")
 		end
 	end
 
 	-- Penultimate room is always a campfire
 	for _,room in ipairs(self.mapData[self.numFloors - 1]) do
 		if #room.nextRooms > 0 then
-			room:setType("CAMPFIRE")
+			room:setType("Campfire")
 		end
 	end
 
@@ -213,11 +213,11 @@ function SpireGenerator:setRandomRoomType(room)
 	while campfireBelow4 or consecutiveCampfire or consecutiveShop or campfireBeforeBoss do
 		typeCandidate = self:getRandomRoomTypeByWeight()
 
-		local isCampfire = typeCandidate == "CAMPFIRE"
-		local isShop = typeCandidate == "SHOP"
+		local isCampfire = typeCandidate == "Campfire"
+		local isShop = typeCandidate == "Shop"
 
-		local hasCampfireParent = self:parentOfType(room, "CAMPFIRE")
-		local hasShopParent = self:parentOfType(room, "SHOP")
+		local hasCampfireParent = self:parentOfType(room, "Campfire")
+		local hasShopParent = self:parentOfType(room, "Shop")
 
 		campfireBelow4 = isCampfire and room.row < 4
 		consecutiveCampfire = isCampfire and hasCampfireParent
@@ -237,7 +237,7 @@ function SpireGenerator:getRandomRoomTypeByWeight()
 			return roomType
 		end
 	end
-	return "COMBAT"
+	return "Combat"
 end;
 
 ---@param room Room

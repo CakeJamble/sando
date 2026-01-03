@@ -1,11 +1,11 @@
 local Class = require('libs.hump.class')
 
 ---@alias ROOM_TYPE
----| '"COMBAT"' # Combat encounter
----| '"SHOP"'
----| '"CAMPFIRE"'
----| '"EVENT"'
----| '"BOSS"'
+---| '"Combat"' # Combat encounter
+---| '"Shop"'
+---| '"Campfire"'
+---| '"Event"'
+---| '"Boss"'
 ---| '"NA"'
 
 ---@class Room
