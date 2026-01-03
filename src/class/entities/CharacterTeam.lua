@@ -25,7 +25,7 @@ function CharacterTeam:init(characters, inventory)
   self.koGetsExp = false
 
   -- Adding items for testing
-  self.inventory:addConsumable(espresso)
+  -- self.inventory:addConsumable(espresso)
 end;
 
 ---@param amount integer

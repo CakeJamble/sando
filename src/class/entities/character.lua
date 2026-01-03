@@ -53,11 +53,13 @@ function Character:init(data, actionButton)
   self.blockMod = 1
   self.level = 1
   self.growthFunctions = statGrowthFunctions[self.entityName]
-  self.currentSkills = self:updateSkills()
+  self.currentSkills = {}
+  self:updateSkills()
   self.qteSuccess = true
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
+  self.pos.sx, self.pos.sy = 0.5, 0.5
 
   -- local baseSFXTypes = {'jump'}
   -- self.sfx = self:setSFX('character/', baseSFXTypes)
@@ -332,6 +334,8 @@ function Character:getRequiredExperience() --> int
   return result
 end;
 
+-- Updates `self.currentSkills` and then returns a list of strings containing the names of the skills added
+---@return string[]
 function Character:updateSkills()
   local result = {}
   for _,skill in pairs(self.skillPool) do

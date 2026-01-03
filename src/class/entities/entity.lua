@@ -14,7 +14,7 @@ local StatusEffects = require('util.status_effects')
 ---@field hideProgressBar boolean
 local Entity = Class{
   movementTime = 2,
-  drawHitboxes = true,
+  drawHitboxes = false,
   drawHitboxPositions = false,
   tweenHP = false,
   isATB = true,
@@ -80,11 +80,6 @@ function Entity:init(data, x, y, entityType)
   self.currentAnimTag = 'idle'
   self.koAnimDuration = data.koAnimDuration or 1.5
 
-
-  -- self.dX=0
-  -- self.dY=0
-  self.frameWidth = data.width      -- width of sprite (or width for a single frame of animation for this character)
-  self.frameHeight = data.height    -- height of sprite (or height for a single frame of animation for this character)
   self.pos = {
     x = x, y = y,
     r = 0, a = 1,
@@ -122,18 +117,10 @@ function Entity:init(data, x, y, entityType)
 
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
-  -- self.hbXOffset = (data.width - data.hbWidth) / 2
-  -- self.hbYOffset = (data.height - data.hbHeight) * 0.75
-  -- self.hitbox = {
-  --   x = self.pos.x + self.hbXOffset - self.pos.ox,
-  --   y = self.pos.y + self.hbYOffset - self.pos.oy,
-  --   w = data.hbWidth,
-  --   h = data.hbHeight
-  -- }
 
   self.shadowDims = {
     x = self.hitbox.x + (self.hitbox.w / 2.5) - self.pos.ox,
-    y = self.oPos.y + self.frameHeight - self.pos.oy,
+    y = self.oPos.y - self.pos.oy,
     w = self.hitbox.w / 2,
     h = self.hitbox.h / 8,
   }
@@ -628,7 +615,7 @@ end;
 
 ---@param path string Path to Entity's asset directory
 function Entity:setBaseAnimations(path)
-  for name, data in ipairs(self.baseAnimationTypes) do
+  for name, data in pairs(self.baseAnimationTypes) do
     local animationPath = path .. name .. '.png'
     local image = love.graphics.newImage(animationPath)
     self.animations[name] = self:populateFrames(image, data)
@@ -689,8 +676,8 @@ function Entity:populateFrames(image, data)
 
   animation.duration = data.duration or 1
   animation.currentTime = 0
-  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
-
+  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
+  animation.spriteNum = math.min(animation.spriteNum, #animation.quads)
   return animation
 end;
 
@@ -700,8 +687,8 @@ end;
 
 ---@param dt number
 function Entity:update(dt) --> void
-  self:updateHitbox()
-  self:updateShadow()
+  -- self:updateHitbox()
+  -- self:updateShadow()
 
   if Entity.isATB then
     self.progressBar:setPos(self.pos)
@@ -750,7 +737,7 @@ end;
 
 function Entity:updateShadow()
   self.shadowDims.x = self.hitbox.x + (self.hitbox.w / 2)
-  self.shadowDims.y = self.pos.y + (self.frameHeight * 0.95) - self.pos.oy
+  self.shadowDims.y = self.pos.y + (self.pos.oy * 0.95) - self.pos.oy
 end;
 
 ---@param dt number
@@ -794,7 +781,7 @@ end;
 function Entity:drawSprite()
   local animation = self.animations[self.currentAnimTag]
   love.graphics.setColor(1,1,1,self.pos.a)
-  love.graphics.draw(animation.spriteSheet, animation.quads[animation.spriteNum], self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.frameWidth/2, self.frameHeight/2)
+  love.graphics.draw(animation.spriteSheet, animation.quads[animation.spriteNum], self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.pos.ox, self.pos.oy)
   love.graphics.setColor(1,1,1,1)
 end;
 
