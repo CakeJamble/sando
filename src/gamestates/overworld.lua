@@ -40,7 +40,7 @@ end;
 
 function Overworld:switchState()
 	self.map:logSelection(self.log, self.floor)
-	local state = string.lower(self.map.selected.type)
+	local state = self.map.selected.type
 	self.map.selected = nil
 	local options = {
 		team = self.characterTeam,
@@ -60,31 +60,36 @@ function Overworld:gamepadpressed(joystick, button)
 end;
 
 function Overworld:update(dt)
+	Player:update()
 	flux.update(dt)
-	self:updateJoystick()
+	-- self:updateJoystick()
+	self.map:update(dt)
+	if Player:pressed("confirm") and self.map.selected then
+		self:switchState()
+	end
 end;
 
-function Overworld:updateJoystick()
-	if input.joystick then
-		-- Left Stick
-    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
-      self:gamepadpressed(input.joystick, 'dpright')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
-      self:gamepadpressed(input.joystick, 'dpleft')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
-      self:gamepadpressed(input.joystick, 'dpup')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
-      self:gamepadpressed(input.joystick, 'dpdown')
-    end
+-- function Overworld:updateJoystick()
+	-- if input.joystick then
+	-- 	-- Left Stick
+  --   if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
+  --     self:gamepadpressed(input.joystick, 'dpright')
+  --   elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
+  --     self:gamepadpressed(input.joystick, 'dpleft')
+  --   elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
+  --     self:gamepadpressed(input.joystick, 'dpup')
+  --   elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
+  --     self:gamepadpressed(input.joystick, 'dpdown')
+  --   end
 
-    -- Right Stick
-	  if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up', 'right') then
-	  	self:scrollCamera('up')
-	  elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down', 'right') then
-	  	self:scrollCamera('down')
-	  end
-  end
-end;
+  --   -- Right Stick
+	--   if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up', 'right') then
+	--   	self:scrollCamera('up')
+	--   elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down', 'right') then
+	--   	self:scrollCamera('down')
+	--   end
+  -- end
+-- end;
 
 -- Only scrolls in Y direction
 ---@param direction string
