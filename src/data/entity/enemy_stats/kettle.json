@@ -1,0 +1,31 @@
+{
+  "entityName": "Kettle",
+  "enemyType": "common",
+  "animations": {
+    "idle": {
+      "width": 450,
+      "height": 450,
+      "frameCount": 4,
+      "duration": 1,
+    },
+    "jump": {
+      "width": 450,
+      "height": 450,
+      "frameCount": 4,
+      "duration": 1,
+    }
+  },
+  "hitbox": {
+    "width": 225,
+    "height": 225,
+  },
+  "hp": 11,
+  "attack": 10,
+  "defense": 1,
+  "speed": 1,
+  "luck": 10,
+  "rewardsDistribution": [0.4, 0.02],
+  "experienceReward": 10,
+  "moneyReward": 8,
+  "skillPool": ["burst_shot"]
+}
