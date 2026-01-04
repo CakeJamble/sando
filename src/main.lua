@@ -65,7 +65,6 @@ Audio.sfx.ui:setVolume(0.3)
 Text.configure.audio_table("Audio")
 Text.configure.add_text_sound(Audio.text.default, 0.5)
 
-local JoystickUtils = require 'util.joystick_utils'
 
 ---@param args table Arguments to set the game environment (test vs prod, etc.)
 function love.load(args)
@@ -140,15 +139,6 @@ function love.joystickremoved(joystick)
   if Player.config.joystick == joystick then
     Player.config.joystick = joystick
   end
-end;
-
-function love.draw()
-  -- Put the whole game on a canvas
-  love.graphics.setCanvas(screenCanvas)
-  love.graphics.clear()
-  Gamestate.current():draw()
-  love.graphics.setCanvas()
-  GameSettings:draw()
 end;
 
 function love.quit()
