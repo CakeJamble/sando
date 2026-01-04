@@ -107,39 +107,6 @@ function CharacterSelect:defineButtonWidgets()
   return buttons
 end;
 
-
--- ---@deprecated
--- ---@param key string
--- function CharacterSelect:keypressed(key)
---   if key == 'right' then
---     self:set_right()
---   elseif key == 'left' then
---     self:set_left()
---   elseif key == 'up' then
---     self:set_up()
---   elseif key == 'down' then
---     self:set_down()
---   elseif key == 'z' then
---     self:validate_selection()
---   end
--- end;
-
--- ---@param joystick love.Joystick
--- ---@param button love.GamepadButton
--- function CharacterSelect:gamepadpressed(joystick, button)
---   if button == 'dpright' then
---     self:set_right()
---   elseif button == 'dpleft' then
---     self:set_left()
---   elseif button == 'dpup' then
---     self:set_up()
---   elseif button == 'dpdown' then
---     self:set_down()
---   elseif button == 'a' then
---     self:validate_selection()
---   end
--- end;
-
 ---@deprecated Not used in carousel layout
 function CharacterSelect:set_right()
   if self.spriteCol < GRID_LENGTH then

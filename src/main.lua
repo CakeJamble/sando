@@ -86,12 +86,7 @@ function love.load(args)
     })
 
   -- Input
-  -- input = {joystick = nil}
   local joysticks = love.joystick.getJoysticks()
-  -- if joysticks[1] then
-    -- input.joystick = joysticks[1]
-    -- print('added joystick')
-  -- end
   Player = loadDefaultControls(joysticks[1])
 
   -- Screen Resolution, Music/SFX, Input UI
@@ -99,8 +94,6 @@ function love.load(args)
 
   -- Camera
   camera = Camera()
-
-
 
   -- Fonts
   Font = love.graphics.newFont('asset/Chelsea_Market/ChelseaMarket-Regular.ttf')

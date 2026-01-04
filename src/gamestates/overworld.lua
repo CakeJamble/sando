@@ -20,7 +20,7 @@ function Overworld:enter(previous, characterTeam, log)
 	self.act = self.log.act
 	self.floor = self.log.floor
 	self.map = self.log.map or self:generateMap()
-	
+
 	self.map:checkActiveRooms(self.floor)
 
 	self.lookY = 0
@@ -51,18 +51,17 @@ function Overworld:switchState()
 end;
 
 
-function Overworld:gamepadpressed(joystick, button)
-	if button == "a" and self.map.selected then
-		self:switchState()
-	else
-		self.map:gamepadpressed(joystick, button)
-	end
-end;
+-- function Overworld:gamepadpressed(joystick, button)
+-- 	if button == "a" and self.map.selected then
+-- 		self:switchState()
+-- 	else
+-- 		self.map:gamepadpressed(joystick, button)
+-- 	end
+-- end;
 
 function Overworld:update(dt)
 	Player:update()
 	flux.update(dt)
-	-- self:updateJoystick()
 	self.map:update(dt)
 	if Player:pressed("confirm") and self.map.selected then
 		self:switchState()

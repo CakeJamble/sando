@@ -118,6 +118,8 @@ function Pause:update(dt)
     local curr = luis.currentFocus
     if curr.type == "Button" then
         curr:onRelease()
+    elseif curr.type == "Slider" then
+        luis.moveFocus("next")
     end
   elseif Player:released("cancel") then
     Gamestate.switch(states["MainMenu"])
