@@ -11,7 +11,8 @@ local Settings = Class{
 	DEFAULT_SETTINGS_PATH = "data/settings/default_settings.json",
 }
 
-function Settings:init()
+---@param customSettings table?
+function Settings:init(customSettings)
 	self.path = "settings.json"
 	self.postShader = love.graphics.newShader("asset/shader/postprocess.glsl")
 	self.musicManager = SoundManager(AllSounds.music)
@@ -34,7 +35,7 @@ function Settings:init()
 end;
 
 
----@return {resolution: {w: integer, h: integer}, windowModeFlags: {resizable: boolean, vsync: boolean, minwidth: integer, minheight: integer}, musicVolume: number, sfxVolume: number, display: table} settings
+---@return {resolution: {w: integer, h: integer}, windowModeFlags: {resizable: boolean, vsync: boolean, minwidth: integer, minheight: integer}, musicVolume: number, sfxVolume: number} settings
 function Settings:createDefaultSettings()
 	local raw = love.filesystem.read(Settings.DEFAULT_SETTINGS_PATH)
 	local data = json.decode(raw)
@@ -44,20 +45,17 @@ function Settings:createDefaultSettings()
 	local resolution = {}
 	resolution.w, resolution.h = getClosestResolution(w, h, self.supportedResolutions)
 
-	local gamepadType = "kbm"
-	if input.joystick then gamepadType = input.joystick:getGamepadType() end
 	local settings = {
 		resolution = resolution,
 		windowModeFlags = data.flags,
 		musicVolume = data.musicVolume,
 		sfxVolume = data.sfxVolume,
-		display = data.display
 	}
 
 	return settings
 end;
 
----@return {resolution: {w: integer, h: integer}, windowModeFlags: {resizable: boolean, vsync: boolean, minwidth: integer, minheight: integer}, musicVolume: number, sfxVolume: number, display: table} settings
+---@return {resolution: {w: integer, h: integer}, windowModeFlags: {resizable: boolean, vsync: boolean, minwidth: integer, minheight: integer}, musicVolume: number, sfxVolume: number} settings
 function Settings:loadSettings()
 	local raw = love.filesystem.read(self.path)
 	local data = json.decode(raw)
@@ -68,6 +66,7 @@ end;
 function Settings:saveSettings()
 	local data = json.encode(self.settings)
 	love.filesystem.write(self.path, data)
+	print('settings saved to save dir: ', data)
 end;
 
 function Settings:applyAll()
@@ -87,14 +86,6 @@ function Settings:restoreAllDefaults()
 	self.settings = self:createDefaultSettings()
 	self:applyAll()
 	self:saveSettings()
-end;
-
-function Settings:draw()
-	love.graphics.setShader(self.postShader)
-	local display = self.settings.display
-	for name, value in pairs(display) do
-		self.postShader:send(name, value)
-	end
 end;
 
 return Settings
