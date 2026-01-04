@@ -85,5 +85,18 @@ function CharacterTeam:rest()
   end
 end;
 
+function CharacterTeam:serialize()
+  local teamData = {
+    members = {}, 
+    inventory = self.inventory:serialize()
+  }
+  for _,member in ipairs(self.members) do
+    local memberData = member:serialize()
+    table.insert(teamData.members, memberData)
+  end
+
+  return teamData
+end;
+
 
 return CharacterTeam
