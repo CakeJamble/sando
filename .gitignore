@@ -48,3 +48,4 @@ asset
 *.sublime-workspace
 src/analytics/posthog_api_key.lua
 src/libs/gamepadguesser/assets/images
+src/libs
