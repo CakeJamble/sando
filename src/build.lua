@@ -5,7 +5,7 @@ return {
     developer = 'CakeJamble', -- dev name used in metadata of the file
     output = 'test', -- output location for your game, defaults to $SAVE_DIRECTORY
     version = '0.01a', -- 'version' of your game, used to name the folder in output
-    love = '11.5', -- version of LÖVE to use, must match github releases
+    love = '12.0', -- version of LÖVE to use, must match github releases
     ignore = {'dist', 'ignoreme.txt'}, -- folders/files to ignore in your project
     icon = 'resources/icon.png', -- 256x256px PNG icon for game, will be converted for you
     
@@ -27,11 +27,11 @@ return {
     name = 'Sando',
     config = 'steam',
     version = '0.8',
-    love = '11.5',
+    love = '12.0',
     icon = 'resources/icon.png',
     libs = {
       windows = {'resources/steamworks.dll'},
-    }
+    },
     ignore = {'dist'}
   }
 }
