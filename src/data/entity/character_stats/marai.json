@@ -1,19 +1,8 @@
 {
 	"entityName": "Marai",
-	"animations": {
-		"idle": {
-			"width": 414,
-			"height": 491,
-			"frameCount": 6,
-			"duration": 0.5,
-		},
-		"jump": {
-			"width": 459,
-			"height": 449,
-			"frameCount": 4,
-			"duration": 0.5,
-		}
-	},
+	"animations": [
+		"block", "eat", "fall", "idle", "jump", "land", "power_up", "run",
+	],
 	"hitbox": {
 		"width": 218,
 		"height": 410
