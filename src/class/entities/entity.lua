@@ -3,6 +3,7 @@ local ProgressBar = require('class.ui.ProgressBar')
 local Class = require "libs.hump.class"
 local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
+local animx = require('libs.animX')
 local StatusEffects = require('util.status_effects')
 
 ---@class Entity
@@ -73,12 +74,9 @@ function Entity:init(data, x, y, entityType)
     flinch = {},
     ko = {}
   }
-  self.baseAnimationTypes = data.animations
   local animPath = "asset/sprites/entities/" .. entityType .. "/" .. self.entityName .. "/"
-  self.animations = {}
-  self:setAnimations(animPath)
-  self.currentAnimTag = 'idle'
-  self.koAnimDuration = data.koAnimDuration or 1.5
+  self.actor = self:createActor(data.animations, animPath)
+  self.actor:switch('idle')
 
   self.pos = {
     x = x, y = y,
@@ -269,13 +267,6 @@ end;
 function Entity:attackInterrupt()
   self.tweens['attack']:stop()
   self:endTurn(0)
-  -- if self:isAlive() then
-    -- self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
-
-  -- else
-    -- self:reset()
-    -- Signal.emit('NextTurn')
-  -- end
 end;
 
 ---@param t integer?
@@ -610,9 +601,59 @@ function Entity:startFainting()
 end;
 
 --[[----------------------------------------------------------------------------------------------------
+        Animation
+----------------------------------------------------------------------------------------------------]]
+-- Creates an empty Actor, loops over the paths in `animationData`,
+-- creating each animation from its sprite sheet and XML file,
+-- then adds it to the Actor
+---@param animations string[]
+---@param dir string Path to this character's directory
+---@return table actor
+function Entity:createActor(animations, dir)
+  local actor = animx.newActor()
+  self:createBaseAnimations(animations, dir, actor)
+  self:createSkillAnimations(dir, actor)
+
+  return actor
+end;
+
+---@param animations string[] Array of animation names
+---@param dir string The directory where animations are located
+---@param actor table Reference to the AnimX actor object housing animations
+function Entity:createBaseAnimations(animations, dir, actor)
+  for _,name in ipairs(animations) do
+    local path = dir .. name .. ".png"
+    local animation = animx.newAnimation(path)
+    if name == "idle" or name == "run" then
+      animation:loop()
+    end
+    actor:addAnimation(name, animation)
+
+  end
+end;
+
+---@param dir string The directory where animations are located
+---@param actor table Reference to the AnimX actor object housing animations
+function Entity:createSkillAnimations(dir, actor)
+  for _,skill in ipairs(self.skillPool) do
+    local skillPath = dir .. skill.tag .. "/"
+    for _,name in ipairs(skill.animations) do
+      local path = skillPath .. name .. ".png"
+      local fullName = skill.tag .. "_" .. name -- ex: needle_stab & wind_up -> needle_stab_wind_up
+      local animation = animx.newAnimation(path)
+      if name == "wobble" or "wobble_fail" then
+        animation:loop()
+      end
+      actor:addAnimation(fullName, animation)
+    end
+  end
+end;
+
+--[[----------------------------------------------------------------------------------------------------
         Sprites & SFX
 ----------------------------------------------------------------------------------------------------]]
 
+---@deprecated Use animX library instead
 ---@param path string Path to Entity's asset directory
 function Entity:setBaseAnimations(path)
   for name, data in pairs(self.baseAnimationTypes) do
@@ -622,6 +663,7 @@ function Entity:setBaseAnimations(path)
   end
 end;
 
+---@decprecated Use animX library instead
 function Entity:setSkillAnimations(path)
   for _,skill in ipairs(self.skillPool) do
     local skillPath = path .. skill.tag .. '/'
@@ -635,6 +677,7 @@ function Entity:setSkillAnimations(path)
   end
 end;
 
+---@deprecated Use animX library
 --[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
   Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
 ---@param path string
@@ -656,6 +699,7 @@ function Entity:setSFX(path, baseSFXTypes)
   return sfxList
 end;
 
+---@deprecated Use animX library
 ---@param image table
 ---@param data {width: integer, height: integer, frameCount: integer, duration: number?}
 ---@return table animation
@@ -695,7 +739,8 @@ function Entity:update(dt) --> void
   end
 
   self:updateProjectiles(dt)
-  self:updateAnimation(dt)
+  animx.update(dt)
+
 
   if self.countFrames then
     self.currDmgFrame = self.currDmgFrame + 1
@@ -706,6 +751,7 @@ function Entity:update(dt) --> void
   end
 end;
 
+---@deprecated Use AnimX
 ---@param dt number
 function Entity:updateAnimation(dt)
   local animation = self.animations[self.currentAnimTag]
@@ -755,7 +801,8 @@ end;
 function Entity:draw() --> void
   self:drawShadow()
   self:drawFeedback()
-  self:drawSprite()
+  -- self:drawSprite()
+  self.actor:draw(self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.pos.ox, self.pos.oy)
   self:drawHitbox()
   self:drawProjectiles()
   self:drawProgressBar()
@@ -778,6 +825,7 @@ function Entity:drawFeedback()
   end
 end;
 
+---@deprecated Use animX
 function Entity:drawSprite()
   local animation = self.animations[self.currentAnimTag]
   love.graphics.setColor(1,1,1,self.pos.a)

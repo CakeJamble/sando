@@ -6,33 +6,9 @@
 	"effects": ["damage"],
 	"chance": 1,
 	"cost": 0,
-	"animations": {
-		"wind_up": {
-			"width": 482,
-			"height": 517,
-			"frameCount": 2,
-		},
-		"wobble": {
-			"width": 355,
-			"height": 517,
-			"frameCount": 2
-		},
-		"wobble_fail": {
-			"width": 394,
-			"height": 524,
-			"frameCount": 2
-		},
-		"attack": {
-			"width": 976,
-			"height": 641,
-			"frameCount": 6,
-		},
-		"attack_fail": {
-			"width": 797,
-			"height": 467,
-			"frameCount": 7
-		}
-	},
+	"animations": [
+		"wind_up", "wobble", "wobble_fail", "attack", "attack_fail"
+	],
 	"stagingType": "near",
 	"qteType": "Ring",
 	"qteBonus": "damage",

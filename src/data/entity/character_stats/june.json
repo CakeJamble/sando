@@ -1,19 +1,6 @@
 {
 	"entityName": "June",
-	"animations": {
-		"idle": {
-			"width": 448,
-			"height": 640,
-			"frameCount": 6,
-			"duration": 1,
-		},
-		"jump": {
-			"width": 629,
-			"height": 657,
-			"frameCount": 5,
-			"duration": 0.75,
-		}
-	},
+	"animations": ["idle", "jump"],
 	"hitbox": {
 		"width": 218,
 		"height": 410

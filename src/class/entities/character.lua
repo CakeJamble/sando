@@ -520,6 +520,8 @@ function Character:interruptJump()
   self.tweens['tumble'] = tumble
 end;
 
+
+
 --[[----------------------------------------------------------------------------------------------------
         Update & Draw
 ----------------------------------------------------------------------------------------------------]]
@@ -527,7 +529,7 @@ end;
 ---@param dt number
 function Character:update(dt)
   Entity.update(self, dt)
-
+  -- self.actor:update(dt)
   if self.actionUI and self.actionUI.active then
     self.actionUI:update(dt)
   else
