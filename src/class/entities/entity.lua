@@ -566,15 +566,18 @@ function Entity:takeDamage(amount, attackerLuck) --> void
   end
 
   if self:isAlive() then
-    self.currentAnimTag = 'flinch'
-    Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
+    self.actor:switch("flinch")
+    local anim = self.actor:getCurrentAnimation()
+    anim:onAnimOver(function()
+      self.actor:switch("idle")
+    end)
   end
 end;
 
 ---@param amount integer
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
-  self.currentAnimTag = 'flinch'
+  self.actor:switch("flinch")
 end;
 
 ---@param attackerLuck integer
@@ -596,8 +599,7 @@ function Entity:calcCritChance(attackerLuck)
 end;
 
 function Entity:startFainting()
-  self.currentAnimTag = "ko"
-  return self.koAnimDuration
+  self.actor:switch("ko")
 end;
 
 --[[----------------------------------------------------------------------------------------------------
@@ -801,7 +803,6 @@ end;
 function Entity:draw() --> void
   self:drawShadow()
   self:drawFeedback()
-  -- self:drawSprite()
   self.actor:draw(self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.pos.ox, self.pos.oy)
   self:drawHitbox()
   self:drawProjectiles()
@@ -823,14 +824,6 @@ function Entity:drawFeedback()
       self.dmgDisplayScale, self.dmgDisplayScale)
     love.graphics.setColor(1,1,1, 1)
   end
-end;
-
----@deprecated Use animX
-function Entity:drawSprite()
-  local animation = self.animations[self.currentAnimTag]
-  love.graphics.setColor(1,1,1,self.pos.a)
-  love.graphics.draw(animation.spriteSheet, animation.quads[animation.spriteNum], self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.pos.ox, self.pos.oy)
-  love.graphics.setColor(1,1,1,1)
 end;
 
 function Entity:drawHitbox()

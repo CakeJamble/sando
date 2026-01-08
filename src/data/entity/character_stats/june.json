@@ -1,6 +1,8 @@
 {
 	"entityName": "June",
-	"animations": ["idle", "jump"],
+	"animations": [
+		"block", "eat", "fall", "idle", "jump", "land", "power_up", "run",
+	],
 	"hitbox": {
 		"width": 218,
 		"height": 410
