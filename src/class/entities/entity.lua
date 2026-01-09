@@ -93,7 +93,7 @@ function Entity:init(data, x, y, entityType)
     h = data.hitbox.height
   }
   self.tPos = {x = 0, y = 0}
-  self.oPos = {x = x, y = x}
+  self.oPos = {x = x, y = y}
   self.currentFrame = 1
   self.isFocused = false
   self.targets = {}
@@ -628,7 +628,7 @@ function Entity:createBaseAnimations(animations, dir, actor)
     if name == "idle" or name == "run" then
       animation:loop()
     end
-    
+
     actor:addAnimation(name, animation)
 
   end
