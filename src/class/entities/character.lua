@@ -28,15 +28,15 @@ local Character = Class{__includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
   yPos = 500,
-  xPos = 80,
+  xPos = 200,
   yOffset = 90,
-  xCombatStart = -20,
+  xCombatStart = -200,
   statRollsOnLevel = 1,
-  combatStartEnterDuration = 0.75,
+  combatStartEnterDuration = 1,
   guardActiveDur = 0.25,
   guardCooldownDur = 0.75,
   jumpDur = 0.5,
-  landingLag = 0.25,
+  landingLag = 0.5,
   inventory = nil,
   canBeDebuffed = true,
   numEquipSlots = 2,
@@ -48,7 +48,6 @@ local Character = Class{__includes = Entity,
 function Character:init(data, actionButton)
   Entity.init(self, data, Character.xCombatStart, Character.yPos, "character")
   self.actionButton = actionButton
-  -- self.basic = data.basic
   self.skillPool = data.skillPool
   self.blockMod = 1
   self.level = 1
@@ -87,14 +86,15 @@ function Character:init(data, actionButton)
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
   self.canLCancel = false
-  self.jumpHeight = 5
+  self.jumpHeight = 100
   self.sfx = SoundManager(AllSounds.sfx.entities.character[self.entityName])
+
   Signal.register('OnEnterScene',
     function()
       flux.to(self.pos, self.combatStartEnterDuration, {x = Character.xPos})
+        :onstart(function() self.actor:switch('run') end)
         :oncomplete(function()
-          self.oPos.x = self.pos.x
-          self.oPos.y = self.pos.y
+          self.actor:switch('idle')
           self.canJump = true
         end)
     end
@@ -372,8 +372,7 @@ function Character:updateInput(dt)
   elseif Player:pressed(self.actionButton) or Player:pressed("jump") then
     if self.isGuardToggled or Player:down("guard") and self:canGuard() then
       self:beginGuard()
-    -- elseif self.canJump then 
-    else
+    elseif self.canJump then 
       self:beginJump()
     end
   elseif Player:released("guard") and not self.isGuardToggled then
@@ -393,21 +392,6 @@ end;
 ---@return boolean
 function Character:canGuard()
   return not self.isJumping and self.guardCooldownFinished
-end;
-
----@deprecated
-function Character:checkGuardAndJump(button)
-  if self:isAlive() then
-    if button == 'rightshoulder' and not self.isJumping and self.guardCooldownFinished then
-      self.canGuard = true
-    elseif button == self.actionButton then
-      if self.canGuard then
-        self:beginGuard()
-      elseif self.canJump then
-        self:beginJump()
-      end
-    end
-  end
 end;
 
 function Character:beginGuard()
@@ -454,25 +438,36 @@ function Character:beginJump()
         self.canLCancel = true
       end
     end)
-    :oncomplete(
-      function()
-        self.actor:switch('land')
-        local landingLag = self:getLandingLag()
-        Timer.after(landingLag,
-          function()
-            self.isJumping = false
-            self.canJump = true
-            self.landingLag = Character.landingLag
-            self.canLCancel = false
-            self.landingLagMods["LCancel"] = nil
-            self.hasLCanceled = false
-            self.actor:switch('idle')
-          end)
-      end)
+    :oncomplete(function() self:land() end)
   self.tweens['jump'] = jump
   self.tweens['shadow'] = shadow
   self.sfx:play("jump")
 end;
+
+function Character:land()
+  local landingLag = self:getLandingLag()
+  local land = self.actor:getAnimation('land')
+
+  -- Sync landing animation with landing lag
+  land:setDelay(landingLag / land:getSize())
+  self.actor:switch('land')
+
+  -- Squash on land
+  flux.to(self.pos, 0.125, {sy = 0.4})
+    :ease('quadout')
+    :after(0.125, {sy=0.5})
+      :ease('quadin')
+  Timer.after(landingLag,
+    function()
+      self.isJumping = false
+      self.canJump = true
+      self.landingLag = Character.landingLag
+      self.canLCancel = false
+      self.landingLagMods["LCancel"] = nil
+      self.hasLCanceled = false
+      self.actor:switch('idle')
+    end)
+end
 
 function Character:interruptJump()
   local tumbleDuration = (Character.jumpDur/2)

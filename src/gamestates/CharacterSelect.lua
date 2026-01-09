@@ -7,6 +7,7 @@ local loadCharacterData = require('util.character_loader')
 local json = require('libs.json')
 local flux = require('libs.flux')
 local Timer = require('libs.hump.timer')
+local Signal = require('libs.hump.signal')
 local TEAM_CAP = 2
 local SELECT_START = 100
 local GRID_LENGTH = 1
@@ -53,6 +54,7 @@ function CharacterSelect:enter(previous, opts)
   -- self:defineWidgets()
   self.luisTime = 0
   luis.showGrid = true
+  Signal.emit('OnEnterScene')
 end;
 
 ---@return Character[]

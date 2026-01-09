@@ -146,7 +146,6 @@ function Entity:init(data, x, y, entityType)
   local normSpeed = math.min(speed/maxSpeed, 1)
   self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
 
-  
   Signal.register('TargetConfirm',
   function()
     if self.tweens['pbTween'] then
@@ -674,7 +673,7 @@ end;
 
 ---@param dt number
 function Entity:update(dt) --> void
-  -- self:updateHitbox()
+  self:updateHitbox()
   -- self:updateShadow()
 
   if Entity.isATB then
@@ -683,28 +682,20 @@ function Entity:update(dt) --> void
 
   self:updateProjectiles(dt)
   animx.update(dt)
-
-
-  if self.countFrames then
-    self.currDmgFrame = self.currDmgFrame + 1
-    self.dmgDisplayScale = self.dmgDisplayScale - 0.01
-    self.dmgDisplayOffsetX = math.cos(self.currDmgFrame * 0.25)
-    self.dmgDisplayOffsetY = self.dmgDisplayOffsetY + 0.1
-    self.opacity = self.opacity + 0.05
-  end
 end;
 
 -- Adjusts the hitbox offsets and x,y position based on the current animation state
 function Entity:updateHitbox()
-  local animation = self.animations[self.currentAnimTag]
-  local currentQuad = animation.quad[animation.spriteNum]
-  local sw, sh = currentQuad:getTextureDimensions()
-  self.pos.ox = sw / 2
-  self.pos.oy = sh / 2
-  self.hbXOffset = (sw - self.hitbox.width) / 2
-  self.hbYOffset = (sh - self.hitbox.height) / 2
-  self.hitbox.x = self.pos.x + self.hbXOffset - self.pos.ox
-  self.hitbox.y = self.pos.y + self.hbYOffset - self.pos.oy
+  -- local animation = self.animations[self.currentAnimTag]
+  local w,h = self.actor:getCurrentAnimation():getDimensions()
+  -- local currentQuad = animation.quad[animation.spriteNum]
+  -- local sw, sh = currentQuad:getTextureDimensions()
+  self.pos.ox = w / 2
+  self.pos.oy = h
+  -- self.hbXOffset = (w - self.hitbox.width) / 2
+  -- self.hbYOffset = (h - self.hitbox.height) / 2
+  -- self.hitbox.x = self.pos.x + self.hbXOffset - self.pos.ox
+  -- self.hitbox.y = self.pos.y + self.hbYOffset - self.pos.oy
 end;
 
 function Entity:updateShadow()
