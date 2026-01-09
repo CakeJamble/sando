@@ -61,7 +61,7 @@ function Entity:init(data, x, y, entityType)
     luck = 1,
   }
   self.critMult = 2
-  self.basic = data.basic
+  -- self.basic = data.basic
   self.skillPool = data.skillPool
   self.skill = nil
   -- self.projectile = nil
@@ -104,15 +104,15 @@ function Entity:init(data, x, y, entityType)
   self.state = 'idle'
   self.selectedSkill = nil
 
-  self.numFramesDmg = 60
-  self.currDmgFrame = 0
-  self.amount = 0
-  self.countFrames = false
-  self.dmgDisplayOffsetX = 0
-  self.dmgDisplayOffsetY = 0
-  self.dmgDisplayScale = 1
+  -- self.numFramesDmg = 60
+  -- self.currDmgFrame = 0
+  -- self.amount = 0
+  -- self.countFrames = false
+  -- self.dmgDisplayOffsetX = 0
+  -- self.dmgDisplayOffsetY = 0
+  -- self.dmgDisplayScale = 1
   self.opacity = 0
-
+  self.hazards = nil
   self.ignoreHazards = false
   self.moveBackTimerStarted = false
 
@@ -137,7 +137,6 @@ function Entity:init(data, x, y, entityType)
   self.hideProgressBar = Entity.hideProgressBar
   self.isResumingTurn = false
 
-  self.hazards = nil
 
   local minDur = 0.5
   local maxDur = 5
@@ -629,6 +628,7 @@ function Entity:createBaseAnimations(animations, dir, actor)
     if name == "idle" or name == "run" then
       animation:loop()
     end
+    
     actor:addAnimation(name, animation)
 
   end
@@ -652,41 +652,8 @@ function Entity:createSkillAnimations(dir, actor)
 end;
 
 --[[----------------------------------------------------------------------------------------------------
-        Sprites & SFX
+        SFX
 ----------------------------------------------------------------------------------------------------]]
-
----@deprecated Use animX library instead
----@param path string Path to Entity's asset directory
-function Entity:setBaseAnimations(path)
-  for name, data in pairs(self.baseAnimationTypes) do
-    local animationPath = path .. name .. '.png'
-    local image = love.graphics.newImage(animationPath)
-    self.animations[name] = self:populateFrames(image, data)
-  end
-end;
-
----@decprecated Use animX library instead
-function Entity:setSkillAnimations(path)
-  for _,skill in ipairs(self.skillPool) do
-    local skillPath = path .. skill.tag .. '/'
-    local skillAnimations = {}
-    for name, data in pairs(skill.animations) do
-      local image = love.graphics.newImage(skillPath .. name .. '.png')
-
-      skillAnimations[name] = self:populateFrames(image, data)
-    end
-    self.animations[skill.tag] = skillAnimations
-  end
-end;
-
----@deprecated Use animX library
---[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
-  Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
----@param path string
-function Entity:setAnimations(path)
-  self:setBaseAnimations(path)
-  self:setSkillAnimations(path)
-end;
 
 ---@param path string
 ---@param baseSFXTypes string[]
@@ -699,32 +666,6 @@ function Entity:setSFX(path, baseSFXTypes)
     sfxList[sfx] = src
   end
   return sfxList
-end;
-
----@deprecated Use animX library
----@param image table
----@param data {width: integer, height: integer, frameCount: integer, duration: number?}
----@return table animation
-function Entity:populateFrames(image, data)
-  local animation = {}
-  animation.spriteSheet = image
-  animation.quads = {}
-
-  for y = 0, image:getHeight() - data.height, data.height do
-    for x = 0, image:getWidth() - data.width, data.width do
-      table.insert(animation.quads, love.graphics.newQuad(x, y, data.width, data.height, image:getDimensions()))
-      -- Got all the frames but there are extra columns
-      if #animation.quads >= data.frameCount then break end
-    end
-    -- Got all the frames but there are extra rows
-    if #animation.quads >= data.frameCount then break end
-  end
-
-  animation.duration = data.duration or 1
-  animation.currentTime = 0
-  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  animation.spriteNum = math.min(animation.spriteNum, #animation.quads)
-  return animation
 end;
 
 --[[----------------------------------------------------------------------------------------------------
@@ -751,23 +692,6 @@ function Entity:update(dt) --> void
     self.dmgDisplayOffsetY = self.dmgDisplayOffsetY + 0.1
     self.opacity = self.opacity + 0.05
   end
-end;
-
----@deprecated Use AnimX
----@param dt number
-function Entity:updateAnimation(dt)
-  local animation = self.animations[self.currentAnimTag]
-  animation.currentTime = animation.currentTime + dt
-  if animation.currentTime >= animation.duration then
-    if not self:isAlive() and self.currentAnimTag == 'ko' then
-      animation.currentTime = animation.duration
-    else
-      animation.currentTime = animation.currentTime - animation.duration
-    end
-  end
-
-  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  animation.spriteNum = math.min(animation.spriteNum, #animation.quads)
 end;
 
 -- Adjusts the hitbox offsets and x,y position based on the current animation state
@@ -798,11 +722,8 @@ end;
 --[[----------------------------------------------------------------------------------------------------
         Drawing
 ----------------------------------------------------------------------------------------------------]]
-
--- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void
   self:drawShadow()
-  self:drawFeedback()
   self.actor:draw(self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.pos.ox, self.pos.oy)
   self:drawHitbox()
   self:drawProjectiles()
@@ -814,15 +735,6 @@ function Entity:drawShadow()
     love.graphics.setColor(0, 0, 0, 0.4)
     love.graphics.ellipse("fill", self.shadowDims.x, self.shadowDims.y, self.shadowDims.w, self.shadowDims.h)
     love.graphics.setColor(1, 1, 1, 1)
-  end
-end;
-
-function Entity:drawFeedback()
-  if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
-    love.graphics.setColor(0,0,0, 1 - self.opacity)
-    love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0,
-      self.dmgDisplayScale, self.dmgDisplayScale)
-    love.graphics.setColor(1,1,1, 1)
   end
 end;
 

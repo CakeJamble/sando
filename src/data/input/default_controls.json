@@ -16,6 +16,7 @@
     "menuCancel": ["button:b"],
     "pause": ["key:escape", "key:pause", "button:start"],
     "inventory": ["key:tab", "button:back", "button:touchpad"],
+    "jump": ["key:space"]
   },
   "pairs": {
   	"move": ["left", "right", "up", "down"],

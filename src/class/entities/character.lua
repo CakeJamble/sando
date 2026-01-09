@@ -27,7 +27,7 @@ local Class = require "libs.hump.class"
 local Character = Class{__includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
-  yPos = 130,
+  yPos = 500,
   xPos = 80,
   yOffset = 90,
   xCombatStart = -20,
@@ -48,7 +48,7 @@ local Character = Class{__includes = Entity,
 function Character:init(data, actionButton)
   Entity.init(self, data, Character.xCombatStart, Character.yPos, "character")
   self.actionButton = actionButton
-  self.basic = data.basic
+  -- self.basic = data.basic
   self.skillPool = data.skillPool
   self.blockMod = 1
   self.level = 1
@@ -60,7 +60,6 @@ function Character:init(data, actionButton)
   self.experience = 0
   self.experienceRequired = 15
   self.pos.sx, self.pos.sy = 0.5, 0.5
-
   -- local baseSFXTypes = {'jump'}
   -- self.sfx = self:setSFX('character/', baseSFXTypes)
   Character.yPos = Character.yPos + Character.yOffset
@@ -88,7 +87,7 @@ function Character:init(data, actionButton)
   self.landingLag = Character.landingLag
   self.hasLCanceled = false
   self.canLCancel = false
-
+  self.jumpHeight = 5
   self.sfx = SoundManager(AllSounds.sfx.entities.character[self.entityName])
   Signal.register('OnEnterScene',
     function()
@@ -370,10 +369,11 @@ function Character:updateInput(dt)
   if Player:pressed('guardToggle') then
     self.isGuardToggled = not self.isGuardToggled
   -- Check guard & jump
-  elseif Player:pressed(self.actionButton) then
+  elseif Player:pressed(self.actionButton) or Player:pressed("jump") then
     if self.isGuardToggled or Player:down("guard") and self:canGuard() then
       self:beginGuard()
-    elseif self.canJump then
+    -- elseif self.canJump then 
+    else
       self:beginJump()
     end
   elseif Player:released("guard") and not self.isGuardToggled then
@@ -385,48 +385,9 @@ function Character:updateInput(dt)
   end
 end;
 
----@deprecated Use update with baton to handle inputs
-function Character:keypressed(key)
-  -- if self.state == 'offense' then
-  --   self.offenseState:keypressed(key)
-  -- elseif self.state == 'defense' then
-  --   self.defenseState:keypressed(key)
-  -- elseif self.actionUI.active then
-  --   self.actionUI:keypressed(key)
-  --   if self.actionUI.uiState == 'targeting' then
-  --     Signal.emit('Targeting', self.targets)
-  --   end
-  -- end
-  -- if in movement state, does nothing
-end;
-
----@deprecated Use update with baton to handle inputs
----@param joystick love.Joystick
----@param button love.GamepadButton
-function Character:gamepadpressed(joystick, button)
-  if self.actionUI and self.actionUI.active then
-    self.actionUI:gamepadpressed(joystick, button)
-  else
-    self:checkGuardAndJump(button)
-  end
-
-  -- L-Cancel
-  if button == 'leftshoulder' and self.canLCancel then
-    print('l-cancel success')
-    -- self.landingLag = self.landingLag / 2
-    self.landingLagMods["LCancel"] = 0.5
-    self.hasLCanceled = true
-  end
-end;
-
----@deprecated Use update with baton to handle inputs
----@param joystick love.Joystick
----@param button love.GamepadButton
-function Character:gamepadreleased(joystick, button)
-  if button == 'rightshoulder' then
-      self.canGuard = false
-  end
-end;
+--[[----------------------------------------------------------------------------------------------------
+        Defensive States (Guard, Jump)
+----------------------------------------------------------------------------------------------------]]
 
 -- True if the the character is not jumping and their guard cooldown timer isn't active
 ---@return boolean
@@ -476,24 +437,26 @@ function Character:beginJump()
   self.isJumping = true
   self.canGuard = false
   self.canJump = false
-
   -- Goes up then down, then resets conditional checks for guard/jump
   local landY = self.oPos.y
   local shadow = flux.to(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 3})
     :ease('quadout')
     :after(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 2})
       :ease('quadin')
-  local jump = flux.to(self.pos, Character.jumpDur/2, {y = landY - self.frameHeight})
+  local jump = flux.to(self.pos, Character.jumpDur/2, {y = landY - self.jumpHeight})
     :ease('quadout')
+    :onstart(function() self.actor:switch('jump') end)
     :after(self.pos, Character.jumpDur/2, {y = landY})
+    :onstart(function() self.actor:switch('fall') end)
     :ease('quadin')
     :onupdate(function()
-      if not self.hasLCanceled and landY <= self.pos.y + (self.frameHeight / 4) then
+      if not self.hasLCanceled and landY <= self.pos.y + (self.jumpHeight / 4) then
         self.canLCancel = true
       end
     end)
     :oncomplete(
       function()
+        self.actor:switch('land')
         local landingLag = self:getLandingLag()
         Timer.after(landingLag,
           function()
@@ -503,7 +466,7 @@ function Character:beginJump()
             self.canLCancel = false
             self.landingLagMods["LCancel"] = nil
             self.hasLCanceled = false
-
+            self.actor:switch('idle')
           end)
       end)
   self.tweens['jump'] = jump
@@ -536,7 +499,7 @@ function Character:update(dt)
   end
 
   if self.isJumping then
-    self.shadowDims.y = self.oPos.y + (self.frameHeight * 0.95) - self.pos.oy
+    self.shadowDims.y = self.oPos.y + (self.jumpHeight * 0.95) - self.pos.oy
   end
 end;
 

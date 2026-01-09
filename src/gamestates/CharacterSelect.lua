@@ -5,7 +5,8 @@ local CharacterTeam = require("class.entities.CharacterTeam")
 local Character = require("class.entities.Character")
 local loadCharacterData = require('util.character_loader')
 local json = require('libs.json')
-
+local flux = require('libs.flux')
+local Timer = require('libs.hump.timer')
 local TEAM_CAP = 2
 local SELECT_START = 100
 local GRID_LENGTH = 1
@@ -220,6 +221,8 @@ end;
 
 ---@param dt number
 function CharacterSelect:updateJoystick(dt)
+  flux.update(dt)
+  Timer.update(dt)
   Player:update()
 
   if Player:pressed('down') then
