@@ -22,7 +22,7 @@ function Room:init(pos)
 	self.nextRooms = {}
 	self.selected = false
 	self.sprite = nil
-	self.w, self.h = 20, 20
+	self.w, self.h = 100, 100
 	self.active = false
 	self.cleared = false
 	self.branches = {}
@@ -47,7 +47,7 @@ function Room:draw()
 		love.graphics.setColor(1,1,1, self.alpha)
 
 		love.graphics.rectangle(mode, x, y, self.w, self.h)
-		love.graphics.print(self.type, x, y, 0, 0.3, 0.3)
+		love.graphics.print(self.type, x, y, 0)
 
 		for _,line in ipairs(self.branches) do
 			love.graphics.line(line)

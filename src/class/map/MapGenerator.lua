@@ -14,8 +14,8 @@ local MapGenerator = Class{}
 ---@param numPaths integer Number of starting points
 ---@param placementRandomness? integer Optional variable to customize the amount of natural offset
 function MapGenerator:init(numFloors, mapWidth, numPaths, placementRandomness)
-	self.xDist = 30
-	self.yDist = 25
+	self.xDist = 150
+	self.yDist = 175
 	self.placementRandomness = placementRandomness or 1
 	self.numFloors = numFloors
 	self.mapWidth = mapWidth
