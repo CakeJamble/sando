@@ -58,10 +58,10 @@ function Character:init(data, actionButton)
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
-  self.pos.sx, self.pos.sy = 0.5, 0.5
+  -- self.pos.sx, self.pos.sy = 0.5, 0.5
   -- local baseSFXTypes = {'jump'}
   -- self.sfx = self:setSFX('character/', baseSFXTypes)
-  Character.yPos = Character.yPos + Character.yOffset
+  -- Character.yPos = Character.yPos + Character.yOffset
   self.currentFP = data.fp
   -- self.currentDP = stats.dp
   self.fpCostMod = 0

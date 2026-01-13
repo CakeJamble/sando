@@ -15,7 +15,7 @@ local StatusEffects = require('util.status_effects')
 ---@field hideProgressBar boolean
 local Entity = Class{
   movementTime = 2,
-  drawHitboxes = false,
+  drawHitboxes = true,
   drawHitboxPositions = false,
   tweenHP = false,
   isATB = true,
@@ -81,7 +81,7 @@ function Entity:init(data, x, y, entityType)
   self.pos = {
     x = x, y = y,
     r = 0, a = 1,
-    sx = 1, sy = 1,
+    sx = 0.5, sy = 0.5,
     ox = 0,
     oy = 0
   }
@@ -89,9 +89,11 @@ function Entity:init(data, x, y, entityType)
   self.hitbox = {
     x = self.pos.x + self.hbXOffset - self.pos.ox,
     y = self.pos.y + self.hbYOffset - self.pos.oy,
-    w = data.hitbox.width,
-    h = data.hitbox.height
+    w = data.hitbox.width * self.pos.sx,
+    h = data.hitbox.height * self.pos.sy,
   }
+  print(self.pos.x, self.pos.y)
+  print(self.hitbox.x, self.hitbox.y)
   self.tPos = {x = 0, y = 0}
   self.oPos = {x = x, y = y}
   self.currentFrame = 1
@@ -692,6 +694,8 @@ function Entity:updateHitbox()
   -- local sw, sh = currentQuad:getTextureDimensions()
   self.pos.ox = w / 2
   self.pos.oy = h
+  self.hitbox.x = self.pos.x - (math.ceil(self.hitbox.w / 2))
+  self.hitbox.y = self.pos.y - (math.floor(self.hitbox.h))
   -- self.hbXOffset = (w - self.hitbox.width) / 2
   -- self.hbYOffset = (h - self.hitbox.height) / 2
   -- self.hitbox.x = self.pos.x + self.hbXOffset - self.pos.ox

@@ -218,7 +218,7 @@ end;
 ---@param dt number
 function CharacterSelect:update(dt)
   self:updateJoystick(dt)
-  -- self.currCharacter:update(dt)
+  self.currCharacter:update(dt)
 end;
 
 ---@param dt number

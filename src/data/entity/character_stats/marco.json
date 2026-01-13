@@ -1,0 +1,18 @@
+{
+	"entityName": "Marco",
+	"animations": [
+		"block", "eat", "fall", "idle", "jump", "land", "power_up", "run",
+	],
+	"hitbox": {
+		"width": 218,
+		"height": 410
+	},
+	"hp": 10,
+	"fp": 10,
+	"attack": 10,
+	"defense": 2,
+	"speed": 5,
+	"luck": 10,
+	"growthRate": 1.25,
+	"skillPool": ["illusion"]
+}

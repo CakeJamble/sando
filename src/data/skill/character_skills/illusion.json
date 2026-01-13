@@ -1,0 +1,18 @@
+{
+	"name": "Illusion",
+	"damage": 1,
+	"targetType": "enemies",
+	"isSingleTarget": true,
+	"effects": ["damage"],
+	"chance": 1,
+	"cost": 0,
+	"animations": ["wind_up", "focus", "focus_end", "smoke_cloud", "attack"],
+	"stagingType": "far",
+	"qteType": "mbp",
+	"qteBonus": "damage",
+	"description": "Pierces through a single target.",
+	"unlockedAtLvl": 1,
+	"beginTweenType": "linear",
+	"returnTweenType": "linear",
+	"hasProjectile": false,
+}
