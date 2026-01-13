@@ -124,28 +124,6 @@ function Map:logSelection(log, floor)
 	end
 end;
 
--- ---@deprecated Use update with baton library
--- ---@param joystick love.Joystick
--- ---@param button love.GamepadButton
--- function Map:gamepadpressed(joystick, button)
--- 	if not self.selected then
--- 		self.selected = self.activeRooms[1]
--- 		self.selectedIndex = 1
--- 	elseif button == "dpleft" then
--- 		self.selectedIndex = self.selectedIndex - 1
--- 		if self.selectedIndex <= 0 then
--- 			self.selectedIndex = #self.activeRooms
--- 		end
--- 		self.selected = self.activeRooms[self.selectedIndex]
--- 	elseif button == "dpright" then
--- 		self.selectedIndex = self.selectedIndex + 1
--- 		if self.selectedIndex > #self.activeRooms then
--- 			self.selectedIndex = 1
--- 		end
--- 		self.selected = self.activeRooms[self.selectedIndex]
--- 	end
--- end;
-
 function Map:update(dt)
 	if Player:pressed("right") then
 		self.selectedIndex = self.selectedIndex + 1
