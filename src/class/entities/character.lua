@@ -360,31 +360,6 @@ function Character:yieldSkillSelect()
 end;
 
 --[[----------------------------------------------------------------------------------------------------
-        Input
-----------------------------------------------------------------------------------------------------]]
-
----@param dt number
-function Character:updateInput(dt)
-  -- Check guard toggle
-  if Player:pressed('guardToggle') then
-    self.isGuardToggled = not self.isGuardToggled
-  -- Check guard & jump
-  elseif Player:pressed(self.actionButton) or Player:pressed("jump") then
-    if self.isGuardToggled or Player:down("guard") and self:canGuard() then
-      self:beginGuard()
-    elseif self.canJump then 
-      self:beginJump()
-    end
-  elseif Player:released("guard") and not self.isGuardToggled then
-    self.canGuard = false
-  -- Check L-Cancel
-  elseif Player:pressed("fallCancel") and self.canLCancel then
-    self.landingLagMods["LCancel"] = 0.5
-    self.hasLCanceled = true
-  end
-end;
-
---[[----------------------------------------------------------------------------------------------------
         Defensive States (Guard, Jump)
 ----------------------------------------------------------------------------------------------------]]
 
@@ -478,7 +453,30 @@ function Character:interruptJump()
   self.tweens['tumble'] = tumble
 end;
 
+--[[----------------------------------------------------------------------------------------------------
+        Input
+----------------------------------------------------------------------------------------------------]]
 
+---@param dt number
+function Character:updateInput(dt)
+  -- Check guard toggle
+  if Player:pressed('guardToggle') then
+    self.isGuardToggled = not self.isGuardToggled
+  -- Check guard & jump
+  elseif Player:pressed(self.actionButton)  then
+    if self.isGuardToggled or Player:down("guard") and self:canGuard() then
+      self:beginGuard()
+    elseif self.canJump then 
+      self:beginJump()
+    end
+  elseif Player:released("guard") and not self.isGuardToggled then
+    self.canGuard = false
+  -- Check L-Cancel
+  elseif Player:pressed("fallCancel") and self.canLCancel then
+    self.landingLagMods["LCancel"] = 0.5
+    self.hasLCanceled = true
+  end
+end;
 
 --[[----------------------------------------------------------------------------------------------------
         Update & Draw
