@@ -29,6 +29,8 @@ local Entity = Class{
 function Entity:init(data, x, y, entityType)
   self.type = entityType
   self.entityName = data.entityName
+
+  -- Stats & Status
   self.baseStats = self.copyStats(data)
   self.battleStats = self.copyStats(data)
   self.statStages = self.setStatStages(self.baseStats)
@@ -61,23 +63,15 @@ function Entity:init(data, x, y, entityType)
     luck = 1,
   }
   self.critMult = 2
-  -- self.basic = data.basic
+
+  -- Skills
   self.skillPool = data.skillPool
   self.skill = nil
+  self.selectedSkill = nil
   -- self.projectile = nil
   self.projectiles = {}
-  self.spriteSheets = {
-    idle = {},
-    moveX = {},
-    moveY = {},
-    moveXY = {},
-    flinch = {},
-    ko = {}
-  }
-  local animPath = "asset/sprites/entities/" .. entityType .. "/" .. self.entityName .. "/"
-  self.actor = self:createActor(data.animations, animPath)
-  self.actor:switch('idle')
 
+  -- Position & Collision
   self.pos = {
     x = x, y = y,
     r = 0, a = 1,
@@ -92,31 +86,22 @@ function Entity:init(data, x, y, entityType)
     w = data.hitbox.width * self.pos.sx,
     h = data.hitbox.height * self.pos.sy,
   }
-  print(self.pos.x, self.pos.y)
-  print(self.hitbox.x, self.hitbox.y)
   self.tPos = {x = 0, y = 0}
   self.oPos = {x = x, y = y}
-  self.currentFrame = 1
-  self.isFocused = false
-  self.targets = {}
-  self.target = nil
-  self.targetableEntities = {}
-  self.hasUsedAction = false
-  self.turnFinish = false
-  self.state = 'idle'
-  self.selectedSkill = nil
-
-  -- self.numFramesDmg = 60
-  -- self.currDmgFrame = 0
-  -- self.amount = 0
-  -- self.countFrames = false
-  -- self.dmgDisplayOffsetX = 0
-  -- self.dmgDisplayOffsetY = 0
-  -- self.dmgDisplayScale = 1
+  
+  -- Animation
+  self.spriteSheets = {
+    idle = {},
+    moveX = {},
+    moveY = {},
+    moveXY = {},
+    flinch = {},
+    ko = {}
+  }
+  local animPath = "asset/sprites/entities/" .. entityType .. "/" .. self.entityName .. "/"
+  self.actor = self:createActor(data.animations, animPath)
+  self.actor:switch('idle')
   self.opacity = 0
-  self.hazards = nil
-  self.ignoreHazards = false
-  self.moveBackTimerStarted = false
 
   self.shadowDims = {
     x = self.hitbox.x + (self.hitbox.w / 2.5) - self.pos.ox,
@@ -126,6 +111,22 @@ function Entity:init(data, x, y, entityType)
   }
   self.tweens = {}
 
+  -- Turn flow during Combat
+  self.isFocused = false
+  self.targets = {}
+  self.target = nil
+  self.targetableEntities = {}
+  self.hasUsedAction = false
+  self.turnFinish = false
+  self.state = 'idle'
+  self.moveBackTimerStarted = false
+
+  -- Hazards
+  self.hazards = nil
+  self.ignoreHazards = false
+
+
+  -- Progress Bar (for ATB)
   local pbOptions = {
     xOffset = 0,
     yOffset = 75,
@@ -139,7 +140,6 @@ function Entity:init(data, x, y, entityType)
   self.hideProgressBar = Entity.hideProgressBar
   self.isResumingTurn = false
 
-
   local minDur = 0.5
   local maxDur = 5
   local speed = math.max(self.battleStats.speed, 1)
@@ -148,6 +148,7 @@ function Entity:init(data, x, y, entityType)
   local normSpeed = math.min(speed/maxSpeed, 1)
   self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
 
+  -- Signals
   Signal.register('TargetConfirm',
   function()
     if self.tweens['pbTween'] then
@@ -631,7 +632,6 @@ function Entity:createBaseAnimations(animations, dir, actor)
     end
 
     actor:addAnimation(name, animation)
-
   end
 end;
 

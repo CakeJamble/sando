@@ -181,9 +181,6 @@ end;
 
 ---@param dt number
 function Scheduler:update(dt)
-	-- for _,entity in pairs(self.combatants) do
-	-- 	entity:update(dt)
-	-- end
 	self.characterTeam:update(dt)
 	self.enemyTeam:update(dt)
 	self.qteManager:update(dt)

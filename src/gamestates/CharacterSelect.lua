@@ -44,14 +44,12 @@ function CharacterSelect:enter(previous, opts)
   self.characters = self.loadCharacters()
   self.currCharacter = self.characters[1]
   self.teamMembers = {}
-  -- self.characterSelectSprites = self.loadCharacterSelectSprites()
   self.selectedTeamIndices = {}
 
   for i=1,TEAM_CAP do
     self.selectedTeamIndices[i] = {}
   end
 
-  -- self:defineWidgets()
   self.luisTime = 0
   luis.showGrid = true
   Signal.emit('OnEnterScene')
@@ -70,9 +68,6 @@ function CharacterSelect.loadCharacters()
     table.insert(characters, character)
   end
   return characters
-end;
-
-function CharacterSelect.loadCharacterSelectSprites()
 end;
 
 -- Widgets for party select interface
