@@ -1,4 +1,3 @@
---! filename: character team
 local Team = require('class.entities.Team')
 local Inventory = require('class.item.Inventory')
 local Character = require('class.entities.Character')
@@ -6,6 +5,12 @@ local ActionUI = require('class.ui.ActionUI')
 local Class = require('libs.hump.class')
 
 ---@class CharacterTeam: Team
+---@field rarityMod number Percentage added to weighted distributions of rarity events
+---@field discount number Percentage off for price of items during transactions
+---@field koCharacters Character[]
+---@field inventory Inventory
+---@field usingFirstConsumable boolean
+---@field koGetsExp boolean
 local CharacterTeam = Class{__includes = Team}
 
 ---@param characters Character[]
@@ -28,6 +33,7 @@ function CharacterTeam:init(characters, inventory)
   -- self.inventory:addConsumable(espresso)
 end;
 
+-- Distributes Exp to all Characters that are not KO'd.
 ---@param amount integer
 function CharacterTeam:distributeExperience(amount)
   for _,member in pairs(self.members) do
@@ -35,6 +41,7 @@ function CharacterTeam:distributeExperience(amount)
   end
 end;
 
+-- WIP for character select interaction with a tool
 ---@param opts? table Optional arguments for excluding selection
 ---@return any
 function CharacterTeam:yieldCharacterSelect(opts)
@@ -44,32 +51,7 @@ function CharacterTeam:yieldCharacterSelect(opts)
   })
 end;
 
----@deprecated Use update with baton to handle inputs
----@param key string
-function CharacterTeam:keypressed(key)
-  for _,member in pairs(self.members) do
-    member:keypressed(key)
-  end
-end;
-
----@deprecated Use update with baton to handle inputs
----@param joystick love.Joystick
----@param button love.GamepadButton
-function CharacterTeam:gamepadpressed(joystick, button)
-  for _,member in pairs(self.members) do
-    member:gamepadpressed(joystick, button)
-  end
-end;
-
----@deprecated Use update with baton to handle inputs
----@param joystick love.Joystick
----@param button love.GamepadButton
-function CharacterTeam:gamepadreleased(joystick, button)
-  for _,member in ipairs(self.members) do
-    member:gamepadreleased(joystick, button)
-  end
-end;
-
+-- Adds a Character to `self.koCharacters`
 ---@param koCharacters Character[]
 function CharacterTeam:registerKO(koCharacters)
   for _,character in ipairs(koCharacters) do
@@ -77,6 +59,7 @@ function CharacterTeam:registerKO(koCharacters)
   end
 end;
 
+-- Restores 40% of HP to each Character, rounding up. Also heals KO'd members
 function CharacterTeam:rest()
   for _,character in ipairs(self.members) do
     local amount = math.floor(0.5 + character.baseStats.hp * 0.4)
@@ -85,6 +68,7 @@ function CharacterTeam:rest()
   end
 end;
 
+-- WIP for saving/loading
 function CharacterTeam:serialize()
   local teamData = {
     members = {}, 
