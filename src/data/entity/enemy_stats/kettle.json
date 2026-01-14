@@ -1,20 +1,7 @@
 {
   "entityName": "Kettle",
   "enemyType": "common",
-  "animations": {
-    "idle": {
-      "width": 450,
-      "height": 450,
-      "frameCount": 4,
-      "duration": 1,
-    },
-    "jump": {
-      "width": 450,
-      "height": 450,
-      "frameCount": 4,
-      "duration": 1,
-    }
-  },
+  "animations": ["idle", "move"],
   "hitbox": {
     "width": 225,
     "height": 225,
