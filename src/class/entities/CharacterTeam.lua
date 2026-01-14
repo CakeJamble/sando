@@ -25,7 +25,7 @@ function CharacterTeam:init(characters, inventory)
   self.koGetsExp = false
 
   -- Adding items for testing
-  self.inventory:addConsumable(espresso)
+  -- self.inventory:addConsumable(espresso)
 end;
 
 ---@param amount integer
@@ -44,6 +44,7 @@ function CharacterTeam:yieldCharacterSelect(opts)
   })
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param key string
 function CharacterTeam:keypressed(key)
   for _,member in pairs(self.members) do
@@ -51,6 +52,7 @@ function CharacterTeam:keypressed(key)
   end
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function CharacterTeam:gamepadpressed(joystick, button)
@@ -59,6 +61,7 @@ function CharacterTeam:gamepadpressed(joystick, button)
   end
 end;
 
+---@deprecated Use update with baton to handle inputs
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function CharacterTeam:gamepadreleased(joystick, button)
@@ -80,6 +83,19 @@ function CharacterTeam:rest()
     character:heal(amount)
     character:cleanse()
   end
+end;
+
+function CharacterTeam:serialize()
+  local teamData = {
+    members = {}, 
+    inventory = self.inventory:serialize()
+  }
+  for _,member in ipairs(self.members) do
+    local memberData = member:serialize()
+    table.insert(teamData.members, memberData)
+  end
+
+  return teamData
 end;
 
 

@@ -1,0 +1,20 @@
+{
+	"name": "Rolling Pin Swing",
+	"damage": 1,
+	"targetType": "enemies",
+	"isSingleTarget": true,
+	"effects": ["damage"],
+	"chance": 1,
+	"cost": 0,
+	"animations": [
+		"wind_up", "wobble", "wobble_fail", "attack", "attack_fail"
+	],
+	"stagingType": "near",
+	"qteType": "Ring",
+	"qteBonus": "damage",
+	"description": "Pierces through a single target.",
+	"unlockedAtLvl": 1,
+	"beginTweenType": "linear",
+	"returnTweenType": "linear",
+	"hasProjectile": false,
+}

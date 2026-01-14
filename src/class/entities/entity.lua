@@ -3,6 +3,7 @@ local ProgressBar = require('class.ui.ProgressBar')
 local Class = require "libs.hump.class"
 local Timer = require('libs.hump.timer')
 local flux = require('libs.flux')
+local animx = require('libs.animX')
 local StatusEffects = require('util.status_effects')
 
 ---@class Entity
@@ -28,6 +29,8 @@ local Entity = Class{
 function Entity:init(data, x, y, entityType)
   self.type = entityType
   self.entityName = data.entityName
+
+  -- Stats & Status
   self.baseStats = self.copyStats(data)
   self.battleStats = self.copyStats(data)
   self.statStages = self.setStatStages(self.baseStats)
@@ -60,11 +63,33 @@ function Entity:init(data, x, y, entityType)
     luck = 1,
   }
   self.critMult = 2
-  self.basic = data.basic
+
+  -- Skills
   self.skillPool = data.skillPool
   self.skill = nil
+  self.selectedSkill = nil
   -- self.projectile = nil
   self.projectiles = {}
+
+  -- Position & Collision
+  self.pos = {
+    x = x, y = y,
+    r = 0, a = 1,
+    sx = 0.5, sy = 0.5,
+    ox = 0,
+    oy = 0
+  }
+  self.hbXOffset, self.hbYOffset = 0, 0
+  self.hitbox = {
+    x = self.pos.x + self.hbXOffset - self.pos.ox,
+    y = self.pos.y + self.hbYOffset - self.pos.oy,
+    w = data.hitbox.width * self.pos.sx,
+    h = data.hitbox.height * self.pos.sy,
+  }
+  self.tPos = {x = 0, y = 0}
+  self.oPos = {x = x, y = y}
+  
+  -- Animation
   self.spriteSheets = {
     idle = {},
     moveX = {},
@@ -73,26 +98,20 @@ function Entity:init(data, x, y, entityType)
     flinch = {},
     ko = {}
   }
-  self.baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
-  self.animations = {}
-  self.currentAnimTag = 'idle'
-  self.koAnimDuration = data.koAnimDuration or 1.5
+  local animPath = "asset/sprites/entities/" .. entityType .. "/" .. self.entityName .. "/"
+  self.actor = self:createActor(data.animations, animPath)
+  self.actor:switch('idle')
+  self.opacity = 0
 
-
-  -- self.dX=0
-  -- self.dY=0
-  self.frameWidth = data.width      -- width of sprite (or width for a single frame of animation for this character)
-  self.frameHeight = data.height    -- height of sprite (or height for a single frame of animation for this character)
-  self.pos = {
-    x = x, y = y,
-    r = 0, a = 1,
-    sx = 1, sy = 1,
-    ox = self.frameWidth / 2,
-    oy = self.frameHeight / 2
+  self.shadowDims = {
+    x = self.hitbox.x + (self.hitbox.w / 2.5) - self.pos.ox,
+    y = self.oPos.y - self.pos.oy,
+    w = self.hitbox.w / 2,
+    h = self.hitbox.h / 8,
   }
-  self.tPos = {x = 0, y = 0}
-  self.oPos = {x = x, y = x}
-  self.currentFrame = 1
+  self.tweens = {}
+
+  -- Turn flow during Combat
   self.isFocused = false
   self.targets = {}
   self.target = nil
@@ -100,36 +119,14 @@ function Entity:init(data, x, y, entityType)
   self.hasUsedAction = false
   self.turnFinish = false
   self.state = 'idle'
-  self.selectedSkill = nil
-
-  self.numFramesDmg = 60
-  self.currDmgFrame = 0
-  self.amount = 0
-  self.countFrames = false
-  self.dmgDisplayOffsetX = 0
-  self.dmgDisplayOffsetY = 0
-  self.dmgDisplayScale = 1
-  self.opacity = 0
-
-  self.ignoreHazards = false
   self.moveBackTimerStarted = false
-  self.hbXOffset = (data.width - data.hbWidth) / 2
-  self.hbYOffset = (data.height - data.hbHeight) * 0.75
-  self.hitbox = {
-    x = self.pos.x + self.hbXOffset - self.pos.ox,
-    y = self.pos.y + self.hbYOffset - self.pos.oy,
-    w = data.hbWidth,
-    h = data.hbHeight
-  }
 
-  self.shadowDims = {
-    x = self.hitbox.x + (self.hitbox.w / 2.5) - self.pos.ox,
-    y = self.oPos.y + self.frameHeight - self.pos.oy,
-    w = self.hitbox.w / 2,
-    h = self.hitbox.h / 8,
-  }
-  self.tweens = {}
+  -- Hazards
+  self.hazards = nil
+  self.ignoreHazards = false
 
+
+  -- Progress Bar (for ATB)
   local pbOptions = {
     xOffset = 0,
     yOffset = 75,
@@ -143,8 +140,6 @@ function Entity:init(data, x, y, entityType)
   self.hideProgressBar = Entity.hideProgressBar
   self.isResumingTurn = false
 
-  self.hazards = nil
-
   local minDur = 0.5
   local maxDur = 5
   local speed = math.max(self.battleStats.speed, 1)
@@ -153,7 +148,7 @@ function Entity:init(data, x, y, entityType)
   local normSpeed = math.min(speed/maxSpeed, 1)
   self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
 
-  
+  -- Signals
   Signal.register('TargetConfirm',
   function()
     if self.tweens['pbTween'] then
@@ -273,13 +268,6 @@ end;
 function Entity:attackInterrupt()
   self.tweens['attack']:stop()
   self:endTurn(0)
-  -- if self:isAlive() then
-    -- self:tweenToStagingPosThenStartingPos(0.5, self.tPos, 'quadout')
-
-  -- else
-    -- self:reset()
-    -- Signal.emit('NextTurn')
-  -- end
 end;
 
 ---@param t integer?
@@ -579,15 +567,18 @@ function Entity:takeDamage(amount, attackerLuck) --> void
   end
 
   if self:isAlive() then
-    self.currentAnimTag = 'flinch'
-    Timer.after(0.5, function() self.currentAnimTag = 'idle' end)
+    self.actor:switch("flinch")
+    local anim = self.actor:getCurrentAnimation()
+    anim:onAnimOver(function()
+      self.actor:switch("idle")
+    end)
   end
 end;
 
 ---@param amount integer
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
-  self.currentAnimTag = 'flinch'
+  self.actor:switch("flinch")
 end;
 
 ---@param attackerLuck integer
@@ -609,30 +600,61 @@ function Entity:calcCritChance(attackerLuck)
 end;
 
 function Entity:startFainting()
-  self.currentAnimTag = "ko"
-  return self.koAnimDuration
+  self.actor:switch("ko")
 end;
 
 --[[----------------------------------------------------------------------------------------------------
-        Sprites & SFX
+        Animation
 ----------------------------------------------------------------------------------------------------]]
+-- Creates an empty Actor, loops over the paths in `animationData`,
+-- creating each animation from its sprite sheet and XML file,
+-- then adds it to the Actor
+---@param animations string[]
+---@param dir string Path to this character's directory
+---@return table actor
+function Entity:createActor(animations, dir)
+  local actor = animx.newActor()
+  self:createBaseAnimations(animations, dir, actor)
+  self:createSkillAnimations(dir, actor)
 
---[[Sets the animations that all Entities have in common (idle, move_x, flinch, ko)
-  Shared animations are called by the child classes since the location of the subdir depends on the type of class]]
----@param path string
-function Entity:setAnimations(path)
-  local baseAnimationTypes = {'idle', 'move', 'flinch', 'ko'}
-  for _,anim in ipairs(baseAnimationTypes) do
-    local image = love.graphics.newImage(path .. anim .. '.png')
-    self.animations[anim] = self:populateFrames(image)
-  end
+  return actor
+end;
 
-  for _,skill in ipairs(self.skillPool) do
-    local skillPath = path .. skill.tag .. '.png'
-    local image = love.graphics.newImage(skillPath)
-    self.animations[skill.tag] = self:populateFrames(image)
+---@param animations string[] Array of animation names
+---@param dir string The directory where animations are located
+---@param actor table Reference to the AnimX actor object housing animations
+function Entity:createBaseAnimations(animations, dir, actor)
+  for _,name in ipairs(animations) do
+    local path = dir .. name .. ".png"
+    local animation = animx.newAnimation(path)
+    if name == "idle" or name == "run" then
+      animation:loop()
+    end
+
+    actor:addAnimation(name, animation)
   end
 end;
+
+---@param dir string The directory where animations are located
+---@param actor table Reference to the AnimX actor object housing animations
+function Entity:createSkillAnimations(dir, actor)
+  for _,skill in ipairs(self.skillPool) do
+    local skillPath = dir .. skill.tag .. "/"
+    for _,name in ipairs(skill.animations) do
+      local path = skillPath .. name .. ".png"
+      local fullName = skill.tag .. "_" .. name -- ex: needle_stab & wind_up -> needle_stab_wind_up
+      local animation = animx.newAnimation(path)
+      if name == "wobble" or "wobble_fail" then
+        animation:loop()
+      end
+      actor:addAnimation(fullName, animation)
+    end
+  end
+end;
+
+--[[----------------------------------------------------------------------------------------------------
+        SFX
+----------------------------------------------------------------------------------------------------]]
 
 ---@param path string
 ---@param baseSFXTypes string[]
@@ -647,27 +669,6 @@ function Entity:setSFX(path, baseSFXTypes)
   return sfxList
 end;
 
----@param image table
----@param duration? integer
----@return table
-function Entity:populateFrames(image, duration)
-  local animation = {}
-  animation.spriteSheet = image
-  animation.quads = {}
-
-  for y = 0, image:getHeight() - self.frameHeight, self.frameHeight do
-    for x = 0, image:getWidth() - self.frameWidth, self.frameWidth do
-      table.insert(animation.quads, love.graphics.newQuad(x, y, self.frameWidth, self.frameHeight, image:getDimensions()))
-    end
-  end
-
-  animation.duration = duration or 1
-  animation.currentTime = 0
-  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads)
-
-  return animation
-end;
-
 --[[----------------------------------------------------------------------------------------------------
         Update
 ----------------------------------------------------------------------------------------------------]]
@@ -675,48 +676,35 @@ end;
 ---@param dt number
 function Entity:update(dt) --> void
   self:updateHitbox()
-  self:updateShadow()
+  -- self:updateShadow()
 
   if Entity.isATB then
     self.progressBar:setPos(self.pos)
   end
 
   self:updateProjectiles(dt)
-  self:updateAnimation(dt)
-
-  if self.countFrames then
-    self.currDmgFrame = self.currDmgFrame + 1
-    self.dmgDisplayScale = self.dmgDisplayScale - 0.01
-    self.dmgDisplayOffsetX = math.cos(self.currDmgFrame * 0.25)
-    self.dmgDisplayOffsetY = self.dmgDisplayOffsetY + 0.1
-    self.opacity = self.opacity + 0.05
-  end
+  animx.update(dt)
 end;
 
----@param dt number
-function Entity:updateAnimation(dt)
-  local animation = self.animations[self.currentAnimTag]
-  animation.currentTime = animation.currentTime + dt
-  if animation.currentTime >= animation.duration then
-    if not self:isAlive() and self.currentAnimTag == 'ko' then
-      animation.currentTime = animation.duration
-    else
-      animation.currentTime = animation.currentTime - animation.duration
-    end
-  end
-
-  animation.spriteNum = math.floor(animation.currentTime / animation.duration * #animation.quads) + 1
-  animation.spriteNum = math.min(animation.spriteNum, #animation.quads)
-end;
-
+-- Adjusts the hitbox offsets and x,y position based on the current animation state
 function Entity:updateHitbox()
-  self.hitbox.x = self.pos.x + self.hbXOffset - self.pos.ox
-  self.hitbox.y = self.pos.y + self.hbYOffset - self.pos.oy
+  -- local animation = self.animations[self.currentAnimTag]
+  local w,h = self.actor:getCurrentAnimation():getDimensions()
+  -- local currentQuad = animation.quad[animation.spriteNum]
+  -- local sw, sh = currentQuad:getTextureDimensions()
+  self.pos.ox = w / 2
+  self.pos.oy = h
+  self.hitbox.x = self.pos.x - (math.ceil(self.hitbox.w / 2))
+  self.hitbox.y = self.pos.y - (math.floor(self.hitbox.h))
+  -- self.hbXOffset = (w - self.hitbox.width) / 2
+  -- self.hbYOffset = (h - self.hitbox.height) / 2
+  -- self.hitbox.x = self.pos.x + self.hbXOffset - self.pos.ox
+  -- self.hitbox.y = self.pos.y + self.hbYOffset - self.pos.oy
 end;
 
 function Entity:updateShadow()
   self.shadowDims.x = self.hitbox.x + (self.hitbox.w / 2)
-  self.shadowDims.y = self.pos.y + (self.frameHeight * 0.95) - self.pos.oy
+  self.shadowDims.y = self.pos.y + (self.pos.oy * 0.95) - self.pos.oy
 end;
 
 ---@param dt number
@@ -729,12 +717,9 @@ end;
 --[[----------------------------------------------------------------------------------------------------
         Drawing
 ----------------------------------------------------------------------------------------------------]]
-
--- Should draw using the animation in the valid state (idle, moving (in what direction), jumping, etc.)
 function Entity:draw() --> void
   self:drawShadow()
-  self:drawFeedback()
-  self:drawSprite()
+  self.actor:draw(self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.pos.ox, self.pos.oy)
   self:drawHitbox()
   self:drawProjectiles()
   self:drawProgressBar()
@@ -746,22 +731,6 @@ function Entity:drawShadow()
     love.graphics.ellipse("fill", self.shadowDims.x, self.shadowDims.y, self.shadowDims.w, self.shadowDims.h)
     love.graphics.setColor(1, 1, 1, 1)
   end
-end;
-
-function Entity:drawFeedback()
-  if self.countFrames and self.currDmgFrame <= self.numFramesDmg then
-    love.graphics.setColor(0,0,0, 1 - self.opacity)
-    love.graphics.print(self.amount, self.pos.x + self.dmgDisplayOffsetX, self.pos.y-self.dmgDisplayOffsetY, 0,
-      self.dmgDisplayScale, self.dmgDisplayScale)
-    love.graphics.setColor(1,1,1, 1)
-  end
-end;
-
-function Entity:drawSprite()
-  local animation = self.animations[self.currentAnimTag]
-  love.graphics.setColor(1,1,1,self.pos.a)
-  love.graphics.draw(animation.spriteSheet, animation.quads[animation.spriteNum], self.pos.x, self.pos.y, self.pos.r, self.pos.sx, self.pos.sy, self.frameWidth/2, self.frameHeight/2)
-  love.graphics.setColor(1,1,1,1)
 end;
 
 function Entity:drawHitbox()

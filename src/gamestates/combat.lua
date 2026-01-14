@@ -153,18 +153,6 @@ function Combat:setTurnManager(toolManager)
   return turnManager
 end;
 
----@param key string
----@deprecated
-function Combat:keypressed(key)
-  if key == '`' then
-    showDebugWindow = not showDebugWindow
-  elseif key == 'p' then
-    Gamestate.push(states['pause'], self.characterTeam.inventory)
-  else
-    self.characterTeam:keypressed(key)
-  end
-end;
-
 ---@param joystick love.Joystick
 ---@param button love.GamepadButton
 function Combat:gamepadpressed(joystick, button)
@@ -180,18 +168,15 @@ function Combat:gamepadpressed(joystick, button)
   end
 end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function Combat:gamepadreleased(joystick, button)
-  if self.turnManager and self.turnManager.qteManager.activeQTE then
-    self.turnManager.qteManager:gamepadreleased(joystick, button)
-  else
-    self.characterTeam:gamepadreleased(joystick, button)
-  end
-end;
-
 ---@param dt number
 function Combat:update(dt)
+  Player:update()
+
+  if Player:pressed('pause') and not self.paused then
+    self.paused = true
+    -- Gamestate:push(states["Pause"])
+  end
+
   if not self.paused then
     flux.update(dt)
 
@@ -204,21 +189,6 @@ function Combat:update(dt)
   self:updateIMGUI(dt)
 end;
 
--- Might interfere with QTE Joystick mechanics, circle back later to make sure
-function Combat:updateJoystick()
-  if input.joystick then
-    -- Left Stick
-    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
-      self:gamepadpressed(input.joystick, 'dpright')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
-      self:gamepadpressed(input.joystick, 'dpleft')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
-      self:gamepadpressed(input.joystick, 'dpup')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
-      self:gamepadpressed(input.joystick, 'dpdown')
-    end
-  end
-end;
 
 ---@param dt number
 function Combat:updateIMGUI(dt)

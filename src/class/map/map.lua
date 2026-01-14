@@ -14,7 +14,7 @@ function Map:init(mapData, numFloors, width, numPaths)
 	self.width = width
 	self.numPaths = numPaths
 	self.selected = nil
-	self.selectedIndex = nil
+	self.selectedIndex = 1
 	self.activeRooms = {}
 	self.pos = {
 		x = shove.getViewportWidth() / 4,
@@ -124,22 +124,17 @@ function Map:logSelection(log, floor)
 	end
 end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function Map:gamepadpressed(joystick, button)
-	if not self.selected then
-		self.selected = self.activeRooms[1]
-		self.selectedIndex = 1
-	elseif button == "dpleft" then
-		self.selectedIndex = self.selectedIndex - 1
-		if self.selectedIndex <= 0 then
-			self.selectedIndex = #self.activeRooms
-		end
-		self.selected = self.activeRooms[self.selectedIndex]
-	elseif button == "dpright" then
+function Map:update(dt)
+	if Player:pressed("right") then
 		self.selectedIndex = self.selectedIndex + 1
 		if self.selectedIndex > #self.activeRooms then
-			self.selectedIndex = 1
+			self.selected = 1
+		end
+		self.selected = self.activeRooms[self.selectedIndex]
+	elseif Player:pressed("left") then
+		self.selectedIndex = self.selectedIndex - 1
+		if self.selectedIndex < 1 then
+			self.selectedIndex = #self.activeRooms
 		end
 		self.selected = self.activeRooms[self.selectedIndex]
 	end

@@ -14,6 +14,13 @@ local runTests = require('test.main_tests')
 local loadAudio = require('util.audio_loader')
 local loadItemPools = require('util.item_pool_loader')
 
+local loadDefaultControls = require('util.load_default_controls')
+
+local gamepadguesser = require('libs.gamepadguesser')
+
+-- only use variable if 
+local joy = gamepadguesser.createJoystickData("libs/gamepadguesser")
+
 -- PostProcessing Effects
 local screenCanvas
 
@@ -58,7 +65,6 @@ Audio.sfx.ui:setVolume(0.3)
 Text.configure.audio_table("Audio")
 Text.configure.add_text_sound(Audio.text.default, 0.5)
 
-local JoystickUtils = require 'util.joystick_utils'
 
 ---@param args table Arguments to set the game environment (test vs prod, etc.)
 function love.load(args)
@@ -80,20 +86,14 @@ function love.load(args)
     })
 
   -- Input
-  input = {joystick = nil}
   local joysticks = love.joystick.getJoysticks()
-  if joysticks[1] then
-    input.joystick = joysticks[1]
-    print('added joystick')
-  end
+  Player = loadDefaultControls(joysticks[1])
 
   -- Screen Resolution, Music/SFX, Input UI
   GameSettings = Settings()
 
   -- Camera
   camera = Camera()
-
-
 
   -- Fonts
   Font = love.graphics.newFont('asset/Chelsea_Market/ChelseaMarket-Regular.ttf')
@@ -119,40 +119,19 @@ end;
 
 ---@param joystick love.Joystick
 function love.joystickadded(joystick)
-  print("Joystick connected: " .. joystick:getName())
-
-  if not input.joystick then
-    input.joystick = joystick
+  print("Joystick connected: " .. gamepadguesser.getJoystickName(joystick))
+  if not Player.config.joystick then
+    Player.config.joystick = joystick
   end
 end;
 
 ---@param joystick love.Joystick
 function love.joystickremoved(joystick)
-  print("Joystick disconnected: " .. joystick:getName())
+  print("Joystick disconnected: " .. gamepadguesser.getJoystickName(joystick))
 
-  if input.joystick == joystick then
-    input.joystick = nil
+  if Player.config.joystick == joystick then
+    Player.config.joystick = joystick
   end
-end;
-
----@param dt number
-function love.update(dt)
-  JoystickUtils.update(dt)
-
-  if input.joystick then
-    JoystickUtils.update(dt)
-    JoystickUtils.updateAxisRepeater(input.joystick, dt, "left")
-    JoystickUtils.updateAxisRepeater(input.joystick, dt, "right")
-  end
-end;
-
-function love.draw()
-  -- Put the whole game on a canvas
-  love.graphics.setCanvas(screenCanvas)
-  love.graphics.clear()
-  Gamestate.current():draw()
-  love.graphics.setCanvas()
-  GameSettings:draw()
 end;
 
 function love.quit()

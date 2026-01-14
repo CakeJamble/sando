@@ -59,52 +59,74 @@ function RingQTE:beginQTE(callback)
 	end)
 end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function RingQTE:gamepadpressed(joystick, button)
-	if button == self.actionButton and not self.signalEmitted then
-		if self.ring.revActive then
-			self.sliceIndex = self.sliceIndex + 1
-			if self.ring:isInHitBox() then
-				print('good')
-				self.successCount = self.successCount + 1
-			else
-			print('bad')
-			self.signalEmitted = true
-			self.onComplete(false)
-			end
+-- ---@deprecated Use update with Baton over gamepadpressed callback
+-- ---@param joystick love.Joystick
+-- ---@param button love.GamepadButton
+-- function RingQTE:gamepadpressed(joystick, button)
+-- 	if button == self.actionButton and not self.signalEmitted then
+-- 		if self.ring.revActive then
+-- 			self.sliceIndex = self.sliceIndex + 1
+-- 			if self.ring:isInHitBox() then
+-- 				print('good')
+-- 				self.successCount = self.successCount + 1
+-- 			else
+-- 			print('bad')
+-- 			self.signalEmitted = true
+-- 			self.onComplete(false)
+-- 			end
 
-			if self.sliceIndex > self.ring.numSlices then
-				if not self.signalEmitted then
-					self.qteComplete = true
-					self.ring.revolutionTween:stop()
-					self.ring.revActive = false
-					local isSuccess = false
-					if self.successCount == self.ring.numSlices then
-						print('Ring QTE Success')
-						isSuccess = true
-						self:tweenFeedback()
-					else
-						print('Ring QTE Fail')
-					end
-					self.signalEmitted = true
-					self.onComplete(isSuccess)
-				end
-			end
+-- 			if self.sliceIndex > self.ring.numSlices then
+-- 				if not self.signalEmitted then
+-- 					self.qteComplete = true
+-- 					self.ring.revolutionTween:stop()
+-- 					self.ring.revActive = false
+-- 					local isSuccess = false
+-- 					if self.successCount == self.ring.numSlices then
+-- 						print('Ring QTE Success')
+-- 						isSuccess = true
+-- 						self:tweenFeedback()
+-- 					else
+-- 						print('Ring QTE Fail')
+-- 					end
+-- 					self.signalEmitted = true
+-- 					self.onComplete(isSuccess)
+-- 				end
+-- 			end
 
-		end
-	end
+-- 		end
+-- 	end
 
 
-end;
-
----@param joystick love.Joystick
----@param button love.GamepadButton
-function RingQTE:gamepadreleased(joystick, button)
-end;
+-- end;
 
 ---@param dt number
 function RingQTE:update(dt)
+	if Player:pressed(self.actionButton) and not self.signalEmitted then
+		if self.ring.revActive then
+			-- good button press, increment to next index
+			self.sliceIndex = self.sliceIndex + 1
+			self.successCount = self.successCount + 1
+		else -- late press, failed qte
+			self.signalEmitted = true
+			self.onComplete(false)
+		end
+
+		if self.sliceIndex > self.ring.numSlices then
+			if not self.signalEmitted then
+				self.qteComplete = true
+				self.ring.revolutionTween:stop()
+				self.ring.revActive = false
+
+				local isSuccess = false
+				if self.successCount == self.ring.numSlices then
+					self:tweenFeedback()
+					isSuccess = true
+				end
+				self.signalEmitted = true
+				self.onComplete(isSuccess)
+			end
+		end
+	end
 end;
 
 function RingQTE:draw()

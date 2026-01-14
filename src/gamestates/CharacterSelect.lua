@@ -1,9 +1,13 @@
 local CharacterSelect = {}
+local initLuis = require('libs.luis.init')
+local luis = initLuis("libs/luis/widgets")
 local CharacterTeam = require("class.entities.CharacterTeam")
 local Character = require("class.entities.Character")
 local loadCharacterData = require('util.character_loader')
-local JoystickUtils = require('util.joystick_utils')
-
+local json = require('libs.json')
+local flux = require('libs.flux')
+local Timer = require('libs.hump.timer')
+local Signal = require('libs.hump.signal')
 local TEAM_CAP = 2
 local SELECT_START = 100
 local GRID_LENGTH = 1
@@ -11,20 +15,11 @@ local GRID_LENGTH = 1
 local OFFSET = 64
 local CHARACTER_SELECT_PATH = 'asset/sprites/character_select/'
 local CURSOR_PATH = CHARACTER_SELECT_PATH .. 'cursor.png'
-local BAKE_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'bake_portrait.png'
-local MARCO_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'marco_portrait.png'
-local MARIA_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'maria_portrait.png'
-local KEY_PORTRAIT_PATH = CHARACTER_SELECT_PATH .. 'key_portrait.png'
 
 function CharacterSelect:init()
   shove.createLayer('background')
   shove.createLayer('ui')
   self.cursor = love.graphics.newImage(CURSOR_PATH)
-  self.bakePortrait = love.graphics.newImage(BAKE_PORTRAIT_PATH)
-  self.marcoPortrait = love.graphics.newImage(MARCO_PORTRAIT_PATH)
-  self.mariaPortrait = love.graphics.newImage(MARIA_PORTRAIT_PATH)
-  self.keyPortrait = love.graphics.newImage(KEY_PORTRAIT_PATH)
-
   self.instructions = 'Select your team members'
   self.selectedContainerOptions = {
     mode = 'line',
@@ -33,10 +28,12 @@ function CharacterSelect:init()
     width = TEAM_CAP * OFFSET,
     height = OFFSET
   }
+
+  luis.setGridSize(32)
 end;
 
-function CharacterSelect:enter()
-  self.opts = {}
+function CharacterSelect:enter(previous, opts)
+  self.opts = opts or {}
   self.index = 0
   self.spriteRow = 0
   self.spriteCol = 0
@@ -44,46 +41,71 @@ function CharacterSelect:enter()
   self.spriteYOffset = 0
   self.numPlayableCharacters = 4
   self.teamCount = 0
-
+  self.characters = self.loadCharacters()
+  self.currCharacter = self.characters[1]
+  self.teamMembers = {}
   self.selectedTeamIndices = {}
 
   for i=1,TEAM_CAP do
     self.selectedTeamIndices[i] = {}
   end
+
+  self.luisTime = 0
+  luis.showGrid = true
+  Signal.emit('OnEnterScene')
 end;
 
----@deprecated
----@param key string
-function CharacterSelect:keypressed(key)
-  if key == 'right' then
-    self:set_right()
-  elseif key == 'left' then
-    self:set_left()
-  elseif key == 'up' then
-    self:set_up()
-  elseif key == 'down' then
-    self:set_down()
-  elseif key == 'z' then
-    self:validate_selection()
+---@return Character[]
+function CharacterSelect.loadCharacters()
+  local characters = {}
+  local path = "data/entity/unlocked_characters.json"
+  local raw = love.filesystem.read(path)
+  local data = json.decode(raw)
+
+  for i,name in ipairs(data) do
+    local actionButton = "action_p" .. i
+    local character = Character(loadCharacterData(name), actionButton)
+    table.insert(characters, character)
   end
+  return characters
 end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function CharacterSelect:gamepadpressed(joystick, button)
-  if button == 'dpright' then
-    self:set_right()
-  elseif button == 'dpleft' then
-    self:set_left()
-  elseif button == 'dpup' then
-    self:set_up()
-  elseif button == 'dpdown' then
-    self:set_down()
-  elseif button == 'a' then
-    self:validate_selection()
+-- Widgets for party select interface
+function CharacterSelect:defineWidgets()
+  self.icons = self:defineIconWidgets()
+  self.buttons = self:defineButtonWidgets()
+end;
+
+---@return table
+function CharacterSelect:defineIconWidgets()
+  local icons = {}
+
+  for _, character in ipairs(self.characters) do
+    for _, skill in ipairs(character.currentSkills) do
+      local path = "asset/sprites/entities/character/" .. character.entityName .. "/" .. skill.name .. "_icon.png"
+      local icon = luis.newIcon(path, 4, 3, 10)
+      table.insert(icons, icon)
+    end
   end
+
+  return icons
 end;
 
+---@return table
+function CharacterSelect:defineButtonWidgets()
+  local buttons = {}
+
+  for i, character in ipairs(self.characters) do
+    local button = luis.newButton(character.entityName, 8, 4, nil,
+      function()
+      end, 10, 2 + (i-1) * 10)
+    table.insert(buttons, button)
+  end
+
+  return buttons
+end;
+
+---@deprecated Not used in carousel layout
 function CharacterSelect:set_right()
   if self.spriteCol < GRID_LENGTH then
     self.spriteCol = self.spriteCol + 1
@@ -104,6 +126,7 @@ function CharacterSelect:set_right()
   end
 end;
 
+---@deprecated Not used in carousel layout
 function CharacterSelect:set_left()
   if self.spriteCol > 0 then
     self.spriteCol = self.spriteCol - 1
@@ -122,6 +145,29 @@ function CharacterSelect:set_left()
   self.spriteXOffset = OFFSET * self.spriteCol
 end;
 
+function CharacterSelect:navRight()
+  self.index = self.index + 1
+  if self.index > #self.characters then
+    self.index = 1
+  end
+  self.currCharacter = self.characters[self.index]
+end;
+
+function CharacterSelect:navLeft()
+  self.index = self.index - 1
+  if self.index < 1 then
+    self.index = #self.characters
+  end
+  self.currCharacter = self.characters[self.index]
+end;
+
+function CharacterSelect:navDown()
+end;
+
+function CharacterSelect:navUp()
+end;
+
+---@deprecated Not used in carousel layout
 function CharacterSelect:set_up()
   if self.spriteRow > 0 then
     self.spriteRow = self.spriteRow - 1
@@ -134,6 +180,7 @@ function CharacterSelect:set_up()
   end
 end;
 
+---@deprecated Not used in carousel layout
 function CharacterSelect:set_down()
   if self.spriteRow < GRID_LENGTH then
     self.spriteRow = self.spriteRow + 1
@@ -147,54 +194,13 @@ function CharacterSelect:set_down()
 end;
 
 function CharacterSelect:validate_selection()
-  if self.teamCount == TEAM_CAP then
-    self:indicesToCharacters()
-    local team = self.opts.team
+  if #self.teamMembers == TEAM_CAP then
+    local team = CharacterTeam(self.teamMembers)
+    self.opts.team = team
     Gamestate.switch(states['Overworld'], team)
   else
-    self.selectedTeamIndices[self.teamCount + 1] = self.index
-    self.teamCount = self.teamCount + 1
+    table.insert(self.teamMembers, self.currCharacter)
   end
-end;
-
--- Converts index choices to Character objects and adds them to self.opts
-function CharacterSelect:indicesToCharacters()
-  local characterList = {}
-  for i=1,TEAM_CAP do
-    if self.selectedTeamIndices[i] == 0 then
-      -- bake = Character(get_bake_stats(), 'a')
-      local bake = Character(loadCharacterData('bake'), 'a')
-      characterList[i] = bake
-    elseif self.selectedTeamIndices[i] == 1 then
-      -- marco = Character(get_marco_stats(), 'x')
-      local marco = Character(loadCharacterData('marco'), 'x')
-      characterList[i] = marco
-    elseif self.selectedTeamIndices[i] == 2 then
-      local maria = Character(get_maria_stats(), 'b')
-      characterList[i] = maria
-    elseif self.selectedTeamIndices[i] == 3 then
-      local key = Character(get_key_stats(), 'y')
-      characterList[i] = key
-    end
-  end
-
-  self.opts["team"] = CharacterTeam(characterList)
-end;
-
----@deprecated
----@return string
-function CharacterSelect:setStatPreview()
-  local statPreview
-  if self.spriteRow == 0 and self.spriteCol == 0 then
-    statPreview = self:statsToString(get_bake_stats())
-  elseif self.spriteRow == 0 and self.spriteCol == 1 then
-    statPreview = self:statsToString(get_marco_stats())
-  elseif self.spriteRow == 1 and self.spriteCol == 0 then
-    statPreview = self:statsToString(get_maria_stats())
-  else
-    statPreview = self:statsToString(get_key_stats())
-  end
-  return statPreview
 end;
 
 -- Format stats table into a string for the stat preview
@@ -206,20 +212,36 @@ end;
 
 ---@param dt number
 function CharacterSelect:update(dt)
-  self:updateJoystick()
+  self:updateJoystick(dt)
+  self.currCharacter:update(dt)
 end;
 
-function CharacterSelect:updateJoystick()
-  if input.joystick then
-    if JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'right') then
-      self:gamepadpressed(input.joystick, 'dpright')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'left') then
-      self:gamepadpressed(input.joystick, 'dpleft')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'up') then
-      self:gamepadpressed(input.joystick, 'dpup')
-    elseif JoystickUtils.isAxisRepeaterTriggered(input.joystick, 'down') then
-      self:gamepadpressed(input.joystick, 'dpdown')
-    end
+---@param dt number
+function CharacterSelect:updateJoystick(dt)
+  flux.update(dt)
+  Timer.update(dt)
+  Player:update()
+
+  if Player:pressed('down') then
+    -- self:set_right()
+    self.currCharacter = self.characters[2]
+    self.readyToValidate = false
+  elseif Player:pressed('up') then
+    -- self:set_up()
+    self.readyToValidate = false
+  elseif Player:pressed('left') then
+    -- self:set_left()
+    self:navLeft()
+    self.readyToValidate = false
+  elseif Player:pressed('right') then
+    self:navRight()
+    self.readyToValidate = false
+  elseif Player:pressed('confirm') then
+    self.readyToValidate = true
+  elseif Player:released('confirm') and self.readyToValidate then
+    self:validate_selection()
+  elseif Player:pressed('cancel') or Player:pressed('menuCancel') then
+    Gamestate.switch(states['MainMenu'])
   end
 end;
 
@@ -227,30 +249,19 @@ function CharacterSelect:draw()
   shove.beginDraw()
 
   shove.beginLayer('ui')
-  self:drawCharacterSelect()
-  love.graphics.print(self.instructions, 240, 20)
+  -- love.graphics.print(self.instructions, 240, 20)
 
-  if self.teamCount < TEAM_CAP then
-    love.graphics.print('Choose ' .. TEAM_CAP - self.teamCount .. ' characters', 240, 50)
-  else
-    love.graphics.print('Press confirm to begin', 240, 50)
-  end
-  love.graphics.rectangle(self.selectedContainerOptions.mode,
-    self.selectedContainerOptions.x, self.selectedContainerOptions.y,
-    self.selectedContainerOptions.width, self.selectedContainerOptions.height)
+  -- if self.teamCount < TEAM_CAP then
+    -- love.graphics.print('Choose ' .. TEAM_CAP - self.teamCount .. ' characters', 240, 50)
+  -- else
+    -- love.graphics.print('Press confirm to begin', 240, 50)
+  -- end
+  -- love.graphics.rectangle(self.selectedContainerOptions.mode,
+    -- self.selectedContainerOptions.x, self.selectedContainerOptions.y,
+    -- self.selectedContainerOptions.width, self.selectedContainerOptions.height)
+  self.currCharacter:draw()
   shove.endLayer()
   shove.endDraw()
-end;
-
-function CharacterSelect:drawCharacterSelect()
-  love.graphics.rectangle('line', SELECT_START - 5, SELECT_START - 5, OFFSET * (GRID_LENGTH + 1) + 10,
-    OFFSET * (GRID_LENGTH + 1) + 10)
-  love.graphics.draw(self.bakePortrait, SELECT_START, SELECT_START)
-  love.graphics.draw(self.marcoPortrait, SELECT_START + OFFSET, SELECT_START)
-  love.graphics.draw(self.mariaPortrait, SELECT_START, SELECT_START + OFFSET)
-  love.graphics.draw(self.keyPortrait, SELECT_START + OFFSET, SELECT_START + OFFSET)
-  love.graphics.draw(self.cursor, SELECT_START + (self.spriteCol * OFFSET), SELECT_START+ (self.spriteRow * OFFSET))
-  -- love.graphics.print(statPreview, 300, 100)
 end;
 
 return CharacterSelect

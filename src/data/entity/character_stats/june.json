@@ -1,5 +1,5 @@
 {
-	"entityName": "Marco",
+	"entityName": "June",
 	"animations": [
 		"block", "eat", "fall", "idle", "jump", "land", "power_up", "run",
 	],
@@ -14,5 +14,5 @@
 	"speed": 5,
 	"luck": 10,
 	"growthRate": 1.25,
-	"skillPool": ["illusion"]
+	"skillPool": ["needle_stab"]
 }

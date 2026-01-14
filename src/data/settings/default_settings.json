@@ -7,10 +7,9 @@
 	},
 	"musicVolume": 1,
 	"sfxVolume": 1,
-	"display" : {
-		"brightness": 1,
-		"contrast": 1,
-		"saturation": 1,
-		"hueShift": 0
+	"window": {
+		"borderless": false,
+		"fullscreen": false,
+		"display": 1,
 	}
 }

@@ -6,11 +6,12 @@ local flux = require('libs.flux')
 function Pause:init()
     shove.createLayer("ui", {zIndex = 10})
     self.supportedResolutions = GameSettings.supportedResolutions
-    luis.setGridSize(32)
     self.resIndex = 4
 end;
 
 function Pause:enter(previous)
+    luis.initJoysticks()
+    luis.setGridSize(32)
     self.luisTime = 0
     GameSettings.musicManager:play('ny_house_party')
     self:defineWidgets()
@@ -21,13 +22,16 @@ function Pause:enter(previous)
 end;
 
 function Pause:defineWidgets()
-    self.musicVolSlider = luis.newSlider(0, 1, 1, 10, 1,
+    local settings = GameSettings.settings
+    self.musicVolSlider = luis.newSlider(0, 1, settings.musicVolume, 10, 1,
         function(value)
             GameSettings.musicManager:setGlobalVolume(value)
+            GameSettings:setSetting("musicVolume", value)
         end, 1, 1)
-    self.sfxSlider = luis.newSlider(0, 1, 1, 10, 1,
+    self.sfxSlider = luis.newSlider(0, 1, settings.sfxVolume, 10, 1,
         function(value)
             GameSettings.sfxManager:setGlobalVolume(value)
+            GameSettings:setSetting("sfxVolume", value)
     end, 3, 1)
     self.sfxButton = luis.newButton("Test", 2, 1, nil,
         function()
@@ -39,7 +43,8 @@ function Pause:defineWidgets()
             local newResolution = self.supportedResolutions[self.resIndex]
             local width, height = newResolution[1], newResolution[2]
             GameSettings:setSetting("resolution", {w = width, h = height})
-            -- shove.setWindowMode(width, height)
+            shove.setWindowMode(width, height)
+            GameSettings:setSetting("resolution", {w=width, h=height})
         end, 6, 1)
     self.resUpButton = luis.newButton("Larger", 2, 2, nil,
         function()
@@ -47,28 +52,8 @@ function Pause:defineWidgets()
             local newResolution = self.supportedResolutions[self.resIndex]
             local width, height = newResolution[1], newResolution[2]
             GameSettings:setSetting("resolution", {w = width, h = height})
-            -- shove.setWindowMode(width, height)
+            shove.setWindowMode(width, height)
         end, 6, 8)
-    self.brightnessSlider = luis.newSlider(0, 2, 1, 10, 1,
-        function(value)
-            GameSettings.settings.display.brightness = value
-            -- Brightness = value
-        end, 8, 1)
-    self.constrastSlider = luis.newSlider(0, 2, 1, 10, 1,
-        function(value)
-            GameSettings.settings.display.contrast = value
-            -- Contrast = value
-        end, 10, 1)
-    self.saturationSlider = luis.newSlider(0, 2, 1, 10, 1,
-        function(value)
-            GameSettings.settings.display.saturation = value
-            -- Saturation = value
-        end, 12, 1)
-    self.hueShiftSlider = luis.newSlider(0, 1, 0, 10, 1,
-        function(value)
-            GameSettings.settings.display.hueShift = value
-            -- HueShift = value
-        end, 14, 1)
     self.restoreDefaultsButton = luis.newButton("Restore Defaults", 2, 2, nil,
         function() 
             GameSettings:restoreAllDefaults()
@@ -82,10 +67,6 @@ function Pause:createElements()
     luis.createElement(luis.currentLayer, "Button", self.sfxButton)
     luis.createElement(luis.currentLayer, "Button", self.resDownButton)
     luis.createElement(luis.currentLayer, "Button", self.resUpButton)
-    luis.createElement(luis.currentLayer, "Slider", self.brightnessSlider)
-    luis.createElement(luis.currentLayer, "Slider", self.constrastSlider)
-    luis.createElement(luis.currentLayer, "Slider", self.saturationSlider)
-    luis.createElement(luis.currentLayer, "Slider", self.hueShiftSlider)
     luis.createElement(luis.currentLayer, "Button", self.restoreDefaultsButton)
 end;
 
@@ -105,13 +86,6 @@ end;
 function Pause:restoreDefaults()
     self.musicVolSlider.value = 1
     self.sfxSlider.value = 1
-    self.brightnessSlider.value = 1
-    self.constrastSlider.value = 1
-    self.saturationSlider.value = 1
-    self.hueShiftSlider.value = 0
-end;
-
-function Pause:keypressed(key)
 end;
 
 ---@param dt number
@@ -123,6 +97,33 @@ function Pause:update(dt)
   end
   -- luis.updateScale()
   luis.update(dt)
+
+  Player:update()
+
+  if Player:pressed('down') then
+    luis.moveFocus('next')
+  elseif Player:pressed('up') then
+    luis.moveFocus('previous')
+  elseif Player:pressed('left') then
+    local curr = luis.currentFocus
+    if curr.type == "Slider" then
+        curr:setValue(curr.value - (curr.max - curr.min) * 0.01)
+    end
+  elseif Player:pressed('right') then
+    local curr = luis.currentFocus
+    if curr.type == "Slider" then
+        curr:setValue(curr.value + (curr.max - curr.min) * 0.01)
+    end
+  elseif Player:released('confirm') then
+    local curr = luis.currentFocus
+    if curr.type == "Button" then
+        curr:onRelease()
+    elseif curr.type == "Slider" then
+        luis.moveFocus("next")
+    end
+  elseif Player:released("cancel") then
+    Gamestate.switch(states["MainMenu"])
+  end
 end;
 
 function Pause:mousepressed(x, y, button, istouch)

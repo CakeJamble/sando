@@ -19,8 +19,6 @@ local Enemy = Class{__includes = Entity,
 function Enemy:init(data)
   self.enemyType = data.enemyType
   Entity.init(self, data, Enemy.xPos, Enemy.yPos, "enemy")
-  local animationsPath = 'asset/sprites/entities/enemy/' .. self.enemyType .. '/' .. self.entityName .. '/'
-  self:setAnimations(animationsPath)
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)
@@ -109,6 +107,7 @@ function Enemy:targetSelect(targetType, isSingleTarget)
   return targets
 end;
 
+---@deprecated Should be using ai logic files (or decision trees)
 ---@param skillPool table
 ---@param numValidTargets integer
 function Enemy.getRandomSkill(skillPool, numValidTargets)
@@ -142,24 +141,24 @@ function Enemy:getRewards()
   return reward
 end;
 
----@param dt number
-function Enemy:update(dt)
-  Entity.update(self, dt)
+-- ---@param dt number
+-- function Enemy:update(dt)
+--   Entity.update(self, dt)
 
-  if self.drawKOStars then
-    for _,ps in ipairs(starParticles) do
-      ps.system:update(dt)
-    end
-  end
-end;
+--   if self.drawKOStars then
+--     for _,ps in ipairs(starParticles) do
+--       ps.system:update(dt)
+--     end
+--   end
+-- end;
 
-function Enemy:draw()
-  Entity.draw(self)
-  if self.drawKOStars then
-    for _,ps in ipairs(starParticles) do
-      love.graphics.draw(ps.system, self.pos.x + self.frameWidth / 2, self.pos.y + self.frameHeight / 2)
-    end
-  end
-end;
+-- function Enemy:draw()
+--   Entity.draw(self)
+--   if self.drawKOStars then
+--     for _,ps in ipairs(starParticles) do
+--       love.graphics.draw(ps.system, self.pos.x + self.frameWidth / 2, self.pos.y + self.frameHeight / 2)
+--     end
+--   end
+-- end;
 
 return Enemy

@@ -87,8 +87,8 @@ end;
 
 ---@param dt number
 function Team:update(dt)
-  for i=1,#self.members do
-    self.members[i]:update(dt)
+  for _,member in ipairs(self.members) do
+    member:update(dt)
   end
 end;
 

@@ -1,10 +1,12 @@
 local Class = require('libs.hump.class')
+local binser = require('libs.binser')
 
 ---@class Log
 local Log = Class{}
 
-
-function Log:init()
+---@param characterTeam CharacterTeam
+function Log:init(characterTeam)
+	self.characterTeam = characterTeam
 	self.low, self.high = love.math.getRandomSeed()
 	self.act = 1
 	self.floor = 1
@@ -38,6 +40,20 @@ function Log:setCleared()
 	else
 		self.floor = self.floor + 1
 	end
+end;
+
+---@return string
+function Log:serialize()
+	local data = {
+		team = self.characterTeam:serialize(),
+		seed = {self.low, self.high},
+		act = self.act,
+		floor = self.floor,
+		map = self.map:serialize()
+	}
+	local str = binser.serialize(data)
+
+	return str
 end;
 
 ---@param act integer
