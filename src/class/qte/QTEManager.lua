@@ -20,7 +20,7 @@ local Signal = require('libs.hump.signal')
 local Class = require 'libs.hump.class'
 
 ---@class QTEManager
-local QTEManager = Class{}
+local QTEManager = Class {}
 
 ---@param characterTeam CharacterTeam
 function QTEManager:init(characterTeam)
@@ -45,14 +45,14 @@ function QTEManager.loadButtonImages(buttonDir)
 	local pressedButtonsDir = buttonDir .. 'buttons_pressed/'
 
 	local buttonPaths = {
-		aRaised = blackButtonsDir 		.. 'btn_a.png',
-		bRaised = blackButtonsDir 		.. 'btn_b.png',
-		xRaised = blackButtonsDir 		.. 'btn_x.png',
-		yRaised = blackButtonsDir 		.. 'btn_y.png',
-		aPressed = pressedButtonsDir 	.. 'btn_a.png',
-		bPressed = pressedButtonsDir 	.. 'btn_b.png',
-		xPressed = pressedButtonsDir 	.. 'btn_x.png',
-		yPressed = pressedButtonsDir 	.. 'btn_y.png'
+		aRaised = blackButtonsDir .. 'btn_a.png',
+		bRaised = blackButtonsDir .. 'btn_b.png',
+		xRaised = blackButtonsDir .. 'btn_x.png',
+		yRaised = blackButtonsDir .. 'btn_y.png',
+		aPressed = pressedButtonsDir .. 'btn_a.png',
+		bPressed = pressedButtonsDir .. 'btn_b.png',
+		xPressed = pressedButtonsDir .. 'btn_x.png',
+		yPressed = pressedButtonsDir .. 'btn_y.png'
 
 	}
 	local buttons = {
@@ -97,7 +97,7 @@ function QTEManager:defineQTESetup()
 		end,
 
 		rand_sbp = function()
-			local buttons = {'a', 'b', 'x', 'y'}
+			local buttons = { 'a', 'b', 'x', 'y' }
 			local randIndex = buttons[love.math.random(1, #buttons)]
 			local qte = self.qteTable.rand_sbp
 			qte:setActionButton(self.buttons[randIndex].val, self.buttons[randIndex])
@@ -132,9 +132,9 @@ end;
 ---@return { [string]: QTE }
 function QTEManager.loadQTEData(members)
 	local result = {}
-	for _,member in ipairs(members) do
+	for _, member in ipairs(members) do
 		local skillPool = member.skillPool
-		for _,skill in ipairs(skillPool) do
+		for _, skill in ipairs(skillPool) do
 			local qteName = skill.qteType
 			if not result[qteName] then
 				-- result[qteName] = loadQTE(qteName)
@@ -156,7 +156,8 @@ end;
 
 ---@param qteType string
 ---@param actionButton string
-function QTEManager:setQTE(qteType, actionButton)
+---@param item? table
+function QTEManager:setQTE(qteType, actionButton, item)
 	local init = self.qteInits[qteType]
 	if init then
 		self.activeQTE = init(actionButton)
@@ -172,7 +173,7 @@ function QTEManager.getInstructions(qteType, actionButton)
 	if qteType == 'PressSBP' then
 		result = 'Press ' .. string.upper(actionButton) .. ' just before hitting the enemy!'
 	elseif qteType == 'TapAnalogLeft' then
-	    --do
+		--do
 	elseif qteType == 'MBP' then
 		result = 'Press the buttons in order!'
 	elseif qteType == 'HoldSBP' then

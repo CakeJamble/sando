@@ -1,14 +1,16 @@
 local Class = require 'libs.hump.class'
 
 ---@class Team
-local Team = Class{}
+---@field members Entity[]
+---@field bench table
+---@field membersIndex integer
+local Team = Class {}
 
 ---@param entities Entity[]
 function Team:init(entities)
   self.members = entities
   self.bench = nil
   self.membersIndex = 1
-  self.money = 0
 end;
 
 ---@param entity Entity
@@ -20,23 +22,24 @@ end;
 ---@param entities Entity[]
 function Team:removeMembers(entities) --> void
   local removeIndices = {}
-  for i=1, #self.members do
-    for j=1, #entities do
+  for i = 1, #self.members do
+    for j = 1, #entities do
       if self.members[i] == entities[j] then
         table.insert(removeIndices, i)
       end
     end
   end
 
-  for i=1, #removeIndices do
+  for i = 1, #removeIndices do
     print('removing ' .. self.members[removeIndices[i]].entityName .. ' from team')
     table.remove(self.members, removeIndices[i])
   end
 end;
 
+-- Constructs the bench in the Active/Bench battle format
 function Team:initBench()
   self.bench = {}
-  for i=2,#self.members do
+  for i = 2, #self.members do
     local member = table.remove(self.members, i)
     table.insert(self.bench, member)
   end
@@ -48,10 +51,11 @@ function Team:moveToBench(index)
   table.insert(self.bench, member)
 end;
 
+-- Swaps out an Active member with a Bench member
 ---@param activeIndex integer Index of active member going to the bench
 ---@param benchIndex integer Index of bench member entering combat
 function Team:swap(activeIndex, benchIndex)
-  if #self.members >=1 and #self.bench >= 1 then
+  if #self.members >= 1 and #self.bench >= 1 then
     local memberToBench = table.remove(self.members, activeIndex)
     local memberToActive = table.remove(self.bench, benchIndex)
     table.insert(self.bench, benchIndex, memberToBench)
@@ -62,7 +66,7 @@ end;
 ---@return Entity[]
 function Team:getLivingMembers()
   local result = {}
-  for _,member in ipairs(self.members) do
+  for _, member in ipairs(self.members) do
     if member:isAlive() then
       table.insert(result, member)
     end
@@ -72,14 +76,14 @@ end;
 
 ---@return boolean
 function Team:isWipedOut() --> bool
-  for _,c in pairs(self.members) do
+  for _, c in pairs(self.members) do
     if c:isAlive() then return false end
   end
   return true
 end;
 
 function Team:printMembers()
-  for i=1,#self.members do
+  for i = 1, #self.members do
     print(self.members[i].entityName)
     print('pos: ' .. 'x: ' .. self.members[1].pos.x, 'y: ' .. self.members[i].pos.y)
   end
@@ -87,13 +91,13 @@ end;
 
 ---@param dt number
 function Team:update(dt)
-  for _,member in ipairs(self.members) do
+  for _, member in ipairs(self.members) do
     member:update(dt)
   end
 end;
 
 function Team:draw()
-  for _,member in pairs(self.members) do
+  for _, member in pairs(self.members) do
     member:draw()
   end
 end;

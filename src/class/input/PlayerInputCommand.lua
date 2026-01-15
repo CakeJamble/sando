@@ -4,7 +4,8 @@ local ItemCommand = require('class.input.ItemCommand')
 local Class = require('libs.hump.class')
 
 ---@class PlayerInputCommand: Command
-local PlayerInputCommand = Class{__includes = Command}
+---@field entity Character
+local PlayerInputCommand = Class { __includes = Command }
 
 local CommandClasses = {
 	skill_command = SkillCommand,
@@ -90,7 +91,7 @@ function PlayerInputCommand:start()
 			table.insert(self.entity.targets, self.entity.targetableEntities[tIndex])
 			table.insert(self.targets, self.entity.targetableEntities[tIndex])
 		else
-			for _,entity in ipairs(self.entity.targetableEntities) do
+			for _, entity in ipairs(self.entity.targetableEntities) do
 				table.insert(self.entity.targets, entity)
 			end
 			self.targets = self.entity.targets

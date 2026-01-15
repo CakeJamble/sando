@@ -3,7 +3,7 @@ local Entity = require("class.entities.Entity")
 local ActionUI = require("class.ui.ActionUI")
 local Signal = require('libs.hump.signal')
 local Timer = require('libs.hump.timer')
-local flux = require('libs.flux')
+local flux = require('libs.flux.flux')
 local statGrowthFunctions = require('util.calc_new_stats')
 local Class = require "libs.hump.class"
 
@@ -24,7 +24,31 @@ local Class = require "libs.hump.class"
 ---@field canBeDebuffed boolean
 ---@field numEquipSlots integer
 ---@field numAccessorySlots integer
-local Character = Class{__includes = Entity,
+---@field actionButton string
+---@field skillPool table[]
+---@field blockMod integer
+---@field level integer
+---@field growthFunctions function[]
+---@field currentSkills table[]
+---@field qteSuccess boolean
+---@field totalExp integer
+---@field experience integer
+---@field experienceRequired integer
+---@field currentFP integer
+---@field fpCostMod integer
+---@field cannotLose boolean
+---@field equips {[string]: table}
+---@field isGuarding boolean
+---@field canGuard boolean
+---@field canJump boolean
+---@field isJumping boolean
+---@field landingLagMods number[]
+---@field hasLCanceled boolean
+---@field canLCancel boolean
+---@field jumpHeight integer
+---@field sfx SoundManager
+---@field actionUI ActionUI
+local Character = Class { __includes = Entity,
   EXP_POW_SCALE = 1.8, EXP_MULT_SCALE = 4, EXP_BASE_ADD = 10,
   -- For testing
   yPos = 500,
@@ -54,16 +78,16 @@ function Character:init(data, actionButton)
   self.growthFunctions = statGrowthFunctions[self.entityName]
   self.currentSkills = {}
   self:updateSkills()
+
+  local animPath = "asset/sprites/entities/character/" .. self.entityName .. "/"
+  self.actor = self:createActor(data.animations, animPath)
+  self.actor:switch('idle')
+
   self.qteSuccess = true
   self.totalExp = 0
   self.experience = 0
   self.experienceRequired = 15
-  -- self.pos.sx, self.pos.sy = 0.5, 0.5
-  -- local baseSFXTypes = {'jump'}
-  -- self.sfx = self:setSFX('character/', baseSFXTypes)
-  -- Character.yPos = Character.yPos + Character.yOffset
   self.currentFP = data.fp
-  -- self.currentDP = stats.dp
   self.fpCostMod = 0
   self.cannotLose = false
   self.equips = {
@@ -91,12 +115,12 @@ function Character:init(data, actionButton)
 
   Signal.register('OnEnterScene',
     function()
-      flux.to(self.pos, self.combatStartEnterDuration, {x = Character.xPos})
-        :onstart(function() self.actor:switch('run') end)
-        :oncomplete(function()
-          self.actor:switch('idle')
-          self.canJump = true
-        end)
+      flux.to(self.pos, self.combatStartEnterDuration, { x = Character.xPos })
+          :onstart(function() self.actor:switch('run') end)
+          :oncomplete(function()
+            self.actor:switch('idle')
+            self.canJump = true
+          end)
     end
   )
 end;
@@ -105,6 +129,7 @@ end;
         Turn Scheduling Logic
 ----------------------------------------------------------------------------------------------------]]
 
+-- Sets up turn state, inits an ActionUI, and emits the `OnStartTurn` signal
 function Character:startTurn()
   Entity.startTurn(self)
   self.actionUI = ActionUI(self, self.targets.characters, self.targets.enemies)
@@ -112,6 +137,8 @@ function Character:startTurn()
   Signal.emit('OnStartTurn', self)
 end
 
+--[[Stores a reference to all valid targets on the field to `self.targetableEntities`
+in a table of the format `{characters: Character[], enemies: Enemy[]}`]]
 ---@param targets { [string]: Entity[]}
 ---@param targetType string
 function Character:setTargets(targets, targetType)
@@ -128,6 +155,8 @@ function Character:setTargets(targets, targetType)
   end
 end;
 
+--[[Deconstructs the Character's Action UI, and sets other relevant variables to
+a valid state for relinquishing control to the Scheduler]]
 ---@param duration integer
 ---@param stagingPos? table
 ---@param tweenType? string
@@ -146,6 +175,7 @@ end;
 ----------------------------------------------------------------------------------------------------]]
 
 ---@param cost integer
+---@return boolean
 function Character:validateSkillCost(cost)
   return self.currentFP >= cost - self.fpCostMod
 end;
@@ -162,8 +192,15 @@ function Character:applyStatus(status)
   end
 end;
 
+--[[Applies a stat modifier that lasts until the end of the encounter.
+This function should not be used to modify HP or FP.]]
 ---@param stat string
 ---@param stage integer
+---@see Entity.heal
+---@see Character.takeDamage
+---@see Character.takeDamagePierce
+---@see Character.deductFP
+---@see Character.refresh
 function Character:modifyBattleStat(stat, stage)
   if stage < 0 then
     if Character.canBeDebuffed then
@@ -174,6 +211,8 @@ function Character:modifyBattleStat(stat, stage)
   end
 end;
 
+--[[Raises the Character's Max HP by a given percentage, rounding up.
+Will also restore HP to maintain the previous ratio of `battleStats.hp / baseStates.hp`]]
 ---@param pct number
 function Character:raiseMaxHP(pct)
   local ratio = self.battleStats.hp / self.baseStats.hp
@@ -183,12 +222,22 @@ function Character:raiseMaxHP(pct)
   self.battleStats.hp = newCurrHP
 end;
 
+--[[Raises the Character's Max HP by a given percentage, rounding up.
+If Max HP falls below current HP, then current HP will be set to the new Max HP]]
 ---@param pct number
 function Character:lowerMaxHP(pct)
   self.baseStats.hp = math.floor(0.5 + self.baseStats.hp * pct)
   self.battleStats.hp = math.min(self.baseStats.hp, self.battleStats.hp)
 end;
 
+--[[Applies damage to the Character with the following checks for modifiers
+and/or state changes.
+
+  1. Is the Character guarding?
+  2. Does this damage KO the Character?
+  3. Apply additional defense modifiers
+
+After taking damage, the `OnHPChanged` & `OnAttacked` signals are emitted.]]
 ---@param amount integer
 ---@param attackerLuck integer
 function Character:takeDamage(amount, attackerLuck)
@@ -212,6 +261,7 @@ function Character:takeDamage(amount, attackerLuck)
   Signal.emit('OnAttacked', self)
 end;
 
+-- Applies damage to the Character, bypassing all modifiers and defenses
 ---@param amount integer
 function Character:takeDamagePierce(amount)
   Entity.takeDamagePierce(self, amount)
@@ -221,23 +271,24 @@ function Character:takeDamagePierce(amount)
   end
 end;
 
--- restores FP (similar to Entity:heal())
+-- Restores FP by the amount passed in
 ---@param amount integer
 function Character:refresh(amount)
   self.battleStats.fp = math.min(self.baseStats.fp, self.battleStats.fp + amount)
 end;
 
-
 function Character:removeCurses()
   self.curses = {}
 end
 
+-- Makes the Character flinch and take piercing damage (WIP)
 ---@param additionalPenalty? integer
 function Character:recoil(additionalPenalty)
   if not additionalPenalty then additionalPenalty = 0 end
   self.currentAnimTag = 'flinch'
   self.canJump = false
   local recoilTime = 0.5 + additionalPenalty
+  -- self:takeDamagePierce(amount) ??
   Timer.after(recoilTime,
     function()
       self.canJump = true
@@ -245,10 +296,12 @@ function Character:recoil(additionalPenalty)
     end)
 end;
 
+--[[ Iterates over the array of landing lag modifiers
+and multiplies them to a copy of the base landing lag.]]
 ---@return number
 function Character:getLandingLag()
   local lag = self.baseLandingLag
-  for _,mult in pairs(self.landingLagMods) do
+  for _, mult in pairs(self.landingLagMods) do
     lag = lag * mult
   end
   return lag
@@ -276,22 +329,18 @@ function Character:unequip(itemType, pos)
   return item
 end;
 
----@deprecated
-function Character:applyGear()
-  for _, equip in pairs(self.gear:getEquips()) do
-    local statMod = equip:getStatModifiers()
-    Entity:modifyBattleStat(statMod['stat'], statMod['amount'])
-  end
-end;
-
 --[[----------------------------------------------------------------------------------------------------
         Leveling & Move Pool
 ----------------------------------------------------------------------------------------------------]]
 
---[[ Gains exp, leveling up when applicable
-      - preconditions: an amount of exp to gain
-      - postconditions: updates self.totalExp, self.experience, self.level, self.experienceRequired
-          Continues this until self.experience is less that self.experienceRequired ]]
+--[[ Gains exp, leveling up when applicable. Updates the following:
+
+  - `self.totalExp`
+  - `self.experience`
+  - `self.level`
+  - `self.experienceRequired`
+
+Continues updating `self.level` until `self.experience` is less that `self.experienceRequired`.]]
 ---@param amount integer
 function Character:gainExp(amount)
   self.totalExp = self.totalExp + amount
@@ -304,10 +353,12 @@ function Character:gainExp(amount)
   end
 end;
 
----@return { [string]: integer } Stats from previous level
+--[[Increments the Character's level and boosts their stats
+according to their growth functions. Preserves their HP & FP ratios.]]
+---@return { string: integer } # Stats from previous level
 function Character:levelUp()
   local oldStats = {}
-  for stat,fcn in ipairs(self.growthFunctions) do
+  for stat, fcn in ipairs(self.growthFunctions) do
     oldStats[stat] = self.baseStats[stat]
     self.baseStats[stat] = fcn(self.level)
 
@@ -319,25 +370,26 @@ function Character:levelUp()
   return oldStats
 end;
 
--- Gets the required exp for the next level
-  -- preconditions: none
-  -- postconditions: updates self.experiencedRequired based on polynomial scaling
-function Character:getRequiredExperience() --> int
+-- Gets the required exp for the next level based on polynomial scaling
+---@return integer result Required amount of experience for next level up
+function Character:getRequiredExperience()
   local result
   if self.level < 3 then
-    result = self.level^Character.EXP_POW_SCALE + self.level * Character.EXP_MULT_SCALE + Character.EXP_BASE_ADD
+    result = self.level ^ Character.EXP_POW_SCALE + self.level * Character.EXP_MULT_SCALE +
+        Character.EXP_BASE_ADD
   else
-    result = self.level^Character.EXP_POW_SCALE + self.level * Character.EXP_MULT_SCALE
+    result = self.level ^ Character.EXP_POW_SCALE + self.level * Character.EXP_MULT_SCALE
   end
 
   return result
 end;
 
--- Updates `self.currentSkills` and then returns a list of strings containing the names of the skills added
+--[[Updates `self.currentSkills` and then returns a list of strings
+containing the names of the skills added.]]
 ---@return string[]
 function Character:updateSkills()
   local result = {}
-  for _,skill in pairs(self.skillPool) do
+  for _, skill in pairs(self.skillPool) do
     if self.level == skill.unlockedAtLvl then
       table.insert(self.currentSkills, skill)
       table.insert(result, skill.name)
@@ -346,11 +398,13 @@ function Character:updateSkills()
   return result
 end;
 
+-- Adds a new skill to `self.currentSkills`, bypassing the Character's skill pool.
 ---@param skill table
 function Character:learnSkill(skill)
   table.insert(self.currentSkills, skill)
 end;
 
+-- WIP for interaction with learning a new skill from a list of possible choices
 ---@return any
 function Character:yieldSkillSelect()
   return coroutine.yield({
@@ -363,12 +417,10 @@ end;
         Defensive States (Guard, Jump)
 ----------------------------------------------------------------------------------------------------]]
 
--- True if the the character is not jumping and their guard cooldown timer isn't active
----@return boolean
-function Character:canGuard()
-  return not self.isJumping and self.guardCooldownFinished
-end;
-
+--[[Raises the Character's defense by 1 stage, then starts 2 timers.
+After the first timer ends, the defense is reverted to its original value.
+After the second timer ends, the Character's guard cooldown ends.
+Character's can begin a guard while jumping, but cannot begin a jump while guarding.]]
 function Character:beginGuard()
   self.isGuarding = true
   self.canJump = false
@@ -392,33 +444,40 @@ function Character:beginGuard()
   end)
 end;
 
+--[[Begins a jump, and disables jumping functionality until the landing lag after
+the Character lands ends. Jumps can also be interrupted by collision.]]
+---@see Character.land
+---@see Character.interruptJump
 function Character:beginJump()
   self.isJumping = true
-  self.canGuard = false
   self.canJump = false
   -- Goes up then down, then resets conditional checks for guard/jump
   local landY = self.oPos.y
-  local shadow = flux.to(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 3})
-    :ease('quadout')
-    :after(self.shadowDims, Character.jumpDur/2, {w = self.hitbox.w / 2})
+  local shadow = flux.to(self.shadowDims, Character.jumpDur / 2, { w = self.hitbox.w / 3 })
+      :ease('quadout')
+      :after(self.shadowDims, Character.jumpDur / 2, { w = self.hitbox.w / 2 })
       :ease('quadin')
-  local jump = flux.to(self.pos, Character.jumpDur/2, {y = landY - self.jumpHeight})
-    :ease('quadout')
-    :onstart(function() self.actor:switch('jump') end)
-    :after(self.pos, Character.jumpDur/2, {y = landY})
-    :onstart(function() self.actor:switch('fall') end)
-    :ease('quadin')
-    :onupdate(function()
-      if not self.hasLCanceled and landY <= self.pos.y + (self.jumpHeight / 4) then
-        self.canLCancel = true
-      end
-    end)
-    :oncomplete(function() self:land() end)
+  local jump = flux.to(self.pos, Character.jumpDur / 2, { y = landY - self.jumpHeight })
+      :ease('quadout')
+      :onstart(function() self.actor:switch('jump') end)
+      :after(self.pos, Character.jumpDur / 2, { y = landY })
+      :onstart(function() self.actor:switch('fall') end)
+      :ease('quadin')
+      :onupdate(function()
+        if not self.hasLCanceled and landY <= self.pos.y + (self.jumpHeight / 4) then
+          self.canLCancel = true
+        end
+      end)
+      :oncomplete(function() self:land() end)
   self.tweens['jump'] = jump
   self.tweens['shadow'] = shadow
   self.sfx:play("jump")
 end;
 
+--[[Sets the playback speed for the landing animation based on
+`self.baseLandingLag` & `self.landingLagMods`.
+Performing a Fall-Cancel will hasten the duration of the landing state.]]
+---@see Character.getLandingLag
 function Character:land()
   local landingLag = self:getLandingLag()
   local land = self.actor:getAnimation('land')
@@ -428,9 +487,9 @@ function Character:land()
   self.actor:switch('land')
 
   -- Squash on land
-  flux.to(self.pos, 0.125, {sy = 0.4})
-    :ease('quadout')
-    :after(0.125, {sy=0.5})
+  flux.to(self.pos, 0.125, { sy = 0.4 })
+      :ease('quadout')
+      :after(0.125, { sy = 0.5 })
       :ease('quadin')
   Timer.after(landingLag,
     function()
@@ -444,12 +503,20 @@ function Character:land()
     end)
 end
 
+--[[Usually invoked upon collision, this will stop the progress of a jump and
+place the Character into a tumbling state. Fall-Cancel checks are still applied.]]
 function Character:interruptJump()
-  local tumbleDuration = (Character.jumpDur/2)
+  local tumbleDuration = (Character.jumpDur / 2)
   self:recoil(tumbleDuration)
   local landY = self.oPos.y
   self.tweens['jump']:stop()
-  local tumble = flux.to(self.pos, Character.jumpDur/2, {y=landY}):ease('bouncein')
+  local tumble = flux.to(self.pos, Character.jumpDur / 2, { y = landY }):ease('bouncein')
+      :onupdate(function()
+        if not self.hasLCanceled and landY <= self.pos.y + (self.jumpHeight / 4) then
+          self.canLCancel = true
+        end
+      end)
+      :oncomplete(function() self:land() end)
   self.tweens['tumble'] = tumble
 end;
 
@@ -462,19 +529,41 @@ function Character:updateInput(dt)
   -- Check guard toggle
   if Player:pressed('guardToggle') then
     self.isGuardToggled = not self.isGuardToggled
-  -- Check guard & jump
-  elseif Player:pressed(self.actionButton)  then
-    if self.isGuardToggled or Player:down("guard") and self:canGuard() then
+    -- Check guard & jump
+  elseif Player:pressed(self.actionButton) then
+    if self.isGuardToggled or Player:down("guard") and self.canGuard then
       self:beginGuard()
-    elseif self.canJump then 
+    elseif self.canJump then
       self:beginJump()
     end
   elseif Player:released("guard") and not self.isGuardToggled then
     self.canGuard = false
-  -- Check L-Cancel
+    -- Check L-Cancel
   elseif Player:pressed("fallCancel") and self.canLCancel then
     self.landingLagMods["LCancel"] = 0.5
     self.hasLCanceled = true
+  end
+end;
+
+--[[----------------------------------------------------------------------------------------------------
+        Animation
+----------------------------------------------------------------------------------------------------]]
+--[[Creates all skill animations from the Character's `self.currentSkills` table.
+This is to avoid slowing down an initial load of skills that may never be used.]]
+---@param dir string The directory where animations are located
+---@param actor table Reference to eh AnimX actor object housing animations
+function Character:createSkillAnimations(dir, actor)
+  for _, skill in ipairs(self.currentSkills) do
+    local skillPath = dir .. skill.tag .. "/"
+    for _, name in ipairs(skill.animations) do
+      local path = skillPath .. name .. ".png"
+      local fullName = skill.tag .. "_" .. name -- ex: needle_stab & wind_up -> needle_stab_wind_up
+      local animation = animx.newAnimation(path)
+      if name == "wobble" or "wobble_fail" then
+        animation:loop()
+      end
+      actor:addAnimation(fullName, animation)
+    end
   end
 end;
 
@@ -498,7 +587,7 @@ end;
 
 function Character:draw()
   Entity.draw(self)
-  love.graphics.setColor(1,1,1)
+  love.graphics.setColor(1, 1, 1)
   if self.actionUI and self.actionUI.active then
     self.actionUI:draw()
   end

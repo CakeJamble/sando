@@ -1,3 +1,7 @@
+local Status = require('class.entities.Status')
+
+---@type Status[]
+local Statuses = {}
 local Effects = {}
 
 Effects.burn = {
@@ -12,7 +16,6 @@ Effects.burn = {
 		local damage = math.floor(maxHP * 0.08)
 		return damage
 	end,
-	resist = 0
 }
 
 Effects.poison = {
@@ -60,4 +63,9 @@ Effects.sleep = {
 	sleepCounter = 0
 }
 
-return Effects
+for name, status in pairs(Effects) do
+	local params = {apply = status.apply, tick = status.tick, sleepCounter = status.sleepCounter}
+	table.insert(Statuses, Status(name, params))
+end
+
+return Statuses

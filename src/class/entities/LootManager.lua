@@ -4,7 +4,7 @@ local Class = require('libs.hump.class')
 
 -- Distributes loot rewards (Accessory, Equip, Tool, Consumables)
 ---@class LootManager
-local LootManager = Class{}
+local LootManager = Class {}
 
 ---@param lootOptions table
 function LootManager:init(lootOptions)
@@ -14,12 +14,12 @@ function LootManager:init(lootOptions)
 	self.i = 1
 	self.isDisplayingNotification = false
 	self.textBox = Text.new("left",
-	{
-    color = {0.9,0.9,0.9,0.95},
-    shadow_color = {0.5,0.5,1,0.4},
-    character_sound = true,
-    sound_every = 2,
-	})
+		{
+			color = { 0.9, 0.9, 0.9, 0.95 },
+			shadow_color = { 0.5, 0.5, 1, 0.4 },
+			character_sound = true,
+			sound_every = 2,
+		})
 
 	self.isActive = false
 	self.highlightSelected = false
@@ -33,8 +33,8 @@ end;
 ---@return table
 function LootManager.initUI(loot)
 	local images = {}
-	for i,item in ipairs(loot) do
-		images[i] = {image = item.image, scale = 0}
+	for i, item in ipairs(loot) do
+		images[i] = { image = item.image, scale = 0 }
 	end
 
 	local uiOptions = {
@@ -52,7 +52,7 @@ end;
 
 function LootManager:distributeLoot()
 	self.coroutines = {}
-	for _,loot in ipairs(self.lootOptions) do
+	for _, loot in ipairs(self.lootOptions) do
 		local co = self:createLootSelectCoroutine(loot)
 		table.insert(self.coroutines, co)
 	end
@@ -70,8 +70,8 @@ function LootManager:createLootSelectCoroutine(loot)
 		-- Oven opens
 
 		-- Loot options emerge
-		for _,img in ipairs(self.pick3UI.images) do
-			flux.to(img, 0.25, {scale = 1})
+		for _, img in ipairs(self.pick3UI.images) do
+			flux.to(img, 0.25, { scale = 1 })
 		end
 		self.highlightSelected = true
 		self.lootIndex = 1
@@ -112,15 +112,15 @@ function LootManager:resumeCurrent()
 end;
 
 function LootManager:raiseItemTween()
-	for _,tween in ipairs(self.tweens) do
+	for _, tween in ipairs(self.tweens) do
 		tween:stop()
 	end
-	for _,img in ipairs(self.pick3UI.images) do
+	for _, img in ipairs(self.pick3UI.images) do
 		img.scale = 1
 	end
 
 	if self.lootIndex < 4 then
-		local scaleTween = flux.to(self.pick3UI.images[self.lootIndex], 0.25, {scale = 2})
+		local scaleTween = flux.to(self.pick3UI.images[self.lootIndex], 0.25, { scale = 2 })
 		table.insert(self.tweens, scaleTween)
 	end
 end;
@@ -156,13 +156,13 @@ function LootManager:draw()
 		love.graphics.rectangle(self.pick3UI.mode, self.pick3UI.x, self.pick3UI.y,
 			self.pick3UI.w, self.pick3UI.h)
 
-		for i,img in ipairs(self.pick3UI.images) do
+		for i, img in ipairs(self.pick3UI.images) do
 			love.graphics.draw(img.image, self.pick3UI.x + i * self.pick3UI.offset, self.pick3UI.y, 0,
 				img.scale, img.scale)
 		end
 
 		if self.isRewardSelected then
-			self.drawPreview()
+			self:drawPreview()
 		end
 	end
 end;
