@@ -2,9 +2,26 @@ local Signal = require('libs.hump.signal')
 local ProgressBar = require('class.ui.ProgressBar')
 local Class = require "libs.hump.class"
 local Timer = require('libs.hump.timer')
-local flux = require('libs.flux')
+local flux = require('libs.flux.flux')
 local animx = require('libs.animX')
 local StatusEffects = require('util.status_effects')
+---@class (exact) Stats
+---@field hp integer
+---@field fp integer
+---@field attack integer
+---@field defense integer
+---@field speed integer
+---@field luck integer
+---@field growthRate integer Rate at which required EXP raises between levels
+
+---@class (exact) StatusResists
+---@field burn number
+---@field poison number
+---@field sleep number
+---@field lactose number
+---@field paralyze number
+---@field ohko number
+---@field late number
 
 ---@class Entity
 ---@field movementTime integer
@@ -13,7 +30,45 @@ local StatusEffects = require('util.status_effects')
 ---@field tweenHP boolean
 ---@field isATB boolean
 ---@field hideProgressBar boolean
-local Entity = Class{
+---@field type string
+---@field entityName string
+---@field baseStats Stats
+---@field battleStats Stats
+---@field statStages Stats
+---@field statuses Status[]
+---@field statusResist StatusResists
+---@field debuffImmune boolean
+---@field lowerAfterSkillUse table
+---@field statMods {[string]: integer}
+---@field critMult number
+---@field skillPool table[]
+---@field skill table
+---@field selectedSkill table
+---@field projectiles table[]
+---@field pos table
+---@field hbXOffset integer
+---@field hbYOffset integer
+---@field hitbox {x: integer, y: integer, w: integer, h: integer}
+---@field tPos {x: integer, y: integer}
+---@field oPos {x: integer, y: integer}
+---@field actor table AnimX Actor class
+---@field opacity number [0..1]
+---@field shadowDims {x: integer, y: integer, w: integer, h:integer}
+---@field tweens {[string]: function}
+---@field isFocused boolean
+---@field targets {characters: Character[], enemies: Enemy[]}
+---@field target Entity
+---@field targetableEntities Entity[]
+---@field hasUsedAction boolean
+---@field turnFinish boolean
+---@field state string
+---@field moveBackTimerStarted boolean
+---@field hazards table Placeholder for future Hazard class
+---@field ignoreHazards boolean
+---@field progressBar ProgressBar
+---@field isResumingTurn boolean
+---@field tRate number
+local Entity = Class {
   movementTime = 2,
   drawHitboxes = true,
   drawHitboxPositions = false,
@@ -54,7 +109,7 @@ function Entity:init(data, x, y, entityType)
     luck = 0,
     growthRate = 0
   }
-  self.statMods= {
+  self.statMods = {
     hp = 1,
     fp = 1,
     attack = 1,
@@ -63,6 +118,7 @@ function Entity:init(data, x, y, entityType)
     luck = 1,
   }
   self.critMult = 2
+  self.statStageCap = 4
 
   -- Skills
   self.skillPool = data.skillPool
@@ -73,9 +129,12 @@ function Entity:init(data, x, y, entityType)
 
   -- Position & Collision
   self.pos = {
-    x = x, y = y,
-    r = 0, a = 1,
-    sx = 0.5, sy = 0.5,
+    x = x,
+    y = y,
+    r = 0,
+    a = 1,
+    sx = 0.5,
+    sy = 0.5,
     ox = 0,
     oy = 0
   }
@@ -86,21 +145,13 @@ function Entity:init(data, x, y, entityType)
     w = data.hitbox.width * self.pos.sx,
     h = data.hitbox.height * self.pos.sy,
   }
-  self.tPos = {x = 0, y = 0}
-  self.oPos = {x = x, y = y}
-  
+  self.tPos = { x = 0, y = 0 }
+  self.oPos = { x = x, y = y }
+
   -- Animation
-  self.spriteSheets = {
-    idle = {},
-    moveX = {},
-    moveY = {},
-    moveXY = {},
-    flinch = {},
-    ko = {}
-  }
-  local animPath = "asset/sprites/entities/" .. entityType .. "/" .. self.entityName .. "/"
-  self.actor = self:createActor(data.animations, animPath)
-  self.actor:switch('idle')
+  -- local animPath = "asset/sprites/entities/" .. entityType .. "/" .. self.entityName .. "/"
+  -- self.actor = self:createActor(data.animations, animPath)
+  -- self.actor:switch('idle')
   self.opacity = 0
 
   self.shadowDims = {
@@ -145,19 +196,21 @@ function Entity:init(data, x, y, entityType)
   local speed = math.max(self.battleStats.speed, 1)
   local maxSpeed = 999
 
-  local normSpeed = math.min(speed/maxSpeed, 1)
+  local normSpeed = math.min(speed / maxSpeed, 1)
   self.tRate = maxDur - (normSpeed ^ 2) * (maxDur - minDur)
 
   -- Signals
   Signal.register('TargetConfirm',
-  function()
-    if self.tweens['pbTween'] then
-      self.tweens['pbTween']:stop()
-    end
-  end)
+    function()
+      if self.tweens['pbTween'] then
+        self.tweens['pbTween']:stop()
+      end
+    end)
 end;
 
----@param stats table
+-- Returns a deep copy of the stats table passed into it
+---@param stats Stats
+---@return Stats
 function Entity.copyStats(stats)
   return {
     hp = stats.hp,
@@ -174,6 +227,8 @@ end;
         Turn Set-up & Take-down
 ----------------------------------------------------------------------------------------------------]]
 
+--[[Sets relevant variables to valid turn-state status,
+ticks statuses, and begins pb tween if we are in an ATB scheduler]]
 function Entity:startTurn()
   self.isFocused = true
   self.hasUsedAction = false
@@ -187,7 +242,7 @@ function Entity:startTurn()
   end
 
   if self.hazards and not self.ignoreHazards then
-    for _,hazard in ipairs(self.hazards) do
+    for _, hazard in ipairs(self.hazards) do
       hazard:proc()
     end
   end
@@ -199,23 +254,25 @@ function Entity:startTurn()
   print('starting turn for ' .. self.entityName)
 end;
 
+--[[If alive, the Entity moves back to their `oPos`. Emits an `OnEndTurn` signal]]
 ---@param duration integer Length of time the tween(s) take
 ---@param stagingPos? {[string]: number}
 ---@param tweenType? string
 function Entity:endTurn(duration, stagingPos, tweenType)
   if self:isAlive() then
-    flux.to(self.pos, 0.75, {x = self.oPos.x, y = self.oPos.y})
-      :delay(0.75)
+    flux.to(self.pos, 0.75, { x = self.oPos.x, y = self.oPos.y })
+        :delay(0.75)
     Signal.emit('OnEndTurn', 1.5)
     -- self:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType)
   else
     self:reset()
-    flux.to(self.pos, 0.5, {x = self.oPos.x, y = self.oPos.y})
+    flux.to(self.pos, 0.5, { x = self.oPos.x, y = self.oPos.y })
     Signal.emit('OnEndTurn', 0)
   end
 end;
 
----@param targets { [string]: Entity }
+-- Makes a copy of the targets (which is still a reference to the Entities)
+---@param targets {characters: Character[], enemies: Enemy[]}
 function Entity:setTargets(targets)
   self.targets = {
     ['characters'] = targets.characters,
@@ -225,21 +282,12 @@ function Entity:setTargets(targets)
   print('targets set for ' .. self.entityName)
 end;
 
-function Entity:resetDmgDisplay()
-  self.amount = 0
-  self.countFrames = false
-  self.currDmgFrame = 0
-  self.dmgDisplayOffsetX = 0
-  self.dmgDisplayOffsetY = 0
-  self.dmgDisplayScale = 1
-  self.opacity = 0
-end;
-
+-- Resets variables that maintain state during turn flow
 function Entity:reset()
   self.isFocused = false
   self.hasUsedAction = false
   self.turnFinish = false
-  self.amount = 0
+  -- self.amount = 0
   self.state = 'idle'
   self.currentAnimTag = 'idle'
   self.moveBackTimerStarted = false
@@ -265,6 +313,7 @@ function Entity:stopTween(tag)
   end
 end;
 
+-- Stops the attack and immediately ends the Entity's turn
 function Entity:attackInterrupt()
   self.tweens['attack']:stop()
   self:endTurn(0)
@@ -273,7 +322,7 @@ end;
 ---@param t integer?
 ---@param displacement integer
 function Entity:goToStagingPosition(t, displacement)
-  local stagingPos = {x=0,y=0}
+  local stagingPos = { x = 0, y = 0 }
   if self.skill.stagingType == 'near' then
     stagingPos.x = self.target.oPos.x + displacement
     stagingPos.y = self.target.oPos.y
@@ -281,7 +330,7 @@ function Entity:goToStagingPosition(t, displacement)
   if t == nil then
     t = self.skill.stagingTime
   end
-  flux.to(self.pos, t, {x = stagingPos.x, y = stagingPos.y}):ease('linear')
+  flux.to(self.pos, t, { x = stagingPos.x, y = stagingPos.y }):ease('linear')
 end;
 
 ---@param duration integer
@@ -292,12 +341,12 @@ function Entity:tweenToStagingPosThenStartingPos(duration, stagingPos, tweenType
   local delay = 0.5
   if stagingPos then
     self.currentAnimTag = 'move'
-    local stageBack = flux.to(self.pos, duration, {x = stagingPos.x, y = stagingPos.y}):ease(tweenType)
-      :after(self.pos, duration, {x = self.oPos.x, y = self.oPos.y}):delay(delay):ease(tweenType)
-    :oncomplete(
-      function()
-        self:reset(); Signal.emit('OnEndTurn', 0.5);
-      end)
+    local stageBack = flux.to(self.pos, duration, { x = stagingPos.x, y = stagingPos.y }):ease(tweenType)
+        :after(self.pos, duration, { x = self.oPos.x, y = self.oPos.y }):delay(delay):ease(tweenType)
+        :oncomplete(
+          function()
+            self:reset(); Signal.emit('OnEndTurn', 0.5);
+          end)
     self.tweens['stageBack'] = stageBack
   else
     Timer.after(delay, function()
@@ -334,12 +383,11 @@ end;
 function Entity:getMultdStats()
   local result = {}
   local stats = self.battleStats
-  for key,statMod in pairs(self.statMods) do
+  for key, statMod in pairs(self.statMods) do
     result[key] = stats[key] * statMod
   end
   return result
 end;
-
 
 --[[----------------------------------------------------------------------------------------------------
         Battle Stats
@@ -348,26 +396,27 @@ end;
 ---@param stats table
 function Entity.setStatStages(stats)
   local stages = {}
-  for stat,_ in pairs(stats) do
+  for stat, _ in pairs(stats) do
     stages[stat] = 0
   end
   return stages
 end;
 
+-- Changes the stat stage of an Entity within the bounds of `[-self.statStageCap .. self.statStageCap]
 ---@param statName string
 ---@param stage integer
 function Entity:modifyBattleStat(statName, stage) --> void
-  if stage < 0 and self.debuffImmune then 
+  if stage < 0 and self.debuffImmune then
     -- Add a flashy animation/effect here
-    return 
+    return
   end
   -- clamping
-  local maxStage = statStageCap
-  local minStage = -statStageCap
+  local maxStage = self.statStageCap
+  local minStage = -self.statStageCap
   local stats = {}
 
   if statName == 'all' then
-    stats = {'attack', 'defense', 'speed', 'luck'}
+    stats = { 'attack', 'defense', 'speed', 'luck' }
   else
     if statName == 'random' then
       local i = love.math.random(#stats)
@@ -376,7 +425,7 @@ function Entity:modifyBattleStat(statName, stage) --> void
     table.insert(stats, statName)
   end
 
-  for _,stat in ipairs(stats) do
+  for _, stat in ipairs(stats) do
     stage = self.statStages[stat] + stage
     self.statStages[stat] = math.min(maxStage, math.max(minStage, stage))
 
@@ -394,24 +443,25 @@ end;
 
 -- Called after setting current_stats HP to reflect damage taken during battle
 function Entity:resetStatModifiers() --> void
-  for stat,_ in pairs(self.baseStats) do
+  for stat, _ in pairs(self.baseStats) do
     if stat ~= 'hp' or stat ~= 'fp' then
       self.battleStats[stat] = self.baseStats[stat]
     end
   end
 end;
 
+-- Intended to be called by a skill with a stat-lowering tradeoff
 ---@param statName string
 ---@param stage integer
 function Entity:lowerAfterSkillResolves(statName, stage)
   self.lowerAfterSkillUse[statName] = math.max(0, self.lowerAfterSkillUse[statName] - stage)
 end;
 
-
 --[[----------------------------------------------------------------------------------------------------
         Status
 ----------------------------------------------------------------------------------------------------]]
 
+-- Checks for immunities, resistances, and current statuses. Then applies a status if possible
 ---@param status string
 function Entity:applyStatus(status)
   if not self.debuffImmune then
@@ -433,8 +483,8 @@ end;
 
 -- Procs logic for any tickable statuses the Entity has (burn, poison, sleep)
 function Entity:tickStatuses()
-  for key, status in pairs(self.statuses) do
-    if key == 'sleep' then
+  for i, status in ipairs(self.statuses) do
+    if status.name == 'sleep' then
       local wakeUp, sleepCounter = status.tick(status.sleepCounter)
       if wakeUp then
         self:wakeUp()
@@ -442,22 +492,25 @@ function Entity:tickStatuses()
         status.sleepCounter = sleepCounter
         self:snooze()
       end
-    elseif status.tick ~= nil then
+    elseif status.tick then
       local damage = status.tick(self.battleStats.hp, self.baseStats.hp)
-      self:tickDOT(key, damage)
+      self:tickDOT(status.name, damage)
     end
   end
 end;
 
+-- Entity wakes up from sleep status
 function Entity:wakeUp()
   local description = self.entityName .. " woke up!"
   -- remove sleep status
 end;
 
+-- I don't remember what this was intended for.
 function Entity:snooze()
   local description = self.entityName .. " decided to snooze!"
 end;
 
+-- Applies a DOT (Damage Over Time) effect
 ---@param status string
 ---@param damage integer
 function Entity:tickDOT(status, damage)
@@ -470,11 +523,12 @@ function Entity:tickDOT(status, damage)
   self:takeDamagePierce(damage)
 end;
 
+-- Checks whether the Entity already has the status
 ---@param status string
 ---@return boolean
 function Entity:isAlreadyAfflicted(status)
-  for _,curr in ipairs(self.statuses) do
-    if curr == status then
+  for _, curr in ipairs(self.statuses) do
+    if curr.name == status then
       return true
     end
   end
@@ -482,15 +536,16 @@ function Entity:isAlreadyAfflicted(status)
   return false
 end;
 
+-- Raises the Entity's resistance to the statuses passed
 ---@param statuses string[]
 ---@param amount integer
 function Entity:raiseResist(statuses, amount)
   if statuses == 'all' then
-    for status,resistChance in pairs(self.statusResist) do
+    for status, resistChance in pairs(self.statusResist) do
       self.statusResist[status] = resistChance + amount
     end
   else
-    for _,status in ipairs(statuses) do
+    for _, status in ipairs(statuses) do
       self.statusResist[status] = self.statusResist[status] + amount
     end
   end
@@ -500,6 +555,7 @@ end;
         Heal & Cleanse
 ----------------------------------------------------------------------------------------------------]]
 
+-- After healing the Entity, the `OnHPChanged` signal is emitted
 ---@param amount integer
 function Entity:heal(amount) --> void
   local isDamage = false
@@ -510,14 +566,16 @@ function Entity:heal(amount) --> void
   Signal.emit('OnHPChanged', amount, isDamage, Entity.tweenHP)
 end;
 
+-- Removes ALL statuses from the Entity
 function Entity:cleanse()
-  for i,_ in ipairs(self.statuses) do
+  for i, _ in ipairs(self.statuses) do
     local status = table.remove(self.statuses, i)
     -- play effect(s) for heal (use a tween and self-assign using after() to chain visuals)
     print(status) -- temp
   end
 end;
 
+-- Removes one status from the Entity
 ---@param statusToCleanse string
 function Entity:cleanseOne(statusToCleanse)
   for i, status in ipairs(self.statuses) do
@@ -528,6 +586,7 @@ function Entity:cleanseOne(statusToCleanse)
   end
 end;
 
+-- Revives the Entity, handling the animation transition(s)
 ---@param pct? number (0,1] Percentage of health to revive with
 function Entity:revive(pct)
   local percent = pct or 0.5
@@ -537,18 +596,20 @@ function Entity:revive(pct)
   self:heal(amount)
 
   -- play sfx, tween, etc
+  self.actor:switch('get_up')
 end;
-
 
 --[[----------------------------------------------------------------------------------------------------
         Damage
 ----------------------------------------------------------------------------------------------------]]
 
+--[[Deals damage, accounting for defense, critical hit.
+Will also transition to a KO'd state if HP falls to 0.]]
 ---@param amount integer
 ---@param attackerLuck integer
 function Entity:takeDamage(amount, attackerLuck) --> void
   local isCrit = self:isCrit(attackerLuck)
-  local damageDuration = 15 -- generous rn, should be a fcn of the damage taken
+  local damageDuration = 15                      -- generous rn, should be a fcn of the damage taken
   if isCrit then
     amount = amount * self.critMult
     -- Signal.emit('OnCrit')
@@ -559,8 +620,8 @@ function Entity:takeDamage(amount, attackerLuck) --> void
 
   if Entity.tweenHP then
     print('slow tween beginning for HP')
-    local damageTween = flux.to(self.battleStats, damageDuration,{hp = newHP})
-      -- :oncomplete(function() print('done with hp tween') end)
+    local damageTween = flux.to(self.battleStats, damageDuration, { hp = newHP })
+    -- :oncomplete(function() print('done with hp tween') end)
     self.tweens['damage'] = damageTween
   else
     self.battleStats["hp"] = newHP
@@ -575,6 +636,7 @@ function Entity:takeDamage(amount, attackerLuck) --> void
   end
 end;
 
+-- Bypasses checks and deals damage directly.
 ---@param amount integer
 function Entity:takeDamagePierce(amount) --> void
   self.battleStats['hp'] = math.max(0, self.battleStats['hp'] - amount)
@@ -590,6 +652,8 @@ function Entity:isCrit(attackerLuck)
   return rand <= chance
 end;
 
+--[[Calculates if hit is a critical hit as a function of the attacker's luck and this Entity's luck.
+Critical hit chances range is `[1..100]`.]]
 ---@param attackerLuck integer
 ---@return number
 function Entity:calcCritChance(attackerLuck)
@@ -620,11 +684,12 @@ function Entity:createActor(animations, dir)
   return actor
 end;
 
+-- TODO: Need handling for animation state diagram (ex: `get_up` -> `idle`)
 ---@param animations string[] Array of animation names
 ---@param dir string The directory where animations are located
 ---@param actor table Reference to the AnimX actor object housing animations
 function Entity:createBaseAnimations(animations, dir, actor)
-  for _,name in ipairs(animations) do
+  for _, name in ipairs(animations) do
     local path = dir .. name .. ".png"
     local animation = animx.newAnimation(path)
     if name == "idle" or name == "run" then
@@ -635,12 +700,15 @@ function Entity:createBaseAnimations(animations, dir, actor)
   end
 end;
 
+--[[Creates all skill animations up front from the Entity's skill pool.
+Animation state changes are handled in the skill's logic file.
+NOTE: Character class should not use this to create animations up front!]]
 ---@param dir string The directory where animations are located
 ---@param actor table Reference to the AnimX actor object housing animations
 function Entity:createSkillAnimations(dir, actor)
-  for _,skill in ipairs(self.skillPool) do
+  for _, skill in ipairs(self.skillPool) do
     local skillPath = dir .. skill.tag .. "/"
-    for _,name in ipairs(skill.animations) do
+    for _, name in ipairs(skill.animations) do
       local path = skillPath .. name .. ".png"
       local fullName = skill.tag .. "_" .. name -- ex: needle_stab & wind_up -> needle_stab_wind_up
       local animation = animx.newAnimation(path)
@@ -661,7 +729,7 @@ end;
 ---@deprecated
 function Entity:setSFX(path, baseSFXTypes)
   local sfxList = {}
-  for _,sfx in ipairs(baseSFXTypes) do
+  for _, sfx in ipairs(baseSFXTypes) do
     local sfxPath = "asset/audio/entities/" .. path .. self.entityName .. "/" .. sfx .. ".wav"
     local src = love.audio.newSource(sfxPath, "static")
     sfxList[sfx] = src
@@ -689,7 +757,7 @@ end;
 -- Adjusts the hitbox offsets and x,y position based on the current animation state
 function Entity:updateHitbox()
   -- local animation = self.animations[self.currentAnimTag]
-  local w,h = self.actor:getCurrentAnimation():getDimensions()
+  local w, h = self.actor:getCurrentAnimation():getDimensions()
   -- local currentQuad = animation.quad[animation.spriteNum]
   -- local sw, sh = currentQuad:getTextureDimensions()
   self.pos.ox = w / 2
@@ -709,7 +777,7 @@ end;
 
 ---@param dt number
 function Entity:updateProjectiles(dt)
-  for _,projectile in ipairs(self.projectiles) do
+  for _, projectile in ipairs(self.projectiles) do
     projectile:update(dt)
   end
 end;
@@ -741,17 +809,17 @@ function Entity:drawHitbox()
   end
 
   if Entity.drawHitboxPositions then
-    love.graphics.setColor(0,0,0)
+    love.graphics.setColor(0, 0, 0)
     local v = math.floor(self.hitbox.y)
     love.graphics.print(v, self.hitbox.x - 50, v)
     local val = math.floor(self.hitbox.y + self.hitbox.h)
     love.graphics.print(val, self.hitbox.x - 50, val)
-    love.graphics.setColor(1,1,1)
+    love.graphics.setColor(1, 1, 1)
   end
 end;
 
 function Entity:drawProjectiles()
-  for _,projectile in ipairs(self.projectiles) do
+  for _, projectile in ipairs(self.projectiles) do
     projectile:draw()
   end
 end;
@@ -769,9 +837,9 @@ function Entity:tweenProgressBar(onComplete)
   local currWidth = self.progressBar.meterOptions.width
   local progress = currWidth / goalWidth
   local remainingDur = self.tRate * (1 - progress)
-  self.tweens['pbTween'] = flux.to(self.progressBar.meterOptions, remainingDur, {width = goalWidth})
-    :ease('linear')
-    :oncomplete(onComplete)
+  self.tweens['pbTween'] = flux.to(self.progressBar.meterOptions, remainingDur, { width = goalWidth })
+      :ease('linear')
+      :oncomplete(onComplete)
 end;
 
 function Entity:stopProgressBar()
