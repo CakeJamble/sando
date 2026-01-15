@@ -17,14 +17,17 @@ local SoundManager = require('class.ui.SoundManager')
 ---@field procAI function
 ---@field sfx SoundManager
 ---@field phaseData table Current phase of Enemy. Nil if not a multiphase Enemy
-local Enemy = Class{__includes = Entity,
+local Enemy = Class { __includes = Entity,
   -- for testing
-  xPos = 450, yPos = 150, yOffset = 90}
+  xPos = 450, yPos = 150, yOffset = 90 }
 
 ---@param data table
 function Enemy:init(data)
   self.enemyType = data.enemyType
   Entity.init(self, data, Enemy.xPos, Enemy.yPos, "enemy")
+  local animPath = "asset/sprites/entities/enemy/" .. self.entityName .. "/"
+  self.actor = self:createActor(data.animations, animPath)
+  self.actor:switch('idle')
   self.expReward = data.experienceReward
   self.moneyReward = data.moneyReward
   self.lootReward = self.setRewardsDistribution(data.rewardsDistribution)
@@ -57,14 +60,14 @@ end;
 function Enemy:takeDamagePierce(amount)
   Entity.takeDamagePierce(self, amount)
   if self.currentAnimTag == 'ko' then
-    flux.to(self.pos, 1.5, {a = 0})
+    flux.to(self.pos, 1.5, { a = 0 })
   end
 end;
 
 -- WIP Basic fainting
 function Enemy:startFainting()
   Entity.startFainting(self)
-  flux.to(self.pos, 1.5, {a = 0})
+  flux.to(self.pos, 1.5, { a = 0 })
   self.sfx:play("ko")
 end;
 
@@ -107,7 +110,7 @@ function Enemy:targetSelect(targetType, isSingleTarget)
     local tIndex = love.math.random(1, #self.targetableEntities)
     table.insert(targets, self.targetableEntities[tIndex])
   else
-    for _,entity in ipairs(self.targetableEntities) do
+    for _, entity in ipairs(self.targetableEntities) do
       table.insert(targets, entity)
     end
   end
@@ -123,12 +126,12 @@ function Enemy.getRandomSkill(skillPool, numValidTargets)
 
   if numValidTargets == 1 then
     local singleTargetSkills = {}
-    for _,s in ipairs(skillPool) do
+    for _, s in ipairs(skillPool) do
       if s.isSingleTarget then
         table.insert(singleTargetSkills, s)
       end
     end
- 
+
     local i = love.math.random(1, #singleTargetSkills)
     skill = singleTargetSkills[i]
   else
@@ -144,7 +147,7 @@ function Enemy:getRewards()
   local reward = {
     exp = self.expReward,
     money = self.moneyReward,
-    rarities = self.lootReward  -- table(uncommon: number, rare: number)
+    rarities = self.lootReward -- table(uncommon: number, rare: number)
   }
   return reward
 end;
