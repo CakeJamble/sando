@@ -43,6 +43,7 @@
 ---@field jumpHeight integer
 ---@field sfx SoundManager
 ---@field actionUI ActionUI
+---@field curses table
 local Character = {}
 
 ---@param data table
