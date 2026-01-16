@@ -1,3 +1,5 @@
+---@meta
+
 ---@class Projectile
 ---@field drawHitboxes boolean
 ---@field pos {x: integer, y: integer, r: number}
