@@ -1,10 +1,9 @@
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 
----@class ToolManager
+---@type ToolManager
 local ToolManager = Class{}
 
----@param characterTeam CharacterTeam
 function ToolManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.tools = self.initToolLists()
@@ -13,7 +12,6 @@ function ToolManager:init(characterTeam)
 	self:registerSignals()
 end;
 
----@param tool table
 function ToolManager:addItem(tool)
 	local signal = tool.signal
 	tool.index = self.indices[signal]
@@ -80,8 +78,6 @@ function ToolManager.initToolLists()
 	return result
 end;
 
----@param tools { [string]: table }
----@return { [string]: integer }
 function ToolManager.initIndices(tools)
 	local result = {}
 	for signal,_ in pairs(tools) do
@@ -90,8 +86,6 @@ function ToolManager.initIndices(tools)
 	return result
 end;
 
----@param name string
----@param f fun(...)
 function ToolManager:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)
