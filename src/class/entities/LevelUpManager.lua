@@ -3,17 +3,7 @@ local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 
----@class LevelUpManager
----@field characterTeam CharacterTeam
----@field levelUpUI { [string]: table }
----@field duration number
----@field windowWidth integer
----@field windowHeight integer
----@field coroutines table
----@field i integer
----@field isDisplayingNotification boolean
----@field textBox table
----@field isActive boolean
+---@type LevelUpManager
 local LevelUpManager = Class {}
 
 ---@param characterTeam CharacterTeam
