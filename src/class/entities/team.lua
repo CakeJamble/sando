@@ -1,26 +1,19 @@
 local Class = require 'libs.hump.class'
 
----@class Team
----@field members Entity[]
----@field bench table
----@field membersIndex integer
+---@type Team
 local Team = Class {}
 
----@param entities Entity[]
 function Team:init(entities)
   self.members = entities
   self.bench = nil
   self.membersIndex = 1
 end;
 
----@param entity Entity
-function Team:addMember(entity) --> void
-  self.numMembers = self.numMembers + 1
-  self.members[self.numMembers] = entity
+function Team:addMember(entity)
+  table.insert(self.members, entity)
 end;
 
----@param entities Entity[]
-function Team:removeMembers(entities) --> void
+function Team:removeMembers(entities)
   local removeIndices = {}
   for i = 1, #self.members do
     for j = 1, #entities do
@@ -36,7 +29,6 @@ function Team:removeMembers(entities) --> void
   end
 end;
 
--- Constructs the bench in the Active/Bench battle format
 function Team:initBench()
   self.bench = {}
   for i = 2, #self.members do
@@ -45,15 +37,11 @@ function Team:initBench()
   end
 end;
 
----@param index integer
 function Team:moveToBench(index)
   local member = table.remove(self.members, index)
   table.insert(self.bench, member)
 end;
 
--- Swaps out an Active member with a Bench member
----@param activeIndex integer Index of active member going to the bench
----@param benchIndex integer Index of bench member entering combat
 function Team:swap(activeIndex, benchIndex)
   if #self.members >= 1 and #self.bench >= 1 then
     local memberToBench = table.remove(self.members, activeIndex)
@@ -63,7 +51,6 @@ function Team:swap(activeIndex, benchIndex)
   end
 end;
 
----@return Entity[]
 function Team:getLivingMembers()
   local result = {}
   for _, member in ipairs(self.members) do
@@ -74,8 +61,7 @@ function Team:getLivingMembers()
   return result
 end;
 
----@return boolean
-function Team:isWipedOut() --> bool
+function Team:isWipedOut()
   for _, c in pairs(self.members) do
     if c:isAlive() then return false end
   end
@@ -89,7 +75,6 @@ function Team:printMembers()
   end
 end;
 
----@param dt number
 function Team:update(dt)
   for _, member in ipairs(self.members) do
     member:update(dt)
