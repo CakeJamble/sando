@@ -2,8 +2,7 @@ local flux = require('libs.flux')
 local Signal = require('libs.hump.signal')
 local Class = require('libs.hump.class')
 
--- Distributes loot rewards (Accessory, Equip, Tool, Consumables)
----@class LootManager
+---@type LootManager
 local LootManager = Class {}
 
 ---@param lootOptions table
@@ -26,11 +25,9 @@ function LootManager:init(lootOptions)
 	self.lootIndex = 0
 	self.selectedReward = nil
 	self.isRewardSelected = false
-	self.coroutines = {}
 	self.tweens = {}
 end;
 
----@return table
 function LootManager.initUI(loot)
 	local images = {}
 	for i, item in ipairs(loot) do
@@ -61,8 +58,6 @@ function LootManager:distributeLoot()
 	self:resumeCurrent()
 end;
 
----@param loot table
----@return thread
 function LootManager:createLootSelectCoroutine(loot)
 	return coroutine.create(function()
 		self.pick3UI = self.initUI(loot)
@@ -125,28 +120,19 @@ function LootManager:raiseItemTween()
 	end
 end;
 
----@param joystick love.Joystick
----@param button love.GamepadButton
-function LootManager:gamepadpressed(joystick, button)
+function LootManager:update(dt)
 	if self.isActive then
-		if self.lootIndex == 0 and button ~= 'b' then
-			self.lootIndex = 1
-			self:raiseItemTween()
-		elseif button == 'a' then
+		if Player:pressed("confirm") then
 			self:resumeCurrent()
-		elseif button == 'dpleft' and self.lootIndex > 1 then
-			self.lootIndex = self.lootIndex - 1
+		elseif Player:pressed("left") and self.lootIndex > 1 then
+			self.lootIndex = math.min(1, self.lootIndex - 1)
 			self:raiseItemTween()
-		elseif button == 'dpright' and self.lootIndex < 4 then
-			self.lootIndex = self.lootIndex + 1
+		elseif Player:pressed("right") then
+			self.lootIndex = math.max(#self.lootOptions, self.lootIndex + 1)
 			self:raiseItemTween()
-		elseif button == 'dpup' or 'b' then
-			if self.isRewardSelected then
-				self.isRewardSelected = false
-			else
-				self.lootIndex = 4
-				self:raiseItemTween()
-			end
+		elseif Player:pressed("cancel") then
+			self.isRewardSelected = false
+			-- TODO: move cursor to exit button
 		end
 	end
 end;
