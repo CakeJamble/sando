@@ -2,22 +2,9 @@ local flux = require('libs.flux')
 local Class = require('libs.hump.class')
 
 -- TODO refactor projectile class to use animx
----@class Projectile
----@field drawHitboxes boolean
----@field pos {x: integer, y: integer, r: number}
----@field hitbox {x: integer, y: integer, w: integer, h: integer}
----@field ox integer
----@field oy integer
----@field shadowPos {x: integer, y: integer, w: integer, h: integer}
+---@type Projectile
 local Projectile = Class { drawHitboxes = true }
 
----@param x integer
----@param y integer
----@param w integer
----@param h integer
----@param castsShadow boolean
----@param index integer
----@param animation table { spriteSheet: love.Image, quads: love.Quad, duration: integer, currentTime: number, spriteNum: integer, still: love.Image }
 function Projectile:init(x, y, w, h, castsShadow, index, animation)
 	self.pos = { x = x, y = y, r = 0 }
 	-- self.dims = {r = 10}
@@ -37,7 +24,7 @@ function Projectile:init(x, y, w, h, castsShadow, index, animation)
 		h = self.hitbox.h / 4
 	}
 
-	self.animation = animation
+	-- self.animation = animation
 	self.isStill = false
 
 	self.index = index
@@ -45,30 +32,12 @@ function Projectile:init(x, y, w, h, castsShadow, index, animation)
 	self.tweens = {}
 end;
 
----@param dt number
 function Projectile:update(dt)
 	self.hitbox.x = self.pos.x
 	self.hitbox.y = self.pos.y
 	self.shadowPos.x = self.pos.x
-	self:updateAnimation(dt)
 end
 
----@param dt number
-function Projectile:updateAnimation(dt)
-	if not self.isStill then
-		self.animation.currentTime = self.animation.currentTime + dt
-		if self.animation.currentTime >= self.animation.duration then
-			self.animation.currentTime = self.animation.currentTime - self.animation.duration
-		end
-
-		self.animation.spriteNum = math.floor(self.animation.currentTime / self.animation.duration * #self.animation.quads) +
-		1
-		self.animation.spriteNum = math.min(self.animation.spriteNum, #self.animation.quads)
-	end
-end;
-
----@param duration integer
----@param targetYPos integer
 function Projectile:tweenShadow(duration, targetYPos)
 	flux.to(self.shadowPos, duration, { y = targetYPos })
 	local tween = flux.to(self.shadowPos, duration / 2, { w = self.hitbox.w / 3 })
@@ -78,25 +47,13 @@ function Projectile:tweenShadow(duration, targetYPos)
 	self.tweens['shadow'] = tween
 end;
 
----@param tweenKey string
 function Projectile:interruptTween(tweenKey)
 	self.tweens[tweenKey]:stop()
 end;
 
 function Projectile:draw()
-	self:drawSprite()
 	self:drawShadow()
 	self:drawHitbox()
-end;
-
-function Projectile:drawSprite()
-	local x, y, r = self.pos.x, self.pos.y, self.pos.r
-	if self.isStill then
-		love.graphics.draw(self.animation.still, x, y)
-	else
-		love.graphics.draw(self.animation.spriteSheet, self.animation.quads[self.animation.spriteNum], x, y, r, 1, 1, self
-		.ox, self.oy)
-	end
 end;
 
 function Projectile:drawShadow()
