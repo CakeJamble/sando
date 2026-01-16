@@ -6,7 +6,6 @@ local Class = require('libs.hump.class')
 ---@type LevelUpManager
 local LevelUpManager = Class {}
 
----@param characterTeam CharacterTeam
 function LevelUpManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.levelUpUI = self.initUI(characterTeam.members)
@@ -28,9 +27,6 @@ function LevelUpManager:init(characterTeam)
 	self.isActive = false
 end;
 
---[[Distributes the amount to each member of the team without dividing it.
-Distribution is done one Character at a time using coroutines.]]
----@param amount integer
 function LevelUpManager:distributeExperience(amount)
 	self.isActive = true
 	self.coroutines = {}
@@ -43,14 +39,6 @@ function LevelUpManager:distributeExperience(amount)
 	self:resumeCurrent()
 end;
 
---[[Adds the exp to the character and procs level ups and new skill learning interactions.
-When a level up occurs, a stat bonus interaction is also triggered here.
-Bypasses the Character method for gaining exp and modifies it directly here.
-A decision needs to be made whether this calls the Character method or does it directly.]]
----@param member Character
----@param amount integer
----@return thread
----@see Character.gainExp
 function LevelUpManager:createExpCoroutine(member, amount)
 	return coroutine.create(function()
 		local totalExp = amount
@@ -121,9 +109,6 @@ function LevelUpManager:createExpCoroutine(member, amount)
 	end)
 end;
 
---[[Controller for `self.coroutines`. Once all coroutines are finished,
-it emits the `OnExpDistributionComplete` signal, which will cause the
-LevelUpManager to relinquish control of the program to the calling object.]]
 function LevelUpManager:resumeCurrent()
 	local co = self.coroutines[self.i]
 	if not co then
@@ -151,10 +136,6 @@ function LevelUpManager:resumeCurrent()
 	end
 end;
 
---[[Simple abstraction for formatting the text and triggering the SYSL-text handler
-to show the text box and handle player input.]]
----@param character Character
----@param callback fun(): string
 function LevelUpManager:displayNotification(character, callback)
 	self.isDisplayingNotification = true
 	-- self.notification = callback()
@@ -162,9 +143,6 @@ function LevelUpManager:displayNotification(character, callback)
 	self.textBox:send(text, 255)
 end;
 
----@deprecated Uses the deprecated `frameWidth` & `frameHeight` variables
----@param members Character[]
----@return { [string]: table }
 function LevelUpManager.initUI(members)
 	local uiTable = {}
 
@@ -190,7 +168,6 @@ function LevelUpManager.initUI(members)
 	return uiTable
 end;
 
----@param dt number
 function LevelUpManager:update(dt)
 	if self.isActive and Player:pressed("confirm") and self.isDisplayingNotification then
 		self.isDisplayingNotification = false
