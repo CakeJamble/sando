@@ -1,15 +1,7 @@
 local flux = require('libs.flux')
 local Class = require 'libs.hump.class'
 
----@class Button
----@field BASE_DX integer
----@field SPACER integer
----@field SCALE_DOWN number
----@field PATH string
----@field moveDuration number
----@field SIDE_BUTTON_SCALE number
----@field BACK_BUTTON_SCALE number
----@field MOVE_SCALE number
+---@type Button
 local Button = Class{BASE_DX = 300, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/',
 moveDuration = 0.25, SIDE_BUTTON_SCALE = 0.75, BACK_BUTTON_SCALE = 0.5, MOVE_SCALE=0.5}
 
@@ -50,7 +42,7 @@ end;
 
 ---@param landingPos { [string]: number }
 ---@param  duration number
----@param easeType? string
+---@param easeType string
 function Button:tween(landingPos, duration, easeType)
   flux.to(self.pos, duration,
     {
@@ -83,7 +75,6 @@ function Button:setTargetPos(tX, speedMul)
     self.dX = Button.BASE_DX * speedMul
 end;
 
----@param  isActive boolean
 function Button:setIsActiveButton(isActive)
   self.isActiveButton = isActive
   if isActive then

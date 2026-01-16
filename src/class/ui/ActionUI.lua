@@ -12,21 +12,13 @@ local sortLayers = require('util.table_utils').sortLayers
 
 local Class = require 'libs.hump.class'
 
----@class ActionUI
----@field ICON_SPACER integer
----@field X_OFFSET integer
----@field Y_OFFSET integer
----@field TARGET_CURSOR_PATH string
+---@type ActionUI
 local ActionUI = Class {
   ICON_SPACER = 50,
   X_OFFSET = 20,
   Y_OFFSET = -45,
   TARGET_CURSOR_PATH = 'asset/sprites/combat/target_cursor.png' }
 
--- The ActionUI position (self.x, self.y) is at the coordinates of the center of the button wheel
----@param charRef Character
----@param characterMembers Character[]
----@param enemyMembers Enemy[]
 function ActionUI:init(charRef, characterMembers, enemyMembers)
   self.active              = false
   self.x                   = nil
@@ -58,8 +50,6 @@ function ActionUI:init(charRef, characterMembers, enemyMembers)
   self:set(charRef)
 end;
 
----@param characterMembers Character[]
----@param enemyMembers Enemy[]
 function ActionUI:setTargets(characterMembers, enemyMembers)
   self.targets = {
     ['characters'] = characterMembers,
@@ -67,7 +57,6 @@ function ActionUI:setTargets(characterMembers, enemyMembers)
   }
 end;
 
----@param charRef Character
 function ActionUI:set(charRef)
   self.x = charRef.pos.x + ActionUI.X_OFFSET - charRef.pos.ox
   self.y = charRef.pos.y + ActionUI.Y_OFFSET - charRef.pos.oy
@@ -97,9 +86,8 @@ function ActionUI:set(charRef)
   self.easeType = 'linear'
 end;
 
----@return table[]
 function ActionUI:setButtonLandingPositions()
-  local sideOffsets = { x = 1.5 * self.buttonDims.w, y = self.buttonDims.h / 1.5 }
+  local sideOffsets = { x = math.floor(0.5 + 1.5 * self.buttonDims.w), y = math.floor(0.5 + self.buttonDims.h / 1.5) }
   local backOffsets = { x = self.buttonDims.w, y = self.buttonDims.h }
   local landingPositions = {
     {
@@ -131,7 +119,6 @@ function ActionUI:setButtonLandingPositions()
   return landingPositions
 end;
 
--- button indexes and layers get changed before this tween goes off, so we know where they will land
 function ActionUI:tweenButtons()
   self.uiState = 'rotating'
   for _, button in ipairs(self.buttons) do
@@ -163,8 +150,6 @@ function ActionUI:deactivate()
   print('action ui is no longer active')
 end
 
--- Issue: This function should check for button press before the other checks
----@param dt number
 function ActionUI:update(dt)
   if self.active then
     ----------------------- Button Tweening ---------------------------
