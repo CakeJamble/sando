@@ -4,13 +4,9 @@ local Signal = require('libs.hump.signal')
 local PlayerInputCommand = require('class.input.PlayerInputCommand')
 local AICommand = require('class.input.AICommand')
 
----@class ATBScheduler: Scheduler
+---@type ATBScheduler
 local ATBScheduler = Class{__includes = Scheduler}
 
--- Active Timer Battle Scheduler
----@param characterTeam CharacterTeam
----@param enemyTeam EnemyTeam
----@param config table
 function ATBScheduler:init(characterTeam, enemyTeam, config)
 	Scheduler.init(self, characterTeam, enemyTeam, config)
 	self.commandQueue = {
@@ -108,7 +104,7 @@ function ATBScheduler:checkQueues()
     if self.activeCommand then
       -- self:entitiesReactToTurnStart()
       print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
-      self.activeCommand:start(self)
+      self.activeCommand:start()
     end
 
   elseif self.activeCommand.done then
@@ -123,7 +119,7 @@ function ATBScheduler:checkQueues()
     self.activeCommand.entity.isResumingTurn = true
     self.activeCommand = command
     print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
-    self.activeCommand:start(self)
+    self.activeCommand:start()
   end
 end;
 
@@ -150,7 +146,6 @@ function ATBScheduler:removeKOs()
 	end
 end;
 
----@param dt number
 function ATBScheduler:update(dt)
 	if self.activeCommand then
 		if not self.activeCommand.done then

@@ -8,6 +8,7 @@ function Command:init(entity)
   self.entity = entity
   self.done = false
   self.signalHandlers = {}
+  self.isInterruptible = false
 end;
 
 function Command:registerSignal(name, f)
@@ -21,5 +22,9 @@ function Command:cleanupSignals()
   end
   self.signalHandlers = {}
 end;
+
+function Command:start() end
+function Command:interrupt() end
+function Command:update(dt) end
 
 return Command

@@ -6,13 +6,9 @@ local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local Timer = require('libs.hump.timer')
 
--- CTB is similar to STB except that enemies act once every n character actions
----@class CTBScheduler: Scheduler
+---@type CTBScheduler
 local CTBScheduler = Class{__includes = Scheduler}
 
----@param characterTeam CharacterTeam
----@param enemyTeam EnemyTeam
----@param config table
 function CTBScheduler:init(characterTeam, enemyTeam, config)
 	Scheduler.init(self, characterTeam, enemyTeam, config)
 	self.combatants = self.characterTeam.members -- lazy override scheduler init
@@ -96,9 +92,6 @@ function CTBScheduler:sortWaitingCombatants()
   end
 end;
 
--- for now, all enemies go every 3 turns
----@param enemy Enemy
----@return table
 function CTBScheduler.initCTimer(enemy)
 	-- in future, use speed to determine rate of attacks
 	local speed = enemy.battleStats.speed
@@ -121,7 +114,6 @@ function CTBScheduler:tick()
 	end
 end;
 
----@param command Command
 function CTBScheduler:enqueueCommand(command)
 	  print('enqueuing command from ' .. command.entity.entityName .. ' in command queue')
 	if command.entity.type == "enemy" then

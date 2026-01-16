@@ -4,12 +4,9 @@ local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 local flux = require('libs.flux')
 
----@class Scheduler
+---@type Scheduler
 local Scheduler = Class{}
 
----@param characterTeam CharacterTeam
----@param enemyTeam EnemyTeam
----@param config table
 function Scheduler:init(characterTeam, enemyTeam, config)
 	self.characterTeam = characterTeam
 	self.enemyTeam = enemyTeam
@@ -45,8 +42,6 @@ function Scheduler:enter()
 		end)
 end;
 
----@param name string
----@param f fun(...)
 function Scheduler:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)
@@ -59,9 +54,6 @@ function Scheduler:removeSignals()
 	self.signalHandlers = {}
 end;
 
----@param characterMembers Character[]
----@param enemyMembers Enemy[]
----@return table{ characters: Character[], enemies: Enemy[] }
 function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	local queue = {}
 	for _,character in ipairs(characterMembers) do
@@ -74,7 +66,6 @@ function Scheduler:populateCombatants(characterMembers, enemyMembers)
 	return queue
 end;
 
----@return { [string]: Entity[] }
 function Scheduler:getValidTargets()
 	local result = {}
 	result.characters = self.characterTeam:getLivingMembers()
@@ -82,13 +73,10 @@ function Scheduler:getValidTargets()
 	return result
 end;
 
----@param duration integer
 function Scheduler:resetCamera(duration)
 	flux.to(camera, duration, {x = self.cameraPosX, y = self.cameraPosY, scale = 1})
 end;
 
----@param activeEntity? Entity
----@return integer Duration of time for longest faint animation
 function Scheduler:removeKOs(activeEntity)
 	local koEnemies = {}
 	local koCharacters = {}
@@ -142,9 +130,6 @@ function Scheduler:removeKOs(activeEntity)
   return duration
 end;
 
----@param activeEntity? Entity
----@param koCharacters Character[]
----@param koEnemies Enemy[]
 function Scheduler:emitDeathSignals(activeEntity, koCharacters, koEnemies)
   local emitOnKO = #koEnemies > 0 and #self.enemyTeam.members > 0 and (activeEntity and activeEntity.type == "character")
   local emitOnFaint = #koCharacters > 0 and activeEntity
@@ -153,7 +138,6 @@ function Scheduler:emitDeathSignals(activeEntity, koCharacters, koEnemies)
   if emitOnFaint then Signal.emit("OnFaint", activeEntity, koCharacters) end
 end;
 
----@return boolean
 function Scheduler:winLossConsMet()
   local result = false
   print('checking win loss cons')
