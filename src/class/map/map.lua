@@ -1,13 +1,9 @@
 local Class = require('libs.hump.class')
 local flux = require('libs.flux')
 
----@class Map
+---@type Map
 local Map = Class{}
 
----@param mapData table[] 2D Array of Room objects
----@param numFloors integer
----@param width integer
----@param numPaths integer
 function Map:init(mapData, numFloors, width, numPaths)
 	self.mapData = mapData
 	self.numFloors = numFloors
@@ -17,12 +13,11 @@ function Map:init(mapData, numFloors, width, numPaths)
 	self.selectedIndex = 1
 	self.activeRooms = {}
 	self.pos = {
-		x = shove.getViewportWidth() / 4,
+		x = math.floor(0.5 + shove.getViewportWidth() / 4),
 		y = 0
 	}
 end;
 
--- Connect rooms with lines to visualize paths
 function Map:connectRooms()
 	for _,row in ipairs(self.mapData) do
 		for _,room in ipairs(row) do
@@ -31,8 +26,6 @@ function Map:connectRooms()
 	end
 end;
 
--- Connect one room to parent(s) by creating lines and assigning it to the room
----@param room Room
 function Map:connectLines(room)
 	if not room.nextRooms then return end
 
@@ -44,8 +37,6 @@ function Map:connectLines(room)
 	end
 end;
 
--- Sets validated rooms to active and changes their opacities
----@param floor integer
 function Map:checkActiveRooms(floor)
 	self.activeRooms = {}
 	for _,room in ipairs(self.mapData[floor]) do
@@ -64,9 +55,6 @@ function Map:checkActiveRooms(floor)
 	end
 end;
 
--- Check if any of the parent rooms are marked as cleared
----@param room Room
----@return boolean
 function Map:clearedParents(room)
 	local parents = {}
 
@@ -114,8 +102,6 @@ function Map:clearedParents(room)
 	return false
 end;
 
----@param log Log
----@param floor integer
 function Map:logSelection(log, floor)
 	log:logEncounterSelection(self.selectedIndex, self.mapData[floor])
 
