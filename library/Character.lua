@@ -58,17 +58,17 @@ in a table of the format `{characters: Character[], enemies: Enemy[]}`]]
 ---@param targetType string
 function Character:setTargets(targets, targetType) end
 
+--[[Deconstructs the Character's Action UI, and sets other relevant variables to
+a valid state for relinquishing control to the Scheduler]]
+---@param duration integer
+function Character:endTurn(duration) end
+
 --[[Deconstructs the Character's Action UI, moves them back to their original position,
 and sets other relevant variables to a valid state for relinquishing control to the Scheduler]]
 ---@param duration integer
 ---@param stagingPos? table
 ---@param tweenType? string
 function Character:endTurn(duration, stagingPos, tweenType) end
-
---[[Deconstructs the Character's Action UI, and sets other relevant variables to
-a valid state for relinquishing control to the Scheduler]]
----@param duration integer
-function Character:endTurn(duration) end
 
 ---@param cost integer
 ---@return boolean
