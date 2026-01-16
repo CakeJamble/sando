@@ -202,6 +202,9 @@ end;
 
 ---@param dt number
 function QTEManager:update(dt)
+	-- sanity check for testing double updates
+	if Player:pressed('confirm') then print('confirm pressed') end
+	
 	if self.activeQTE then
 		self.activeQTE:update(dt)
 	end
