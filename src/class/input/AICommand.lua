@@ -2,7 +2,7 @@ local Command = require('class.input.Command')
 local SkillCommand = require('class.input.SkillCommand')
 local Class = require('libs.hump.class')
 
----@class AICommand: Command
+---@type AICommand
 local AICommand = Class{__includes = Command}
 
 ---@param entity Entity
@@ -35,7 +35,6 @@ function AICommand:start()
 	self.entity:setupOffense(validTargets)
 end;
 
----@param dt number
 function AICommand:update(dt)
 	if self.done then
 		self:cleanupSignals()
