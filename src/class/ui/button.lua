@@ -5,9 +5,6 @@ local Class = require 'libs.hump.class'
 local Button = Class{BASE_DX = 300, SPACER = 50, SCALE_DOWN = 0.6, PATH = 'asset/sprites/combat/',
 moveDuration = 0.25, SIDE_BUTTON_SCALE = 0.75, BACK_BUTTON_SCALE = 0.5, MOVE_SCALE=0.5}
 
----@param pos { [string]: number }
----@param index integer
----@param path string
 function Button:init(pos, index, path)
     -- self.centerX = x
     -- self.x = x
@@ -40,9 +37,6 @@ function Button:init(pos, index, path)
     self.easeType = 'linear'
 end;
 
----@param landingPos { [string]: number }
----@param  duration number
----@param easeType string
 function Button:tween(landingPos, duration, easeType)
   flux.to(self.pos, duration,
     {
@@ -53,7 +47,6 @@ function Button:tween(landingPos, duration, easeType)
     :ease(easeType)
 end;
 
----@return integer
 function Button:idxToLayer()
   local layer
 
@@ -68,8 +61,6 @@ function Button:idxToLayer()
   return layer
 end;
 
----@param tX { [string]: number }
----@param speedMul number
 function Button:setTargetPos(tX, speedMul)
     self.tX = tX
     self.dX = Button.BASE_DX * speedMul

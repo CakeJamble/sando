@@ -16,7 +16,7 @@
 ---@field dims {w: integer, h: integer}
 ---@field tX integer
 ---@field tY integer
----@field dX integer
+---@field dX number
 ---@field active boolean
 ---@field targets {characters: Character[], enemies: Enemy[]}
 ---@field displaySkillList boolean
@@ -42,7 +42,7 @@ function Button:tween(landingPos, duration, easeType) end
 ---@return integer
 function Button:idxToLayer() end
 
----@param tX { [string]: number }
+---@param tX integer
 ---@param speedMul number
 function Button:setTargetPos(tX, speedMul) end
 
