@@ -19,6 +19,9 @@ LootManager = {}
 ---@return table
 function LootManager.initUI(loot) end
 
+-- Begins a dialog selection sequence for the player to select loot(s)
+function LootManager:distributeLoot() end
+
 ---@param loot table
 ---@return thread
 function LootManager:createLootSelectCoroutine(loot) end
@@ -31,6 +34,7 @@ There are two separate signals defined here to provide flexibility for designing
 interactions where 1 or more loot selections take place in succession.]]
 function LootManager:resumeCurrent() end
 
+-- Raises the highlighted item and lowers the other items
 function LootManager:raiseItemTween() end
 
 ---@param dt number
