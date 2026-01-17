@@ -38,7 +38,11 @@ Contains the source code for the different gamestates in the game. Uses `hump.ga
 
 Contains the libraries used for the game's implementation. Not provided in this repo to cut down on GitHub storage of redundant files that exist elsewhere. I plan to write a simple script that will check for these dependencies in the user's workspace and clone the repositories of any missing dependencies, but for now you will need to manually clone them.
 
+- [animX](https://github.com/besnoi/animX)
+- [luis](https://github.com/SiENcE/luis/)
 - [hump](https://hump.readthedocs.io/en/latest/)
+- [knife.test](https://github.com/airstruck/knife)
+- [SYSL-Text](https://github.com/sysl-dev/SYSL-Text)
 - [flux](https://github.com/rxi/flux)
 - [cimgui-love](https://codeberg.org/apicici/cimgui-love)
 - [json.lua](https://github.com/rxi/json.lua)
@@ -80,20 +84,10 @@ TBD - Store pages have been acquired for itch.io & Steam, but will remain unpubl
 
 Targeting a release window for a Vertical Slice Demo of the game's core roguelike loop in Late 2025.
 
-## 💁 Tools & External Resources
-
-- [HotPartciles](https://github.com/ReFreezed/HotParticles)
-- [Magical 8Bit Plug](https://ymck.net/app/magical-8bit-plug-en)
-- [Bfxr](https://www.bfxr.net/)
-- [Figma](https://www.figma.com/)
-- [Sublime Text](https://www.sublimetext.com/)
-- [Sublime Merge](https://www.sublimemerge.com/)
-
-
 ## 📫 Inquiries
 
 Direct all inquiries regarding to the development of this product to the email of the sole author of Sando: [CakeJamble](mailto:cakejamblegames@gmail.com)
 
 ## ⚠️ Disclaimer
 
-I provide no support for code taken from this repository. Despite the code being publicly available, this is NOT an open-source software. I may respond to emails that ask for support or suggest improvements, but I cannot promise I will respond promptly or consistently at this time. I reserve the right to change the visibility of this repository without any notice or reason.
+I provide no support for code from this repository. Despite the code being publicly available, this is NOT an open-source software.
