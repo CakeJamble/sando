@@ -1,14 +1,9 @@
 local Button = require('class.ui.Button')
 local Class = require('libs.hump.class')
 
----@class SubMenuButton: Button
+---@type SubMenuButton
 local SubMenuButton = Class{__includes = Button}
 
----@param pos { [string]: number }
----@param index integer
----@param path string
----@param actionButton string
----@param actionList table[]
 function SubMenuButton:init(pos, index, path, actionButton, actionList)
 	Button.init(self, pos, index, path)
 	self.actionButton = actionButton
@@ -21,12 +16,11 @@ function SubMenuButton:init(pos, index, path, actionButton, actionList)
 		x = self.listOptions.container.x,
 		y = self.listOptions.container.y
 	}
-	self.previewOffset = self.listOptions.container.height / self.numItemsInPreview
+	self.previewOffset = math.floor(0.5 + (self.listOptions.container.height / self.numItemsInPreview))
 	self.listIndex = 1
 	self.selectedAction = nil
 end;
 
----@return { [string]: table }
 function SubMenuButton:populateList()
   local result = {container = {}, separator = {}}
 
@@ -51,7 +45,6 @@ function SubMenuButton:populateList()
   return result
 end;
 
----@return { [string]: string }[]
 function SubMenuButton:populatePreviews()
   local result = {}
   local preview = {}
@@ -89,8 +82,6 @@ function SubMenuButton:drawElems()
   love.graphics.setColor(1, 1, 1)
 end;
 
--- Should be refactored to return a list of strings instead of 1 big string
----@return string
 function SubMenuButton:actionListToStr()
   local result = ''
   for _, elem in ipairs(self.actionList) do
@@ -103,34 +94,7 @@ function SubMenuButton:setDescription()
 	self.preview = self.actionList[self.index].description
 end;
 
----@deprecated Use update with baton to handle inputs
----@param joystick love.Joystick
----@param button love.GamepadButton
-function SubMenuButton:gamepadpressed(joystick, button)
------------------------ Action Selection -------------------------
-  if button == 'dpdown' then
-    self.listIndex = (self.listIndex % #self.listUI) + 1
-  elseif button == 'dpup' then
-    if self.listIndex <= 1 then
-      self.listIndex = #self.listUI
-    else
-      self.listIndex = self.listIndex - 1
-    end
-  elseif button == self.actionButton then
-    if not self.displayList then
-      self.displayList = true
-    else
-      self.selectedAction = self.actionList[self.listIndex]
-    end
------------------------ Action Cancels -------------------------
-  elseif button == 'dpleft' or button == 'dpright' then -- close item select menu
-    self.displayList = false
-    self.selectedAction = nil
-    self.listIndex = 1
-  end
-end;
-
-function SubMenuButton:updateInput()
+function SubMenuButton:update(dt)
   if Player:pressed('down') then
     self.listIndex = (self.listIndex % #self.listUI) + 1
   elseif Player:pressed('up') then
@@ -145,6 +109,10 @@ function SubMenuButton:updateInput()
     else
       self.selectedAction = self.actionList[self.listIndex]
     end
+  elseif Player:pressed("cancel") then
+    self.displayList = false
+    self.selectedAction = nil
+    self.listIndex = 1
   end
 end;
 

@@ -1,18 +1,9 @@
 local Room = require('class.map.Room')
 local Class = require('libs.hump.class')
 
---[[Provides the base class utilities for generating a Map. 
-The MapGenerator class does not create a valid Map on its own, and derived classes
-must implement their own methods to create valid connections between rooms.
-Implementation of a Roguelike Map Generator, based on a tutorial by @GodotGameLab
-that was remade in Lua for LOVE2D]]
----@class MapGenerator
+---@type MapGenerator
 local MapGenerator = Class{}
 
----@param numFloors integer
----@param mapWidth integer
----@param numPaths integer Number of starting points
----@param placementRandomness? integer Optional variable to customize the amount of natural offset
 function MapGenerator:init(numFloors, mapWidth, numPaths, placementRandomness)
 	self.xDist = 150
 	self.yDist = 175
@@ -37,8 +28,6 @@ function MapGenerator:init(numFloors, mapWidth, numPaths, placementRandomness)
 	self.randomRoomTypeTotalWeight = 0
 end;
 
--- Creates a completely linear path with no divergences
----@param intervals table
 function MapGenerator:generateMap(intervals)
 	local result = {}
 	for i=1,self.numFloors do -- rows
@@ -51,12 +40,11 @@ function MapGenerator:generateMap(intervals)
 	return result
 end;
 
--- Creates a room with a small pixel coordinate offset so it doesn't look to rigid
----@param row integer
----@param col? integer
----@return Room
 function MapGenerator:createRoom(row, col)
-	if not col then col = 1 end
+	if not col then
+		-- If not given, then just set it to the center of the map
+		col = math.floor(0.5 + (self.mapWidth / 2)) 
+	end
 
 	local offset = {
 		x = love.math.random() * self.placementRandomness,
@@ -77,11 +65,6 @@ function MapGenerator:createRoom(row, col)
 	return room
 end;
 
---[[Uses weighted distribution values to determine the type of room. 
-Returns `"NA"` if `intervals` is `nil`.]]
----@param intervals table
----@param currFloor integer 
----@return ROOM_TYPE
 function MapGenerator:calcRoomType(intervals, currFloor)
 	local roomType
 	for k,v in pairs(intervals) do
@@ -94,7 +77,6 @@ function MapGenerator:calcRoomType(intervals, currFloor)
 	return roomType
 end;
 
--- Create a boss room and connect the penultimate floor's rooms to it
 function MapGenerator:setupBossRoom()
 	local middle = math.floor(0.5 + self.mapWidth / 2)
 	local bossRoom = self.mapData[self.numFloors][middle]
@@ -110,8 +92,6 @@ function MapGenerator:setupBossRoom()
 	end
 end;
 
---[[ Setup weighted randomness for room distribution.
-Weight inversely correlates with expected number of appearances.]]
 function MapGenerator:setupRandomRoomWeights()
 	self.randomRoomTypeWeights.COMBAT = self.weights.COMBAT
 	self.randomRoomTypeWeights.CAMPFIRE = self.weights.COMBAT + self.weights.CAMPFIRE
@@ -120,14 +100,6 @@ function MapGenerator:setupRandomRoomWeights()
 	self.randomRoomTypeTotalWeight = self.randomRoomTypeWeights.SHOP
 end;
 
---[[Sets the Room's type based on the following constraints:
-
-	1. No campfires spawn before the 5th floor
-	2. Campfires do not spawn consecutively
-	3. Shops do not spawn consecutively
-	4. A campfire is always placed before the boss (redundant check for safety)
-]]
----@param room Room
 function MapGenerator:setRandomRoomType(room)
 	local campfireBelow4 = true
 	local consecutiveCampfire = true
@@ -153,7 +125,6 @@ function MapGenerator:setRandomRoomType(room)
 	room:setType(typeCandidate)
 end;
 
----@return string
 function MapGenerator:getRandomRoomTypeByWeight()
 	local roll = love.math.random(0, self.randomRoomTypeTotalWeight)
 
@@ -165,10 +136,6 @@ function MapGenerator:getRandomRoomTypeByWeight()
 	return "Combat"
 end;
 
--- Validates whether the room has a parent (preceding room) of the type provided
----@param room Room
----@param roomType ROOM_TYPE
----@return boolean
 function MapGenerator:parentOfType(room, roomType)
 	local parents = {}
 
@@ -218,7 +185,7 @@ function MapGenerator:parentOfType(room, roomType)
 
 end;
 
-
+-- TODO: Make an overload where you can supply the defaults instead
 function MapGenerator:setupRoomTypes()
 	-- floor 1 is always a standard combat
 	for _,room in ipairs(self.mapData[1]) do

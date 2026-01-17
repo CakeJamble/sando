@@ -1,10 +1,9 @@
 local Class = require('libs.hump.class')
 local Signal = require('libs.hump.signal')
 
----@class AccessoryManager
+---@type AccessoryManager
 local AccessoryManager = Class{}
 
----@param characterTeam CharacterTeam
 function AccessoryManager:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.list = self.initItemLists()
@@ -16,7 +15,6 @@ function AccessoryManager:init(characterTeam)
 	self.i = 1
 end;
 
----@param item table
 function AccessoryManager:addItem(item)
 	local signal = item.signal
 	item.index = self.indices[signal]
@@ -25,8 +23,6 @@ function AccessoryManager:addItem(item)
 	print('added ' .. item.name .. ' to: self.list.' .. signal)
 end;
 
----@param item table
----@return table
 function AccessoryManager:popItem(item)
 	if item.index == 0 then
 		error(item.name .. "'s index was never overwritten when added to the inventory")
@@ -41,9 +37,6 @@ function AccessoryManager:popItem(item)
 	end
 end;
 
----@param character Character
----@param i integer
----@param itemType string
 function AccessoryManager:equip(character, i, itemType)
 	local item = table.remove(self.list[itemType], i)
 	character:equip(item, itemType)
@@ -88,7 +81,6 @@ function AccessoryManager:createEquipCoroutine(character, item, itemType)
 	end)
 end;
 
----@return { [string]: table}
 function AccessoryManager.initItemLists()
 	local result = {
 		OnEquip = {},
@@ -108,8 +100,6 @@ function AccessoryManager.initItemLists()
 	return result
 end;
 
----@param list { [string]: table }
----@return { [string]: integer }
 function AccessoryManager.initIndices(list)
 	local result = {}
 	for signal,_ in pairs(list) do
@@ -118,8 +108,6 @@ function AccessoryManager.initIndices(list)
 	return result
 end;
 
----@param name string
----@param f fun(...)
 function AccessoryManager:registerSignal(name, f)
 	self.signalHandlers[name] = f
 	Signal.register(name, f)

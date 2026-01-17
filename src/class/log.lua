@@ -1,10 +1,9 @@
 local Class = require('libs.hump.class')
 local binser = require('libs.binser')
 
----@class Log
+---@type Log
 local Log = Class{}
 
----@param characterTeam CharacterTeam
 function Log:init(characterTeam)
 	self.characterTeam = characterTeam
 	self.low, self.high = love.math.getRandomSeed()
@@ -18,8 +17,6 @@ function Log:init(characterTeam)
 	self.map = nil
 end;
 
----@param index integer The index choses in the map's activeRooms table
----@param rooms Room[]
 function Log:logEncounterSelection(index, rooms)
 	local encounter = {
 		index = index,
@@ -42,7 +39,7 @@ function Log:setCleared()
 	end
 end;
 
----@return string
+-- wip
 function Log:serialize()
 	local data = {
 		team = self.characterTeam:serialize(),
@@ -56,9 +53,6 @@ function Log:serialize()
 	return str
 end;
 
----@param act integer
----@param floor integer
----@param encounters table
 function Log:loadFromSaveData(act, floor, encounters)
 	self.act = act
 	self.floor = floor

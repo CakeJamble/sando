@@ -1,22 +1,6 @@
 local Class = require('libs.hump.class')
 
----@class MidiNoteOnEvent
----@field tick integer
----@field note integer
----@field type '"note_on"'
-
----@class MidiTempoEvent
----@field tick integer
----@field tempo integer
----@field type '"tempo"'
-
----@alias MidiEvent MidiNoteOnEvent | MidiTempoEvent
-
----@class MidiSong
----@field ppq integer
----@field events MidiEvent[]
-
----@class MidiParser
+---@type MidiParser
 local MidiParser = Class{}
 
 ---@param data string
@@ -56,13 +40,11 @@ end
 function MidiParser:init()
 end;
 
----@param path string
----@return {ppq: integer, events: MidiEvent[]}
 function MidiParser:parse(path)
 	local data = love.filesystem.read(path)
 	assert(data:sub(1, 4) == "MThd", "Not a MIDI file")
 	local i = 5
-	local headerLen, format, track, ppq
+	local headerLen, format, tracks, ppq
 
 	headerLen, i = read_u32(data, i)
 	format, i = read_u16(data, i)

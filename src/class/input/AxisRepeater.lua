@@ -1,9 +1,8 @@
 local Class = require('libs.hump.class')
 
----@class AxisRepeater
+---@type AxisRepeater
 local AxisRepeater = Class{}
 
----@param opts table?
 function AxisRepeater:init(opts)
 	opts = opts or {}
 
@@ -15,8 +14,6 @@ function AxisRepeater:init(opts)
 	self.fired = false
 end;
 
----@param axisValue number
----@param dt number
 function AxisRepeater:update(axisValue, dt)
 	local absVal = math.abs(axisValue)
 

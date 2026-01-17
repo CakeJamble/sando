@@ -3,18 +3,13 @@ local getClosestResolution = require('util.get_closest_resolution')
 local SoundManager = require('class.ui.SoundManager')
 local Class = require('libs.hump.class')
 
----@class Settings
----@field DEFAULT_SETTINGS_PATH string
----@field BASE_RESOLUTION {width: integer, height: integer}
----@field SUPPORTED_RESOLUTIONS integer[][]
+---@type Settings
 local Settings = Class{
 	DEFAULT_SETTINGS_PATH = "data/settings/default_settings.json",
 }
 
----@param customSettings table?
-function Settings:init(customSettings)
+function Settings:init()
 	self.path = "settings.json"
-	self.postShader = love.graphics.newShader("asset/shader/postprocess.glsl")
 	self.musicManager = SoundManager(AllSounds.music)
 	self.sfxManager = SoundManager(AllSounds.sfx)
 	self.supportedResolutions = {
@@ -35,7 +30,6 @@ function Settings:init(customSettings)
 end;
 
 
----@return {resolution: {w: integer, h: integer}, windowModeFlags: {resizable: boolean, vsync: boolean, minwidth: integer, minheight: integer}, musicVolume: number, sfxVolume: number} settings
 function Settings:createDefaultSettings()
 	local raw = love.filesystem.read(Settings.DEFAULT_SETTINGS_PATH)
 	local data = json.decode(raw)
@@ -55,7 +49,6 @@ function Settings:createDefaultSettings()
 	return settings
 end;
 
----@return {resolution: {w: integer, h: integer}, windowModeFlags: {resizable: boolean, vsync: boolean, minwidth: integer, minheight: integer}, musicVolume: number, sfxVolume: number} settings
 function Settings:loadSettings()
 	local raw = love.filesystem.read(self.path)
 	local data = json.decode(raw)
@@ -76,8 +69,6 @@ function Settings:applyAll()
 	self.sfxManager:setGlobalVolume(self.settings.sfxVolume)
 end;
 
----@param key string The setting being set
----@param value any New value being set for the setting
 function Settings:setSetting(key, value)
 	self.settings[key] = value
 end;

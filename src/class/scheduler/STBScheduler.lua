@@ -5,13 +5,9 @@ local PlayerInputCommand = require('class.input.PlayerInputCommand')
 local AICommand = require('class.input.AICommand')
 local Timer = require('libs.hump.timer')
 
----@class STBScheduler: Scheduler
+---@type STBScheduler
 local STBScheduler = Class{__includes = Scheduler}
 
--- Standard Turn Based Scheduler
----@param characterTeam CharacterTeam
----@param enemyTeam EnemyTeam
----@param config table
 function STBScheduler:init(characterTeam, enemyTeam, config)
 	Scheduler.init(self, characterTeam, enemyTeam, config)
 	self:sortQueue(self.combatants)
@@ -73,8 +69,6 @@ function STBScheduler:exit()
 	self:removeSignals()
 end;
 
----@param t Entity[]
----@return Entity[]
 function STBScheduler:sortQueue(t)
   table.sort(t,
     function(entity1, entity2)
@@ -93,7 +87,6 @@ function STBScheduler:sortWaitingCombatants()
   end
 end;
 
----@param command Command
 function STBScheduler:enqueueCommand(command)
   print('enqueuing command from ' .. command.entity.entityName .. ' in command queue')
   table.insert(self.commandQueue, command)
@@ -110,7 +103,7 @@ function STBScheduler:checkQueues()
 
     if self.activeCommand then
       print('starting active command belonging to ' .. self.activeCommand.entity.entityName)
-      self.activeCommand:start(self)
+      self.activeCommand:start()
     end
   elseif self.activeCommand.done then
     print('popping active command off from ' .. self.activeCommand.entity.entityName)

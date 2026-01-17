@@ -1,19 +1,9 @@
 local Class = require('libs.hump.class')
 
----@alias ROOM_TYPE
----| '"Combat"' # Combat encounter
----| '"Shop"'
----| '"Campfire"'
----| '"Event"'
----| '"Boss"'
----| '"NA"'
-
----@class Room
----@field dir string
+---@type Room
 local Room = Class{dir = "asset/sprites/map/"}
 
 
----@param pos table
 function Room:init(pos)
 	self.type = "NA"
 	self.row = pos.row
@@ -29,8 +19,6 @@ function Room:init(pos)
 	self.alpha = 0.5
 end;
 
--- Sets room type and updates UI to match new type
----@param roomType ROOM_TYPE
 function Room:setType(roomType)
 	self.type = roomType
 	local path = Room.dir .. roomType .. ".png"

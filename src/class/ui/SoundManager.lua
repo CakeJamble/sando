@@ -2,12 +2,9 @@ local Signal = require('libs.hump.signal')
 local Timer = require('libs.hump.timer')
 local Class = require('libs.hump.class')
 
--- Manages sound effects and music for gamestates
-	-- Other objects are responsible for their own sfx
----@class SoundManager
+---@type SoundManager
 local SoundManager = Class{}
 
----@param sounds table
 function SoundManager:init(sounds)
 	self.sounds = sounds or {}
 	self.activeSounds = {}
@@ -30,8 +27,6 @@ function SoundManager:init(sounds)
 		end)
 end;
 
----@param key string
----@return love.Source? Returns a love.audio.Source or nothing if key not found
 function SoundManager:play(key)
 	-- grab random variant if there are multiple recordings for a single sound
 	local variants = self.sounds[key]
@@ -62,7 +57,6 @@ function SoundManager:stopAll()
 	end
 end;
 
----@param v number
 function SoundManager:setGlobalVolume(v)
 	self.volume = v
 	for _,src in ipairs(self.activeSounds) do
@@ -70,8 +64,6 @@ function SoundManager:setGlobalVolume(v)
 	end
 end;
 
----@param min number
----@param max number
 function SoundManager:setGlobalVolumeLimits(min, max)
 	self.volumeLimits.min = min
 	self.volumeLimits.max = max

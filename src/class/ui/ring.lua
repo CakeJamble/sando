@@ -1,7 +1,7 @@
 local Class = require 'libs.hump.class'
 local flux = require('libs.flux')
 
----@class Ring
+---@type Ring
 local Ring = Class{}
 
 function Ring:init(options, flipDuration, slicesData, qteDuration)

@@ -3,8 +3,7 @@ local SkillCommand = require('class.input.SkillCommand')
 local ItemCommand = require('class.input.ItemCommand')
 local Class = require('libs.hump.class')
 
----@class PlayerInputCommand: Command
----@field entity Character
+---@type PlayerInputCommand
 local PlayerInputCommand = Class { __includes = Command }
 
 local CommandClasses = {
@@ -12,8 +11,6 @@ local CommandClasses = {
 	item_command = ItemCommand
 }
 
----@param entity Character
----@param turnManager Scheduler
 function PlayerInputCommand:init(entity, turnManager)
 	Command.init(self, entity)
 	self.targets = entity.targets
@@ -26,7 +23,6 @@ function PlayerInputCommand:init(entity, turnManager)
 	self.commandKey = ''
 end;
 
----@return { [string]: Command }
 function PlayerInputCommand:defineCommands()
 	local commandInits = {
 		skill_command = function()
@@ -122,7 +118,7 @@ function PlayerInputCommand:start()
 	self:registerSignal('OnEndTurn', cancelInput)
 	self:registerSignal('PassTurn', function()
 		cancelInput()
-		self.entity:endTurn()
+		self.entity:endTurn(0)
 	end)
 end;
 

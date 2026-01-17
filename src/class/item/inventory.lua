@@ -4,9 +4,7 @@ local AccessoryManager = require('class.item.AccessoryManager')
 
 local Class = require 'libs.hump.class'
 
----@class Inventory
----@field cabinetPath string
----@field consumableMult number
+---@type Inventory
 local Inventory = Class{
     cabinetPath = 'asset/sprites/pause/2cabinet.png',
     consumableMult = 1
@@ -36,7 +34,6 @@ function Inventory:init(characterTeam)
     self.cabinetRotate = math.pi/2
 end
 
----@param amount integer
 function Inventory:gainMoney(amount)
     self.money = self.money + amount
 
@@ -44,15 +41,12 @@ function Inventory:gainMoney(amount)
     -- play sfx
 end;
 
----@param amount integer
 function Inventory:loseMoney(amount)
     self.money = math.max(0, self.money - amount)
     -- tween UI
     -- play sfx
 end;
 
----@param item table
----@param itemType string
 function Inventory:addItem(item, itemType)
     if itemType == "tool" then
         self.toolManager:addItem(item)
@@ -65,9 +59,6 @@ function Inventory:addItem(item, itemType)
     end
 end;
 
----@param item table
----@param itemType string
----@return table
 function Inventory:popItem(item, itemType)
     local item = {}
     if itemType == "tool" then
@@ -82,8 +73,7 @@ function Inventory:popItem(item, itemType)
 
     return item
 end;
----@param item table
----@return boolean
+
 function Inventory:addConsumable(item)
     if #self.consumables >= self.numConsumableSlots then
         return false
@@ -94,26 +84,11 @@ function Inventory:addConsumable(item)
     end
 end;
 
----@param index integer
----@return table
 function Inventory:popConsumable(index)
     if #self.consumables == 0 then
         error('cannot pop off empty table')
     end
     return table.remove(self.consumables, index)
-end;
-
----@param tool table
----@deprecated
-function Inventory:addTool(tool)
-    self.toolManager:addTool(tool)
-end;
-
----@param tool table
----@return table
----@deprecated
-function Inventory:popTool(tool)
-    return self.toolManager:popTool(tool)
 end;
 
 function Inventory:drawUI()
@@ -131,9 +106,7 @@ function Inventory:drawUI()
     love.graphics.print('Settings', self.window.x + 400, 30)
 
 end;
---[[
-    Draws own menu, and containers for each part of inventory
-]]
+
 function Inventory:draw()
     self:drawUI()
     for character,gear in pairs(self.gears) do

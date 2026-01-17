@@ -1,5 +1,3 @@
---! filename: Guard Command
-
 --[[
   Guard Command Class: inherits from the Base Command Class
   
