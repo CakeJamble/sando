@@ -156,7 +156,7 @@ function ActionUI:update(dt)
     if self.uiState == 'actionSelect' or self.uiState == 'submenuing' then
       if Player:pressed('right') then -- spin the wheel left
         if self.uiState == 'submenuing' then
-          self.activeButton:updateInput()
+          self.activeButton:update(dt)
           self.uiState = 'actionSelect'
         end
         for _, b in ipairs(self.buttons) do
@@ -167,7 +167,7 @@ function ActionUI:update(dt)
         self:tweenButtons()
       elseif Player:pressed('left') then -- spin the wheel right
         if self.uiState == 'submenuing' then
-          self.activeButton:updateInput()
+          self.activeButton:update(dt)
           self.uiState = 'actionSelect'
         end
         for _, b in ipairs(self.buttons) do
@@ -188,10 +188,10 @@ function ActionUI:update(dt)
         elseif self.activeButton == self.flourButton or self.activeButton == self.itemButton then
           self.uiState = 'submenuing'
           self.selectedSkill = self.activeButton.actionList[self.activeButton.listIndex]
-          self.activeButton:updateInput()
+          self.activeButton:update(dt)
         end
       elseif self.uiState == 'submenuing' then
-        self.activeButton:updateInput()
+        self.activeButton:update(dt)
       end
     elseif self.uiState == 'targeting' then
       if self.selectedSkill.isSingleTarget then

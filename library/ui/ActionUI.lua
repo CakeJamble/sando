@@ -34,6 +34,7 @@
 ---@field buttonTweenDuration number
 ---@field buttonDims {w: integer, h: integer }
 ---@field landingPositions {x: integer, y: integer, scale: number}[]
+---@field highlightBack boolean
 ActionUI = {}
 
 -- The ActionUI position (self.x, self.y) is at the coordinates of the center of the button wheel

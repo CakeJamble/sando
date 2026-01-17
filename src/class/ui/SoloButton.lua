@@ -1,12 +1,9 @@
 local Button = require('class.ui.Button')
 local Class = require 'libs.hump.class'
 
----@class SoloButton: Button
+---@type SoloButton
 local SoloButton = Class{__includes = Button}
 
----@param pos { [string]: number }
----@param index integer
----@param basicAttack table
 function SoloButton:init(pos, index, basicAttack)
   Button.init(self, pos, index, 'solo_lame.png')
   self.selectedSkill = basicAttack

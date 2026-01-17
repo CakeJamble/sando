@@ -1,10 +1,8 @@
 local Class = require('libs.hump.class')
 
----@class HitChart
+---@type HitChart
 local HitChart = Class{}
 
----@param midiSong MidiEvent[]
----@param offset number Amount of milliseconds to delay
 function HitChart:init(midiSong, offset)
 	self.offset = offset or 0
 	self.hits = {}
@@ -12,7 +10,6 @@ function HitChart:init(midiSong, offset)
 	self:buildChart(midiSong)
 end;
 
----@param midi MidiEvent[]
 function HitChart:buildChart(midi)
 	local ppq = midi.ppq
 	local events = midi.events
@@ -58,25 +55,18 @@ function HitChart:buildChart(midi)
 end;
 
 
----Reset playback position (e.g. song restart)
 function HitChart:reset()
     self.index = 1
 end;
 
----Get the next hit (without advancing)
----@return table|nil
 function HitChart:peek()
     return self.hits[self.index]
 end;
 
----Advance to next hit
 function HitChart:advance()
     self.index = self.index + 1
 end;
 
----Skip hits that are already missed
----@param songTime number
----@param missWindow number
 function HitChart:skipMissed(songTime, missWindow)
     while true do
         local hit = self.hits[self.index]
@@ -90,10 +80,6 @@ function HitChart:skipMissed(songTime, missWindow)
     end
 end;
 
----Check if input is within hit window
----@param songTime number
----@param hitWindow number
----@return boolean, table|nil
 function HitChart:checkHit(songTime, hitWindow)
     local hit = self.hits[self.index]
     if not hit then
@@ -109,10 +95,6 @@ function HitChart:checkHit(songTime, hitWindow)
     return false, nil
 end;
 
--- Returns a sequence of inputs & timings from the hit chart within a given time window
----@param songTime number
----@param window number
----@return table
 function HitChart:getChartSlice(songTime, window)
 	local slice = {}
 
