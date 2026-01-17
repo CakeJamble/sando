@@ -10,11 +10,11 @@ Now that Sando is in an intense development period, the game is gettings several
 
 ## ✅ Repository Structure
 
-The source code for the game can be found in its entirety in `src`. Use your preferred build method to launch in LOVE.
+The source code for the game can be found in its entirety in `src`. Use your preferred build method to launch in LOVE. In order to cut down the amount of scrolling done in files, I decided to move a lot of inline documentation to [Definition Files](https://luals.github.io/wiki/definition-files/). If you want to see annotations, be sure to open your workspace from the `sando` directory, and not from the `src` directory. Definition Files are not a part of the actual program, and are only used by Lua Language Server. As such, no Definition Files should ever be `require`d in another file.
 
 ### 🎨 `asset`
 
-Animations, SFX, music, backgrounds, and documentation.
+Animations, SFX, music, backgrounds, etc. If you have a copy of the game, you can extract assets here, but they will not be provided in this repository.
 
 ### 🖥️ `class`
 
@@ -22,7 +22,7 @@ Contains the source code for OOP classes. Uses `hump.class` to support its imple
 
 ### 🎮 `gamestates`
 
-Contains the source code for the different gamestates in the game. Uses `hump.gamestates` to support its implementations. View progress on Trello for more updates.
+Contains the source code for the different gamestates in the game. Uses `hump.gamestates` to support its implementations.
 
 - `Bakery`: An interactive codex-like environment to see your achievements and track your progress in the game.
 - `Character Select`: Accessible when beginning a new game. Allows you to select your starting member(s)
@@ -30,12 +30,19 @@ Contains the source code for the different gamestates in the game. Uses `hump.ga
 - `Main Menu`: Hosts the landing page for the game.
 - `Pause`: Accessible during the Combat gamestate. Contains settings, and the team's vital stats.
 - `Reward`: Pushed onto the gamestates stack when you win a fight to distribute rewards and level-ups.
+- `Overworld`: Contains the Map for traversing between encounters. There are no plans to implement a free-roam exploration component to the game at the time of writing this.
+- `Event`: Small minigames and text-based interactions occur between some combat encounters.
+- `Shop`: A Yakiimo Truck inspired shop interface for spending resources in exchange for Tools, Accessories, and Equipment for the current run.
 
 ### 📖 `libs`
 
-Contains the libraries used for the game's implementation.
+Contains the libraries used for the game's implementation. Not provided in this repo to cut down on GitHub storage of redundant files that exist elsewhere. I plan to write a simple script that will check for these dependencies in the user's workspace and clone the repositories of any missing dependencies, but for now you will need to manually clone them.
 
+- [animX](https://github.com/besnoi/animX)
+- [luis](https://github.com/SiENcE/luis/)
 - [hump](https://hump.readthedocs.io/en/latest/)
+- [knife.test](https://github.com/airstruck/knife)
+- [SYSL-Text](https://github.com/sysl-dev/SYSL-Text)
 - [flux](https://github.com/rxi/flux)
 - [cimgui-love](https://codeberg.org/apicici/cimgui-love)
 - [json.lua](https://github.com/rxi/json.lua)
@@ -77,20 +84,10 @@ TBD - Store pages have been acquired for itch.io & Steam, but will remain unpubl
 
 Targeting a release window for a Vertical Slice Demo of the game's core roguelike loop in Late 2025.
 
-## 💁 Tools & External Resources
-
-- [HotPartciles](https://github.com/ReFreezed/HotParticles)
-- [Magical 8Bit Plug](https://ymck.net/app/magical-8bit-plug-en)
-- [Bfxr](https://www.bfxr.net/)
-- [Figma](https://www.figma.com/)
-- [Sublime Text](https://www.sublimetext.com/)
-- [Sublime Merge](https://www.sublimemerge.com/)
-
-
 ## 📫 Inquiries
 
 Direct all inquiries regarding to the development of this product to the email of the sole author of Sando: [CakeJamble](mailto:cakejamblegames@gmail.com)
 
 ## ⚠️ Disclaimer
 
-I provide no support for code taken from this repository. Despite the code being publicly available, this is NOT an open-source software. I may respond to emails that ask for support or suggest improvements, but I cannot promise I will respond promptly or consistently at this time. I reserve the right to change the visibility of this repository without any notice or reason.
+I provide no support for code from this repository. Despite the code being publicly available, this is NOT an open-source software.
